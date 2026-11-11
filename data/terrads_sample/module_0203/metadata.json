@@ -1,0 +1,89 @@
+{
+  "findings_count": 14,
+  "findings": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_79",
+      "title": "",
+      "resource_name": "aws_instance.Kafka-Client-EC2-Instance"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_126",
+      "title": "",
+      "resource_name": "aws_instance.Kafka-Client-EC2-Instance"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_135",
+      "title": "",
+      "resource_name": "aws_instance.Kafka-Client-EC2-Instance"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_8",
+      "title": "",
+      "resource_name": "aws_instance.Kafka-Client-EC2-Instance"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_66",
+      "title": "",
+      "resource_name": "aws_cloudwatch_log_group.cloudwatch_log_group"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_338",
+      "title": "",
+      "resource_name": "aws_cloudwatch_log_group.cloudwatch_log_group"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_158",
+      "title": "",
+      "resource_name": "aws_cloudwatch_log_group.cloudwatch_log_group"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "",
+      "resource_name": "aws_security_group.KafkaClusterSG"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_382",
+      "title": "",
+      "resource_name": "aws_security_group.KafkaClusterSG"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "",
+      "resource_name": "aws_security_group.KafkaClientInstanceSG"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_382",
+      "title": "",
+      "resource_name": "aws_security_group.KafkaClientInstanceSG"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_12",
+      "title": "",
+      "resource_name": "aws_vpc.msk_vpc"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_11",
+      "title": "",
+      "resource_name": "aws_vpc.msk_vpc"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_19",
+      "title": "",
+      "resource_name": "aws_eip.nat"
+    }
+  ]
+}

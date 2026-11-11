@@ -1,0 +1,98 @@
+{
+  "module_id": "module_0170",
+  "model_id": "llama-3-3-70b",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0143",
+      "title": "IAM policies should not be granted directly to users.",
+      "severity": "LOW",
+      "resource_name": "aws_iam_user.smtp_user",
+      "resource_type": "aws_iam_user",
+      "file_path": "main.tf",
+      "start_line": 13,
+      "end_line": 15
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_273",
+      "title": "Ensure access is controlled through SSO and not AWS IAM defined users",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_user.smtp_user",
+      "resource_type": "aws_iam_user",
+      "file_path": "/main.tf",
+      "start_line": 13,
+      "end_line": 15
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_40",
+      "title": "Ensure IAM policies are attached only to groups or roles (Reducing access management complexity may in-turn reduce opportunity for a principal to inadvertently receive or retain excessive privileges.)",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_user_policy.smtp_policy",
+      "resource_type": "aws_iam_user_policy",
+      "file_path": "/main.tf",
+      "start_line": 18,
+      "end_line": 42
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0123",
+      "title": "IAM groups should have MFA enforcement activated.",
+      "severity": "MEDIUM",
+      "resource_name": "aws_iam_group.smtp_group",
+      "resource_type": "aws_iam_group",
+      "file_path": "main.tf",
+      "start_line": 13,
+      "end_line": 15
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_273",
+      "title": "Ensure access is controlled through SSO and not AWS IAM defined users",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_user.smtp_user",
+      "resource_type": "aws_iam_user",
+      "file_path": "/main.tf",
+      "start_line": 18,
+      "end_line": 20
+    }
+  ],
+  "target_count": 3,
+  "resolved_count": 2,
+  "introduced_count": 1,
+  "unchanged_count": 1,
+  "repair_success_rate": 0.6666666666666666,
+  "regression_rate": 0.3333333333333333,
+  "net_delta": 1,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 2,
+      "introduced": 1,
+      "unchanged": 1
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    }
+  },
+  "repair_cost_usd": 0.001656,
+  "repair_tokens": 2070,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0170_llama-3-3-70b.repaired.tf",
+  "raw_response_path": "module_0170_llama-3-3-70b.raw.txt",
+  "repaired_code_sha256": "28eb0d2bad46626e2e6aff7ca7cd08c32622243ad656ff326ff8dcf21fa3ddd6"
+}

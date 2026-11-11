@@ -1,0 +1,351 @@
+{
+  "module_id": "module_0375",
+  "model_id": "nova-lite",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0342",
+      "title": "IAM Pass Role Filtering",
+      "severity": "MEDIUM",
+      "resource_name": "module.eks_blueprints_addons",
+      "resource_type": "module",
+      "file_path": "aws-ia/eks-blueprints-addons/aws/aws-ia/eks-blueprints-addon/aws/aws-ia/eks-blueprints-addons/aws/aws-ia/eks-blueprints-addon/aws/main.tf",
+      "start_line": 210,
+      "end_line": 256
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0038",
+      "title": "EKS Clusters should have cluster control plane logging turned on",
+      "severity": "MEDIUM",
+      "resource_name": "module.eks",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/eks/aws/main.tf",
+      "start_line": 27,
+      "end_line": 111
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0040",
+      "title": "EKS Clusters should have the public access disabled",
+      "severity": "CRITICAL",
+      "resource_name": "module.eks",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/eks/aws/main.tf",
+      "start_line": 50,
+      "end_line": 50
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0041",
+      "title": "EKS cluster should not have open CIDR range for public access",
+      "severity": "CRITICAL",
+      "resource_name": "module.eks",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/eks/aws/main.tf",
+      "start_line": 51,
+      "end_line": 51
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "module.eks",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/eks/aws/node_groups.tf",
+      "start_line": 247,
+      "end_line": 247
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0178",
+      "title": "VPC Flow Logs is a feature that enables you to capture information about the IP traffic going to and from network interfaces in your VPC. After you've created a flow log, you can view and retrieve its data in Amazon CloudWatch Logs. It is recommended that VPC Flow Logs be enabled for packet \"Rejects\" for VPCs.",
+      "severity": "MEDIUM",
+      "resource_name": "module.vpc",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/vpc/aws/main.tf",
+      "start_line": 28,
+      "end_line": 51
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "ebs_csi_driver_irsa",
+      "resource_type": "ebs_csi_driver_irsa",
+      "file_path": "/addons.tf",
+      "start_line": 43,
+      "end_line": 59
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "eks_blueprints_addons",
+      "resource_type": "eks_blueprints_addons",
+      "file_path": "/addons.tf",
+      "start_line": 64,
+      "end_line": 164
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "eks_data_addons",
+      "resource_type": "eks_data_addons",
+      "file_path": "/addons.tf",
+      "start_line": 195,
+      "end_line": 308
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_149",
+      "title": "Ensure that Secrets Manager secret is encrypted using KMS CMK",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_secretsmanager_secret.grafana",
+      "resource_type": "aws_secretsmanager_secret",
+      "file_path": "/addons.tf",
+      "start_line": 181,
+      "end_line": 184
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "amp_ingest_irsa[0]",
+      "resource_type": "amp_ingest_irsa[0]",
+      "file_path": "/amp.tf",
+      "start_line": 117,
+      "end_line": 137
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "eks",
+      "resource_type": "eks",
+      "file_path": "/eks.tf",
+      "start_line": 4,
+      "end_line": 96
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_auth",
+      "resource_type": "aws_auth",
+      "file_path": "/eks.tf",
+      "start_line": 98,
+      "end_line": 114
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_394",
+      "title": "Ensure aws_availability_zones data source pins zone identity so its result set does not silently expand when AWS adds an Availability Zone",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_availability_zones.available",
+      "resource_type": "aws_availability_zones",
+      "file_path": "/main.tf",
+      "start_line": 4,
+      "end_line": 4
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "vpc",
+      "resource_type": "vpc",
+      "file_path": "/vpc.tf",
+      "start_line": 7,
+      "end_line": 41
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_57",
+      "title": "Ensure Secrets Manager secrets should have automatic rotation enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_secretsmanager_secret.grafana",
+      "resource_type": "aws_secretsmanager_secret",
+      "file_path": "/addons.tf",
+      "start_line": 181,
+      "end_line": 184
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0065",
+      "title": "A KMS key is not configured to auto-rotate.",
+      "severity": "MEDIUM",
+      "resource_name": "aws_kms_key.grafana_kms_key",
+      "resource_type": "aws_kms_key",
+      "file_path": "main.tf",
+      "start_line": 192,
+      "end_line": 196
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_7",
+      "title": "Ensure rotation for customer created CMKs is enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_kms_key.grafana_kms_key",
+      "resource_type": "aws_kms_key",
+      "file_path": "/main.tf",
+      "start_line": 192,
+      "end_line": 196
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_394",
+      "title": "Ensure aws_availability_zones data source pins zone identity so its result set does not silently expand when AWS adds an Availability Zone",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_availability_zones.available",
+      "resource_type": "aws_availability_zones",
+      "file_path": "/main.tf",
+      "start_line": 573,
+      "end_line": 575
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "ebs_csi_driver_irsa",
+      "resource_type": "ebs_csi_driver_irsa",
+      "file_path": "/main.tf",
+      "start_line": 43,
+      "end_line": 59
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "eks_blueprints_addons",
+      "resource_type": "eks_blueprints_addons",
+      "file_path": "/main.tf",
+      "start_line": 64,
+      "end_line": 164
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "eks_data_addons",
+      "resource_type": "eks_data_addons",
+      "file_path": "/main.tf",
+      "start_line": 201,
+      "end_line": 314
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "amp_ingest_irsa[0]",
+      "resource_type": "amp_ingest_irsa[0]",
+      "file_path": "/main.tf",
+      "start_line": 433,
+      "end_line": 453
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "eks",
+      "resource_type": "eks",
+      "file_path": "/main.tf",
+      "start_line": 459,
+      "end_line": 549
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_auth",
+      "resource_type": "aws_auth",
+      "file_path": "/main.tf",
+      "start_line": 551,
+      "end_line": 567
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "vpc",
+      "resource_type": "vpc",
+      "file_path": "/main.tf",
+      "start_line": 749,
+      "end_line": 784
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_57",
+      "title": "Ensure Secrets Manager secrets should have automatic rotation enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_secretsmanager_secret.grafana",
+      "resource_type": "aws_secretsmanager_secret",
+      "file_path": "/main.tf",
+      "start_line": 181,
+      "end_line": 185
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_64",
+      "title": "Ensure KMS key Policy is defined",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_kms_key.grafana_kms_key",
+      "resource_type": "aws_kms_key",
+      "file_path": "/main.tf",
+      "start_line": 192,
+      "end_line": 196
+    }
+  ],
+  "target_count": 16,
+  "resolved_count": 7,
+  "introduced_count": 3,
+  "unchanged_count": 9,
+  "repair_success_rate": 0.4375,
+  "regression_rate": 0.1875,
+  "net_delta": 4,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 4,
+      "introduced": 1,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 1,
+      "introduced": 1,
+      "unchanged": 1
+    },
+    "observability": {
+      "resolved": 2,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 0,
+      "introduced": 1,
+      "unchanged": 8
+    }
+  },
+  "repair_cost_usd": 0.0022677,
+  "repair_tokens": 15293,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0375_nova-lite.repaired.tf",
+  "raw_response_path": "module_0375_nova-lite.raw.txt",
+  "repaired_code_sha256": "23f62eba98cc5b943aca3a8d79b399ec7a7276b4c3c2fd95d6540af5426c8e65"
+}

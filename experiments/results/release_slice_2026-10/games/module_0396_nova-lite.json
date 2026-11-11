@@ -1,0 +1,109 @@
+{
+  "module_id": "module_0396",
+  "model_id": "nova-lite",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0065",
+      "title": "A KMS key is not configured to auto-rotate.",
+      "severity": "MEDIUM",
+      "resource_name": "aws_kms_key.objects",
+      "resource_type": "aws_kms_key",
+      "file_path": "main.tf",
+      "start_line": 25,
+      "end_line": 28
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_7",
+      "title": "Ensure rotation for customer created CMKs is enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_kms_key.objects",
+      "resource_type": "aws_kms_key",
+      "file_path": "/main.tf",
+      "start_line": 25,
+      "end_line": 28
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_64",
+      "title": "Ensure KMS key Policy is defined",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_kms_key.objects",
+      "resource_type": "aws_kms_key",
+      "file_path": "/main.tf",
+      "start_line": 25,
+      "end_line": 28
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_111",
+      "title": "Ensure IAM policies does not allow write access without constraints",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.kms_policy",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/main.tf",
+      "start_line": 21,
+      "end_line": 31
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_356",
+      "title": "Ensure no IAM policies documents allow \"*\" as a statement's resource for restrictable actions",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.kms_policy",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/main.tf",
+      "start_line": 21,
+      "end_line": 31
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_109",
+      "title": "Ensure IAM policies does not allow permissions management / resource exposure without constraints",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.kms_policy",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/main.tf",
+      "start_line": 21,
+      "end_line": 31
+    }
+  ],
+  "target_count": 3,
+  "resolved_count": 3,
+  "introduced_count": 3,
+  "unchanged_count": 0,
+  "repair_success_rate": 1.0,
+  "regression_rate": 1.0,
+  "net_delta": 0,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 1,
+      "introduced": 3,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 1,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 1,
+      "introduced": 0,
+      "unchanged": 0
+    }
+  },
+  "repair_cost_usd": 0.0011104,
+  "repair_tokens": 7472,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0396_nova-lite.repaired.tf",
+  "raw_response_path": "module_0396_nova-lite.raw.txt",
+  "repaired_code_sha256": "1e94c9a3b8612b1fcbb15b6b74b59c5e5dd4678e6516c0215852e5649fa4fc21"
+}

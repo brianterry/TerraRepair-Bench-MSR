@@ -1,0 +1,296 @@
+{
+  "module_id": "module_0171",
+  "model_id": "nova-pro",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0017",
+      "title": "CloudWatch log groups should be encrypted using CMK",
+      "severity": "LOW",
+      "resource_name": "aws_cloudwatch_log_group.eks",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "eks_log_group.tf",
+      "start_line": 1,
+      "end_line": 4
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0038",
+      "title": "EKS Clusters should have cluster control plane logging turned on",
+      "severity": "MEDIUM",
+      "resource_name": "aws_eks_cluster.eks-cluster",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "eks_master.tf",
+      "start_line": 68,
+      "end_line": 83
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0039",
+      "title": "EKS should have the encryption of secrets enabled",
+      "severity": "HIGH",
+      "resource_name": "aws_eks_cluster.eks-cluster",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "eks_master.tf",
+      "start_line": 68,
+      "end_line": 83
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0040",
+      "title": "EKS Clusters should have the public access disabled",
+      "severity": "CRITICAL",
+      "resource_name": "aws_eks_cluster.eks-cluster",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "eks_master.tf",
+      "start_line": 73,
+      "end_line": 76
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0041",
+      "title": "EKS cluster should not have open CIDR range for public access",
+      "severity": "CRITICAL",
+      "resource_name": "aws_eks_cluster.eks-cluster",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "eks_master.tf",
+      "start_line": 73,
+      "end_line": 76
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "aws_security_group.eks_master",
+      "resource_type": "aws_security_group",
+      "file_path": "eks_master.tf",
+      "start_line": 50,
+      "end_line": 50
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0124",
+      "title": "Missing description for security group rule.",
+      "severity": "LOW",
+      "resource_name": "aws_security_group.eks_master",
+      "resource_type": "aws_security_group",
+      "file_path": "eks_master.tf",
+      "start_line": 34,
+      "end_line": 39
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_394",
+      "title": "Ensure aws_availability_zones data source pins zone identity so its result set does not silently expand when AWS adds an Availability Zone",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_availability_zones.available",
+      "resource_type": "aws_availability_zones",
+      "file_path": "/data.tf",
+      "start_line": 4,
+      "end_line": 6
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_290",
+      "title": "Ensure IAM policies does not allow write access without constraints",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy.ClusterAutoScaler",
+      "resource_type": "aws_iam_policy",
+      "file_path": "/eks_iam.tf",
+      "start_line": 21,
+      "end_line": 45
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_355",
+      "title": "Ensure no IAM policies documents allow \"*\" as a statement's resource for restrictable actions",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy.ClusterAutoScaler",
+      "resource_type": "aws_iam_policy",
+      "file_path": "/eks_iam.tf",
+      "start_line": 21,
+      "end_line": 45
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_158",
+      "title": "Ensure that CloudWatch Log Group is encrypted by KMS",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.eks",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/eks_log_group.tf",
+      "start_line": 1,
+      "end_line": 4
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "Ensure every security group and rule has a description",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group.eks_master",
+      "resource_type": "aws_security_group",
+      "file_path": "/eks_master.tf",
+      "start_line": 30,
+      "end_line": 64
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_37",
+      "title": "Ensure Amazon EKS control plane logging is enabled for all log types",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_eks_cluster.eks-cluster",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "/eks_master.tf",
+      "start_line": 68,
+      "end_line": 83
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_38",
+      "title": "Ensure Amazon EKS public endpoint not accessible to 0.0.0.0/0",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_eks_cluster.eks-cluster",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "/eks_master.tf",
+      "start_line": 68,
+      "end_line": 83
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_39",
+      "title": "Ensure Amazon EKS public endpoint disabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_eks_cluster.eks-cluster",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "/eks_master.tf",
+      "start_line": 68,
+      "end_line": 83
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_58",
+      "title": "Ensure EKS Cluster has Secrets Encryption Enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_eks_cluster.eks-cluster",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "/eks_master.tf",
+      "start_line": 68,
+      "end_line": 83
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0039",
+      "title": "EKS should have the encryption of secrets enabled",
+      "severity": "HIGH",
+      "resource_name": "aws_eks_cluster.eks-cluster",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "main.tf",
+      "start_line": 73,
+      "end_line": 91
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0040",
+      "title": "EKS Clusters should have the public access disabled",
+      "severity": "CRITICAL",
+      "resource_name": "aws_eks_cluster.eks-cluster",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "main.tf",
+      "start_line": 78,
+      "end_line": 81
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0041",
+      "title": "EKS cluster should not have open CIDR range for public access",
+      "severity": "CRITICAL",
+      "resource_name": "aws_eks_cluster.eks-cluster",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "main.tf",
+      "start_line": 78,
+      "end_line": 81
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "aws_security_group.eks_master",
+      "resource_type": "aws_security_group",
+      "file_path": "main.tf",
+      "start_line": 50,
+      "end_line": 50
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_394",
+      "title": "Ensure aws_availability_zones data source pins zone identity so its result set does not silently expand when AWS adds an Availability Zone",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_availability_zones.available",
+      "resource_type": "aws_availability_zones",
+      "file_path": "/main.tf",
+      "start_line": 93,
+      "end_line": 96
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_38",
+      "title": "Ensure Amazon EKS public endpoint not accessible to 0.0.0.0/0",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_eks_cluster.eks-cluster",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "/main.tf",
+      "start_line": 73,
+      "end_line": 91
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_39",
+      "title": "Ensure Amazon EKS public endpoint disabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_eks_cluster.eks-cluster",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "/main.tf",
+      "start_line": 73,
+      "end_line": 91
+    }
+  ],
+  "target_count": 16,
+  "resolved_count": 9,
+  "introduced_count": 0,
+  "unchanged_count": 7,
+  "repair_success_rate": 0.5625,
+  "regression_rate": 0.0,
+  "net_delta": 9,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 2,
+      "introduced": 0,
+      "unchanged": 5
+    },
+    "data_protection": {
+      "resolved": 3,
+      "introduced": 0,
+      "unchanged": 1
+    },
+    "observability": {
+      "resolved": 2,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 2,
+      "introduced": 0,
+      "unchanged": 1
+    }
+  },
+  "repair_cost_usd": 0.0061519999999999995,
+  "repair_tokens": 6152,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0171_nova-pro.repaired.tf",
+  "raw_response_path": "module_0171_nova-pro.raw.txt",
+  "repaired_code_sha256": "f0db4dada080a8d6a01b0ae5d1b08f1478271a0cfd0a28d57eddbc02620b6e50"
+}

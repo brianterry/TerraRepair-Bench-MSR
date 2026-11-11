@@ -1,0 +1,593 @@
+{
+  "module_id": "module_0376",
+  "model_id": "nova-lite",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0040",
+      "title": "EKS Clusters should have the public access disabled",
+      "severity": "CRITICAL",
+      "resource_name": "module.eks",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/eks/aws/main.tf",
+      "start_line": 37,
+      "end_line": 37
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0041",
+      "title": "EKS cluster should not have open CIDR range for public access",
+      "severity": "CRITICAL",
+      "resource_name": "module.eks",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/eks/aws/main.tf",
+      "start_line": 38,
+      "end_line": 38
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "module.eks",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/eks/aws/node_groups.tf",
+      "start_line": 223,
+      "end_line": 223
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "module.s3_bucket",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/s3-bucket/aws/main.tf",
+      "start_line": 25,
+      "end_line": 34
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0090",
+      "title": "S3 Data should be versioned",
+      "severity": "MEDIUM",
+      "resource_name": "module.s3_bucket",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/s3-bucket/aws/main.tf",
+      "start_line": 25,
+      "end_line": 34
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0178",
+      "title": "VPC Flow Logs is a feature that enables you to capture information about the IP traffic going to and from network interfaces in your VPC. After you've created a flow log, you can view and retrieve its data in Amazon CloudWatch Logs. It is recommended that VPC Flow Logs be enabled for packet \"Rejects\" for VPCs.",
+      "severity": "MEDIUM",
+      "resource_name": "module.vpc",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/vpc/aws/main.tf",
+      "start_line": 28,
+      "end_line": 51
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "ebs_csi_driver_irsa",
+      "resource_type": "ebs_csi_driver_irsa",
+      "file_path": "/addons.tf",
+      "start_line": 5,
+      "end_line": 21
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "eks_blueprints_addons",
+      "resource_type": "eks_blueprints_addons",
+      "file_path": "/addons.tf",
+      "start_line": 23,
+      "end_line": 127
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "s3_bucket",
+      "resource_type": "s3_bucket",
+      "file_path": "/addons.tf",
+      "start_line": 292,
+      "end_line": 318
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_149",
+      "title": "Ensure that Secrets Manager secret is encrypted using KMS CMK",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_secretsmanager_secret.grafana",
+      "resource_type": "aws_secretsmanager_secret",
+      "file_path": "/addons.tf",
+      "start_line": 178,
+      "end_line": 181
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_149",
+      "title": "Ensure that Secrets Manager secret is encrypted using KMS CMK",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_secretsmanager_secret.nifi_keystore_password",
+      "resource_type": "aws_secretsmanager_secret",
+      "file_path": "/addons.tf",
+      "start_line": 204,
+      "end_line": 207
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_149",
+      "title": "Ensure that Secrets Manager secret is encrypted using KMS CMK",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_secretsmanager_secret.nifi_truststore_password",
+      "resource_type": "aws_secretsmanager_secret",
+      "file_path": "/addons.tf",
+      "start_line": 220,
+      "end_line": 222
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_149",
+      "title": "Ensure that Secrets Manager secret is encrypted using KMS CMK",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_secretsmanager_secret.nifi_login_password",
+      "resource_type": "aws_secretsmanager_secret",
+      "file_path": "/addons.tf",
+      "start_line": 235,
+      "end_line": 238
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_149",
+      "title": "Ensure that Secrets Manager secret is encrypted using KMS CMK",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_secretsmanager_secret.sensitive_key",
+      "resource_type": "aws_secretsmanager_secret",
+      "file_path": "/addons.tf",
+      "start_line": 251,
+      "end_line": 254
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "amp_ingest_irsa[0]",
+      "resource_type": "amp_ingest_irsa[0]",
+      "file_path": "/amp.tf",
+      "start_line": 117,
+      "end_line": 137
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_394",
+      "title": "Ensure aws_availability_zones data source pins zone identity so its result set does not silently expand when AWS adds an Availability Zone",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_availability_zones.available",
+      "resource_type": "aws_availability_zones",
+      "file_path": "/data.tf",
+      "start_line": 5,
+      "end_line": 5
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "eks",
+      "resource_type": "eks",
+      "file_path": "/main.tf",
+      "start_line": 6,
+      "end_line": 30
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "vpc",
+      "resource_type": "vpc",
+      "file_path": "/vpc.tf",
+      "start_line": 7,
+      "end_line": 30
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_57",
+      "title": "Ensure Secrets Manager secrets should have automatic rotation enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_secretsmanager_secret.grafana",
+      "resource_type": "aws_secretsmanager_secret",
+      "file_path": "/addons.tf",
+      "start_line": 178,
+      "end_line": 181
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_57",
+      "title": "Ensure Secrets Manager secrets should have automatic rotation enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_secretsmanager_secret.nifi_keystore_password",
+      "resource_type": "aws_secretsmanager_secret",
+      "file_path": "/addons.tf",
+      "start_line": 204,
+      "end_line": 207
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_57",
+      "title": "Ensure Secrets Manager secrets should have automatic rotation enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_secretsmanager_secret.nifi_truststore_password",
+      "resource_type": "aws_secretsmanager_secret",
+      "file_path": "/addons.tf",
+      "start_line": 220,
+      "end_line": 222
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_57",
+      "title": "Ensure Secrets Manager secrets should have automatic rotation enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_secretsmanager_secret.nifi_login_password",
+      "resource_type": "aws_secretsmanager_secret",
+      "file_path": "/addons.tf",
+      "start_line": 235,
+      "end_line": 238
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_57",
+      "title": "Ensure Secrets Manager secrets should have automatic rotation enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_secretsmanager_secret.sensitive_key",
+      "resource_type": "aws_secretsmanager_secret",
+      "file_path": "/addons.tf",
+      "start_line": 251,
+      "end_line": 254
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0086",
+      "title": "S3 Access block should block public ACL",
+      "severity": "HIGH",
+      "resource_name": "aws_s3_bucket.log_bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 339,
+      "end_line": 342
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0087",
+      "title": "S3 Access block should block public policy",
+      "severity": "HIGH",
+      "resource_name": "aws_s3_bucket.log_bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 339,
+      "end_line": 342
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "aws_s3_bucket.log_bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 339,
+      "end_line": 342
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0090",
+      "title": "S3 Data should be versioned",
+      "severity": "MEDIUM",
+      "resource_name": "aws_s3_bucket.log_bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 339,
+      "end_line": 342
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0091",
+      "title": "S3 Access Block should Ignore Public ACL",
+      "severity": "HIGH",
+      "resource_name": "aws_s3_bucket.log_bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 339,
+      "end_line": 342
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0093",
+      "title": "S3 Access block should restrict public bucket to limit access",
+      "severity": "HIGH",
+      "resource_name": "aws_s3_bucket.log_bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 339,
+      "end_line": 342
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0094",
+      "title": "S3 buckets should each define an aws_s3_bucket_public_access_block",
+      "severity": "LOW",
+      "resource_name": "aws_s3_bucket.log_bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 339,
+      "end_line": 342
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0132",
+      "title": "S3 encryption should use Customer Managed Keys",
+      "severity": "HIGH",
+      "resource_name": "aws_s3_bucket.log_bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 339,
+      "end_line": 342
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "ebs_csi_driver_irsa",
+      "resource_type": "ebs_csi_driver_irsa",
+      "file_path": "/main.tf",
+      "start_line": 5,
+      "end_line": 21
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "eks_blueprints_addons",
+      "resource_type": "eks_blueprints_addons",
+      "file_path": "/main.tf",
+      "start_line": 23,
+      "end_line": 127
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "s3_bucket",
+      "resource_type": "s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 302,
+      "end_line": 337
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "amp_ingest_irsa[0]",
+      "resource_type": "amp_ingest_irsa[0]",
+      "file_path": "/main.tf",
+      "start_line": 460,
+      "end_line": 480
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "eks",
+      "resource_type": "eks",
+      "file_path": "/main.tf",
+      "start_line": 571,
+      "end_line": 595
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "vpc",
+      "resource_type": "vpc",
+      "file_path": "/main.tf",
+      "start_line": 729,
+      "end_line": 752
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_394",
+      "title": "Ensure aws_availability_zones data source pins zone identity so its result set does not silently expand when AWS adds an Availability Zone",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_availability_zones.available",
+      "resource_type": "aws_availability_zones",
+      "file_path": "/main.tf",
+      "start_line": 487,
+      "end_line": 489
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_21",
+      "title": "Ensure all data stored in the S3 bucket have versioning enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.log_bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 339,
+      "end_line": 342
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_57",
+      "title": "Ensure Secrets Manager secrets should have automatic rotation enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_secretsmanager_secret.grafana",
+      "resource_type": "aws_secretsmanager_secret",
+      "file_path": "/main.tf",
+      "start_line": 178,
+      "end_line": 183
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_57",
+      "title": "Ensure Secrets Manager secrets should have automatic rotation enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_secretsmanager_secret.nifi_keystore_password",
+      "resource_type": "aws_secretsmanager_secret",
+      "file_path": "/main.tf",
+      "start_line": 206,
+      "end_line": 211
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_57",
+      "title": "Ensure Secrets Manager secrets should have automatic rotation enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_secretsmanager_secret.nifi_truststore_password",
+      "resource_type": "aws_secretsmanager_secret",
+      "file_path": "/main.tf",
+      "start_line": 224,
+      "end_line": 228
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_57",
+      "title": "Ensure Secrets Manager secrets should have automatic rotation enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_secretsmanager_secret.nifi_login_password",
+      "resource_type": "aws_secretsmanager_secret",
+      "file_path": "/main.tf",
+      "start_line": 241,
+      "end_line": 246
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_57",
+      "title": "Ensure Secrets Manager secrets should have automatic rotation enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_secretsmanager_secret.sensitive_key",
+      "resource_type": "aws_secretsmanager_secret",
+      "file_path": "/main.tf",
+      "start_line": 259,
+      "end_line": 264
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_62",
+      "title": "Ensure S3 buckets should have event notifications enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.log_bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 339,
+      "end_line": 342
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_6",
+      "title": "Ensure that S3 bucket has a Public Access block",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.log_bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 339,
+      "end_line": 342
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_18",
+      "title": "Ensure the S3 bucket has access logging enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.log_bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 339,
+      "end_line": 342
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_145",
+      "title": "Ensure that S3 buckets are encrypted with KMS by default",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.log_bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 339,
+      "end_line": 342
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_61",
+      "title": "Ensure that an S3 bucket has a lifecycle configuration",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.log_bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 339,
+      "end_line": 342
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_144",
+      "title": "Ensure that S3 bucket has cross-region replication enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.log_bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 339,
+      "end_line": 342
+    }
+  ],
+  "target_count": 23,
+  "resolved_count": 11,
+  "introduced_count": 15,
+  "unchanged_count": 12,
+  "repair_success_rate": 0.4782608695652174,
+  "regression_rate": 0.6521739130434783,
+  "net_delta": -4,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 3,
+      "introduced": 6,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 5,
+      "introduced": 3,
+      "unchanged": 5
+    },
+    "observability": {
+      "resolved": 2,
+      "introduced": 3,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 1,
+      "introduced": 3,
+      "unchanged": 7
+    }
+  },
+  "repair_cost_usd": 0.0021045,
+  "repair_tokens": 14447,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0376_nova-lite.repaired.tf",
+  "raw_response_path": "module_0376_nova-lite.raw.txt",
+  "repaired_code_sha256": "bd0bf229b8dc469b7b97d5e43b677c1ead89033be7b4dcfcb34b50a5939a68af"
+}

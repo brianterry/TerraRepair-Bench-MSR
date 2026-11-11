@@ -1,0 +1,206 @@
+
+
+```hcl
+data "aws_caller_identity" "current" {}
+data "aws_region" "current" {}
+data "aws_partition" "current" {}
+
+provider "aws" {
+  alias  = "eu-west-2"
+  region = "eu-west-2"
+}
+
+resource "aws_s3_bucket" "acm-pca" {
+  bucket_prefix = "acm"
+  lifecycle {
+    prevent_destroy = true
+  }
+  logging {
+    target_bucket = local.core_logging_bucket_arns["s3-access-logs"]
+    target_prefix = "acm-pca/"
+  }
+  tags = merge(local.tags, { Name = "acm-pca" })
+}
+
+resource "aws_cloudwatch_log_group" "external_inspection" {
+  name              = "external-inspection-flow-logs"
+  retention_in_days = 365
+  kms_key_id        = aws_kms_key.environment_logging.arn
+  tags              = local.tags
+}
+
+module "stream_firewall_logs" {
+  source                     = "github.com/ministryofjustice/modernisation-platform-terraform-aws-data-firehose?ref=c350bc56f980cddededac981d1bfc8479da715e9"
+  cloudwatch_log_group_names = [module.vpc_inspection["live_data"].fw_cloudwatch_name, module.firewall_logging.cloudwatch_log_group_name]
+  destination_http_endpoint  = data.aws_ssm_parameter.cortex_xsiam_endpoint.value
+  tags                       = local.tags
+  s3_bucket_server_side_encryption_configuration = {
+    rule = {
+      apply_server_side_encryption_by_default = {
+        kms_master_key_id = data.aws_kms_key.general_shared.arn
+        sse_algorithm     = "aws:kms"
+      }
+    }
+  }
+}
+
+resource "aws_kms_key" "stream_firewall_logs" {
+  description             = "KMS key for firewall logs"
+  enable_key_rotation     = true
+  policy                  = data.aws_iam_policy_document.kms_policy.json
+}
+
+resource "aws_cloudwatch_log_group" "tgw_flowlog_group" {
+  name              = "tgw-flowlogs"
+  retention_in_days = 365
+  kms_key_id        = aws_kms_key.environment_logging.arn
+  tags              = local.tags
+}
+
+data "aws_availability_zones" "available" {
+  state = "available"
+  filter {
+    name   = "opt-in-status"
+    values = ["opt-in-not-required"]
+  }
+}
+
+resource "aws_route53_zone" "modernisation-platform" {
+  name = local.modernisation-platform-domain
+  tags = local.tags
+  dnssec_configuration {
+    signing_status = "SIGNING"
+  }
+}
+
+resource "aws_route53_zone" "application_zones" {
+  for_each = local.application-zones
+  name     = each.value
+  tags     = merge(local.tags, { Name = "${each.key}-hosted-zone" })
+  dnssec_configuration {
+    signing_status = "SIGNING"
+  }
+}
+
+resource "aws_route53_query_log" "modernisation_platform" {
+  zone_id                  = aws_route53_zone.modernisation-platform.zone_id
+  cloudwatch_log_group_arn = aws_cloudwatch_log_group.public_dns_query_logging.arn
+}
+
+resource "aws_route53_query_log" "application_zones" {
+  for_each                 = aws_route53_zone.application_zones
+  zone_id                  = each.value.zone_id
+  cloudwatch_log_group_arn = aws_cloudwatch_log_group.public_dns_query_logging.arn
+}
+
+resource "aws_ec2_transit_gateway" "transit-gateway" {
+  description                     = "Managed by Terraform"
+  amazon_side_asn                 = "64589"
+  auto_accept_shared_attachments  = "enable"
+  default_route_table_association = "disable"
+  default_route_table_propagation = "disable"
+  dns_support                     = "enable"
+  vpn_ecmp_support                = "enable"
+  tags                            = merge(local.tags, { Name = "Modernisation Platform: Transit Gateway" })
+  lifecycle { prevent_destroy = true }
+}
+
+resource "aws_kms_key" "environment_logging" {
+  description             = "environment-logging"
+  enable_key_rotation     = true
+  deletion_window_in_days = 30
+  policy                  = data.aws_iam_policy_document.environment_logging.json
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "acm-pca" {
+  bucket                = aws_s3_bucket.acm-pca.id
+  expected_bucket_owner = local.environment_management.account_ids["core-network-services-production"]
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm     = "aws:kms"
+      kms_master_key_id = aws_kms_key.acm.arn
+    }
+    bucket_key_enabled = false
+  }
+}
+
+resource "aws_cloudwatch_log_group" "public_dns_query_logging" {
+  provider          = aws.aws-us-east-1
+  name              = "/aws/route53/core-public-dns-query-logging"
+  retention_in_days = 365
+  kms_key_id        = aws_kms_key.public_dns_query_logging.arn
+  tags              = local.tags
+}
+
+resource "aws_route53_zone" "private_application_zones" {
+  for_each = local.private-application-zones
+  name     = each.value
+  vpc { vpc_id = module.vpc_inspection["live_data"].vpc_id }
+  lifecycle { ignore_changes = [vpc] }
+  tags = local.tags
+  dnssec_configuration {
+    signing_status = "SIGNING"
+  }
+}
+
+resource "aws_route53_zone" "modernisation-platform-internal" {
+  name = local.modernisation-platform-internal-domain
+  vpc { vpc_id = module.vpc_inspection["live_data"].vpc_id }
+  tags = local.tags
+  dnssec_configuration {
+    signing_status = "SIGNING"
+  }
+}
+
+resource "aws_cloudwatch_log_group" "vpn_attachments" {
+  for_each          = local.vpn_attachments
+  name              = "${replace(each.key, "_", "-")}-vpn-attachment-logs"
+  retention_in_days = 365
+  kms_key_id        = aws_kms_key.environment_logging.arn
+  tags              = local.tags
+}
+
+resource "aws_flow_log" "tgw_flowlog" {
+  depends_on                    = [aws_cloudwatch_log_group.tgw_flowlog_group]
+  for_each                      = merge(data.aws_ec2_transit_gateway_vpc_attachment.transit_gateway_all, data.aws_ec2_transit_gateway_peering_attachment.transit_gateway_production)
+  iam_role_arn                  = aws_iam_role.vpc_flow_log.arn
+  log_destination               = aws_cloudwatch_log_group.tgw_flowlog_group.arn
+  log_destination_type          = "cloud-watch-logs"
+  traffic_type                  = "ALL"
+  max_aggregation_interval      = "60"
+  transit_gateway_attachment_id = each.value["id"]
+  tags                          = local.tags
+}
+
+resource "aws_kms_key" "public_dns_query_logging" {
+  provider            = aws.aws-us-east-1
+  description         = "KMS key for encrypting public DNS query logging CloudWatch log group"
+  enable_key_rotation = true
+  policy              = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid    = "Allow administration of the key"
+        Effect = "Allow"
+        Principal = { AWS = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root" }
+        Action   = "kms:*"
+        Resource = "*"
+      },
+      {
+        Sid    = "Allow CloudWatch Logs to use the key"
+        Effect = "Allow"
+        Principal = { Service = "logs.us-east-1.amazonaws.com" }
+        Action = [
+          "kms:Encrypt",
+          "kms:Decrypt",
+          "kms:ReEncrypt*",
+          "kms:GenerateDataKey*",
+          "kms:DescribeKey"
+        ]
+        Resource = "*"
+        Condition = { StringEquals = { "kms:EncryptionContext:aws:logs:arn" = "arn:aws:logs:us-east-1:${local.environment_management.account_ids["core-network-services-production"]}:log-group:/aws/route53/core-public-dns-query-logging" } }
+      }
+    ]
+  })
+}
+```

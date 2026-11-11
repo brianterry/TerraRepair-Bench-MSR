@@ -1,0 +1,131 @@
+{
+  "module_id": "module_0441",
+  "model_id": "nova-pro",
+  "findings_before": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "this",
+      "resource_type": "this",
+      "file_path": "/context.tf",
+      "start_line": 23,
+      "end_line": 46
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "guardduty",
+      "resource_type": "guardduty",
+      "file_path": "/main.tf",
+      "start_line": 32,
+      "end_line": 46
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "account_map",
+      "resource_type": "account_map",
+      "file_path": "/remote-state.tf",
+      "start_line": 1,
+      "end_line": 12
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "guardduty_delegated_detector",
+      "resource_type": "guardduty_delegated_detector",
+      "file_path": "/remote-state.tf",
+      "start_line": 14,
+      "end_line": 27
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "this",
+      "resource_type": "this",
+      "file_path": "/main.tf",
+      "start_line": 1,
+      "end_line": 24
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "guardduty",
+      "resource_type": "guardduty",
+      "file_path": "/main.tf",
+      "start_line": 275,
+      "end_line": 289
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "account_map",
+      "resource_type": "account_map",
+      "file_path": "/main.tf",
+      "start_line": 395,
+      "end_line": 406
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "guardduty_delegated_detector",
+      "resource_type": "guardduty_delegated_detector",
+      "file_path": "/main.tf",
+      "start_line": 408,
+      "end_line": 419
+    }
+  ],
+  "target_count": 4,
+  "resolved_count": 0,
+  "introduced_count": 0,
+  "unchanged_count": 4,
+  "repair_success_rate": 0.0,
+  "regression_rate": 0.0,
+  "net_delta": 0,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 4
+    }
+  },
+  "repair_cost_usd": 0.01383,
+  "repair_tokens": 13830,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0441_nova-pro.repaired.tf",
+  "raw_response_path": "module_0441_nova-pro.raw.txt",
+  "repaired_code_sha256": "16fb670514982d44c12882e13793337be12ce6978986fd8114929c1dadb34105"
+}

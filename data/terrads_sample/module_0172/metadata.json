@@ -1,0 +1,119 @@
+{
+  "findings_count": 19,
+  "findings": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_290",
+      "title": "",
+      "resource_name": "aws_iam_policy.fleet_role"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_355",
+      "title": "",
+      "resource_name": "aws_iam_policy.fleet_role"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_79",
+      "title": "",
+      "resource_name": "aws_launch_template.master"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_88",
+      "title": "",
+      "resource_name": "aws_launch_template.master"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_79",
+      "title": "",
+      "resource_name": "aws_instance.master"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_88",
+      "title": "",
+      "resource_name": "aws_instance.master"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_126",
+      "title": "",
+      "resource_name": "aws_instance.master"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_135",
+      "title": "",
+      "resource_name": "aws_instance.master"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_79",
+      "title": "",
+      "resource_name": "aws_launch_template.worker"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_88",
+      "title": "",
+      "resource_name": "aws_launch_template.worker"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_79",
+      "title": "",
+      "resource_name": "aws_instance.worker"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_88",
+      "title": "",
+      "resource_name": "aws_instance.worker"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_126",
+      "title": "",
+      "resource_name": "aws_instance.worker"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_135",
+      "title": "",
+      "resource_name": "aws_instance.worker"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_290",
+      "title": "",
+      "resource_name": "aws_iam_policy.server"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_355",
+      "title": "",
+      "resource_name": "aws_iam_policy.server"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "",
+      "resource_name": "aws_security_group.servers"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_382",
+      "title": "",
+      "resource_name": "aws_security_group.servers"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_19",
+      "title": "",
+      "resource_name": "aws_eip.master"
+    }
+  ]
+}

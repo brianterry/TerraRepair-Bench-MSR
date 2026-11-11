@@ -1,0 +1,417 @@
+{
+  "module_id": "module_0212",
+  "model_id": "deepseek-v3-2",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0345",
+      "title": "Disallow unrestricted S3 IAM Policies",
+      "severity": "HIGH",
+      "resource_name": "data.aws_iam_policy_document.eks_resources_permission_boundary_doc",
+      "resource_type": "data",
+      "file_path": "boundary_eks_resources.tf",
+      "start_line": 30,
+      "end_line": 132
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0342",
+      "title": "IAM Pass Role Filtering",
+      "severity": "MEDIUM",
+      "resource_name": "data.aws_iam_policy_document.eks_apply",
+      "resource_type": "data",
+      "file_path": "policy_apply.tf",
+      "start_line": 28,
+      "end_line": 187
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_111",
+      "title": "Ensure IAM policies does not allow write access without constraints",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.eks_resources_permission_boundary_doc",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/boundary_eks_resources.tf",
+      "start_line": 30,
+      "end_line": 132
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_356",
+      "title": "Ensure no IAM policies documents allow \"*\" as a statement's resource for restrictable actions",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.eks_resources_permission_boundary_doc",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/boundary_eks_resources.tf",
+      "start_line": 30,
+      "end_line": 132
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_109",
+      "title": "Ensure IAM policies does not allow permissions management / resource exposure without constraints",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.eks_resources_permission_boundary_doc",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/boundary_eks_resources.tf",
+      "start_line": 30,
+      "end_line": 132
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_108",
+      "title": "Ensure IAM policies does not allow data exfiltration",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.eks_resources_permission_boundary_doc",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/boundary_eks_resources.tf",
+      "start_line": 30,
+      "end_line": 132
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_110",
+      "title": "Ensure IAM policies does not allow privilege escalation",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.eks_resources_permission_boundary_doc",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/boundary_eks_resources.tf",
+      "start_line": 30,
+      "end_line": 132
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_107",
+      "title": "Ensure IAM policies does not allow credentials exposure",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.eks_resources_permission_boundary_doc",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/boundary_eks_resources.tf",
+      "start_line": 30,
+      "end_line": 132
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_111",
+      "title": "Ensure IAM policies does not allow write access without constraints",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.eks_apply",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/policy_apply.tf",
+      "start_line": 28,
+      "end_line": 187
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_356",
+      "title": "Ensure no IAM policies documents allow \"*\" as a statement's resource for restrictable actions",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.eks_apply",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/policy_apply.tf",
+      "start_line": 28,
+      "end_line": 187
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_109",
+      "title": "Ensure IAM policies does not allow permissions management / resource exposure without constraints",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.eks_apply",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/policy_apply.tf",
+      "start_line": 28,
+      "end_line": 187
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_110",
+      "title": "Ensure IAM policies does not allow privilege escalation",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.eks_apply",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/policy_apply.tf",
+      "start_line": 28,
+      "end_line": 187
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_107",
+      "title": "Ensure IAM policies does not allow credentials exposure",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.eks_apply",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/policy_apply.tf",
+      "start_line": 28,
+      "end_line": 187
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_111",
+      "title": "Ensure IAM policies does not allow write access without constraints",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.eks_destroy",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/policy_destroy.tf",
+      "start_line": 24,
+      "end_line": 93
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_356",
+      "title": "Ensure no IAM policies documents allow \"*\" as a statement's resource for restrictable actions",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.eks_destroy",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/policy_destroy.tf",
+      "start_line": 24,
+      "end_line": 93
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_109",
+      "title": "Ensure IAM policies does not allow permissions management / resource exposure without constraints",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.eks_destroy",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/policy_destroy.tf",
+      "start_line": 24,
+      "end_line": 93
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_356",
+      "title": "Ensure no IAM policies documents allow \"*\" as a statement's resource for restrictable actions",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.eks_plan",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/policy_plan.tf",
+      "start_line": 24,
+      "end_line": 103
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_108",
+      "title": "Ensure IAM policies does not allow data exfiltration",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.eks_plan",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/policy_plan.tf",
+      "start_line": 24,
+      "end_line": 103
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_40",
+      "title": "Ensure AWS IAM policy does not allow full IAM privileges",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.eks_resources_permission_boundary_doc",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/boundary_eks_resources.tf",
+      "start_line": 30,
+      "end_line": 132
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0342",
+      "title": "IAM Pass Role Filtering",
+      "severity": "MEDIUM",
+      "resource_name": "data.aws_iam_policy_document.eks_apply",
+      "resource_type": "data",
+      "file_path": "main.tf",
+      "start_line": 210,
+      "end_line": 404
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_111",
+      "title": "Ensure IAM policies does not allow write access without constraints",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.eks_resources_permission_boundary_doc",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/main.tf",
+      "start_line": 13,
+      "end_line": 165
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_356",
+      "title": "Ensure no IAM policies documents allow \"*\" as a statement's resource for restrictable actions",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.eks_resources_permission_boundary_doc",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/main.tf",
+      "start_line": 13,
+      "end_line": 165
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_109",
+      "title": "Ensure IAM policies does not allow permissions management / resource exposure without constraints",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.eks_resources_permission_boundary_doc",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/main.tf",
+      "start_line": 13,
+      "end_line": 165
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_108",
+      "title": "Ensure IAM policies does not allow data exfiltration",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.eks_resources_permission_boundary_doc",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/main.tf",
+      "start_line": 13,
+      "end_line": 165
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_107",
+      "title": "Ensure IAM policies does not allow credentials exposure",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.eks_resources_permission_boundary_doc",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/main.tf",
+      "start_line": 13,
+      "end_line": 165
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_111",
+      "title": "Ensure IAM policies does not allow write access without constraints",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.eks_apply",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/main.tf",
+      "start_line": 210,
+      "end_line": 404
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_356",
+      "title": "Ensure no IAM policies documents allow \"*\" as a statement's resource for restrictable actions",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.eks_apply",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/main.tf",
+      "start_line": 210,
+      "end_line": 404
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_109",
+      "title": "Ensure IAM policies does not allow permissions management / resource exposure without constraints",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.eks_apply",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/main.tf",
+      "start_line": 210,
+      "end_line": 404
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_107",
+      "title": "Ensure IAM policies does not allow credentials exposure",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.eks_apply",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/main.tf",
+      "start_line": 210,
+      "end_line": 404
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_111",
+      "title": "Ensure IAM policies does not allow write access without constraints",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.eks_destroy",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/main.tf",
+      "start_line": 413,
+      "end_line": 505
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_356",
+      "title": "Ensure no IAM policies documents allow \"*\" as a statement's resource for restrictable actions",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.eks_destroy",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/main.tf",
+      "start_line": 413,
+      "end_line": 505
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_109",
+      "title": "Ensure IAM policies does not allow permissions management / resource exposure without constraints",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.eks_destroy",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/main.tf",
+      "start_line": 413,
+      "end_line": 505
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_356",
+      "title": "Ensure no IAM policies documents allow \"*\" as a statement's resource for restrictable actions",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.eks_plan",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/main.tf",
+      "start_line": 514,
+      "end_line": 601
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_108",
+      "title": "Ensure IAM policies does not allow data exfiltration",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.eks_plan",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/main.tf",
+      "start_line": 514,
+      "end_line": 601
+    }
+  ],
+  "target_count": 19,
+  "resolved_count": 4,
+  "introduced_count": 0,
+  "unchanged_count": 15,
+  "repair_success_rate": 0.21052631578947367,
+  "regression_rate": 0.0,
+  "net_delta": 4,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 4,
+      "introduced": 0,
+      "unchanged": 15
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    }
+  },
+  "repair_cost_usd": 0.015440100000000002,
+  "repair_tokens": 11329,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0212_deepseek-v3-2.repaired.tf",
+  "raw_response_path": "module_0212_deepseek-v3-2.raw.txt",
+  "repaired_code_sha256": "8c32fcec7843bab2ff501be31124613bded9a8edeeb71528e770448cc33a87b3"
+}

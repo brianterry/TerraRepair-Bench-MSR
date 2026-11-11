@@ -1,0 +1,59 @@
+{
+  "findings_count": 9,
+  "findings": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_79",
+      "title": "",
+      "resource_name": "aws_instance.this"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_126",
+      "title": "",
+      "resource_name": "aws_instance.this"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_135",
+      "title": "",
+      "resource_name": "aws_instance.this"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "",
+      "resource_name": "aws_security_group.this"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "",
+      "resource_name": "aws_security_group_rule.outgoing_any"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_382",
+      "title": "",
+      "resource_name": "aws_security_group_rule.outgoing_any"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_24",
+      "title": "",
+      "resource_name": "aws_security_group_rule.incoming_ssh"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "",
+      "resource_name": "aws_security_group_rule.incoming_ssh"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_41",
+      "title": "",
+      "resource_name": "aws_instance.this"
+    }
+  ]
+}

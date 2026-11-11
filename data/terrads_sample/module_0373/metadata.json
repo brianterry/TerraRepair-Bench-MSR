@@ -1,0 +1,89 @@
+{
+  "findings_count": 14,
+  "findings": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "ebs_csi_driver_irsa"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "eks_blueprints_addons"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "karpenter"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "eks_data_addons"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "flink_irsa_jobs"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "flink_irsa_operator"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "s3_bucket"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_338",
+      "title": "",
+      "resource_name": "aws_cloudwatch_log_group.flink_team_a"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_158",
+      "title": "",
+      "resource_name": "aws_cloudwatch_log_group.flink_team_a"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_108",
+      "title": "",
+      "resource_name": "aws_iam_policy_document.flink_sample_job"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_111",
+      "title": "",
+      "resource_name": "aws_iam_policy_document.flink_sample_job"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_356",
+      "title": "",
+      "resource_name": "aws_iam_policy_document.flink_sample_job"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "eks"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "vpc"
+    }
+  ]
+}

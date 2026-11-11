@@ -1,0 +1,175 @@
+{
+  "module_id": "module_0195",
+  "model_id": "nova-lite",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0065",
+      "title": "A KMS key is not configured to auto-rotate.",
+      "severity": "MEDIUM",
+      "resource_name": "aws_kms_key.this",
+      "resource_type": "aws_kms_key",
+      "file_path": "main.tf",
+      "start_line": 395,
+      "end_line": 396
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0178",
+      "title": "VPC Flow Logs is a feature that enables you to capture information about the IP traffic going to and from network interfaces in your VPC. After you've created a flow log, you can view and retrieve its data in Amazon CloudWatch Logs. It is recommended that VPC Flow Logs be enabled for packet \"Rejects\" for VPCs.",
+      "severity": "MEDIUM",
+      "resource_name": "module.vpc",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/vpc/aws/main.tf",
+      "start_line": 28,
+      "end_line": 53
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_394",
+      "title": "Ensure aws_availability_zones data source pins zone identity so its result set does not silently expand when AWS adds an Availability Zone",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_availability_zones.available",
+      "resource_type": "aws_availability_zones",
+      "file_path": "/main.tf",
+      "start_line": 5,
+      "end_line": 5
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_7",
+      "title": "Ensure rotation for customer created CMKs is enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_kms_key.this",
+      "resource_type": "aws_kms_key",
+      "file_path": "/main.tf",
+      "start_line": 395,
+      "end_line": 396
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "vpc",
+      "resource_type": "vpc",
+      "file_path": "/main.tf",
+      "start_line": 356,
+      "end_line": 368
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "security_group",
+      "resource_type": "security_group",
+      "file_path": "/main.tf",
+      "start_line": 376,
+      "end_line": 388
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_64",
+      "title": "Ensure KMS key Policy is defined",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_kms_key.this",
+      "resource_type": "aws_kms_key",
+      "file_path": "/main.tf",
+      "start_line": 395,
+      "end_line": 396
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_394",
+      "title": "Ensure aws_availability_zones data source pins zone identity so its result set does not silently expand when AWS adds an Availability Zone",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_availability_zones.available",
+      "resource_type": "aws_availability_zones",
+      "file_path": "/main.tf",
+      "start_line": 5,
+      "end_line": 8
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "vpc",
+      "resource_type": "vpc",
+      "file_path": "/main.tf",
+      "start_line": 359,
+      "end_line": 372
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_2",
+      "title": "Ensure Terraform module sources use a tag with a version number",
+      "severity": "UNKNOWN",
+      "resource_name": "vpc",
+      "resource_type": "vpc",
+      "file_path": "/main.tf",
+      "start_line": 359,
+      "end_line": 372
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "security_group",
+      "resource_type": "security_group",
+      "file_path": "/main.tf",
+      "start_line": 380,
+      "end_line": 391
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_2",
+      "title": "Ensure Terraform module sources use a tag with a version number",
+      "severity": "UNKNOWN",
+      "resource_name": "security_group",
+      "resource_type": "security_group",
+      "file_path": "/main.tf",
+      "start_line": 380,
+      "end_line": 391
+    }
+  ],
+  "target_count": 7,
+  "resolved_count": 4,
+  "introduced_count": 2,
+  "unchanged_count": 3,
+  "repair_success_rate": 0.5714285714285714,
+  "regression_rate": 0.2857142857142857,
+  "net_delta": 2,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 1,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 1,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 1,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 1,
+      "introduced": 2,
+      "unchanged": 3
+    }
+  },
+  "repair_cost_usd": 0.0019212,
+  "repair_tokens": 12982,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0195_nova-lite.repaired.tf",
+  "raw_response_path": "module_0195_nova-lite.raw.txt",
+  "repaired_code_sha256": "f573a79cf7d844415d9cf205e45883c70f54b8194c5b98117879559c81d29db4"
+}

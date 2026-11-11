@@ -1,0 +1,219 @@
+{
+  "module_id": "module_0430",
+  "model_id": "nova-pro",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0017",
+      "title": "CloudWatch log groups should be encrypted using CMK",
+      "severity": "LOW",
+      "resource_name": "aws_cloudwatch_log_group.cloudtrail_cloudwatch_logs[0]",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "cloudtrail-cloudwatch-logs.tf",
+      "start_line": 62,
+      "end_line": 67
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_356",
+      "title": "Ensure no IAM policies documents allow \"*\" as a statement's resource for restrictable actions",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.cloudtrail_cloudwatch_logs",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/cloudtrail-cloudwatch-logs.tf",
+      "start_line": 15,
+      "end_line": 37
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_158",
+      "title": "Ensure that CloudWatch Log Group is encrypted by KMS",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.cloudtrail_cloudwatch_logs",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/cloudtrail-cloudwatch-logs.tf",
+      "start_line": 62,
+      "end_line": 67
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_111",
+      "title": "Ensure IAM policies does not allow write access without constraints",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.kms_key_cloudtrail",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/cloudtrail-kms-key.tf",
+      "start_line": 26,
+      "end_line": 100
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_356",
+      "title": "Ensure no IAM policies documents allow \"*\" as a statement's resource for restrictable actions",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.kms_key_cloudtrail",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/cloudtrail-kms-key.tf",
+      "start_line": 26,
+      "end_line": 100
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_109",
+      "title": "Ensure IAM policies does not allow permissions management / resource exposure without constraints",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.kms_key_cloudtrail",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/cloudtrail-kms-key.tf",
+      "start_line": 26,
+      "end_line": 100
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "kms_key_cloudtrail",
+      "resource_type": "kms_key_cloudtrail",
+      "file_path": "/cloudtrail-kms-key.tf",
+      "start_line": 6,
+      "end_line": 16
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "this",
+      "resource_type": "this",
+      "file_path": "/context.tf",
+      "start_line": 23,
+      "end_line": 46
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "cloudtrail",
+      "resource_type": "cloudtrail",
+      "file_path": "/main.tf",
+      "start_line": 5,
+      "end_line": 20
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "cloudtrail_bucket",
+      "resource_type": "cloudtrail_bucket",
+      "file_path": "/remote-state.tf",
+      "start_line": 1,
+      "end_line": 10
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "account_map",
+      "resource_type": "account_map",
+      "file_path": "/remote-state.tf",
+      "start_line": 12,
+      "end_line": 22
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "kms_key_cloudtrail",
+      "resource_type": "kms_key_cloudtrail",
+      "file_path": "/main.tf",
+      "start_line": 75,
+      "end_line": 85
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "this",
+      "resource_type": "this",
+      "file_path": "/main.tf",
+      "start_line": 184,
+      "end_line": 207
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "cloudtrail",
+      "resource_type": "cloudtrail",
+      "file_path": "/main.tf",
+      "start_line": 213,
+      "end_line": 228
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "cloudtrail_bucket",
+      "resource_type": "cloudtrail_bucket",
+      "file_path": "/main.tf",
+      "start_line": 283,
+      "end_line": 292
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "account_map",
+      "resource_type": "account_map",
+      "file_path": "/main.tf",
+      "start_line": 294,
+      "end_line": 304
+    }
+  ],
+  "target_count": 11,
+  "resolved_count": 6,
+  "introduced_count": 0,
+  "unchanged_count": 5,
+  "repair_success_rate": 0.5454545454545454,
+  "regression_rate": 0.0,
+  "net_delta": 6,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 4,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 2,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 5
+    }
+  },
+  "repair_cost_usd": 0.010091,
+  "repair_tokens": 10091,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0430_nova-pro.repaired.tf",
+  "raw_response_path": "module_0430_nova-pro.raw.txt",
+  "repaired_code_sha256": "f7958233e30a989b61c827bfc1b09a41feeff53348c516cac114d0bf043b9526"
+}

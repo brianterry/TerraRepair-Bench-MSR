@@ -1,0 +1,95 @@
+{
+  "findings_count": 15,
+  "findings": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "",
+      "resource_name": "aws_security_group.client"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_382",
+      "title": "",
+      "resource_name": "aws_security_group.client"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_79",
+      "title": "",
+      "resource_name": "aws_instance.client"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_126",
+      "title": "",
+      "resource_name": "aws_instance.client"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_135",
+      "title": "",
+      "resource_name": "aws_instance.client"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_8",
+      "title": "",
+      "resource_name": "aws_instance.client"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_130",
+      "title": "",
+      "resource_name": "aws_subnet.public_us_east_1a"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_130",
+      "title": "",
+      "resource_name": "aws_subnet.public_us_east_1b"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_39",
+      "title": "",
+      "resource_name": "aws_eks_cluster.demo"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_58",
+      "title": "",
+      "resource_name": "aws_eks_cluster.demo"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_339",
+      "title": "",
+      "resource_name": "aws_eks_cluster.demo"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_38",
+      "title": "",
+      "resource_name": "aws_eks_cluster.demo"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_37",
+      "title": "",
+      "resource_name": "aws_eks_cluster.demo"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_12",
+      "title": "",
+      "resource_name": "aws_vpc.main"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_11",
+      "title": "",
+      "resource_name": "aws_vpc.main"
+    }
+  ]
+}

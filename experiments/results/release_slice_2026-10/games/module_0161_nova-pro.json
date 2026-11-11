@@ -1,0 +1,120 @@
+{
+  "module_id": "module_0161",
+  "model_id": "nova-pro",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0178",
+      "title": "VPC Flow Logs is a feature that enables you to capture information about the IP traffic going to and from network interfaces in your VPC. After you've created a flow log, you can view and retrieve its data in Amazon CloudWatch Logs. It is recommended that VPC Flow Logs be enabled for packet \"Rejects\" for VPCs.",
+      "severity": "MEDIUM",
+      "resource_name": "module.vpc",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/vpc/aws/main.tf",
+      "start_line": 28,
+      "end_line": 53
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "vpc",
+      "resource_type": "vpc",
+      "file_path": "/main.tf",
+      "start_line": 100,
+      "end_line": 115
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "security_group",
+      "resource_type": "security_group",
+      "file_path": "/main.tf",
+      "start_line": 117,
+      "end_line": 137
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_394",
+      "title": "Ensure aws_availability_zones data source pins zone identity so its result set does not silently expand when AWS adds an Availability Zone",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_availability_zones.available",
+      "resource_type": "aws_availability_zones",
+      "file_path": "/main.tf",
+      "start_line": 5,
+      "end_line": 5
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_394",
+      "title": "Ensure aws_availability_zones data source pins zone identity so its result set does not silently expand when AWS adds an Availability Zone",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_availability_zones.available",
+      "resource_type": "aws_availability_zones",
+      "file_path": "/main.tf",
+      "start_line": 5,
+      "end_line": 8
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "vpc",
+      "resource_type": "vpc",
+      "file_path": "/main.tf",
+      "start_line": 89,
+      "end_line": 105
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "security_group",
+      "resource_type": "security_group",
+      "file_path": "/main.tf",
+      "start_line": 107,
+      "end_line": 126
+    }
+  ],
+  "target_count": 4,
+  "resolved_count": 1,
+  "introduced_count": 0,
+  "unchanged_count": 3,
+  "repair_success_rate": 0.25,
+  "regression_rate": 0.0,
+  "net_delta": 1,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 1,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 3
+    }
+  },
+  "repair_cost_usd": 0.004333,
+  "repair_tokens": 4333,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0161_nova-pro.repaired.tf",
+  "raw_response_path": "module_0161_nova-pro.raw.txt",
+  "repaired_code_sha256": "ef124f150e8d4aa32f078467fc995024680eca43a9824a699116052504016e16"
+}

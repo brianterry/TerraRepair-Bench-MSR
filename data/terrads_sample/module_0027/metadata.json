@@ -1,0 +1,77 @@
+{
+  "findings_count": 12,
+  "findings": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_150",
+      "title": "",
+      "resource_name": "aws_lb.example"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_91",
+      "title": "",
+      "resource_name": "aws_lb.example"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_131",
+      "title": "",
+      "resource_name": "aws_lb.example"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_2",
+      "title": "",
+      "resource_name": "aws_lb_listener.http"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "",
+      "resource_name": "aws_security_group.alb"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_260",
+      "title": "",
+      "resource_name": "aws_security_group_rule.allow_http_inbound"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "",
+      "resource_name": "aws_security_group_rule.allow_http_inbound"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "",
+      "resource_name": "aws_security_group_rule.allow_all_outbound"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_382",
+      "title": "",
+      "resource_name": "aws_security_group_rule.allow_all_outbound"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_20",
+      "title": "",
+      "resource_name": "aws_lb.example"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_103",
+      "title": "",
+      "resource_name": "aws_lb_listener.http"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_28",
+      "title": "",
+      "resource_name": "aws_lb.example"
+    }
+  ]
+}

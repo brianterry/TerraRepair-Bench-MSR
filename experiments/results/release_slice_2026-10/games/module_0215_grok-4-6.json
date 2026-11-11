@@ -1,0 +1,229 @@
+{
+  "module_id": "module_0215",
+  "model_id": "grok-4-6",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0038",
+      "title": "EKS Clusters should have cluster control plane logging turned on",
+      "severity": "MEDIUM",
+      "resource_name": "module.eks",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/eks/aws/main.tf",
+      "start_line": 35,
+      "end_line": 188
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0040",
+      "title": "EKS Clusters should have the public access disabled",
+      "severity": "CRITICAL",
+      "resource_name": "module.eks",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/eks/aws/main.tf",
+      "start_line": 70,
+      "end_line": 70
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0041",
+      "title": "EKS cluster should not have open CIDR range for public access",
+      "severity": "CRITICAL",
+      "resource_name": "module.eks",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/eks/aws/main.tf",
+      "start_line": 71,
+      "end_line": 71
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0342",
+      "title": "IAM Pass Role Filtering",
+      "severity": "MEDIUM",
+      "resource_name": "module.karpenter",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/eks/aws/modules/karpenter/terraform-aws-modules/eks/aws/modules/karpenter/modules/karpenter/main.tf",
+      "start_line": 85,
+      "end_line": 89
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "module.eks",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/eks/aws/node_groups.tf",
+      "start_line": 247,
+      "end_line": 247
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0164",
+      "title": "Instances in a subnet should not receive a public IP address by default.",
+      "severity": "HIGH",
+      "resource_name": "module.vpc",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/vpc/aws/main.tf",
+      "start_line": 143,
+      "end_line": 143
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0178",
+      "title": "VPC Flow Logs is a feature that enables you to capture information about the IP traffic going to and from network interfaces in your VPC. After you've created a flow log, you can view and retrieve its data in Amazon CloudWatch Logs. It is recommended that VPC Flow Logs be enabled for packet \"Rejects\" for VPCs.",
+      "severity": "MEDIUM",
+      "resource_name": "module.vpc",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/vpc/aws/main.tf",
+      "start_line": 28,
+      "end_line": 51
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_394",
+      "title": "Ensure aws_availability_zones data source pins zone identity so its result set does not silently expand when AWS adds an Availability Zone",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_availability_zones.available",
+      "resource_type": "aws_availability_zones",
+      "file_path": "/data.tf",
+      "start_line": 19,
+      "end_line": 19
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "eks",
+      "resource_type": "eks",
+      "file_path": "/eks.tf",
+      "start_line": 21,
+      "end_line": 131
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "vpc_cni_irsa",
+      "resource_type": "vpc_cni_irsa",
+      "file_path": "/irsa.tf",
+      "start_line": 22,
+      "end_line": 40
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "ebs_csi_irsa",
+      "resource_type": "ebs_csi_irsa",
+      "file_path": "/irsa.tf",
+      "start_line": 43,
+      "end_line": 59
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_load_balancer_controller_irsa",
+      "resource_type": "aws_load_balancer_controller_irsa",
+      "file_path": "/irsa.tf",
+      "start_line": 62,
+      "end_line": 78
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "secrets_manager_irsa",
+      "resource_type": "secrets_manager_irsa",
+      "file_path": "/irsa.tf",
+      "start_line": 82,
+      "end_line": 101
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "karpenter",
+      "resource_type": "karpenter",
+      "file_path": "/karpenter.tf",
+      "start_line": 17,
+      "end_line": 38
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_356",
+      "title": "Ensure no IAM policies documents allow \"*\" as a statement's resource for restrictable actions",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.secretsmanager_read",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/secrets_manager.tf",
+      "start_line": 17,
+      "end_line": 28
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_108",
+      "title": "Ensure IAM policies does not allow data exfiltration",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.secretsmanager_read",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/secrets_manager.tf",
+      "start_line": 17,
+      "end_line": 28
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "vpc",
+      "resource_type": "vpc",
+      "file_path": "/vpc.tf",
+      "start_line": 24,
+      "end_line": 77
+    }
+  ],
+  "findings_after": [],
+  "target_count": 17,
+  "resolved_count": 17,
+  "introduced_count": 0,
+  "unchanged_count": 0,
+  "repair_success_rate": 1.0,
+  "regression_rate": 0.0,
+  "net_delta": 17,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 7,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 2,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 8,
+      "introduced": 0,
+      "unchanged": 0
+    }
+  },
+  "repair_cost_usd": 0.24404399999999998,
+  "repair_tokens": 47294,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0215_grok-4-6.repaired.tf",
+  "raw_response_path": "module_0215_grok-4-6.raw.txt",
+  "repaired_code_sha256": "33cf6cdd324f99fade96a47e55a64422270c61dd0e8cd65d771cc394812e5917"
+}

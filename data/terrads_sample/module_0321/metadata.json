@@ -1,0 +1,47 @@
+{
+  "findings_count": 7,
+  "findings": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_127",
+      "title": "",
+      "resource_name": "aws_elb.vault"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_92",
+      "title": "",
+      "resource_name": "aws_elb.vault"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_376",
+      "title": "",
+      "resource_name": "aws_elb.vault"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "",
+      "resource_name": "aws_security_group_rule.allow_inbound_api"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "",
+      "resource_name": "aws_security_group_rule.allow_all_outbound"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_382",
+      "title": "",
+      "resource_name": "aws_security_group_rule.allow_all_outbound"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_15",
+      "title": "",
+      "resource_name": "aws_autoscaling_attachment.vault"
+    }
+  ]
+}

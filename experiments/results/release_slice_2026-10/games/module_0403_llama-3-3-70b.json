@@ -1,0 +1,131 @@
+{
+  "module_id": "module_0403",
+  "model_id": "llama-3-3-70b",
+  "findings_before": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "label",
+      "resource_type": "label",
+      "file_path": "/main.tf",
+      "start_line": 1,
+      "end_line": 7
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "kops_metadata",
+      "resource_type": "kops_metadata",
+      "file_path": "/main.tf",
+      "start_line": 9,
+      "end_line": 12
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_34",
+      "title": "AWS SSM Parameter should be Encrypted",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_ssm_parameter.aws_metrics_iam_role",
+      "resource_type": "aws_ssm_parameter",
+      "file_path": "/main.tf",
+      "start_line": 117,
+      "end_line": 123
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_34",
+      "title": "AWS SSM Parameter should be Encrypted",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_ssm_parameter.aws_metrics_iam_namespace[0]",
+      "resource_type": "aws_ssm_parameter",
+      "file_path": "/main.tf",
+      "start_line": 125,
+      "end_line": 132
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_337",
+      "title": "Ensure SSM parameters are using KMS CMK",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_ssm_parameter.aws_metrics_iam_role",
+      "resource_type": "aws_ssm_parameter",
+      "file_path": "/main.tf",
+      "start_line": 114,
+      "end_line": 120
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_337",
+      "title": "Ensure SSM parameters are using KMS CMK",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_ssm_parameter.aws_metrics_iam_namespace[0]",
+      "resource_type": "aws_ssm_parameter",
+      "file_path": "/main.tf",
+      "start_line": 122,
+      "end_line": 129
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "label",
+      "resource_type": "label",
+      "file_path": "/main.tf",
+      "start_line": 1,
+      "end_line": 7
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "kops_metadata",
+      "resource_type": "kops_metadata",
+      "file_path": "/main.tf",
+      "start_line": 9,
+      "end_line": 12
+    }
+  ],
+  "target_count": 4,
+  "resolved_count": 2,
+  "introduced_count": 2,
+  "unchanged_count": 2,
+  "repair_success_rate": 0.5,
+  "regression_rate": 0.5,
+  "net_delta": 0,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 2,
+      "introduced": 2,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 2
+    }
+  },
+  "repair_cost_usd": 0.0026656,
+  "repair_tokens": 3332,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0403_llama-3-3-70b.repaired.tf",
+  "raw_response_path": "module_0403_llama-3-3-70b.raw.txt",
+  "repaired_code_sha256": "8dd314b4644b2d0c571a98467dfad81b5266a300d13b38f32759d53d342cf7e8"
+}

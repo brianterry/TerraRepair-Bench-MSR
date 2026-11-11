@@ -1,0 +1,306 @@
+# ...
+
+module "imagebuilder_log_bucket" {
+  source = "github.com/ministryofjustice/modernisation-platform-terraform-s3-bucket?ref=9facf9fc8f8b8e3f93ffbda822028534b9a75399" # v9.0.0
+
+  providers = {
+    aws.bucket-replication = aws.bucket-replication
+  }
+
+  bucket_prefix       = "ec2-image-builder-logs-"
+  versioning_enabled  = true
+  server_side_encryption_configuration = {
+    rule = {
+      apply_server_side_encryption_by_default = {
+        sse_algorithm = "AES256"
+      }
+    }
+  }
+  replication_enabled = false
+  logging_enabled     = true
+
+  lifecycle_rule = [
+    {
+      id      = "main"
+      enabled = "Enabled"
+      prefix  = ""
+      tags    = {}
+      transition = [
+        {
+          days          = 90
+          storage_class = "STANDARD_IA"
+          }, {
+          days          = 365
+          storage_class = "GLACIER"
+        }
+      ]
+      expiration = {
+        days = 730
+      }
+      noncurrent_version_transition = [
+        {
+          days          = 90
+          storage_class = "STANDARD_IA"
+          }, {
+          days          = 365
+          storage_class = "GLACIER"
+        }
+      ]
+      noncurrent_version_expiration = {
+        days = 730
+      }
+    }
+  ]
+
+  tags = local.tags
+}
+
+# ...
+
+module "laa-shared-bucket" {
+  source = "github.com/ministryofjustice/modernisation-platform-terraform-s3-bucket?ref=9facf9fc8f8b8e3f93ffbda822028534b9a75399" # v9.0.0
+
+  providers = {
+    aws.bucket-replication = aws.bucket-replication
+  }
+
+  bucket_prefix       = "modernisation-platform-laa-shared"
+  bucket_policy       = [data.aws_iam_policy_document.laa_shared_bucket_policy.json]
+  versioning_enabled  = true
+  server_side_encryption_configuration = {
+    rule = {
+      apply_server_side_encryption_by_default = {
+        sse_algorithm = "AES256"
+      }
+    }
+  }
+  replication_enabled = false
+  logging_enabled     = true
+
+  lifecycle_rule = [
+    {
+      id      = "main"
+      enabled = "Enabled"
+      prefix  = ""
+
+      tags = {
+        rule      = "log"
+        autoclean = "true"
+      }
+
+      transition = [
+        {
+          days          = 90
+          storage_class = "STANDARD_IA"
+          }, {
+          days          = 365
+          storage_class = "GLACIER"
+        }
+      ]
+
+      noncurrent_version_transition = [
+        {
+          days          = 90
+          storage_class = "STANDARD_IA"
+          }, {
+          days          = 365
+          storage_class = "GLACIER"
+        }
+      ]
+
+      noncurrent_version_expiration = {
+        days = 730
+      }
+    }
+  ]
+
+  tags = local.tags
+}
+
+# ...
+
+module "s3-bucket" {
+  source = "github.com/ministryofjustice/modernisation-platform-terraform-s3-bucket?ref=9facf9fc8f8b8e3f93ffbda822028534b9a75399" # v9.0.0
+
+  providers = {
+    aws.bucket-replication = aws.bucket-replication
+  }
+
+  bucket_prefix       = "mod-platform-image-artefact-bucket"
+  bucket_policy       = [data.aws_iam_policy_document.bucket_policy.json]
+  versioning_enabled  = true
+  server_side_encryption_configuration = {
+    rule = {
+      apply_server_side_encryption_by_default = {
+        sse_algorithm = "AES256"
+      }
+    }
+  }
+  replication_enabled = false
+  logging_enabled     = true
+
+  lifecycle_rule = [
+    {
+      id      = "main"
+      enabled = "Enabled"
+      prefix  = ""
+
+      tags = {
+        rule      = "log"
+        autoclean = "true"
+      }
+
+      transition = [
+        {
+          days          = 90
+          storage_class = "STANDARD_IA"
+        }
+      ]
+
+      noncurrent_version_transition = [
+        {
+          days          = 90
+          storage_class = "STANDARD_IA"
+          }, {
+          days          = 365
+          storage_class = "GLACIER"
+        }
+      ]
+
+      noncurrent_version_expiration = {
+        days = 730
+      }
+    }
+  ]
+
+  tags = local.tags
+}
+
+# ...
+
+module "s3-software-bucket" {
+  source = "github.com/ministryofjustice/modernisation-platform-terraform-s3-bucket?ref=9facf9fc8f8b8e3f93ffbda822028534b9a75399" # v9.0.0
+
+  providers = {
+    aws.bucket-replication = aws.bucket-replication
+  }
+
+  bucket_prefix       = "modernisation-platform-software"
+  bucket_policy       = [data.aws_iam_policy_document.software_bucket_policy.json]
+  versioning_enabled  = true
+  server_side_encryption_configuration = {
+    rule = {
+      apply_server_side_encryption_by_default = {
+        sse_algorithm = "AES256"
+      }
+    }
+  }
+  replication_enabled = false
+  logging_enabled     = true
+
+  lifecycle_rule = [
+    {
+      id      = "main"
+      enabled = "Enabled"
+      prefix  = ""
+
+      tags = {
+        rule      = "log"
+        autoclean = "true"
+      }
+
+      transition = [
+        {
+          days          = 90
+          storage_class = "STANDARD_IA"
+          }, {
+          days          = 365
+          storage_class = "GLACIER"
+        }
+      ]
+
+      noncurrent_version_transition = [
+        {
+          days          = 90
+          storage_class = "STANDARD_IA"
+          }, {
+          days          = 365
+          storage_class = "GLACIER"
+        }
+      ]
+
+      noncurrent_version_expiration = {
+        days = 730
+      }
+    }
+  ]
+
+  tags = local.tags
+}
+
+# ...
+
+resource "aws_instance" "ad_fixngo" {
+  for_each = local.ad_fixngo.aws_instances
+
+  ami                    = data.aws_ami.ad_fixngo[each.value.ami_name].id
+  availability_zone      = each.value.availability_zone
+  ebs_optimized          = true
+  iam_instance_profile   = aws_iam_instance_profile.ad_fixngo[each.key].name
+  instance_type          = each.value.instance_type
+  key_name               = aws_key_pair.ad_fixngo[each.value.key_name].key_name
+  private_ip             = each.value.private_ip
+  subnet_id              = each.value.subnet_id
+  user_data_base64       = base64encode(file("./files/ad-fixngo-ec2-user-data.yaml"))
+  vpc_security_group_ids = [aws_security_group.ad_fixngo[each.value.vpc_security_group_name].id]
+
+  # remove all ephemeral block devices
+  dynamic "ephemeral_block_device" {
+    for_each = {
+      for key, value in data.aws_ami.ad_fixngo[each.value.ami_name].block_device_mappings :
+      key.device_name => value if key.device_name != data.aws_ami.ad_fixngo[each.value.ami_name].root_device_name
+    }
+    content {
+      device_name = ephemeral_block_device.value.device_name
+      no_device   = true
+    }
+  }
+
+  metadata_options {
+    http_endpoint = "enabled"
+    http_tokens   = "required"
+  }
+
+  root_block_device {
+    encrypted   = true
+    kms_key_id  = module.kms["hmpps"].key_arns["ebs"] # need to specify arn rather than id
+    volume_size = 127
+    volume_type = "gp3"
+
+    tags = merge(local.ad_fixngo.tags, each.value.tags, {
+      backup = "false" # exclude the ebs volume from backup as it gets backed up as part of the EC2 anyway
+      Name   = join("-", [each.key, "root", data.aws_ami.ad_fixngo[each.value.ami_name].root_device_name])
+    })
+  }
+
+  lifecycle {
+    ignore_changes = [
+      user_data,        # Prevent changes to user_data from destroying existing EC2s
+      ebs_block_device, # Otherwise EC2 will be refreshed each time
+    ]
+  }
+
+  monitoring = true
+
+  tags = merge(local.ad_fixngo.tags, each.value.tags, {
+    Name = each.key
+  })
+}
+
+# ...
+
+data "aws_availability_zones" "available" {
+  state = "available"
+}
+
+# ...

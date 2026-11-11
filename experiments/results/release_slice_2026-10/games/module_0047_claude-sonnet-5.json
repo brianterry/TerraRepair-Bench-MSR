@@ -1,0 +1,153 @@
+{
+  "module_id": "module_0047",
+  "model_id": "claude-sonnet-5",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0178",
+      "title": "VPC Flow Logs is a feature that enables you to capture information about the IP traffic going to and from network interfaces in your VPC. After you've created a flow log, you can view and retrieve its data in Amazon CloudWatch Logs. It is recommended that VPC Flow Logs be enabled for packet \"Rejects\" for VPCs.",
+      "severity": "MEDIUM",
+      "resource_name": "aws_vpc.example",
+      "resource_type": "aws_vpc",
+      "file_path": "main.tf",
+      "start_line": 40,
+      "end_line": 46
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_234",
+      "title": "Verify logging preference for ACM certificates",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_acm_certificate.private_domain_cert",
+      "resource_type": "aws_acm_certificate",
+      "file_path": "/pca.tf",
+      "start_line": 52,
+      "end_line": 67
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_233",
+      "title": "Ensure Create before destroy for ACM certificates",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_acm_certificate.private_domain_cert",
+      "resource_type": "aws_acm_certificate",
+      "file_path": "/pca.tf",
+      "start_line": 52,
+      "end_line": 67
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_12",
+      "title": "Ensure the default security group of every VPC restricts all traffic",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_vpc.example",
+      "resource_type": "aws_vpc",
+      "file_path": "/main.tf",
+      "start_line": 40,
+      "end_line": 46
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_11",
+      "title": "Ensure VPC flow logging is enabled in all VPCs",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_vpc.example",
+      "resource_type": "aws_vpc",
+      "file_path": "/main.tf",
+      "start_line": 40,
+      "end_line": 46
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0017",
+      "title": "CloudWatch log groups should be encrypted using CMK",
+      "severity": "LOW",
+      "resource_name": "aws_cloudwatch_log_group.flow_log",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "main.tf",
+      "start_line": 52,
+      "end_line": 55
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_158",
+      "title": "Ensure that CloudWatch Log Group is encrypted by KMS",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.flow_log",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/main.tf",
+      "start_line": 52,
+      "end_line": 55
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_338",
+      "title": "Ensure CloudWatch log groups retains logs for at least 1 year",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.flow_log",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/main.tf",
+      "start_line": 52,
+      "end_line": 55
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_290",
+      "title": "Ensure IAM policies does not allow write access without constraints",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_role_policy.flow_log",
+      "resource_type": "aws_iam_role_policy",
+      "file_path": "/main.tf",
+      "start_line": 72,
+      "end_line": 90
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_355",
+      "title": "Ensure no IAM policies documents allow \"*\" as a statement's resource for restrictable actions",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_role_policy.flow_log",
+      "resource_type": "aws_iam_role_policy",
+      "file_path": "/main.tf",
+      "start_line": 72,
+      "end_line": 90
+    }
+  ],
+  "target_count": 5,
+  "resolved_count": 5,
+  "introduced_count": 5,
+  "unchanged_count": 0,
+  "repair_success_rate": 1.0,
+  "regression_rate": 1.0,
+  "net_delta": 0,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 0,
+      "introduced": 2,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 2,
+      "introduced": 2,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 2,
+      "introduced": 1,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 1,
+      "introduced": 0,
+      "unchanged": 0
+    }
+  },
+  "repair_cost_usd": 0.045576000000000005,
+  "repair_tokens": 6868,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0047_claude-sonnet-5.repaired.tf",
+  "raw_response_path": "module_0047_claude-sonnet-5.raw.txt",
+  "repaired_code_sha256": "016da19caa2376a5a19f07868106e8ab99475f0aa1b74060db1e986f8a9de4a3"
+}

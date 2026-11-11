@@ -1,0 +1,318 @@
+```hcl
+# ----------------------------------------------------------------------------------------------------------------------
+# REQUIRE A SPECIFIC TERRAFORM VERSION OR HIGHER
+# ----------------------------------------------------------------------------------------------------------------------
+terraform {
+  # This module is now only being tested with Terraform 1.0.x. However, to make upgrading easier, we are setting
+  # 0.12.26 as the minimum version, as that version added support for required_providers with source URLs, making it
+  # forwards compatible with 1.0.x code.
+  required_version = ">= 0.12.26"
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
+# CREATE THE ELB
+# ---------------------------------------------------------------------------------------------------------------------
+
+resource "aws_elb" "vault" {
+  name = var.name
+
+  internal                    = var.internal
+  cross_zone_load_balancing   = var.cross_zone_load_balancing
+  idle_timeout                = var.idle_timeout
+  connection_draining        = var.connection_draining
+  connection_draining_timeout = var.connection_draining_timeout
+
+  security_groups = [aws_security_group.vault.id]
+  subnets         = var.subnet_ids
+
+  # optional access_logs creation  
+  dynamic "access_logs" {
+    for_each = var.access_logs == null ? [] : ["once"]
+
+    content {
+      enabled       = lookup(access_logs.value, "enabled", lookup(access_logs.value, "bucket", null))
+      bucket        = lookup(access_logs.value, "bucket", null)
+      bucket_prefix = lookup(access_logs.value, "bucket_prefix", null)
+      interval      = lookup(access_logs.value, "interval", null)
+    }
+  }
+
+  # Enable access logging
+  access_logs {
+    enabled = true
+    bucket  = var.access_logs.bucket
+    prefix  = var.access_logs.bucket_prefix
+    interval = var.access_logs.interval
+  }
+
+  # Run the ELB in HTTPS passthrough mode
+  listener {
+    lb_port           = var.lb_port
+    lb_protocol       = "HTTPS"
+    instance_port     = var.vault_api_port
+    instance_protocol = "TCP"
+    ssl_certificate_id = var.ssl_certificate_id
+  }
+
+  health_check {
+    target              = "${var.health_check_protocol}:${var.health_check_port == 0 ? var.vault_api_port : var.health_check_port}${var.health_check_path}"
+    interval            = var.health_check_interval
+    healthy_threshold   = var.health_check_healthy_threshold
+    unhealthy_threshold = var.health_check_unhealthy_threshold
+    timeout             = var.health_check_timeout
+  }
+
+  tags = merge(
+    var.load_balancer_tags,
+    {
+      "Name" = var.name
+    },
+  )
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
+# ATTACH THE ELB TO THE VAULT ASG
+# ---------------------------------------------------------------------------------------------------------------------
+
+resource "aws_autoscaling_attachment" "vault" {
+  autoscaling_group_name = var.vault_asg_name
+  elb                    = aws_elb.vault.id
+
+  health_check {
+    protocol = "HTTPS"
+    port     = "traffic-port"
+    timeout  = 5
+    interval = 30
+    healthy_threshold = 2
+    unhealthy_threshold = 2
+  }
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
+# CREATE THE SECURITY GROUP THAT CONTROLS WHAT TRAFFIC CAN GO IN AND OUT OF THE ELB
+# ---------------------------------------------------------------------------------------------------------------------
+
+resource "aws_security_group" "vault" {
+  name        = "${var.name}-elb"
+  description = "Security group for the ${var.name} ELB"
+  vpc_id      = var.vpc_id
+
+  tags = var.security_group_tags
+}
+
+resource "aws_security_group_rule" "allow_inbound_api" {
+  type        = "ingress"
+  from_port   = var.lb_port
+  to_port     = var.lb_port
+  protocol    = "tcp"
+  cidr_blocks = var.allowed_inbound_cidr_blocks
+
+  security_group_id = aws_security_group.vault.id
+  description       = "Allow inbound API traffic from specified CIDR blocks"
+}
+
+resource "aws_security_group_rule" "allow_all_outbound" {
+  type        = "egress"
+  from_port   = 0
+  to_port     = 0
+  protocol    = "-1"
+  cidr_blocks = ["0.0.0.0/0"]
+
+  security_group_id = aws_security_group.vault.id
+  description       = "Allow all outbound traffic"
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
+# OPTIONALLY CREATE A ROUTE 53 ENTRY FOR THE ELB
+# ---------------------------------------------------------------------------------------------------------------------
+
+resource "aws_route53_record" "vault_elb" {
+  count = var.create_dns_entry ? 1 : 0
+
+  zone_id = var.hosted_zone_id
+  name    = var.domain_name
+  type    = "A"
+
+  alias {
+    name    = aws_elb.vault.dns_name
+    zone_id = aws_elb.vault.zone_id
+
+    # When set to true, if either none of the ELB's EC2 instances are healthy or the ELB itself is unhealthy,
+    # Route 53 routes queries to "other resources." But since we haven't defined any other resources, we'd rather
+    # avoid any latency due to switchovers and just wait for the ELB and Vault instances to come back online.
+    # For more info, see http://docs.aws.amazon.com/Route53/latest/DeveloperGuide/resource-record-sets-values-alias.html#rrsets-values-alias-evaluate-target-health
+    evaluate_target_health = false
+  }
+}
+
+
+output "load_balancer_name" {
+  value = aws_elb.vault.name
+}
+
+output "load_balancer_dns_name" {
+  value = aws_elb.vault.dns_name
+}
+
+output "load_balancer_zone_id" {
+  value = aws_elb.vault.zone_id
+}
+
+output "load_balancer_security_group_id" {
+  value = aws_security_group.vault.id
+}
+
+output "fully_qualified_domain_name" {
+  value = element(concat(aws_route53_record.vault_elb.*.fqdn, [""]), 0)
+}
+
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# REQUIRED PARAMETERS
+# You must provide a value for each of these parameters.
+# ---------------------------------------------------------------------------------------------------------------------
+
+variable "name" {
+  description = "The name to use for the ELB and all other resources in this module."
+}
+
+variable "vpc_id" {
+  description = "The ID of the VPC into which the ELB should be deployed."
+}
+
+variable "allowed_inbound_cidr_blocks" {
+  description = "A list of CIDR-formatted IP address ranges from which the ELB will accept requests."
+  type        = list(string)
+}
+
+variable "vault_asg_name" {
+  description = "Name of the Vault Autoscaling Group"
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
+# OPTIONAL PARAMETERS
+# These parameters have reasonable defaults.
+# ---------------------------------------------------------------------------------------------------------------------
+
+# Due to terraform type limitations this variable is set to be any.
+# In reality it is a map of mixed parameters, some of them are booleans, some ints.
+#  access_logs = {
+#    enabled       = true             # optional
+#    bucket        = "s3_bucket_name" # mandatory
+#    bucket_prefix = "alb"            # optional
+#    interval      = 60               # optional
+#  }
+variable "access_logs" {
+  description = "If specified, enables access logging for the ELB. This variable should be set to a map with the same keys and values as in the access_log block of the aws_elb resource (https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/elb), including bucket, bucket_prefix, interval, and enabled."
+  type        = any
+  default     = null
+}
+
+variable "subnet_ids" {
+  description = "The subnet IDs into which the ELB should be deployed. You will typically want to deploy the ELB into public subnets so your Vault cluster can run in private subnets."
+  type        = list(string)
+  default     = []
+}
+
+variable "create_dns_entry" {
+  description = "If set to true, this module will create a Route 53 DNS A record for the ELB in the var.hosted_zone_id hosted zone with the domain name in var.domain_name."
+  default     = false
+}
+
+variable "hosted_zone_id" {
+  description = "The Route 53 hosted zone ID in which to create a DNS A record. Only used if var.create_dns_entry is true."
+  default     = "replace-me"
+}
+
+variable "domain_name" {
+  description = "The domain name to use in the DNS A record for the ELB (e.g. vault.example.com). Only used if var.create_dns_entry is true."
+  default     = "replace-me"
+}
+
+variable "lb_port" {
+  description = "The port the load balancer should listen on for API requests."
+  default     = 443
+}
+
+variable "vault_api_port" {
+  description = "The port to listen on for API requests."
+  default     = 8200
+}
+
+variable "internal" {
+  description = "If set to true, this will be an internal ELB, accessible only within the VPC. The main reason to use an ELB with Vault is to make it publicly accessible, so this should typically be set to false."
+  default     = false
+}
+
+variable "cross_zone_load_balancing" {
+  description = "Set to true to enable cross-zone load balancing"
+  default     = true
+}
+
+variable "idle_timeout" {
+  description = "The time, in seconds, that the connection is allowed to be idle."
+  default     = 60
+}
+
+variable "connection_draining" {
+  description = "Set to true to enable connection draining."
+  default     = true
+}
+
+variable "connection_draining_timeout" {
+  description = "The time, in seconds, to allow for connections to drain."
+  default     = 300
+}
+
+variable "health_check_protocol" {
+  description = "The protocol to use for health checks. Must be one of: HTTP, HTTPS, TCP, SSL."
+  default     = "HTTPS"
+}
+
+variable "health_check_path" {
+  description = "The path to use for health checks. Must return a 200 OK when the service is ready to receive requests from the ELB."
+  default     = "/v1/sys/health?standbyok=true"
+}
+
+variable "health_check_port" {
+  description = "The port to use for health checks if not vault_api_port."
+  default     = 0
+}
+
+variable "health_check_interval" {
+  description = "The amount of time, in seconds, between health checks."
+  default     = 15
+}
+
+variable "health_check_healthy_threshold" {
+  description = "The number of health checks that must pass before the instance is declared healthy."
+  default     = 2
+}
+
+variable "health_check_unhealthy_threshold" {
+  description = "The number of health checks that must fail before the instance is declared unhealthy."
+  default     = 2
+}
+
+variable "health_check_timeout" {
+  description = "The amount of time, in seconds, before a health check times out."
+  default     = 5
+}
+
+variable "load_balancer_tags" {
+  description = "Tags to be applied to the ELB."
+  default     = {}
+}
+
+variable "security_group_tags" {
+  description = "Tags to be applied to the ELB security group."
+  type        = map(string)
+  default     = {}
+}
+
+variable "ssl_certificate_id" {
+  description = "The ARN of the SSL certificate to use for the ELB."
+  default     = null
+}
+```

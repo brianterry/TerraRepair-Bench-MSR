@@ -1,0 +1,141 @@
+{
+  "module_id": "module_0032",
+  "model_id": "kimi-k2-5",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0008",
+      "title": "Launch configuration with unencrypted block device.",
+      "severity": "HIGH",
+      "resource_name": "aws_launch_configuration.example",
+      "resource_type": "aws_launch_configuration",
+      "file_path": "main.tf",
+      "start_line": 12,
+      "end_line": 22
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0099",
+      "title": "Missing description for security group.",
+      "severity": "LOW",
+      "resource_name": "aws_security_group.instance",
+      "resource_type": "aws_security_group",
+      "file_path": "main.tf",
+      "start_line": 87,
+      "end_line": 89
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0124",
+      "title": "Missing description for security group rule.",
+      "severity": "LOW",
+      "resource_name": "aws_security_group_rule.allow_server_http_inbound",
+      "resource_type": "aws_security_group_rule",
+      "file_path": "main.tf",
+      "start_line": 91,
+      "end_line": 99
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0130",
+      "title": "aws_instance should activate session tokens for Instance Metadata Service.",
+      "severity": "HIGH",
+      "resource_name": "aws_launch_configuration.example",
+      "resource_type": "aws_launch_configuration",
+      "file_path": "main.tf",
+      "start_line": 12,
+      "end_line": 22
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_79",
+      "title": "Ensure Instance Metadata Service Version 1 is not enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_launch_configuration.example",
+      "resource_type": "aws_launch_configuration",
+      "file_path": "/main.tf",
+      "start_line": 12,
+      "end_line": 22
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_8",
+      "title": "Ensure all data stored in the Launch configuration or instance Elastic Blocks Store is securely encrypted",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_launch_configuration.example",
+      "resource_type": "aws_launch_configuration",
+      "file_path": "/main.tf",
+      "start_line": 12,
+      "end_line": 22
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_315",
+      "title": "Ensure EC2 Auto Scaling groups use EC2 launch templates",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_autoscaling_group.example",
+      "resource_type": "aws_autoscaling_group",
+      "file_path": "/main.tf",
+      "start_line": 24,
+      "end_line": 63
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "Ensure every security group and rule has a description",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group.instance",
+      "resource_type": "aws_security_group",
+      "file_path": "/main.tf",
+      "start_line": 87,
+      "end_line": 89
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "Ensure every security group and rule has a description",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group_rule.allow_server_http_inbound",
+      "resource_type": "aws_security_group_rule",
+      "file_path": "/main.tf",
+      "start_line": 91,
+      "end_line": 99
+    }
+  ],
+  "findings_after": [],
+  "target_count": 9,
+  "resolved_count": 9,
+  "introduced_count": 0,
+  "unchanged_count": 0,
+  "repair_success_rate": 1.0,
+  "regression_rate": 0.0,
+  "net_delta": 9,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 3,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 6,
+      "introduced": 0,
+      "unchanged": 0
+    }
+  },
+  "repair_cost_usd": 0.00554,
+  "repair_tokens": 3888,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0032_kimi-k2-5.repaired.tf",
+  "raw_response_path": "module_0032_kimi-k2-5.raw.txt",
+  "repaired_code_sha256": "1c98b4d05a20248219a53911baa11bd71515d48d36d2c3e2fab694f8134c1ab5"
+}

@@ -1,0 +1,263 @@
+{
+  "module_id": "module_0044",
+  "model_id": "qwen3-32b",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0038",
+      "title": "EKS Clusters should have cluster control plane logging turned on",
+      "severity": "MEDIUM",
+      "resource_name": "module.eks",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/eks/aws/main.tf",
+      "start_line": 35,
+      "end_line": 188
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0040",
+      "title": "EKS Clusters should have the public access disabled",
+      "severity": "CRITICAL",
+      "resource_name": "module.eks",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/eks/aws/main.tf",
+      "start_line": 70,
+      "end_line": 70
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0041",
+      "title": "EKS cluster should not have open CIDR range for public access",
+      "severity": "CRITICAL",
+      "resource_name": "module.eks",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/eks/aws/main.tf",
+      "start_line": 71,
+      "end_line": 71
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "module.eks",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/eks/aws/node_groups.tf",
+      "start_line": 247,
+      "end_line": 247
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0178",
+      "title": "VPC Flow Logs is a feature that enables you to capture information about the IP traffic going to and from network interfaces in your VPC. After you've created a flow log, you can view and retrieve its data in Amazon CloudWatch Logs. It is recommended that VPC Flow Logs be enabled for packet \"Rejects\" for VPCs.",
+      "severity": "MEDIUM",
+      "resource_name": "module.vpc",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/vpc/aws/main.tf",
+      "start_line": 28,
+      "end_line": 51
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_394",
+      "title": "Ensure aws_availability_zones data source pins zone identity so its result set does not silently expand when AWS adds an Availability Zone",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_availability_zones.available",
+      "resource_type": "aws_availability_zones",
+      "file_path": "/main.tf",
+      "start_line": 33,
+      "end_line": 39
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "eks",
+      "resource_type": "eks",
+      "file_path": "/main.tf",
+      "start_line": 59,
+      "end_line": 85
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "eks_blueprints_addons",
+      "resource_type": "eks_blueprints_addons",
+      "file_path": "/main.tf",
+      "start_line": 91,
+      "end_line": 127
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "vpc",
+      "resource_type": "vpc",
+      "file_path": "/main.tf",
+      "start_line": 241,
+      "end_line": 264
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0017",
+      "title": "CloudWatch log groups should be encrypted using CMK",
+      "severity": "LOW",
+      "resource_name": "aws_cloudwatch_log_group.vpc_flow_logs",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "main.tf",
+      "start_line": 297,
+      "end_line": 299
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0038",
+      "title": "EKS Clusters should have cluster control plane logging turned on",
+      "severity": "MEDIUM",
+      "resource_name": "module.eks",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/eks/aws/main.tf",
+      "start_line": 27,
+      "end_line": 105
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "module.eks",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/eks/aws/node_groups.tf",
+      "start_line": 247,
+      "end_line": 247
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0178",
+      "title": "VPC Flow Logs is a feature that enables you to capture information about the IP traffic going to and from network interfaces in your VPC. After you've created a flow log, you can view and retrieve its data in Amazon CloudWatch Logs. It is recommended that VPC Flow Logs be enabled for packet \"Rejects\" for VPCs.",
+      "severity": "MEDIUM",
+      "resource_name": "module.vpc",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/vpc/aws/main.tf",
+      "start_line": 29,
+      "end_line": 52
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_394",
+      "title": "Ensure aws_availability_zones data source pins zone identity so its result set does not silently expand when AWS adds an Availability Zone",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_availability_zones.available",
+      "resource_type": "aws_availability_zones",
+      "file_path": "/main.tf",
+      "start_line": 33,
+      "end_line": 42
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_66",
+      "title": "Ensure that CloudWatch Log Group specifies retention days",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.vpc_flow_logs",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/main.tf",
+      "start_line": 297,
+      "end_line": 299
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_158",
+      "title": "Ensure that CloudWatch Log Group is encrypted by KMS",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.vpc_flow_logs",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/main.tf",
+      "start_line": 297,
+      "end_line": 299
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_338",
+      "title": "Ensure CloudWatch log groups retains logs for at least 1 year",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.vpc_flow_logs",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/main.tf",
+      "start_line": 297,
+      "end_line": 299
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "eks",
+      "resource_type": "eks",
+      "file_path": "/main.tf",
+      "start_line": 62,
+      "end_line": 110
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "eks_blueprints_addons",
+      "resource_type": "eks_blueprints_addons",
+      "file_path": "/main.tf",
+      "start_line": 116,
+      "end_line": 152
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "vpc",
+      "resource_type": "vpc",
+      "file_path": "/main.tf",
+      "start_line": 266,
+      "end_line": 295
+    }
+  ],
+  "target_count": 9,
+  "resolved_count": 2,
+  "introduced_count": 4,
+  "unchanged_count": 7,
+  "repair_success_rate": 0.2222222222222222,
+  "regression_rate": 0.4444444444444444,
+  "net_delta": -2,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 2,
+      "introduced": 0,
+      "unchanged": 1
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 2,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 2,
+      "unchanged": 2
+    },
+    "other": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 4
+    }
+  },
+  "repair_cost_usd": 0.0020464000000000003,
+  "repair_tokens": 5116,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0044_qwen3-32b.repaired.tf",
+  "raw_response_path": "module_0044_qwen3-32b.raw.txt",
+  "repaired_code_sha256": "6e963788a96314faaec05661675c139d465c076d25bd81ec628e35c580596349"
+}

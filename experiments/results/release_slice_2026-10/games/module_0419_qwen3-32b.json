@@ -1,0 +1,263 @@
+{
+  "module_id": "module_0419",
+  "model_id": "qwen3-32b",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0017",
+      "title": "CloudWatch log groups should be encrypted using CMK",
+      "severity": "LOW",
+      "resource_name": "module.api_gateway_rest_api",
+      "resource_type": "module",
+      "file_path": "cloudposse/api-gateway/aws/cloudposse/cloudwatch-logs/aws/main.tf",
+      "start_line": 20,
+      "end_line": 20
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0001",
+      "title": "API Gateway stages for V1 and V2 should have access logging enabled",
+      "severity": "MEDIUM",
+      "resource_name": "module.api_gateway_rest_api",
+      "resource_type": "module",
+      "file_path": "cloudposse/api-gateway/aws/main.tf",
+      "start_line": 52,
+      "end_line": 72
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0190",
+      "title": "Ensure that response caching is enabled for your Amazon API Gateway REST APIs.",
+      "severity": "LOW",
+      "resource_name": "module.api_gateway_rest_api",
+      "resource_type": "module",
+      "file_path": "cloudposse/api-gateway/aws/main.tf",
+      "start_line": 75,
+      "end_line": 85
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0005",
+      "title": "API Gateway domain name uses outdated SSL/TLS protocols.",
+      "severity": "HIGH",
+      "resource_name": "aws_api_gateway_domain_name.this[0]",
+      "resource_type": "aws_api_gateway_domain_name",
+      "file_path": "main.tf",
+      "start_line": 41,
+      "end_line": 51
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "this",
+      "resource_type": "this",
+      "file_path": "/context.tf",
+      "start_line": 23,
+      "end_line": 46
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "api_gateway_rest_api",
+      "resource_type": "api_gateway_rest_api",
+      "file_path": "/main.tf",
+      "start_line": 11,
+      "end_line": 27
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_206",
+      "title": "Ensure API Gateway Domain uses a modern security Policy",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_api_gateway_domain_name.this",
+      "resource_type": "aws_api_gateway_domain_name",
+      "file_path": "/main.tf",
+      "start_line": 41,
+      "end_line": 51
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "nlb",
+      "resource_type": "nlb",
+      "file_path": "/nlb.tf",
+      "start_line": 1,
+      "end_line": 23
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "dns_delegated",
+      "resource_type": "dns_delegated",
+      "file_path": "/remote-state.tf",
+      "start_line": 1,
+      "end_line": 9
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "acm",
+      "resource_type": "acm",
+      "file_path": "/remote-state.tf",
+      "start_line": 11,
+      "end_line": 23
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "vpc",
+      "resource_type": "vpc",
+      "file_path": "/remote-state.tf",
+      "start_line": 25,
+      "end_line": 32
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0017",
+      "title": "CloudWatch log groups should be encrypted using CMK",
+      "severity": "LOW",
+      "resource_name": "module.api_gateway_rest_api",
+      "resource_type": "module",
+      "file_path": "cloudposse/api-gateway/aws/cloudposse/cloudwatch-logs/aws/main.tf",
+      "start_line": 20,
+      "end_line": 20
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0001",
+      "title": "API Gateway stages for V1 and V2 should have access logging enabled",
+      "severity": "MEDIUM",
+      "resource_name": "module.api_gateway_rest_api",
+      "resource_type": "module",
+      "file_path": "cloudposse/api-gateway/aws/main.tf",
+      "start_line": 52,
+      "end_line": 72
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0190",
+      "title": "Ensure that response caching is enabled for your Amazon API Gateway REST APIs.",
+      "severity": "LOW",
+      "resource_name": "module.api_gateway_rest_api",
+      "resource_type": "module",
+      "file_path": "cloudposse/api-gateway/aws/main.tf",
+      "start_line": 75,
+      "end_line": 85
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "this",
+      "resource_type": "this",
+      "file_path": "/main.tf",
+      "start_line": 23,
+      "end_line": 46
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "api_gateway_rest_api",
+      "resource_type": "api_gateway_rest_api",
+      "file_path": "/main.tf",
+      "start_line": 292,
+      "end_line": 311
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "nlb",
+      "resource_type": "nlb",
+      "file_path": "/main.tf",
+      "start_line": 365,
+      "end_line": 387
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "dns_delegated",
+      "resource_type": "dns_delegated",
+      "file_path": "/main.tf",
+      "start_line": 453,
+      "end_line": 461
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "acm",
+      "resource_type": "acm",
+      "file_path": "/main.tf",
+      "start_line": 463,
+      "end_line": 475
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "vpc",
+      "resource_type": "vpc",
+      "file_path": "/main.tf",
+      "start_line": 477,
+      "end_line": 484
+    }
+  ],
+  "target_count": 11,
+  "resolved_count": 2,
+  "introduced_count": 0,
+  "unchanged_count": 9,
+  "repair_success_rate": 0.18181818181818182,
+  "regression_rate": 0.0,
+  "net_delta": 2,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 1,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 1,
+      "introduced": 0,
+      "unchanged": 1
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 1
+    },
+    "other": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 7
+    }
+  },
+  "repair_cost_usd": 0.0043744000000000005,
+  "repair_tokens": 10936,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0419_qwen3-32b.repaired.tf",
+  "raw_response_path": "module_0419_qwen3-32b.raw.txt",
+  "repaired_code_sha256": "65d9b6dc9cc2663c3d161ada644c36665f0ee0ab275f12cce46e3044740a323a"
+}

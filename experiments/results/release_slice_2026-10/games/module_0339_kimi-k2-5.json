@@ -1,0 +1,131 @@
+{
+  "module_id": "module_0339",
+  "model_id": "kimi-k2-5",
+  "findings_before": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_37",
+      "title": "Ensure CodeCommit associates an approval rule",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_codecommit_repository.global_customizations",
+      "resource_type": "aws_codecommit_repository",
+      "file_path": "/codecommit.tf",
+      "start_line": 4,
+      "end_line": 9
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_37",
+      "title": "Ensure CodeCommit associates an approval rule",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_codecommit_repository.account_customizations",
+      "resource_type": "aws_codecommit_repository",
+      "file_path": "/codecommit.tf",
+      "start_line": 11,
+      "end_line": 16
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_37",
+      "title": "Ensure CodeCommit associates an approval rule",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_codecommit_repository.account_request",
+      "resource_type": "aws_codecommit_repository",
+      "file_path": "/codecommit.tf",
+      "start_line": 18,
+      "end_line": 23
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_37",
+      "title": "Ensure CodeCommit associates an approval rule",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_codecommit_repository.account_provisioning_customizations",
+      "resource_type": "aws_codecommit_repository",
+      "file_path": "/codecommit.tf",
+      "start_line": 25,
+      "end_line": 30
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_257",
+      "title": "Ensure CodeCommit branch changes have at least 2 approvals",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_codecommit_approval_rule_template.global_customizations",
+      "resource_type": "aws_codecommit_approval_rule_template",
+      "file_path": "/main.tf",
+      "start_line": 146,
+      "end_line": 159
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_257",
+      "title": "Ensure CodeCommit branch changes have at least 2 approvals",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_codecommit_approval_rule_template.account_customizations",
+      "resource_type": "aws_codecommit_approval_rule_template",
+      "file_path": "/main.tf",
+      "start_line": 174,
+      "end_line": 187
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_257",
+      "title": "Ensure CodeCommit branch changes have at least 2 approvals",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_codecommit_approval_rule_template.account_request",
+      "resource_type": "aws_codecommit_approval_rule_template",
+      "file_path": "/main.tf",
+      "start_line": 202,
+      "end_line": 215
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_257",
+      "title": "Ensure CodeCommit branch changes have at least 2 approvals",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_codecommit_approval_rule_template.account_provisioning_customizations",
+      "resource_type": "aws_codecommit_approval_rule_template",
+      "file_path": "/main.tf",
+      "start_line": 230,
+      "end_line": 243
+    }
+  ],
+  "target_count": 4,
+  "resolved_count": 4,
+  "introduced_count": 4,
+  "unchanged_count": 0,
+  "repair_success_rate": 1.0,
+  "regression_rate": 1.0,
+  "net_delta": 0,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 4,
+      "introduced": 4,
+      "unchanged": 0
+    }
+  },
+  "repair_cost_usd": 0.023933700000000002,
+  "repair_tokens": 15161,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0339_kimi-k2-5.repaired.tf",
+  "raw_response_path": "module_0339_kimi-k2-5.raw.txt",
+  "repaired_code_sha256": "2bb9f923147892b49a68406e4435043e6aa66d98a732cf0852082f1c67c349ea"
+}

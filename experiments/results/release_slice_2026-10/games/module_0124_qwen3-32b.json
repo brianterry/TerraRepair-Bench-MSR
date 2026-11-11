@@ -1,0 +1,307 @@
+{
+  "module_id": "module_0124",
+  "model_id": "qwen3-32b",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0079",
+      "title": "There is no encryption specified or encryption is disabled on the RDS Cluster.",
+      "severity": "HIGH",
+      "resource_name": "aws_rds_cluster.main",
+      "resource_type": "aws_rds_cluster",
+      "file_path": "main.tf",
+      "start_line": 126,
+      "end_line": 139
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "aws_security_group.main",
+      "resource_type": "aws_security_group",
+      "file_path": "main.tf",
+      "start_line": 100,
+      "end_line": 100
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0124",
+      "title": "Missing description for security group rule.",
+      "severity": "LOW",
+      "resource_name": "aws_security_group.main",
+      "resource_type": "aws_security_group",
+      "file_path": "main.tf",
+      "start_line": 89,
+      "end_line": 94
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0133",
+      "title": "Enable Performance Insights to detect potential problems",
+      "severity": "LOW",
+      "resource_name": "aws_rds_cluster_instance.cluster_instances[0]",
+      "resource_type": "aws_rds_cluster_instance",
+      "file_path": "main.tf",
+      "start_line": 115,
+      "end_line": 124
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0343",
+      "title": "RDS Cluster Deletion Protection Disabled",
+      "severity": "MEDIUM",
+      "resource_name": "aws_rds_cluster.main",
+      "resource_type": "aws_rds_cluster",
+      "file_path": "main.tf",
+      "start_line": 126,
+      "end_line": 139
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "Ensure every security group and rule has a description",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group.main",
+      "resource_type": "aws_security_group",
+      "file_path": "/main.tf",
+      "start_line": 84,
+      "end_line": 107
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_353",
+      "title": "Ensure that RDS instances have performance insights enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_rds_cluster_instance.cluster_instances[0]",
+      "resource_type": "aws_rds_cluster_instance",
+      "file_path": "/main.tf",
+      "start_line": 115,
+      "end_line": 124
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_118",
+      "title": "Ensure that enhanced monitoring is enabled for Amazon RDS instances",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_rds_cluster_instance.cluster_instances[0]",
+      "resource_type": "aws_rds_cluster_instance",
+      "file_path": "/main.tf",
+      "start_line": 115,
+      "end_line": 124
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_226",
+      "title": "Ensure DB instance gets all minor upgrades automatically",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_rds_cluster_instance.cluster_instances[0]",
+      "resource_type": "aws_rds_cluster_instance",
+      "file_path": "/main.tf",
+      "start_line": 115,
+      "end_line": 124
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_139",
+      "title": "Ensure that RDS clusters have deletion protection enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_rds_cluster.main",
+      "resource_type": "aws_rds_cluster",
+      "file_path": "/main.tf",
+      "start_line": 126,
+      "end_line": 139
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_326",
+      "title": "Ensure that RDS Aurora Clusters have backtracking enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_rds_cluster.main",
+      "resource_type": "aws_rds_cluster",
+      "file_path": "/main.tf",
+      "start_line": 126,
+      "end_line": 139
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_324",
+      "title": "Ensure that RDS Cluster log capture is enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_rds_cluster.main",
+      "resource_type": "aws_rds_cluster",
+      "file_path": "/main.tf",
+      "start_line": 126,
+      "end_line": 139
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_313",
+      "title": "Ensure RDS cluster configured to copy tags to snapshots",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_rds_cluster.main",
+      "resource_type": "aws_rds_cluster",
+      "file_path": "/main.tf",
+      "start_line": 126,
+      "end_line": 139
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_162",
+      "title": "Ensure RDS cluster has IAM authentication enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_rds_cluster.main",
+      "resource_type": "aws_rds_cluster",
+      "file_path": "/main.tf",
+      "start_line": 126,
+      "end_line": 139
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_325",
+      "title": "Ensure that RDS Cluster audit logging is enabled for MySQL engine",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_rds_cluster.main",
+      "resource_type": "aws_rds_cluster",
+      "file_path": "/main.tf",
+      "start_line": 126,
+      "end_line": 139
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_327",
+      "title": "Ensure RDS Clusters are encrypted using KMS CMKs",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_rds_cluster.main",
+      "resource_type": "aws_rds_cluster",
+      "file_path": "/main.tf",
+      "start_line": 126,
+      "end_line": 139
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_96",
+      "title": "Ensure all data stored in Aurora is securely encrypted at rest",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_rds_cluster.main",
+      "resource_type": "aws_rds_cluster",
+      "file_path": "/main.tf",
+      "start_line": 126,
+      "end_line": 139
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_8",
+      "title": "Ensure that RDS clusters has backup plan of AWS Backup",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_rds_cluster.main",
+      "resource_type": "aws_rds_cluster",
+      "file_path": "/main.tf",
+      "start_line": 126,
+      "end_line": 139
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_354",
+      "title": "Ensure RDS Performance Insights are encrypted using KMS CMKs",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_rds_cluster_instance.cluster_instances[0]",
+      "resource_type": "aws_rds_cluster_instance",
+      "file_path": "/main.tf",
+      "start_line": 117,
+      "end_line": 129
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_324",
+      "title": "Ensure that RDS Cluster log capture is enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_rds_cluster.main",
+      "resource_type": "aws_rds_cluster",
+      "file_path": "/main.tf",
+      "start_line": 131,
+      "end_line": 157
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_162",
+      "title": "Ensure RDS cluster has IAM authentication enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_rds_cluster.main",
+      "resource_type": "aws_rds_cluster",
+      "file_path": "/main.tf",
+      "start_line": 131,
+      "end_line": 157
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_325",
+      "title": "Ensure that RDS Cluster audit logging is enabled for MySQL engine",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_rds_cluster.main",
+      "resource_type": "aws_rds_cluster",
+      "file_path": "/main.tf",
+      "start_line": 131,
+      "end_line": 157
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_327",
+      "title": "Ensure RDS Clusters are encrypted using KMS CMKs",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_rds_cluster.main",
+      "resource_type": "aws_rds_cluster",
+      "file_path": "/main.tf",
+      "start_line": 131,
+      "end_line": 157
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_8",
+      "title": "Ensure that RDS clusters has backup plan of AWS Backup",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_rds_cluster.main",
+      "resource_type": "aws_rds_cluster",
+      "file_path": "/main.tf",
+      "start_line": 131,
+      "end_line": 157
+    }
+  ],
+  "target_count": 18,
+  "resolved_count": 13,
+  "introduced_count": 1,
+  "unchanged_count": 5,
+  "repair_success_rate": 0.7222222222222222,
+  "regression_rate": 0.05555555555555555,
+  "net_delta": 12,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 1,
+      "introduced": 0,
+      "unchanged": 1
+    },
+    "data_protection": {
+      "resolved": 3,
+      "introduced": 1,
+      "unchanged": 2
+    },
+    "observability": {
+      "resolved": 3,
+      "introduced": 0,
+      "unchanged": 2
+    },
+    "other": {
+      "resolved": 6,
+      "introduced": 0,
+      "unchanged": 0
+    }
+  },
+  "repair_cost_usd": 0.0013480000000000002,
+  "repair_tokens": 3370,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0124_qwen3-32b.repaired.tf",
+  "raw_response_path": "module_0124_qwen3-32b.raw.txt",
+  "repaired_code_sha256": "25303efa85564dea9835629aa307a8f19fcc02f37b3b080a88a1ba4766a8ba5c"
+}

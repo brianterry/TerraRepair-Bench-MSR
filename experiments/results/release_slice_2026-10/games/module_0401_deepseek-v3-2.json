@@ -1,0 +1,219 @@
+{
+  "module_id": "module_0401",
+  "model_id": "deepseek-v3-2",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0178",
+      "title": "VPC Flow Logs is a feature that enables you to capture information about the IP traffic going to and from network interfaces in your VPC. After you've created a flow log, you can view and retrieve its data in Amazon CloudWatch Logs. It is recommended that VPC Flow Logs be enabled for packet \"Rejects\" for VPCs.",
+      "severity": "MEDIUM",
+      "resource_name": "module.vpc",
+      "resource_type": "module",
+      "file_path": "cloudposse/vpc/aws/main.tf",
+      "start_line": 48,
+      "end_line": 68
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "this",
+      "resource_type": "this",
+      "file_path": "/context.tf",
+      "start_line": 23,
+      "end_line": 46
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "label",
+      "resource_type": "label",
+      "file_path": "/main.tf",
+      "start_line": 5,
+      "end_line": 12
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "vpc",
+      "resource_type": "vpc",
+      "file_path": "/main.tf",
+      "start_line": 66,
+      "end_line": 74
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "subnets",
+      "resource_type": "subnets",
+      "file_path": "/main.tf",
+      "start_line": 76,
+      "end_line": 95
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "eks_node_group",
+      "resource_type": "eks_node_group",
+      "file_path": "/main.tf",
+      "start_line": 139,
+      "end_line": 157
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "vpc_cni_eks_iam_role",
+      "resource_type": "vpc_cni_eks_iam_role",
+      "file_path": "/vpc-cni.tf",
+      "start_line": 48,
+      "end_line": 62
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_111",
+      "title": "Ensure IAM policies does not allow write access without constraints",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.vpc_cni_ipv6",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/vpc-cni.tf",
+      "start_line": 15,
+      "end_line": 39
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_356",
+      "title": "Ensure no IAM policies documents allow \"*\" as a statement's resource for restrictable actions",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.vpc_cni_ipv6",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/vpc-cni.tf",
+      "start_line": 15,
+      "end_line": 39
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0178",
+      "title": "VPC Flow Logs is a feature that enables you to capture information about the IP traffic going to and from network interfaces in your VPC. After you've created a flow log, you can view and retrieve its data in Amazon CloudWatch Logs. It is recommended that VPC Flow Logs be enabled for packet \"Rejects\" for VPCs.",
+      "severity": "MEDIUM",
+      "resource_name": "module.vpc",
+      "resource_type": "module",
+      "file_path": "cloudposse/vpc/aws/main.tf",
+      "start_line": 48,
+      "end_line": 68
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "this",
+      "resource_type": "this",
+      "file_path": "/main.tf",
+      "start_line": 1,
+      "end_line": 24
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "label",
+      "resource_type": "label",
+      "file_path": "/main.tf",
+      "start_line": 252,
+      "end_line": 259
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "vpc",
+      "resource_type": "vpc",
+      "file_path": "/main.tf",
+      "start_line": 301,
+      "end_line": 313
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "subnets",
+      "resource_type": "subnets",
+      "file_path": "/main.tf",
+      "start_line": 315,
+      "end_line": 334
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "eks_node_group",
+      "resource_type": "eks_node_group",
+      "file_path": "/main.tf",
+      "start_line": 376,
+      "end_line": 392
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "vpc_cni_eks_iam_role",
+      "resource_type": "vpc_cni_eks_iam_role",
+      "file_path": "/main.tf",
+      "start_line": 687,
+      "end_line": 701
+    }
+  ],
+  "target_count": 9,
+  "resolved_count": 2,
+  "introduced_count": 0,
+  "unchanged_count": 7,
+  "repair_success_rate": 0.2222222222222222,
+  "regression_rate": 0.0,
+  "net_delta": 2,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 2,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 1
+    },
+    "other": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 6
+    }
+  },
+  "repair_cost_usd": 0.01899506,
+  "repair_tokens": 13625,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0401_deepseek-v3-2.repaired.tf",
+  "raw_response_path": "module_0401_deepseek-v3-2.raw.txt",
+  "repaired_code_sha256": "89ccf59977356d3c0654661e453e9be1ce943b35877a76e38a9160d8d64c1977"
+}

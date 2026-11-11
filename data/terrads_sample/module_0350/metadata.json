@@ -1,0 +1,47 @@
+{
+  "findings_count": 7,
+  "findings": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_186",
+      "title": "",
+      "resource_name": "aws_s3_bucket_object.ignition_worker"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_79",
+      "title": "",
+      "resource_name": "aws_launch_configuration.worker_conf"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_315",
+      "title": "",
+      "resource_name": "aws_autoscaling_group.workers"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_290",
+      "title": "",
+      "resource_name": "aws_iam_role_policy.worker_policy"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_355",
+      "title": "",
+      "resource_name": "aws_iam_role_policy.worker_policy"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_386",
+      "title": "",
+      "resource_name": "aws_ami.coreos_ami"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_15",
+      "title": "",
+      "resource_name": "aws_autoscaling_attachment.workers"
+    }
+  ]
+}

@@ -1,0 +1,208 @@
+{
+  "module_id": "module_0154",
+  "model_id": "deepseek-v3-2",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0017",
+      "title": "CloudWatch log groups should be encrypted using CMK",
+      "severity": "LOW",
+      "resource_name": "aws_cloudwatch_log_group.custom",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "main.tf",
+      "start_line": 485,
+      "end_line": 488
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0096",
+      "title": "Unencrypted SQS queue.",
+      "severity": "HIGH",
+      "resource_name": "aws_sqs_queue.dlq",
+      "resource_type": "aws_sqs_queue",
+      "file_path": "main.tf",
+      "start_line": 481,
+      "end_line": 483
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "module.s3_bucket",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/s3-bucket/aws/main.tf",
+      "start_line": 77,
+      "end_line": 89
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0132",
+      "title": "S3 encryption should use Customer Managed Keys",
+      "severity": "HIGH",
+      "resource_name": "module.s3_bucket",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/s3-bucket/aws/main.tf",
+      "start_line": 77,
+      "end_line": 89
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_27",
+      "title": "Ensure all data stored in the SQS queue is encrypted",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_sqs_queue.dlq",
+      "resource_type": "aws_sqs_queue",
+      "file_path": "/main.tf",
+      "start_line": 481,
+      "end_line": 483
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_158",
+      "title": "Ensure that CloudWatch Log Group is encrypted by KMS",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.custom",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/main.tf",
+      "start_line": 485,
+      "end_line": 488
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_338",
+      "title": "Ensure CloudWatch log groups retains logs for at least 1 year",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.custom",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/main.tf",
+      "start_line": 485,
+      "end_line": 488
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "s3_bucket",
+      "resource_type": "s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 463,
+      "end_line": 479
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "module.s3_bucket_logs",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/s3-bucket/aws/main.tf",
+      "start_line": 77,
+      "end_line": 89
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0090",
+      "title": "S3 Data should be versioned",
+      "severity": "MEDIUM",
+      "resource_name": "module.s3_bucket_logs",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/s3-bucket/aws/main.tf",
+      "start_line": 77,
+      "end_line": 89
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0132",
+      "title": "S3 encryption should use Customer Managed Keys",
+      "severity": "HIGH",
+      "resource_name": "module.s3_bucket_logs",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/s3-bucket/aws/main.tf",
+      "start_line": 77,
+      "end_line": 89
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "s3_bucket",
+      "resource_type": "s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 463,
+      "end_line": 493
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "s3_bucket_logs",
+      "resource_type": "s3_bucket_logs",
+      "file_path": "/main.tf",
+      "start_line": 501,
+      "end_line": 512
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_64",
+      "title": "Ensure KMS key Policy is defined",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_kms_key.s3",
+      "resource_type": "aws_kms_key",
+      "file_path": "/main.tf",
+      "start_line": 495,
+      "end_line": 499
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_64",
+      "title": "Ensure KMS key Policy is defined",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_kms_key.logs",
+      "resource_type": "aws_kms_key",
+      "file_path": "/main.tf",
+      "start_line": 526,
+      "end_line": 530
+    }
+  ],
+  "target_count": 8,
+  "resolved_count": 7,
+  "introduced_count": 6,
+  "unchanged_count": 1,
+  "repair_success_rate": 0.875,
+  "regression_rate": 0.75,
+  "net_delta": 1,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 0,
+      "introduced": 2,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 5,
+      "introduced": 1,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 2,
+      "introduced": 1,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 0,
+      "introduced": 2,
+      "unchanged": 1
+    }
+  },
+  "repair_cost_usd": 0.014131040000000001,
+  "repair_tokens": 9658,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0154_deepseek-v3-2.repaired.tf",
+  "raw_response_path": "module_0154_deepseek-v3-2.raw.txt",
+  "repaired_code_sha256": "3c49cceb2c82840712e7b6ab0a7cdb7e69d0f34d6ccc43b12924ea0596f7aa7f"
+}

@@ -1,0 +1,535 @@
+provider "aws" {
+  region = "us-east-1"
+}
+
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 4.55"
+    }
+  }
+}
+
+resource "aws_vpc" "main" {
+  cidr_block = "10.0.0.0/16"
+
+  enable_dns_support   = true
+  enable_dns_hostnames = true
+
+  flow_log {
+    destination = "cloud-watch-logs"
+    log_destination_type = "cloud-watch-logs"
+    traffic_type = "REJECT"
+  }
+
+  tags = {
+    Name = "main"
+  }
+}
+
+resource "aws_eks_addon" "csi_driver" {
+  cluster_name             = aws_eks_cluster.demo.name
+  addon_name               = "aws-ebs-csi-driver"
+  addon_version            = "v1.18.0-eksbuild.1"
+  service_account_role_arn = aws_iam_role.eks_ebs_csi_driver.arn
+}
+
+provider "helm" {
+  kubernetes {
+    host                   = aws_eks_cluster.demo.endpoint
+    cluster_ca_certificate = base64decode(aws_eks_cluster.demo.certificate_authority[0].data)
+    exec {
+      api_version = "client.authentication.k8s.io/v1beta1"
+      args        = ["eks", "get-token", "--cluster-name", aws_eks_cluster.demo.id]
+      command     = "aws"
+    }
+  }
+}
+
+data "helm_template" "grafana" {
+  name = "grafana"
+
+  repository       = "https://grafana.github.io/helm-charts"
+  chart            = "grafana"
+  namespace        = "monitoring"
+  create_namespace = true
+  version          = "6.50.7"
+
+  set {
+    name  = "image.tag"
+    value = "9.3.6"
+  }
+
+  set {
+    name  = "adminPassword"
+    value = "devops123"
+  }
+
+  set {
+    name  = "persistence.enabled"
+    value = "true"
+  }
+
+  set {
+    name  = "persistence.size"
+    value = "8Gi"
+  }
+}
+
+resource "local_file" "grafana_manifests" {
+  for_each = data.helm_template.grafana.manifests
+
+  filename = "target/${each.key}"
+  content  = each.value
+}
+
+resource "helm_release" "grafana" {
+  name = "grafana"
+
+  repository       = "https://grafana.github.io/helm-charts"
+  chart            = "grafana"
+  namespace        = "monitoring"
+  create_namespace = true
+  version          = "6.50.7"
+
+  set {
+    name  = "image.tag"
+    value = "9.3.6"
+  }
+
+  set {
+    name  = "adminPassword"
+    value = "devops123"
+  }
+
+  set {
+    name  = "persistence.enabled"
+    value = "true"
+  }
+
+  set {
+    name  = "persistence.size"
+    value = "8Gi"
+  }
+}
+
+data "aws_ami" "ubuntu_jammy" {
+  most_recent = true
+
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"]
+  }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+
+  owners = ["099720109477"]
+}
+
+resource "aws_security_group" "test" {
+  name        = "test"
+  description = "Security group for test instance"
+  vpc_id      = aws_vpc.main.id
+
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["10.0.0.0/16"]
+  }
+
+  ingress {
+    description     = "Allow Node Exporter Access"
+    from_port       = 9100
+    to_port         = 9100
+    protocol        = "tcp"
+    security_groups = [aws_eks_cluster.demo.vpc_config[0].cluster_security_group_id]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["10.0.0.0/16"]
+  }
+}
+
+resource "aws_instance" "test" {
+  ami           = data.aws_ami.ubuntu_jammy.id
+  instance_type = "t3a.small"
+  subnet_id     = aws_subnet.public_us_east_1a.id
+  #   key_name      = "devops" # TODO: update to yours
+
+  vpc_security_group_ids = [
+    aws_security_group.test.id
+  ]
+
+  user_data = <<EOF
+#!/bin/bash
+
+sudo -s
+useradd --system --no-create-home --shell /bin/false node_exporter
+wget https://github.com/prometheus/node_exporter/releases/download/v1.5.0/node_exporter-1.5.0.linux-amd64.tar.gz
+tar -xvf node_exporter-1.5.0.linux-amd64.tar.gz
+mv node_exporter-1.5.0.linux-amd64/node_exporter /usr/local/bin/
+
+cat <<EOT >> /etc/systemd/system/node_exporter.service
+[Unit]
+Description=Node Exporter
+Wants=network-online.target
+After=network-online.target
+StartLimitIntervalSec=500
+StartLimitBurst=5
+
+[Service]
+User=node_exporter
+Group=node_exporter
+Type=simple
+Restart=on-failure
+RestartSec=5s
+ExecStart=/usr/local/bin/node_exporter
+
+[Install]
+WantedBy=multi-user.target
+EOT
+
+systemctl enable node_exporter
+systemctl start node_exporter
+EOF
+
+  root_block_device {
+    encrypted = true
+  }
+
+  metadata_options {
+    http_tokens = "required"
+  }
+
+  tags = {
+    Name          = "myapp"
+    service       = "myapp"
+    node-exporter = "true"
+  }
+}
+
+data "aws_iam_policy_document" "prometheus" {
+  statement {
+    actions = ["sts:AssumeRoleWithWebIdentity"]
+    effect  = "Allow"
+
+    condition {
+      test     = "StringEquals"
+      variable = "${replace(aws_iam_openid_connect_provider.eks.url, "https://", "")}:sub"
+      values   = ["system:serviceaccount:monitoring:prometheus"]
+    }
+
+    principals {
+      identifiers = [aws_iam_openid_connect_provider.eks.arn]
+      type        = "Federated"
+    }
+  }
+}
+
+resource "aws_iam_role" "prometheus" {
+  assume_role_policy = data.aws_iam_policy_document.prometheus.json
+  name               = "prometheus"
+}
+
+resource "aws_iam_role_policy_attachment" "prometheus" {
+  role       = aws_iam_role.prometheus.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ReadOnlyAccess"
+}
+
+resource "aws_internet_gateway" "igw" {
+  vpc_id = aws_vpc.main.id
+
+  tags = {
+    Name = "igw"
+  }
+}
+
+resource "aws_subnet" "private_us_east_1a" {
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = "10.0.0.0/19"
+  availability_zone = "us-east-1a"
+
+  tags = {
+    "Name"                            = "private-us-east-1a"
+    "kubernetes.io/role/internal-elb" = "1"
+    "kubernetes.io/cluster/demo"      = "owned"
+  }
+}
+
+resource "aws_subnet" "private_us_east_1b" {
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = "10.0.32.0/19"
+  availability_zone = "us-east-1b"
+
+  tags = {
+    "Name"                            = "private-us-east-1b"
+    "kubernetes.io/role/internal-elb" = "1"
+    "kubernetes.io/cluster/demo"      = "owned"
+  }
+}
+
+resource "aws_subnet" "public_us_east_1a" {
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = "10.0.64.0/19"
+  availability_zone       = "us-east-1a"
+  map_public_ip_on_launch = false
+
+  tags = {
+    "Name"                       = "public-us-east-1a"
+    "kubernetes.io/role/elb"     = "1"
+    "kubernetes.io/cluster/demo" = "owned"
+  }
+}
+
+resource "aws_subnet" "public_us_east_1b" {
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = "10.0.96.0/19"
+  availability_zone       = "us-east-1b"
+  map_public_ip_on_launch = false
+
+  tags = {
+    "Name"                       = "public-us-east-1b"
+    "kubernetes.io/role/elb"     = "1"
+    "kubernetes.io/cluster/demo" = "owned"
+  }
+}
+
+resource "aws_eip" "nat" {
+  vpc = true
+
+  tags = {
+    Name = "nat"
+  }
+}
+
+resource "aws_nat_gateway" "nat" {
+  allocation_id = aws_eip.nat.id
+  subnet_id     = aws_subnet.public_us_east_1a.id
+
+  tags = {
+    Name = "nat"
+  }
+
+  depends_on = [aws_internet_gateway.igw]
+}
+
+resource "aws_route_table" "private" {
+  vpc_id = aws_vpc.main.id
+
+  route {
+    cidr_block     = "0.0.0.0/0"
+    nat_gateway_id = aws_nat_gateway.nat.id
+  }
+
+  tags = {
+    Name = "private"
+  }
+}
+
+resource "aws_route_table" "public" {
+  vpc_id = aws_vpc.main.id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.igw.id
+  }
+
+  tags = {
+    Name = "public"
+  }
+}
+
+resource "aws_route_table_association" "private_us_east_1a" {
+  subnet_id      = aws_subnet.private_us_east_1a.id
+  route_table_id = aws_route_table.private.id
+}
+
+resource "aws_route_table_association" "private_us_east_1b" {
+  subnet_id      = aws_subnet.private_us_east_1b.id
+  route_table_id = aws_route_table.private.id
+}
+
+resource "aws_route_table_association" "public_us_east_1a" {
+  subnet_id      = aws_subnet.public_us_east_1a.id
+  route_table_id = aws_route_table.public.id
+}
+
+resource "aws_route_table_association" "public_us_east_1b" {
+  subnet_id      = aws_subnet.public_us_east_1b.id
+  route_table_id = aws_route_table.public.id
+}
+
+resource "aws_iam_role" "demo" {
+  name = "eks-cluster-demo"
+
+  assume_role_policy = <<POLICY
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "eks.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+POLICY
+}
+
+resource "aws_iam_role_policy_attachment" "demo_amazon_eks_cluster_policy" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
+  role       = aws_iam_role.demo.name
+}
+
+resource "aws_eks_cluster" "demo" {
+  name     = "demo"
+  version  = "1.24"
+  role_arn = aws_iam_role.demo.arn
+
+  vpc_config {
+    subnet_ids = [
+      aws_subnet.private_us_east_1a.id,
+      aws_subnet.private_us_east_1b.id,
+      aws_subnet.public_us_east_1a.id,
+      aws_subnet.public_us_east_1b.id
+    ]
+  }
+
+  logging {
+    cluster_logging {
+      types = [
+        "api",
+        "audit",
+        "authenticator",
+        "controllerManager",
+        "scheduler"
+      ]
+    }
+  }
+
+  encryption_config {
+    provider {
+      key_arn = "arn:aws:kms:us-east-1:123456789012:key/abcd1234-a123-4abc-a123-cdef1234abcd"
+    }
+    resources = ["secrets"]
+  }
+
+  depends_on = [aws_iam_role_policy_attachment.demo_amazon_eks_cluster_policy]
+}
+
+resource "aws_iam_role" "nodes" {
+  name = "eks-node-group-nodes"
+
+  assume_role_policy = jsonencode({
+    Statement = [{
+      Action = "sts:AssumeRole"
+      Effect = "Allow"
+      Principal = {
+        Service = "ec2.amazonaws.com"
+      }
+    }]
+    Version = "2012-10-17"
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "nodes_amazon_eks_worker_node_policy" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
+  role       = aws_iam_role.nodes.name
+}
+
+resource "aws_iam_role_policy_attachment" "nodes_amazon_eks_cni_policy" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
+  role       = aws_iam_role.nodes.name
+}
+
+resource "aws_iam_role_policy_attachment" "nodes_amazon_ec2_container_registry_read_only" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+  role       = aws_iam_role.nodes.name
+}
+
+resource "aws_iam_role_policy_attachment" "amazon_ssm_managed_instance_core" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+  role       = aws_iam_role.nodes.name
+}
+
+resource "aws_eks_node_group" "private_nodes" {
+  cluster_name    = aws_eks_cluster.demo.name
+  node_group_name = "private-nodes"
+  node_role_arn   = aws_iam_role.nodes.arn
+
+  # Single subnet to avoid data transfer charges while testing.
+  subnet_ids = [
+    aws_subnet.private_us_east_1a.id
+  ]
+
+  capacity_type  = "ON_DEMAND"
+  instance_types = ["t3a.xlarge"]
+
+  scaling_config {
+    desired_size = 1
+    max_size     = 10
+    min_size     = 0
+  }
+
+  update_config {
+    max_unavailable = 1
+  }
+
+  labels = {
+    role = "general"
+  }
+
+  depends_on = [
+    aws_iam_role_policy_attachment.nodes_amazon_eks_worker_node_policy,
+    aws_iam_role_policy_attachment.nodes_amazon_eks_cni_policy,
+    aws_iam_role_policy_attachment.nodes_amazon_ec2_container_registry_read_only,
+  ]
+}
+
+data "tls_certificate" "eks" {
+  url = aws_eks_cluster.demo.identity[0].oidc[0].issuer
+}
+
+resource "aws_iam_openid_connect_provider" "eks" {
+  client_id_list  = ["sts.amazonaws.com"]
+  thumbprint_list = [data.tls_certificate.eks.certificates[0].sha1_fingerprint]
+  url             = aws_eks_cluster.demo.identity[0].oidc[0].issuer
+}
+
+data "aws_iam_policy_document" "csi" {
+  statement {
+    actions = ["sts:AssumeRoleWithWebIdentity"]
+    effect  = "Allow"
+
+    condition {
+      test     = "StringEquals"
+      variable = "${replace(aws_iam_openid_connect_provider.eks.url, "https://", "")}:sub"
+      values   = ["system:serviceaccount:kube-system:ebs-csi-controller-sa"]
+    }
+
+    principals {
+      identifiers = [aws_iam_openid_connect_provider.eks.arn]
+      type        = "Federated"
+    }
+  }
+}
+
+resource "aws_iam_role" "eks_ebs_csi_driver" {
+  assume_role_policy = data.aws_iam_policy_document.csi.json
+  name               = "eks-ebs-csi-driver"
+}
+
+resource "aws_iam_role_policy_attachment" "amazon_ebs_csi_driver" {
+  role       = aws_iam_role.eks_ebs_csi_driver.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
+}

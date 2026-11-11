@@ -1,0 +1,186 @@
+{
+  "module_id": "module_0164",
+  "model_id": "llama-3-3-70b",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0178",
+      "title": "VPC Flow Logs is a feature that enables you to capture information about the IP traffic going to and from network interfaces in your VPC. After you've created a flow log, you can view and retrieve its data in Amazon CloudWatch Logs. It is recommended that VPC Flow Logs be enabled for packet \"Rejects\" for VPCs.",
+      "severity": "MEDIUM",
+      "resource_name": "aws_vpc.default",
+      "resource_type": "aws_vpc",
+      "file_path": "main.tf",
+      "start_line": 9,
+      "end_line": 15
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_12",
+      "title": "Ensure the default security group of every VPC restricts all traffic",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_vpc.default",
+      "resource_type": "aws_vpc",
+      "file_path": "/main.tf",
+      "start_line": 9,
+      "end_line": 15
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_11",
+      "title": "Ensure VPC flow logging is enabled in all VPCs",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_vpc.default",
+      "resource_type": "aws_vpc",
+      "file_path": "/main.tf",
+      "start_line": 9,
+      "end_line": 15
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0017",
+      "title": "CloudWatch log groups should be encrypted using CMK",
+      "severity": "LOW",
+      "resource_name": "aws_cloudwatch_log_group.flow_log",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "main.tf",
+      "start_line": 18,
+      "end_line": 20
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "aws_security_group.default",
+      "resource_type": "aws_security_group",
+      "file_path": "main.tf",
+      "start_line": 67,
+      "end_line": 67
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0124",
+      "title": "Missing description for security group rule.",
+      "severity": "LOW",
+      "resource_name": "aws_security_group.default",
+      "resource_type": "aws_security_group",
+      "file_path": "main.tf",
+      "start_line": 63,
+      "end_line": 68
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_66",
+      "title": "Ensure that CloudWatch Log Group specifies retention days",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.flow_log",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/main.tf",
+      "start_line": 18,
+      "end_line": 20
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_158",
+      "title": "Ensure that CloudWatch Log Group is encrypted by KMS",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.flow_log",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/main.tf",
+      "start_line": 18,
+      "end_line": 20
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_338",
+      "title": "Ensure CloudWatch log groups retains logs for at least 1 year",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.flow_log",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/main.tf",
+      "start_line": 18,
+      "end_line": 20
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_382",
+      "title": "Ensure no security groups allow egress from 0.0.0.0:0 to port -1",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group.default",
+      "resource_type": "aws_security_group",
+      "file_path": "/main.tf",
+      "start_line": 58,
+      "end_line": 69
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "Ensure every security group and rule has a description",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group.default",
+      "resource_type": "aws_security_group",
+      "file_path": "/main.tf",
+      "start_line": 58,
+      "end_line": 69
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_5",
+      "title": "Ensure that Security Groups are attached to another resource",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group.default",
+      "resource_type": "aws_security_group",
+      "file_path": "/main.tf",
+      "start_line": 58,
+      "end_line": 69
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_12",
+      "title": "Ensure the default security group of every VPC restricts all traffic",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_vpc.default",
+      "resource_type": "aws_vpc",
+      "file_path": "/main.tf",
+      "start_line": 5,
+      "end_line": 9
+    }
+  ],
+  "target_count": 3,
+  "resolved_count": 2,
+  "introduced_count": 9,
+  "unchanged_count": 1,
+  "repair_success_rate": 0.6666666666666666,
+  "regression_rate": 3.0,
+  "net_delta": -7,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 0,
+      "introduced": 2,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 2,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 2,
+      "introduced": 2,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 0,
+      "introduced": 3,
+      "unchanged": 1
+    }
+  },
+  "repair_cost_usd": 0.0011328000000000002,
+  "repair_tokens": 1416,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0164_llama-3-3-70b.repaired.tf",
+  "raw_response_path": "module_0164_llama-3-3-70b.raw.txt",
+  "repaired_code_sha256": "cc57125290af62babae8a9d23b8506a210f36147b58294d0f913a6bf8181b8a3"
+}

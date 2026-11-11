@@ -1,0 +1,483 @@
+{
+  "module_id": "module_0444",
+  "model_id": "kimi-k2-5",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "module.spa_web",
+      "resource_type": "module",
+      "file_path": "cloudposse/cloudfront-s3-cdn/aws/cloudposse/s3-log-storage/aws/cloudposse/s3-bucket/aws/main.tf",
+      "start_line": 29,
+      "end_line": 43
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0090",
+      "title": "S3 Data should be versioned",
+      "severity": "MEDIUM",
+      "resource_name": "module.spa_web",
+      "resource_type": "module",
+      "file_path": "cloudposse/cloudfront-s3-cdn/aws/cloudposse/s3-log-storage/aws/cloudposse/s3-bucket/aws/main.tf",
+      "start_line": 57,
+      "end_line": 57
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0132",
+      "title": "S3 encryption should use Customer Managed Keys",
+      "severity": "HIGH",
+      "resource_name": "module.spa_web",
+      "resource_type": "module",
+      "file_path": "cloudposse/cloudfront-s3-cdn/aws/cloudposse/s3-log-storage/aws/cloudposse/s3-bucket/aws/main.tf",
+      "start_line": 71,
+      "end_line": 83
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0010",
+      "title": "Cloudfront distribution should have Access Logging configured",
+      "severity": "MEDIUM",
+      "resource_name": "module.spa_web",
+      "resource_type": "module",
+      "file_path": "cloudposse/cloudfront-s3-cdn/aws/main.tf",
+      "start_line": 406,
+      "end_line": 670
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0013",
+      "title": "CloudFront distribution uses outdated SSL/TLS protocols.",
+      "severity": "HIGH",
+      "resource_name": "module.spa_web",
+      "resource_type": "module",
+      "file_path": "cloudposse/cloudfront-s3-cdn/aws/main.tf",
+      "start_line": 538,
+      "end_line": 538
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0086",
+      "title": "S3 Access block should block public ACL",
+      "severity": "HIGH",
+      "resource_name": "module.spa_web",
+      "resource_type": "module",
+      "file_path": "cloudposse/cloudfront-s3-cdn/aws/main.tf",
+      "start_line": 248,
+      "end_line": 277
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0087",
+      "title": "S3 Access block should block public policy",
+      "severity": "HIGH",
+      "resource_name": "module.spa_web",
+      "resource_type": "module",
+      "file_path": "cloudposse/cloudfront-s3-cdn/aws/main.tf",
+      "start_line": 248,
+      "end_line": 277
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0091",
+      "title": "S3 Access Block should Ignore Public ACL",
+      "severity": "HIGH",
+      "resource_name": "module.spa_web",
+      "resource_type": "module",
+      "file_path": "cloudposse/cloudfront-s3-cdn/aws/main.tf",
+      "start_line": 248,
+      "end_line": 277
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0093",
+      "title": "S3 Access block should restrict public bucket to limit access",
+      "severity": "HIGH",
+      "resource_name": "module.spa_web",
+      "resource_type": "module",
+      "file_path": "cloudposse/cloudfront-s3-cdn/aws/main.tf",
+      "start_line": 248,
+      "end_line": 277
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0094",
+      "title": "S3 buckets should each define an aws_s3_bucket_public_access_block",
+      "severity": "LOW",
+      "resource_name": "module.spa_web",
+      "resource_type": "module",
+      "file_path": "cloudposse/cloudfront-s3-cdn/aws/main.tf",
+      "start_line": 248,
+      "end_line": 277
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "this",
+      "resource_type": "this",
+      "file_path": "/context.tf",
+      "start_line": 23,
+      "end_line": 46
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "utils",
+      "resource_type": "utils",
+      "file_path": "/failover.tf",
+      "start_line": 7,
+      "end_line": 10
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "gha_role_name",
+      "resource_type": "gha_role_name",
+      "file_path": "/github-actions-iam-role.mixin.tf",
+      "start_line": 35,
+      "end_line": 43
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "lambda_edge_functions",
+      "resource_type": "lambda_edge_functions",
+      "file_path": "/lambda_edge.tf",
+      "start_line": 22,
+      "end_line": 91
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "lambda_edge",
+      "resource_type": "lambda_edge",
+      "file_path": "/lambda_edge.tf",
+      "start_line": 93,
+      "end_line": 105
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "acm_request_certificate",
+      "resource_type": "acm_request_certificate",
+      "file_path": "/main.tf",
+      "start_line": 62,
+      "end_line": 76
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "spa_web",
+      "resource_type": "spa_web",
+      "file_path": "/main.tf",
+      "start_line": 78,
+      "end_line": 143
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "waf",
+      "resource_type": "waf",
+      "file_path": "/remote-state.tf",
+      "start_line": 1,
+      "end_line": 17
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "dns_delegated",
+      "resource_type": "dns_delegated",
+      "file_path": "/remote-state.tf",
+      "start_line": 19,
+      "end_line": 27
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "github_runners",
+      "resource_type": "github_runners",
+      "file_path": "/remote-state.tf",
+      "start_line": 29,
+      "end_line": 40
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "module.spa_web",
+      "resource_type": "module",
+      "file_path": "cloudposse/cloudfront-s3-cdn/aws/cloudposse/s3-log-storage/aws/cloudposse/s3-bucket/aws/main.tf",
+      "start_line": 29,
+      "end_line": 43
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0090",
+      "title": "S3 Data should be versioned",
+      "severity": "MEDIUM",
+      "resource_name": "module.spa_web",
+      "resource_type": "module",
+      "file_path": "cloudposse/cloudfront-s3-cdn/aws/cloudposse/s3-log-storage/aws/cloudposse/s3-bucket/aws/main.tf",
+      "start_line": 57,
+      "end_line": 57
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0132",
+      "title": "S3 encryption should use Customer Managed Keys",
+      "severity": "HIGH",
+      "resource_name": "module.spa_web",
+      "resource_type": "module",
+      "file_path": "cloudposse/cloudfront-s3-cdn/aws/cloudposse/s3-log-storage/aws/cloudposse/s3-bucket/aws/main.tf",
+      "start_line": 71,
+      "end_line": 83
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0010",
+      "title": "Cloudfront distribution should have Access Logging configured",
+      "severity": "MEDIUM",
+      "resource_name": "module.spa_web",
+      "resource_type": "module",
+      "file_path": "cloudposse/cloudfront-s3-cdn/aws/main.tf",
+      "start_line": 406,
+      "end_line": 670
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0013",
+      "title": "CloudFront distribution uses outdated SSL/TLS protocols.",
+      "severity": "HIGH",
+      "resource_name": "module.spa_web",
+      "resource_type": "module",
+      "file_path": "cloudposse/cloudfront-s3-cdn/aws/main.tf",
+      "start_line": 538,
+      "end_line": 538
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0086",
+      "title": "S3 Access block should block public ACL",
+      "severity": "HIGH",
+      "resource_name": "module.spa_web",
+      "resource_type": "module",
+      "file_path": "cloudposse/cloudfront-s3-cdn/aws/main.tf",
+      "start_line": 248,
+      "end_line": 277
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0087",
+      "title": "S3 Access block should block public policy",
+      "severity": "HIGH",
+      "resource_name": "module.spa_web",
+      "resource_type": "module",
+      "file_path": "cloudposse/cloudfront-s3-cdn/aws/main.tf",
+      "start_line": 248,
+      "end_line": 277
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0091",
+      "title": "S3 Access Block should Ignore Public ACL",
+      "severity": "HIGH",
+      "resource_name": "module.spa_web",
+      "resource_type": "module",
+      "file_path": "cloudposse/cloudfront-s3-cdn/aws/main.tf",
+      "start_line": 248,
+      "end_line": 277
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0093",
+      "title": "S3 Access block should restrict public bucket to limit access",
+      "severity": "HIGH",
+      "resource_name": "module.spa_web",
+      "resource_type": "module",
+      "file_path": "cloudposse/cloudfront-s3-cdn/aws/main.tf",
+      "start_line": 248,
+      "end_line": 277
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0094",
+      "title": "S3 buckets should each define an aws_s3_bucket_public_access_block",
+      "severity": "LOW",
+      "resource_name": "module.spa_web",
+      "resource_type": "module",
+      "file_path": "cloudposse/cloudfront-s3-cdn/aws/main.tf",
+      "start_line": 248,
+      "end_line": 277
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "this",
+      "resource_type": "this",
+      "file_path": "/main.tf",
+      "start_line": 23,
+      "end_line": 46
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "utils",
+      "resource_type": "utils",
+      "file_path": "/main.tf",
+      "start_line": 288,
+      "end_line": 291
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "gha_role_name",
+      "resource_type": "gha_role_name",
+      "file_path": "/main.tf",
+      "start_line": 378,
+      "end_line": 386
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "lambda_edge_functions",
+      "resource_type": "lambda_edge_functions",
+      "file_path": "/main.tf",
+      "start_line": 439,
+      "end_line": 508
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "lambda_edge",
+      "resource_type": "lambda_edge",
+      "file_path": "/main.tf",
+      "start_line": 510,
+      "end_line": 522
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "acm_request_certificate",
+      "resource_type": "acm_request_certificate",
+      "file_path": "/main.tf",
+      "start_line": 609,
+      "end_line": 623
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "spa_web",
+      "resource_type": "spa_web",
+      "file_path": "/main.tf",
+      "start_line": 625,
+      "end_line": 697
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "waf",
+      "resource_type": "waf",
+      "file_path": "/main.tf",
+      "start_line": 864,
+      "end_line": 880
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "dns_delegated",
+      "resource_type": "dns_delegated",
+      "file_path": "/main.tf",
+      "start_line": 882,
+      "end_line": 890
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "github_runners",
+      "resource_type": "github_runners",
+      "file_path": "/main.tf",
+      "start_line": 892,
+      "end_line": 903
+    }
+  ],
+  "target_count": 20,
+  "resolved_count": 0,
+  "introduced_count": 0,
+  "unchanged_count": 20,
+  "repair_success_rate": 0.0,
+  "regression_rate": 0.0,
+  "net_delta": 0,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 5
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 2
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 2
+    },
+    "other": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 11
+    }
+  },
+  "repair_cost_usd": 0.0417685,
+  "repair_tokens": 27564,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0444_kimi-k2-5.repaired.tf",
+  "raw_response_path": "module_0444_kimi-k2-5.raw.txt",
+  "repaired_code_sha256": "4df66c28d6a4f2811b1745683a905d07d1c0e32d69a730c1df92872c4e724368"
+}

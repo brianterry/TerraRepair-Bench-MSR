@@ -1,0 +1,985 @@
+{"item": "input", "module_id": "module_0002", "remote_modules": 1, "secs": 6.4, "outcome": "match", "n_findings": 10}
+{"item": "input", "module_id": "module_0007", "remote_modules": 4, "secs": 4.5, "outcome": "match", "n_findings": 12}
+{"item": "input", "module_id": "module_0008", "remote_modules": 5, "secs": 4.4, "outcome": "match", "n_findings": 8}
+{"item": "input", "module_id": "module_0035", "remote_modules": 2, "secs": 4.3, "outcome": "match", "n_findings": 9}
+{"item": "input", "module_id": "module_0036", "remote_modules": 8, "secs": 42.0, "outcome": "match", "n_findings": 15}
+{"item": "input", "module_id": "module_0037", "remote_modules": 4, "secs": 23.1, "outcome": "match", "n_findings": 10}
+{"item": "input", "module_id": "module_0038", "remote_modules": 6, "secs": 23.3, "outcome": "match", "n_findings": 14}
+{"item": "input", "module_id": "module_0039", "remote_modules": 4, "secs": 22.6, "outcome": "match", "n_findings": 13}
+{"item": "input", "module_id": "module_0040", "remote_modules": 4, "secs": 22.5, "outcome": "match", "n_findings": 10}
+{"item": "input", "module_id": "module_0041", "remote_modules": 6, "secs": 40.6, "outcome": "match", "n_findings": 39}
+{"item": "input", "module_id": "module_0042", "remote_modules": 10, "secs": 5.7, "outcome": "match", "n_findings": 27}
+{"item": "input", "module_id": "module_0043", "remote_modules": 3, "secs": 4.8, "outcome": "match", "n_findings": 16}
+{"item": "input", "module_id": "module_0044", "remote_modules": 3, "secs": 23.5, "outcome": "match", "n_findings": 9}
+{"item": "input", "module_id": "module_0045", "remote_modules": 8, "secs": 58.2, "outcome": "match", "n_findings": 21}
+{"item": "input", "module_id": "module_0046", "remote_modules": 4, "secs": 41.4, "outcome": "match", "n_findings": 14}
+{"item": "input", "module_id": "module_0084", "remote_modules": 1, "secs": 4.2, "outcome": "match", "n_findings": 46}
+{"item": "input", "module_id": "module_0095", "remote_modules": 4, "secs": 5.5, "outcome": "match", "n_findings": 21}
+{"item": "input", "module_id": "module_0107", "remote_modules": 2, "secs": 4.6, "outcome": "match", "n_findings": 7}
+{"item": "input", "module_id": "module_0108", "remote_modules": 1, "secs": 4.6, "outcome": "match", "n_findings": 25}
+{"item": "input", "module_id": "module_0123", "remote_modules": 1, "secs": 4.0, "outcome": "match", "n_findings": 9}
+{"item": "input", "module_id": "module_0152", "remote_modules": 1, "secs": 5.3, "outcome": "match", "n_findings": 46}
+{"item": "input", "module_id": "module_0154", "remote_modules": 1, "secs": 4.1, "outcome": "match", "n_findings": 8}
+{"item": "input", "module_id": "module_0155", "remote_modules": 1, "secs": 4.4, "outcome": "match", "n_findings": 22}
+{"item": "input", "module_id": "module_0160", "remote_modules": 2, "secs": 4.4, "outcome": "match", "n_findings": 4}
+{"item": "input", "module_id": "module_0161", "remote_modules": 2, "secs": 4.5, "outcome": "match", "n_findings": 4}
+{"item": "input", "module_id": "module_0162", "remote_modules": 3, "secs": 4.6, "outcome": "match", "n_findings": 9}
+{"item": "input", "module_id": "module_0195", "remote_modules": 2, "secs": 4.7, "outcome": "match", "n_findings": 7}
+{"item": "input", "module_id": "module_0202", "remote_modules": 1, "secs": 4.0, "outcome": "match", "n_findings": 17}
+{"item": "input", "module_id": "module_0204", "remote_modules": 1, "secs": 4.2, "outcome": "match", "n_findings": 24}
+{"item": "input", "module_id": "module_0211", "remote_modules": 2, "secs": 4.4, "outcome": "match", "n_findings": 8}
+{"item": "input", "module_id": "module_0214", "remote_modules": 4, "secs": 4.6, "outcome": "match", "n_findings": 11}
+{"item": "input", "module_id": "module_0215", "remote_modules": 7, "secs": 5.3, "outcome": "match", "n_findings": 17}
+{"item": "input", "module_id": "module_0224", "remote_modules": 35, "secs": 6.3, "outcome": "match", "n_findings": 3}
+{"item": "input", "module_id": "module_0236", "remote_modules": 9, "secs": 10.2, "outcome": "match", "n_findings": 18}
+{"item": "input", "module_id": "module_0237", "remote_modules": 7, "secs": 6.5, "outcome": "match", "n_findings": 50}
+{"item": "input", "module_id": "module_0240", "remote_modules": 12, "secs": 7.8, "outcome": "match", "n_findings": 7}
+{"item": "input", "module_id": "module_0299", "remote_modules": 12, "secs": 7.4, "outcome": "match", "n_findings": 5}
+{"item": "input", "module_id": "module_0315", "remote_modules": 5, "secs": 4.2, "outcome": "match", "n_findings": 18}
+{"item": "input", "module_id": "module_0316", "remote_modules": 4, "secs": 4.1, "outcome": "match", "n_findings": 9}
+{"item": "input", "module_id": "module_0317", "remote_modules": 4, "secs": 4.1, "outcome": "match", "n_findings": 17}
+{"item": "input", "module_id": "module_0318", "remote_modules": 5, "secs": 4.3, "outcome": "match", "n_findings": 18}
+{"item": "input", "module_id": "module_0319", "remote_modules": 5, "secs": 4.1, "outcome": "match", "n_findings": 9}
+{"item": "input", "module_id": "module_0332", "remote_modules": 8, "secs": 5.9, "outcome": "match", "n_findings": 20}
+{"item": "input", "module_id": "module_0333", "remote_modules": 1, "secs": 7.9, "outcome": "match", "n_findings": 18}
+{"item": "input", "module_id": "module_0334", "remote_modules": 5, "secs": 4.6, "outcome": "match", "n_findings": 11}
+{"item": "input", "module_id": "module_0365", "remote_modules": 12, "secs": 45.5, "outcome": "match", "n_findings": 22}
+{"item": "input", "module_id": "module_0366", "remote_modules": 12, "secs": 48.9, "outcome": "match", "n_findings": 27}
+{"item": "input", "module_id": "module_0367", "remote_modules": 7, "secs": 5.8, "outcome": "match", "n_findings": 12}
+{"item": "input", "module_id": "module_0370", "remote_modules": 11, "secs": 46.9, "outcome": "match", "n_findings": 26}
+{"item": "input", "module_id": "module_0371", "remote_modules": 8, "secs": 25.8, "outcome": "match", "n_findings": 21}
+{"item": "input", "module_id": "module_0372", "remote_modules": 15, "secs": 31.5, "outcome": "match", "n_findings": 33}
+{"item": "input", "module_id": "module_0373", "remote_modules": 9, "secs": 25.3, "outcome": "match", "n_findings": 24}
+{"item": "input", "module_id": "module_0375", "remote_modules": 7, "secs": 28.3, "outcome": "match", "n_findings": 16}
+{"item": "input", "module_id": "module_0376", "remote_modules": 6, "secs": 25.5, "outcome": "match", "n_findings": 23}
+{"item": "input", "module_id": "module_0400", "remote_modules": 2, "secs": 4.8, "outcome": "match", "n_findings": 7}
+{"item": "input", "module_id": "module_0401", "remote_modules": 6, "secs": 5.7, "outcome": "match", "n_findings": 9}
+{"item": "input", "module_id": "module_0403", "remote_modules": 2, "secs": 4.2, "outcome": "match", "n_findings": 4}
+{"item": "input", "module_id": "module_0404", "remote_modules": 11, "secs": 5.1, "outcome": "match", "n_findings": 47}
+{"item": "input", "module_id": "module_0405", "remote_modules": 2, "secs": 4.1, "outcome": "match", "n_findings": 4}
+{"item": "input", "module_id": "module_0406", "remote_modules": 11, "secs": 12.9, "outcome": "match", "n_findings": 43}
+{"item": "input", "module_id": "module_0407", "remote_modules": 11, "secs": 4.4, "outcome": "match", "n_findings": 32}
+{"item": "input", "module_id": "module_0408", "remote_modules": 5, "secs": 5.9, "outcome": "match", "n_findings": 20}
+{"item": "input", "module_id": "module_0410", "remote_modules": 3, "secs": 4.4, "outcome": "match", "n_findings": 19}
+{"item": "input", "module_id": "module_0411", "remote_modules": 4, "secs": 5.2, "outcome": "match", "n_findings": 4}
+{"item": "input", "module_id": "module_0412", "remote_modules": 9, "secs": 5.1, "outcome": "match", "n_findings": 10}
+{"item": "input", "module_id": "module_0413", "remote_modules": 2, "secs": 4.5, "outcome": "match", "n_findings": 3}
+{"item": "input", "module_id": "module_0414", "remote_modules": 3, "secs": 4.4, "outcome": "match", "n_findings": 4}
+{"item": "input", "module_id": "module_0415", "remote_modules": 3, "secs": 4.2, "outcome": "match", "n_findings": 3}
+{"item": "input", "module_id": "module_0417", "remote_modules": 7, "secs": 5.4, "outcome": "match", "n_findings": 7}
+{"item": "input", "module_id": "module_0418", "remote_modules": 1, "secs": 4.0, "outcome": "match", "n_findings": 3}
+{"item": "input", "module_id": "module_0419", "remote_modules": 6, "secs": 4.4, "outcome": "match", "n_findings": 11}
+{"item": "input", "module_id": "module_0420", "remote_modules": 10, "secs": 10.7, "outcome": "match", "n_findings": 15}
+{"item": "input", "module_id": "module_0421", "remote_modules": 9, "secs": 10.7, "outcome": "match", "n_findings": 15}
+{"item": "input", "module_id": "module_0423", "remote_modules": 1, "secs": 4.0, "outcome": "match", "n_findings": 4}
+{"item": "input", "module_id": "module_0425", "remote_modules": 6, "secs": 4.5, "outcome": "match", "n_findings": 12}
+{"item": "input", "module_id": "module_0426", "remote_modules": 2, "secs": 4.3, "outcome": "match", "n_findings": 13}
+{"item": "input", "module_id": "module_0427", "remote_modules": 2, "secs": 4.4, "outcome": "match", "n_findings": 4}
+{"item": "input", "module_id": "module_0428", "remote_modules": 3, "secs": 4.3, "outcome": "match", "n_findings": 3}
+{"item": "input", "module_id": "module_0429", "remote_modules": 5, "secs": 4.9, "outcome": "match", "n_findings": 9}
+{"item": "input", "module_id": "module_0430", "remote_modules": 5, "secs": 4.4, "outcome": "match", "n_findings": 11}
+{"item": "input", "module_id": "module_0432", "remote_modules": 5, "secs": 4.9, "outcome": "match", "n_findings": 14}
+{"item": "input", "module_id": "module_0433", "remote_modules": 5, "secs": 4.2, "outcome": "match", "n_findings": 7}
+{"item": "input", "module_id": "module_0435", "remote_modules": 7, "secs": 4.5, "outcome": "match", "n_findings": 12}
+{"item": "input", "module_id": "module_0436", "remote_modules": 22, "secs": 7.0, "outcome": "match", "n_findings": 29}
+{"item": "input", "module_id": "module_0437", "remote_modules": 13, "secs": 6.0, "outcome": "match", "n_findings": 19}
+{"item": "input", "module_id": "module_0438", "remote_modules": 4, "secs": 5.3, "outcome": "match", "n_findings": 4}
+{"item": "input", "module_id": "module_0439", "remote_modules": 5, "secs": 4.8, "outcome": "match", "n_findings": 6}
+{"item": "input", "module_id": "module_0440", "remote_modules": 3, "secs": 4.2, "outcome": "match", "n_findings": 4}
+{"item": "input", "module_id": "module_0441", "remote_modules": 4, "secs": 4.4, "outcome": "match", "n_findings": 4}
+{"item": "input", "module_id": "module_0443", "remote_modules": 3, "secs": 4.2, "outcome": "match", "n_findings": 3}
+{"item": "input", "module_id": "module_0444", "remote_modules": 10, "secs": 5.7, "outcome": "match", "n_findings": 20}
+{"item": "input", "module_id": "module_0445", "remote_modules": 8, "secs": 5.1, "outcome": "match", "n_findings": 8}
+{"item": "input", "module_id": "module_0446", "remote_modules": 2, "secs": 4.4, "outcome": "match", "n_findings": 6}
+{"item": "game", "game": "module_0002_claude-sonnet-4-5.json", "module_id": "module_0002", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 1, "secs": 6.5, "outcome": "match", "n_findings": 4}
+{"item": "game", "game": "module_0002_claude-sonnet-5.json", "module_id": "module_0002", "model_id": "claude-sonnet-5", "hcl_valid": false, "remote_modules": 1, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0002_deepseek-r1.json", "module_id": "module_0002", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 1, "secs": 5.6, "outcome": "match", "n_findings": 2}
+{"item": "game", "game": "module_0002_deepseek-v3-2.json", "module_id": "module_0002", "model_id": "deepseek-v3-2", "hcl_valid": false, "remote_modules": 1, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0002_grok-4-6.json", "module_id": "module_0002", "model_id": "grok-4-6", "hcl_valid": false, "remote_modules": 1, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0002_kimi-k2-5.json", "module_id": "module_0002", "model_id": "kimi-k2-5", "hcl_valid": false, "remote_modules": 1, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0002_llama-3-3-70b.json", "module_id": "module_0002", "model_id": "llama-3-3-70b", "hcl_valid": false, "remote_modules": 1, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0002_nova-lite.json", "module_id": "module_0002", "model_id": "nova-lite", "hcl_valid": false, "remote_modules": 1, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0002_nova-pro.json", "module_id": "module_0002", "model_id": "nova-pro", "hcl_valid": false, "remote_modules": 1, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0007_claude-sonnet-4-5.json", "module_id": "module_0007", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 4, "secs": 4.4, "outcome": "match", "n_findings": 3}
+{"item": "game", "game": "module_0007_claude-sonnet-5.json", "module_id": "module_0007", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 4, "secs": 4.1, "outcome": "match", "n_findings": 1}
+{"item": "game", "game": "module_0007_deepseek-r1.json", "module_id": "module_0007", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 4, "secs": 4.1, "outcome": "match", "n_findings": 4}
+{"item": "game", "game": "module_0007_deepseek-v3-2.json", "module_id": "module_0007", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 4, "secs": 4.5, "outcome": "match", "n_findings": 6}
+{"item": "game", "game": "module_0007_grok-4-6.json", "module_id": "module_0007", "model_id": "grok-4-6", "hcl_valid": true, "remote_modules": 4, "secs": 4.2, "outcome": "match", "n_findings": 1}
+{"item": "game", "game": "module_0007_kimi-k2-5.json", "module_id": "module_0007", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 4, "secs": 4.5, "outcome": "match", "n_findings": 6}
+{"item": "game", "game": "module_0007_llama-3-3-70b.json", "module_id": "module_0007", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 4, "secs": 4.5, "outcome": "match", "n_findings": 9}
+{"item": "game", "game": "module_0007_nova-lite.json", "module_id": "module_0007", "model_id": "nova-lite", "hcl_valid": true, "remote_modules": 4, "secs": 4.0, "outcome": "match", "n_findings": 6}
+{"item": "game", "game": "module_0007_nova-pro.json", "module_id": "module_0007", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 7, "secs": 4.6, "outcome": "match", "n_findings": 9}
+{"item": "game", "game": "module_0007_qwen3-32b.json", "module_id": "module_0007", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 4, "secs": 4.5, "outcome": "match", "n_findings": 9}
+{"item": "game", "game": "module_0008_claude-sonnet-4-5.json", "module_id": "module_0008", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 5, "secs": 4.5, "outcome": "match", "n_findings": 5}
+{"item": "game", "game": "module_0008_claude-sonnet-5.json", "module_id": "module_0008", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 5, "secs": 4.1, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0008_deepseek-r1.json", "module_id": "module_0008", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 5, "secs": 4.4, "outcome": "match", "n_findings": 6}
+{"item": "game", "game": "module_0008_deepseek-v3-2.json", "module_id": "module_0008", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 5, "secs": 4.5, "outcome": "match", "n_findings": 6}
+{"item": "game", "game": "module_0008_grok-4-6.json", "module_id": "module_0008", "model_id": "grok-4-6", "hcl_valid": true, "remote_modules": 5, "secs": 4.1, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0008_kimi-k2-5.json", "module_id": "module_0008", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 5, "secs": 4.4, "outcome": "match", "n_findings": 6}
+{"item": "game", "game": "module_0008_llama-3-3-70b.json", "module_id": "module_0008", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 5, "secs": 4.3, "outcome": "match", "n_findings": 6}
+{"item": "game", "game": "module_0008_nova-pro.json", "module_id": "module_0008", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 5, "secs": 4.0, "outcome": "match", "n_findings": 6}
+{"item": "game", "game": "module_0008_qwen3-32b.json", "module_id": "module_0008", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 5, "secs": 4.1, "outcome": "match", "n_findings": 6}
+{"item": "game", "game": "module_0035_claude-sonnet-4-5.json", "module_id": "module_0035", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 2, "secs": 4.4, "outcome": "match", "n_findings": 16}
+{"item": "game", "game": "module_0035_claude-sonnet-5.json", "module_id": "module_0035", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 2, "secs": 4.0, "outcome": "match", "n_findings": 5}
+{"item": "game", "game": "module_0035_deepseek-r1.json", "module_id": "module_0035", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 2, "secs": 4.2, "outcome": "match", "n_findings": 7}
+{"item": "game", "game": "module_0035_deepseek-v3-2.json", "module_id": "module_0035", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 2, "secs": 4.3, "outcome": "match", "n_findings": 12}
+{"item": "game", "game": "module_0035_grok-4-6.json", "module_id": "module_0035", "model_id": "grok-4-6", "hcl_valid": true, "remote_modules": 2, "secs": 4.1, "outcome": "match", "n_findings": 12}
+{"item": "game", "game": "module_0035_kimi-k2-5.json", "module_id": "module_0035", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 2, "secs": 4.4, "outcome": "match", "n_findings": 14}
+{"item": "game", "game": "module_0035_llama-3-3-70b.json", "module_id": "module_0035", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 2, "secs": 4.0, "outcome": "match", "n_findings": 22}
+{"item": "game", "game": "module_0035_nova-lite.json", "module_id": "module_0035", "model_id": "nova-lite", "hcl_valid": true, "remote_modules": 2, "secs": 4.0, "outcome": "match", "n_findings": 7}
+{"item": "game", "game": "module_0035_nova-pro.json", "module_id": "module_0035", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 2, "secs": 3.9, "outcome": "match", "n_findings": 9}
+{"item": "game", "game": "module_0035_qwen3-32b.json", "module_id": "module_0035", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 2, "secs": 4.2, "outcome": "match", "n_findings": 7}
+{"item": "game", "game": "module_0036_claude-sonnet-4-5.json", "module_id": "module_0036", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 8, "secs": 4.9, "outcome": "match", "n_findings": 10}
+{"item": "game", "game": "module_0036_claude-sonnet-5.json", "module_id": "module_0036", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 8, "secs": 9.9, "outcome": "match", "n_findings": 11}
+{"item": "game", "game": "module_0036_deepseek-r1.json", "module_id": "module_0036", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 8, "secs": 8.4, "outcome": "match", "n_findings": 4}
+{"item": "game", "game": "module_0036_deepseek-v3-2.json", "module_id": "module_0036", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 8, "secs": 9.1, "outcome": "match", "n_findings": 13}
+{"item": "game", "game": "module_0036_grok-4-6.json", "module_id": "module_0036", "model_id": "grok-4-6", "hcl_valid": true, "remote_modules": 8, "secs": 4.8, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0036_kimi-k2-5.json", "module_id": "module_0036", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 8, "secs": 43.2, "outcome": "match", "n_findings": 11}
+{"item": "game", "game": "module_0036_llama-3-3-70b.json", "module_id": "module_0036", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 8, "secs": 8.7, "outcome": "match", "n_findings": 12}
+{"item": "game", "game": "module_0036_nova-lite.json", "module_id": "module_0036", "model_id": "nova-lite", "hcl_valid": false, "remote_modules": 1, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0036_nova-pro.json", "module_id": "module_0036", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 8, "secs": 42.9, "outcome": "match", "n_findings": 14}
+{"item": "game", "game": "module_0036_qwen3-32b.json", "module_id": "module_0036", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 8, "secs": 8.6, "outcome": "match", "n_findings": 12}
+{"item": "game", "game": "module_0037_claude-sonnet-4-5.json", "module_id": "module_0037", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 4, "secs": 7.2, "outcome": "match", "n_findings": 5}
+{"item": "game", "game": "module_0037_claude-sonnet-5.json", "module_id": "module_0037", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 4, "secs": 4.1, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0037_deepseek-r1.json", "module_id": "module_0037", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 4, "secs": 4.1, "outcome": "match", "n_findings": 4}
+{"item": "game", "game": "module_0037_deepseek-v3-2.json", "module_id": "module_0037", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 4, "secs": 7.1, "outcome": "match", "n_findings": 7}
+{"item": "game", "game": "module_0037_grok-4-6.json", "module_id": "module_0037", "model_id": "grok-4-6", "hcl_valid": true, "remote_modules": 4, "secs": 3.9, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0037_kimi-k2-5.json", "module_id": "module_0037", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 4, "secs": 7.1, "outcome": "match", "n_findings": 5}
+{"item": "game", "game": "module_0037_llama-3-3-70b.json", "module_id": "module_0037", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 4, "secs": 7.2, "outcome": "match", "n_findings": 8}
+{"item": "game", "game": "module_0037_nova-lite.json", "module_id": "module_0037", "model_id": "nova-lite", "hcl_valid": true, "remote_modules": 4, "secs": 4.1, "outcome": "match", "n_findings": 9}
+{"item": "game", "game": "module_0037_nova-pro.json", "module_id": "module_0037", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 4, "secs": 7.2, "outcome": "match", "n_findings": 8}
+{"item": "game", "game": "module_0037_qwen3-32b.json", "module_id": "module_0037", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 4, "secs": 3.9, "outcome": "match", "n_findings": 5}
+{"item": "game", "game": "module_0038_claude-sonnet-4-5.json", "module_id": "module_0038", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 6, "secs": 7.3, "outcome": "match", "n_findings": 14}
+{"item": "game", "game": "module_0038_claude-sonnet-5.json", "module_id": "module_0038", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 6, "secs": 4.1, "outcome": "match", "n_findings": 1}
+{"item": "game", "game": "module_0038_deepseek-r1.json", "module_id": "module_0038", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 6, "secs": 7.3, "outcome": "match", "n_findings": 12}
+{"item": "game", "game": "module_0038_deepseek-v3-2.json", "module_id": "module_0038", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 6, "secs": 7.0, "outcome": "match", "n_findings": 8}
+{"item": "game", "game": "module_0038_grok-4-6.json", "module_id": "module_0038", "model_id": "grok-4-6", "hcl_valid": true, "remote_modules": 6, "secs": 4.3, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0038_kimi-k2-5.json", "module_id": "module_0038", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 6, "secs": 23.6, "outcome": "match", "n_findings": 14}
+{"item": "game", "game": "module_0038_llama-3-3-70b.json", "module_id": "module_0038", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 6, "secs": 7.0, "outcome": "match", "n_findings": 26}
+{"item": "game", "game": "module_0038_nova-lite.json", "module_id": "module_0038", "model_id": "nova-lite", "hcl_valid": true, "remote_modules": 6, "secs": 4.1, "outcome": "match", "n_findings": 8}
+{"item": "game", "game": "module_0038_nova-pro.json", "module_id": "module_0038", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 6, "secs": 23.5, "outcome": "match", "n_findings": 16}
+{"item": "game", "game": "module_0038_qwen3-32b.json", "module_id": "module_0038", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 6, "secs": 7.4, "outcome": "match", "n_findings": 12}
+{"item": "game", "game": "module_0039_claude-sonnet-4-5.json", "module_id": "module_0039", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 4, "secs": 7.4, "outcome": "match", "n_findings": 4}
+{"item": "game", "game": "module_0039_claude-sonnet-5.json", "module_id": "module_0039", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 4, "secs": 4.3, "outcome": "match", "n_findings": 1}
+{"item": "game", "game": "module_0039_deepseek-r1.json", "module_id": "module_0039", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 4, "secs": 6.6, "outcome": "match", "n_findings": 5}
+{"item": "game", "game": "module_0039_deepseek-v3-2.json", "module_id": "module_0039", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 4, "secs": 22.5, "outcome": "match", "n_findings": 6}
+{"item": "game", "game": "module_0039_grok-4-6.json", "module_id": "module_0039", "model_id": "grok-4-6", "hcl_valid": true, "remote_modules": 4, "secs": 4.3, "outcome": "match", "n_findings": 1}
+{"item": "game", "game": "module_0039_kimi-k2-5.json", "module_id": "module_0039", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 4, "secs": 6.7, "outcome": "match", "n_findings": 4}
+{"item": "game", "game": "module_0039_llama-3-3-70b.json", "module_id": "module_0039", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 4, "secs": 6.6, "outcome": "match", "n_findings": 8}
+{"item": "game", "game": "module_0039_nova-lite.json", "module_id": "module_0039", "model_id": "nova-lite", "hcl_valid": true, "remote_modules": 4, "secs": 23.9, "outcome": "match", "n_findings": 8}
+{"item": "game", "game": "module_0039_nova-pro.json", "module_id": "module_0039", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 4, "secs": 22.9, "outcome": "match", "n_findings": 17}
+{"item": "game", "game": "module_0039_qwen3-32b.json", "module_id": "module_0039", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 4, "secs": 6.6, "outcome": "match", "n_findings": 8}
+{"item": "game", "game": "module_0040_claude-sonnet-4-5.json", "module_id": "module_0040", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 4, "secs": 7.3, "outcome": "match", "n_findings": 5}
+{"item": "game", "game": "module_0040_claude-sonnet-5.json", "module_id": "module_0040", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 4, "secs": 4.2, "outcome": "match", "n_findings": 1}
+{"item": "game", "game": "module_0040_deepseek-r1.json", "module_id": "module_0040", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 4, "secs": 6.6, "outcome": "match", "n_findings": 8}
+{"item": "game", "game": "module_0040_deepseek-v3-2.json", "module_id": "module_0040", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 4, "secs": 6.5, "outcome": "match", "n_findings": 11}
+{"item": "game", "game": "module_0040_grok-4-6.json", "module_id": "module_0040", "model_id": "grok-4-6", "hcl_valid": true, "remote_modules": 4, "secs": 4.4, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0040_kimi-k2-5.json", "module_id": "module_0040", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 4, "secs": 6.6, "outcome": "match", "n_findings": 5}
+{"item": "game", "game": "module_0040_llama-3-3-70b.json", "module_id": "module_0040", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 4, "secs": 6.7, "outcome": "match", "n_findings": 13}
+{"item": "game", "game": "module_0040_nova-lite.json", "module_id": "module_0040", "model_id": "nova-lite", "hcl_valid": true, "remote_modules": 4, "secs": 23.2, "outcome": "match", "n_findings": 8}
+{"item": "game", "game": "module_0040_nova-pro.json", "module_id": "module_0040", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 4, "secs": 23.0, "outcome": "match", "n_findings": 14}
+{"item": "game", "game": "module_0040_qwen3-32b.json", "module_id": "module_0040", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 4, "secs": 4.2, "outcome": "match", "n_findings": 4}
+{"item": "game", "game": "module_0041_claude-sonnet-4-5.json", "module_id": "module_0041", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 6, "secs": 38.9, "outcome": "match", "n_findings": 17}
+{"item": "game", "game": "module_0041_claude-sonnet-5.json", "module_id": "module_0041", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 6, "secs": 4.3, "outcome": "match", "n_findings": 12}
+{"item": "game", "game": "module_0041_deepseek-r1.json", "module_id": "module_0041", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 6, "secs": 9.6, "outcome": "match", "n_findings": 13}
+{"item": "game", "game": "module_0041_deepseek-v3-2.json", "module_id": "module_0041", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 6, "secs": 9.5, "outcome": "match", "n_findings": 19}
+{"item": "game", "game": "module_0041_grok-4-6.json", "module_id": "module_0041", "model_id": "grok-4-6", "hcl_valid": true, "remote_modules": 6, "secs": 4.4, "outcome": "match", "n_findings": 17}
+{"item": "game", "game": "module_0041_kimi-k2-5.json", "module_id": "module_0041", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 6, "secs": 9.4, "outcome": "match", "n_findings": 12}
+{"item": "game", "game": "module_0041_llama-3-3-70b.json", "module_id": "module_0041", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 6, "secs": 40.1, "outcome": "match", "n_findings": 27}
+{"item": "game", "game": "module_0041_nova-lite.json", "module_id": "module_0041", "model_id": "nova-lite", "hcl_valid": true, "remote_modules": 6, "secs": 4.1, "outcome": "match", "n_findings": 32}
+{"item": "game", "game": "module_0041_nova-pro.json", "module_id": "module_0041", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 6, "secs": 39.2, "outcome": "match", "n_findings": 24}
+{"item": "game", "game": "module_0041_qwen3-32b.json", "module_id": "module_0041", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 6, "secs": 3.9, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0042_claude-sonnet-4-5.json", "module_id": "module_0042", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 10, "secs": 5.4, "outcome": "match", "n_findings": 16}
+{"item": "game", "game": "module_0042_claude-sonnet-5.json", "module_id": "module_0042", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 10, "secs": 4.2, "outcome": "match", "n_findings": 2}
+{"item": "game", "game": "module_0042_deepseek-r1.json", "module_id": "module_0042", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 10, "secs": 5.3, "outcome": "match", "n_findings": 14}
+{"item": "game", "game": "module_0042_deepseek-v3-2.json", "module_id": "module_0042", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 10, "secs": 5.5, "outcome": "match", "n_findings": 20}
+{"item": "game", "game": "module_0042_grok-4-6.json", "module_id": "module_0042", "model_id": "grok-4-6", "hcl_valid": false, "remote_modules": 6, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0042_kimi-k2-5.json", "module_id": "module_0042", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 10, "secs": 4.1, "outcome": "match", "n_findings": 20}
+{"item": "game", "game": "module_0042_llama-3-3-70b.json", "module_id": "module_0042", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 10, "secs": 5.5, "outcome": "match", "n_findings": 20}
+{"item": "game", "game": "module_0042_nova-lite.json", "module_id": "module_0042", "model_id": "nova-lite", "hcl_valid": true, "remote_modules": 10, "secs": 4.1, "outcome": "match", "n_findings": 15}
+{"item": "game", "game": "module_0042_nova-pro.json", "module_id": "module_0042", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 19, "secs": 6.4, "outcome": "match", "n_findings": 22}
+{"item": "game", "game": "module_0042_qwen3-32b.json", "module_id": "module_0042", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 10, "secs": 4.0, "outcome": "match", "n_findings": 23}
+{"item": "game", "game": "module_0043_claude-sonnet-4-5.json", "module_id": "module_0043", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 3, "secs": 4.7, "outcome": "match", "n_findings": 4}
+{"item": "game", "game": "module_0043_claude-sonnet-5.json", "module_id": "module_0043", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 3, "secs": 4.2, "outcome": "match", "n_findings": 1}
+{"item": "game", "game": "module_0043_deepseek-r1.json", "module_id": "module_0043", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 3, "secs": 4.1, "outcome": "match", "n_findings": 5}
+{"item": "game", "game": "module_0043_deepseek-v3-2.json", "module_id": "module_0043", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 3, "secs": 4.7, "outcome": "match", "n_findings": 9}
+{"item": "game", "game": "module_0043_grok-4-6.json", "module_id": "module_0043", "model_id": "grok-4-6", "hcl_valid": true, "remote_modules": 3, "secs": 4.3, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0043_kimi-k2-5.json", "module_id": "module_0043", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 3, "secs": 4.7, "outcome": "match", "n_findings": 4}
+{"item": "game", "game": "module_0043_llama-3-3-70b.json", "module_id": "module_0043", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 3, "secs": 4.4, "outcome": "match", "n_findings": 6}
+{"item": "game", "game": "module_0043_nova-lite.json", "module_id": "module_0043", "model_id": "nova-lite", "hcl_valid": true, "remote_modules": 3, "secs": 5.1, "outcome": "match", "n_findings": 6}
+{"item": "game", "game": "module_0043_nova-pro.json", "module_id": "module_0043", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 3, "secs": 4.7, "outcome": "match", "n_findings": 13}
+{"item": "game", "game": "module_0043_qwen3-32b.json", "module_id": "module_0043", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 3, "secs": 4.4, "outcome": "match", "n_findings": 10}
+{"item": "game", "game": "module_0044_claude-sonnet-4-5.json", "module_id": "module_0044", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 3, "secs": 7.1, "outcome": "match", "n_findings": 3}
+{"item": "game", "game": "module_0044_claude-sonnet-5.json", "module_id": "module_0044", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 3, "secs": 4.1, "outcome": "match", "n_findings": 1}
+{"item": "game", "game": "module_0044_deepseek-r1.json", "module_id": "module_0044", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 3, "secs": 7.1, "outcome": "match", "n_findings": 6}
+{"item": "game", "game": "module_0044_deepseek-v3-2.json", "module_id": "module_0044", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 3, "secs": 7.0, "outcome": "match", "n_findings": 5}
+{"item": "game", "game": "module_0044_grok-4-6.json", "module_id": "module_0044", "model_id": "grok-4-6", "hcl_valid": true, "remote_modules": 3, "secs": 4.0, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0044_kimi-k2-5.json", "module_id": "module_0044", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 3, "secs": 7.0, "outcome": "match", "n_findings": 3}
+{"item": "game", "game": "module_0044_llama-3-3-70b.json", "module_id": "module_0044", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 3, "secs": 6.8, "outcome": "match", "n_findings": 6}
+{"item": "game", "game": "module_0044_nova-lite.json", "module_id": "module_0044", "model_id": "nova-lite", "hcl_valid": true, "remote_modules": 3, "secs": 4.0, "outcome": "match", "n_findings": 4}
+{"item": "game", "game": "module_0044_nova-pro.json", "module_id": "module_0044", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 3, "secs": 23.4, "outcome": "match", "n_findings": 7}
+{"item": "game", "game": "module_0044_qwen3-32b.json", "module_id": "module_0044", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 3, "secs": 7.1, "outcome": "match", "n_findings": 11}
+{"item": "game", "game": "module_0045_claude-sonnet-4-5.json", "module_id": "module_0045", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 8, "secs": 12.2, "outcome": "match", "n_findings": 10}
+{"item": "game", "game": "module_0045_claude-sonnet-5.json", "module_id": "module_0045", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 8, "secs": 56.4, "outcome": "match", "n_findings": 9}
+{"item": "game", "game": "module_0045_deepseek-r1.json", "module_id": "module_0045", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 8, "secs": 12.1, "outcome": "match", "n_findings": 12}
+{"item": "game", "game": "module_0045_deepseek-v3-2.json", "module_id": "module_0045", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 8, "secs": 12.0, "outcome": "match", "n_findings": 14}
+{"item": "game", "game": "module_0045_grok-4-6.json", "module_id": "module_0045", "model_id": "grok-4-6", "hcl_valid": true, "remote_modules": 8, "secs": 4.4, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0045_kimi-k2-5.json", "module_id": "module_0045", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 8, "secs": 12.0, "outcome": "match", "n_findings": 10}
+{"item": "game", "game": "module_0045_llama-3-3-70b.json", "module_id": "module_0045", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 8, "secs": 9.1, "outcome": "match", "n_findings": 11}
+{"item": "game", "game": "module_0045_nova-lite.json", "module_id": "module_0045", "model_id": "nova-lite", "hcl_valid": true, "remote_modules": 8, "secs": 4.1, "outcome": "match", "n_findings": 9}
+{"item": "game", "game": "module_0045_nova-pro.json", "module_id": "module_0045", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 8, "secs": 56.8, "outcome": "match", "n_findings": 14}
+{"item": "game", "game": "module_0045_qwen3-32b.json", "module_id": "module_0045", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 8, "secs": 59.4, "outcome": "match", "n_findings": 14}
+{"item": "game", "game": "module_0046_claude-sonnet-4-5.json", "module_id": "module_0046", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 4, "secs": 4.8, "outcome": "match", "n_findings": 4}
+{"item": "game", "game": "module_0046_claude-sonnet-5.json", "module_id": "module_0046", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 4, "secs": 4.2, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0046_deepseek-r1.json", "module_id": "module_0046", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 4, "secs": 4.1, "outcome": "match", "n_findings": 9}
+{"item": "game", "game": "module_0046_deepseek-v3-2.json", "module_id": "module_0046", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 4, "secs": 43.0, "outcome": "match", "n_findings": 9}
+{"item": "game", "game": "module_0046_grok-4-6.json", "module_id": "module_0046", "model_id": "grok-4-6", "hcl_valid": true, "remote_modules": 4, "secs": 4.4, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0046_kimi-k2-5.json", "module_id": "module_0046", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 4, "secs": 42.6, "outcome": "match", "n_findings": 5}
+{"item": "game", "game": "module_0046_llama-3-3-70b.json", "module_id": "module_0046", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 4, "secs": 8.8, "outcome": "match", "n_findings": 8}
+{"item": "game", "game": "module_0046_nova-lite.json", "module_id": "module_0046", "model_id": "nova-lite", "hcl_valid": true, "remote_modules": 4, "secs": 8.5, "outcome": "match", "n_findings": 8}
+{"item": "game", "game": "module_0046_nova-pro.json", "module_id": "module_0046", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 4, "secs": 41.0, "outcome": "match", "n_findings": 11}
+{"item": "game", "game": "module_0046_qwen3-32b.json", "module_id": "module_0046", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 4, "secs": 4.1, "outcome": "match", "n_findings": 8}
+{"item": "game", "game": "module_0084_claude-sonnet-4-5.json", "module_id": "module_0084", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 1, "secs": 4.1, "outcome": "match", "n_findings": 10}
+{"item": "game", "game": "module_0084_claude-sonnet-5.json", "module_id": "module_0084", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 1, "secs": 4.1, "outcome": "match", "n_findings": 7}
+{"item": "game", "game": "module_0084_deepseek-r1.json", "module_id": "module_0084", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 1, "secs": 3.9, "outcome": "match", "n_findings": 6}
+{"item": "game", "game": "module_0084_deepseek-v3-2.json", "module_id": "module_0084", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 1, "secs": 4.0, "outcome": "match", "n_findings": 8}
+{"item": "game", "game": "module_0084_grok-4-6.json", "module_id": "module_0084", "model_id": "grok-4-6", "hcl_valid": true, "remote_modules": 1, "secs": 4.1, "outcome": "match", "n_findings": 9}
+{"item": "game", "game": "module_0084_kimi-k2-5.json", "module_id": "module_0084", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 1, "secs": 4.1, "outcome": "match", "n_findings": 10}
+{"item": "game", "game": "module_0084_llama-3-3-70b.json", "module_id": "module_0084", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 1, "secs": 4.1, "outcome": "match", "n_findings": 22}
+{"item": "game", "game": "module_0084_nova-lite.json", "module_id": "module_0084", "model_id": "nova-lite", "hcl_valid": true, "remote_modules": 1, "secs": 4.1, "outcome": "match", "n_findings": 33}
+{"item": "game", "game": "module_0084_nova-pro.json", "module_id": "module_0084", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 1, "secs": 4.2, "outcome": "match", "n_findings": 25}
+{"item": "game", "game": "module_0084_qwen3-32b.json", "module_id": "module_0084", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 1, "secs": 4.1, "outcome": "match", "n_findings": 17}
+{"item": "game", "game": "module_0095_claude-sonnet-4-5.json", "module_id": "module_0095", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 4, "secs": 5.4, "outcome": "match", "n_findings": 16}
+{"item": "game", "game": "module_0095_deepseek-r1.json", "module_id": "module_0095", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 4, "secs": 4.4, "outcome": "match", "n_findings": 10}
+{"item": "game", "game": "module_0095_deepseek-v3-2.json", "module_id": "module_0095", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 4, "secs": 5.5, "outcome": "match", "n_findings": 13}
+{"item": "game", "game": "module_0095_grok-4-6.json", "module_id": "module_0095", "model_id": "grok-4-6", "hcl_valid": true, "remote_modules": 4, "secs": 4.1, "outcome": "match", "n_findings": 6}
+{"item": "game", "game": "module_0095_kimi-k2-5.json", "module_id": "module_0095", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 4, "secs": 4.4, "outcome": "match", "n_findings": 8}
+{"item": "game", "game": "module_0095_llama-3-3-70b.json", "module_id": "module_0095", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 4, "secs": 4.4, "outcome": "match", "n_findings": 13}
+{"item": "game", "game": "module_0095_nova-lite.json", "module_id": "module_0095", "model_id": "nova-lite", "hcl_valid": true, "remote_modules": 4, "secs": 5.4, "outcome": "match", "n_findings": 17}
+{"item": "game", "game": "module_0095_nova-pro.json", "module_id": "module_0095", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 4, "secs": 5.5, "outcome": "match", "n_findings": 17}
+{"item": "game", "game": "module_0095_qwen3-32b.json", "module_id": "module_0095", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 4, "secs": 4.6, "outcome": "match", "n_findings": 13}
+{"item": "game", "game": "module_0107_claude-sonnet-4-5.json", "module_id": "module_0107", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 2, "secs": 4.5, "outcome": "match", "n_findings": 2}
+{"item": "game", "game": "module_0107_claude-sonnet-5.json", "module_id": "module_0107", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 2, "secs": 4.0, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0107_deepseek-r1.json", "module_id": "module_0107", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 2, "secs": 3.9, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0107_deepseek-v3-2.json", "module_id": "module_0107", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 2, "secs": 4.6, "outcome": "match", "n_findings": 3}
+{"item": "game", "game": "module_0107_grok-4-6.json", "module_id": "module_0107", "model_id": "grok-4-6", "hcl_valid": true, "remote_modules": 2, "secs": 4.1, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0107_kimi-k2-5.json", "module_id": "module_0107", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 2, "secs": 4.6, "outcome": "match", "n_findings": 3}
+{"item": "game", "game": "module_0107_llama-3-3-70b.json", "module_id": "module_0107", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 2, "secs": 4.6, "outcome": "match", "n_findings": 4}
+{"item": "game", "game": "module_0107_nova-lite.json", "module_id": "module_0107", "model_id": "nova-lite", "hcl_valid": true, "remote_modules": 2, "secs": 4.0, "outcome": "match", "n_findings": 2}
+{"item": "game", "game": "module_0107_nova-pro.json", "module_id": "module_0107", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 2, "secs": 4.0, "outcome": "match", "n_findings": 2}
+{"item": "game", "game": "module_0107_qwen3-32b.json", "module_id": "module_0107", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 2, "secs": 4.4, "outcome": "match", "n_findings": 5}
+{"item": "game", "game": "module_0108_claude-sonnet-4-5.json", "module_id": "module_0108", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 1, "secs": 4.3, "outcome": "match", "n_findings": 14}
+{"item": "game", "game": "module_0108_claude-sonnet-5.json", "module_id": "module_0108", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 1, "secs": 4.4, "outcome": "match", "n_findings": 5}
+{"item": "game", "game": "module_0108_deepseek-r1.json", "module_id": "module_0108", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 1, "secs": 4.3, "outcome": "match", "n_findings": 2}
+{"item": "game", "game": "module_0108_deepseek-v3-2.json", "module_id": "module_0108", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 1, "secs": 4.5, "outcome": "match", "n_findings": 11}
+{"item": "game", "game": "module_0108_grok-4-6.json", "module_id": "module_0108", "model_id": "grok-4-6", "hcl_valid": true, "remote_modules": 1, "secs": 4.2, "outcome": "match", "n_findings": 4}
+{"item": "game", "game": "module_0108_kimi-k2-5.json", "module_id": "module_0108", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 1, "secs": 4.4, "outcome": "match", "n_findings": 5}
+{"item": "game", "game": "module_0108_llama-3-3-70b.json", "module_id": "module_0108", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 1, "secs": 4.2, "outcome": "match", "n_findings": 17}
+{"item": "game", "game": "module_0108_nova-lite.json", "module_id": "module_0108", "model_id": "nova-lite", "hcl_valid": true, "remote_modules": 1, "secs": 4.1, "outcome": "match", "n_findings": 8}
+{"item": "game", "game": "module_0108_nova-pro.json", "module_id": "module_0108", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 1, "secs": 4.4, "outcome": "match", "n_findings": 16}
+{"item": "game", "game": "module_0108_qwen3-32b.json", "module_id": "module_0108", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 1, "secs": 4.4, "outcome": "match", "n_findings": 12}
+{"item": "game", "game": "module_0123_claude-sonnet-4-5.json", "module_id": "module_0123", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 1, "secs": 4.1, "outcome": "match", "n_findings": 2}
+{"item": "game", "game": "module_0123_claude-sonnet-5.json", "module_id": "module_0123", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 1, "secs": 4.1, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0123_grok-4-6.json", "module_id": "module_0123", "model_id": "grok-4-6", "hcl_valid": true, "remote_modules": 1, "secs": 4.2, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0123_kimi-k2-5.json", "module_id": "module_0123", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 1, "secs": 4.1, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0123_nova-lite.json", "module_id": "module_0123", "model_id": "nova-lite", "hcl_valid": true, "remote_modules": 1, "secs": 4.0, "outcome": "match", "n_findings": 4}
+{"item": "game", "game": "module_0123_qwen3-32b.json", "module_id": "module_0123", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 1, "secs": 4.1, "outcome": "match", "n_findings": 6}
+{"item": "game", "game": "module_0152_claude-sonnet-4-5.json", "module_id": "module_0152", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 1, "secs": 5.4, "outcome": "match", "n_findings": 25}
+{"item": "game", "game": "module_0152_claude-sonnet-5.json", "module_id": "module_0152", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 1, "secs": 5.5, "outcome": "match", "n_findings": 18}
+{"item": "game", "game": "module_0152_deepseek-r1.json", "module_id": "module_0152", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 1, "secs": 5.4, "outcome": "match", "n_findings": 19}
+{"item": "game", "game": "module_0152_deepseek-v3-2.json", "module_id": "module_0152", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 1, "secs": 5.4, "outcome": "match", "n_findings": 20}
+{"item": "game", "game": "module_0152_grok-4-6.json", "module_id": "module_0152", "model_id": "grok-4-6", "hcl_valid": false, "remote_modules": 1, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0152_kimi-k2-5.json", "module_id": "module_0152", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 1, "secs": 5.4, "outcome": "match", "n_findings": 10}
+{"item": "game", "game": "module_0152_llama-3-3-70b.json", "module_id": "module_0152", "model_id": "llama-3-3-70b", "hcl_valid": false, "remote_modules": 1, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0152_nova-lite.json", "module_id": "module_0152", "model_id": "nova-lite", "hcl_valid": true, "remote_modules": 1, "secs": 3.9, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0152_nova-pro.json", "module_id": "module_0152", "model_id": "nova-pro", "hcl_valid": false, "remote_modules": 1, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0152_qwen3-32b.json", "module_id": "module_0152", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 1, "secs": 3.9, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0154_claude-sonnet-4-5.json", "module_id": "module_0154", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 1, "secs": 4.0, "outcome": "match", "n_findings": 20}
+{"item": "game", "game": "module_0154_claude-sonnet-5.json", "module_id": "module_0154", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 1, "secs": 3.9, "outcome": "match", "n_findings": 1}
+{"item": "game", "game": "module_0154_deepseek-r1.json", "module_id": "module_0154", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 1, "secs": 4.0, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0154_deepseek-v3-2.json", "module_id": "module_0154", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 2, "secs": 4.2, "outcome": "match", "n_findings": 7}
+{"item": "game", "game": "module_0154_grok-4-6.json", "module_id": "module_0154", "model_id": "grok-4-6", "hcl_valid": true, "remote_modules": 1, "secs": 4.0, "outcome": "match", "n_findings": 7}
+{"item": "game", "game": "module_0154_kimi-k2-5.json", "module_id": "module_0154", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 1, "secs": 4.0, "outcome": "match", "n_findings": 2}
+{"item": "game", "game": "module_0154_llama-3-3-70b.json", "module_id": "module_0154", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 2, "secs": 4.1, "outcome": "match", "n_findings": 24}
+{"item": "game", "game": "module_0154_nova-lite.json", "module_id": "module_0154", "model_id": "nova-lite", "hcl_valid": true, "remote_modules": 1, "secs": 4.0, "outcome": "match", "n_findings": 8}
+{"item": "game", "game": "module_0154_nova-pro.json", "module_id": "module_0154", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 1, "secs": 4.0, "outcome": "match", "n_findings": 4}
+{"item": "game", "game": "module_0154_qwen3-32b.json", "module_id": "module_0154", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 15, "secs": 5.2, "outcome": "match", "n_findings": 31}
+{"item": "game", "game": "module_0155_claude-sonnet-4-5.json", "module_id": "module_0155", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 1, "secs": 4.4, "outcome": "match", "n_findings": 17}
+{"item": "game", "game": "module_0155_claude-sonnet-5.json", "module_id": "module_0155", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 1, "secs": 4.2, "outcome": "match", "n_findings": 3}
+{"item": "game", "game": "module_0155_deepseek-r1.json", "module_id": "module_0155", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 1, "secs": 4.3, "outcome": "match", "n_findings": 5}
+{"item": "game", "game": "module_0155_deepseek-v3-2.json", "module_id": "module_0155", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 1, "secs": 4.3, "outcome": "match", "n_findings": 18}
+{"item": "game", "game": "module_0155_grok-4-6.json", "module_id": "module_0155", "model_id": "grok-4-6", "hcl_valid": true, "remote_modules": 1, "secs": 4.3, "outcome": "match", "n_findings": 1}
+{"item": "game", "game": "module_0155_kimi-k2-5.json", "module_id": "module_0155", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 1, "secs": 4.0, "outcome": "match", "n_findings": 5}
+{"item": "game", "game": "module_0155_llama-3-3-70b.json", "module_id": "module_0155", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 1, "secs": 4.4, "outcome": "match", "n_findings": 22}
+{"item": "game", "game": "module_0155_nova-lite.json", "module_id": "module_0155", "model_id": "nova-lite", "hcl_valid": true, "remote_modules": 1, "secs": 3.9, "outcome": "match", "n_findings": 12}
+{"item": "game", "game": "module_0155_nova-pro.json", "module_id": "module_0155", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 1, "secs": 4.2, "outcome": "match", "n_findings": 13}
+{"item": "game", "game": "module_0155_qwen3-32b.json", "module_id": "module_0155", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 2, "secs": 4.3, "outcome": "match", "n_findings": 16}
+{"item": "game", "game": "module_0160_claude-sonnet-4-5.json", "module_id": "module_0160", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 2, "secs": 4.4, "outcome": "match", "n_findings": 3}
+{"item": "game", "game": "module_0160_claude-sonnet-5.json", "module_id": "module_0160", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 2, "secs": 4.1, "outcome": "match", "n_findings": 1}
+{"item": "game", "game": "module_0160_deepseek-r1.json", "module_id": "module_0160", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 2, "secs": 4.2, "outcome": "match", "n_findings": 1}
+{"item": "game", "game": "module_0160_deepseek-v3-2.json", "module_id": "module_0160", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 2, "secs": 4.5, "outcome": "match", "n_findings": 7}
+{"item": "game", "game": "module_0160_grok-4-6.json", "module_id": "module_0160", "model_id": "grok-4-6", "hcl_valid": true, "remote_modules": 2, "secs": 4.2, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0160_kimi-k2-5.json", "module_id": "module_0160", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 2, "secs": 4.1, "outcome": "match", "n_findings": 3}
+{"item": "game", "game": "module_0160_llama-3-3-70b.json", "module_id": "module_0160", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 2, "secs": 4.5, "outcome": "match", "n_findings": 3}
+{"item": "game", "game": "module_0160_nova-lite.json", "module_id": "module_0160", "model_id": "nova-lite", "hcl_valid": true, "remote_modules": 2, "secs": 4.1, "outcome": "match", "n_findings": 3}
+{"item": "game", "game": "module_0160_nova-pro.json", "module_id": "module_0160", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 2, "secs": 4.4, "outcome": "match", "n_findings": 4}
+{"item": "game", "game": "module_0160_qwen3-32b.json", "module_id": "module_0160", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 2, "secs": 4.4, "outcome": "match", "n_findings": 4}
+{"item": "game", "game": "module_0161_claude-sonnet-4-5.json", "module_id": "module_0161", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 2, "secs": 4.4, "outcome": "match", "n_findings": 3}
+{"item": "game", "game": "module_0161_claude-sonnet-5.json", "module_id": "module_0161", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 2, "secs": 4.2, "outcome": "match", "n_findings": 1}
+{"item": "game", "game": "module_0161_deepseek-r1.json", "module_id": "module_0161", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 2, "secs": 4.1, "outcome": "match", "n_findings": 1}
+{"item": "game", "game": "module_0161_deepseek-v3-2.json", "module_id": "module_0161", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 2, "secs": 4.4, "outcome": "match", "n_findings": 3}
+{"item": "game", "game": "module_0161_grok-4-6.json", "module_id": "module_0161", "model_id": "grok-4-6", "hcl_valid": true, "remote_modules": 2, "secs": 4.2, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0161_kimi-k2-5.json", "module_id": "module_0161", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 2, "secs": 4.0, "outcome": "match", "n_findings": 3}
+{"item": "game", "game": "module_0161_llama-3-3-70b.json", "module_id": "module_0161", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 2, "secs": 4.4, "outcome": "match", "n_findings": 3}
+{"item": "game", "game": "module_0161_nova-lite.json", "module_id": "module_0161", "model_id": "nova-lite", "hcl_valid": true, "remote_modules": 2, "secs": 4.0, "outcome": "match", "n_findings": 5}
+{"item": "game", "game": "module_0161_nova-pro.json", "module_id": "module_0161", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 2, "secs": 4.0, "outcome": "match", "n_findings": 3}
+{"item": "game", "game": "module_0161_qwen3-32b.json", "module_id": "module_0161", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 2, "secs": 4.4, "outcome": "match", "n_findings": 4}
+{"item": "game", "game": "module_0162_claude-sonnet-4-5.json", "module_id": "module_0162", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 4, "secs": 4.7, "outcome": "match", "n_findings": 14}
+{"item": "game", "game": "module_0162_claude-sonnet-5.json", "module_id": "module_0162", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 3, "secs": 4.1, "outcome": "match", "n_findings": 2}
+{"item": "game", "game": "module_0162_deepseek-r1.json", "module_id": "module_0162", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 3, "secs": 4.5, "outcome": "match", "n_findings": 4}
+{"item": "game", "game": "module_0162_deepseek-v3-2.json", "module_id": "module_0162", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 4, "secs": 4.6, "outcome": "match", "n_findings": 15}
+{"item": "game", "game": "module_0162_grok-4-6.json", "module_id": "module_0162", "model_id": "grok-4-6", "hcl_valid": true, "remote_modules": 3, "secs": 4.1, "outcome": "match", "n_findings": 1}
+{"item": "game", "game": "module_0162_kimi-k2-5.json", "module_id": "module_0162", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 3, "secs": 4.4, "outcome": "match", "n_findings": 6}
+{"item": "game", "game": "module_0162_llama-3-3-70b.json", "module_id": "module_0162", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 4, "secs": 4.5, "outcome": "match", "n_findings": 7}
+{"item": "game", "game": "module_0162_nova-lite.json", "module_id": "module_0162", "model_id": "nova-lite", "hcl_valid": true, "remote_modules": 3, "secs": 4.0, "outcome": "match", "n_findings": 7}
+{"item": "game", "game": "module_0162_nova-pro.json", "module_id": "module_0162", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 3, "secs": 4.0, "outcome": "match", "n_findings": 4}
+{"item": "game", "game": "module_0162_qwen3-32b.json", "module_id": "module_0162", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 3, "secs": 4.6, "outcome": "match", "n_findings": 9}
+{"item": "game", "game": "module_0195_claude-sonnet-4-5.json", "module_id": "module_0195", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 2, "secs": 4.8, "outcome": "match", "n_findings": 3}
+{"item": "game", "game": "module_0195_claude-sonnet-5.json", "module_id": "module_0195", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 2, "secs": 4.2, "outcome": "match", "n_findings": 1}
+{"item": "game", "game": "module_0195_deepseek-r1.json", "module_id": "module_0195", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 2, "secs": 4.2, "outcome": "match", "n_findings": 1}
+{"item": "game", "game": "module_0195_deepseek-v3-2.json", "module_id": "module_0195", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 2, "secs": 4.7, "outcome": "match", "n_findings": 7}
+{"item": "game", "game": "module_0195_grok-4-6.json", "module_id": "module_0195", "model_id": "grok-4-6", "hcl_valid": true, "remote_modules": 2, "secs": 4.4, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0195_kimi-k2-5.json", "module_id": "module_0195", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 2, "secs": 4.2, "outcome": "match", "n_findings": 4}
+{"item": "game", "game": "module_0195_llama-3-3-70b.json", "module_id": "module_0195", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 8, "secs": 5.9, "outcome": "match", "n_findings": 24}
+{"item": "game", "game": "module_0195_nova-lite.json", "module_id": "module_0195", "model_id": "nova-lite", "hcl_valid": true, "remote_modules": 2, "secs": 4.1, "outcome": "match", "n_findings": 5}
+{"item": "game", "game": "module_0195_nova-pro.json", "module_id": "module_0195", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 2, "secs": 3.9, "outcome": "match", "n_findings": 3}
+{"item": "game", "game": "module_0195_qwen3-32b.json", "module_id": "module_0195", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 14, "secs": 5.0, "outcome": "match", "n_findings": 35}
+{"item": "game", "game": "module_0202_claude-sonnet-4-5.json", "module_id": "module_0202", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 1, "secs": 4.3, "outcome": "match", "n_findings": 23}
+{"item": "game", "game": "module_0202_claude-sonnet-5.json", "module_id": "module_0202", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 1, "secs": 4.0, "outcome": "match", "n_findings": 3}
+{"item": "game", "game": "module_0202_deepseek-r1.json", "module_id": "module_0202", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 1, "secs": 4.0, "outcome": "match", "n_findings": 3}
+{"item": "game", "game": "module_0202_deepseek-v3-2.json", "module_id": "module_0202", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 1, "secs": 4.2, "outcome": "match", "n_findings": 29}
+{"item": "game", "game": "module_0202_grok-4-6.json", "module_id": "module_0202", "model_id": "grok-4-6", "hcl_valid": true, "remote_modules": 1, "secs": 4.1, "outcome": "match", "n_findings": 2}
+{"item": "game", "game": "module_0202_kimi-k2-5.json", "module_id": "module_0202", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 1, "secs": 4.0, "outcome": "match", "n_findings": 6}
+{"item": "game", "game": "module_0202_llama-3-3-70b.json", "module_id": "module_0202", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 1, "secs": 4.0, "outcome": "match", "n_findings": 10}
+{"item": "game", "game": "module_0202_nova-lite.json", "module_id": "module_0202", "model_id": "nova-lite", "hcl_valid": true, "remote_modules": 1, "secs": 4.0, "outcome": "match", "n_findings": 9}
+{"item": "game", "game": "module_0202_nova-pro.json", "module_id": "module_0202", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 1, "secs": 4.0, "outcome": "match", "n_findings": 10}
+{"item": "game", "game": "module_0202_qwen3-32b.json", "module_id": "module_0202", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 1, "secs": 4.0, "outcome": "match", "n_findings": 8}
+{"item": "game", "game": "module_0204_claude-sonnet-4-5.json", "module_id": "module_0204", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 1, "secs": 4.2, "outcome": "match", "n_findings": 26}
+{"item": "game", "game": "module_0204_claude-sonnet-5.json", "module_id": "module_0204", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 1, "secs": 4.1, "outcome": "match", "n_findings": 18}
+{"item": "game", "game": "module_0204_deepseek-r1.json", "module_id": "module_0204", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 1, "secs": 4.1, "outcome": "match", "n_findings": 6}
+{"item": "game", "game": "module_0204_deepseek-v3-2.json", "module_id": "module_0204", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 1, "secs": 4.2, "outcome": "match", "n_findings": 24}
+{"item": "game", "game": "module_0204_grok-4-6.json", "module_id": "module_0204", "model_id": "grok-4-6", "hcl_valid": true, "remote_modules": 1, "secs": 4.4, "outcome": "match", "n_findings": 31}
+{"item": "game", "game": "module_0204_kimi-k2-5.json", "module_id": "module_0204", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 1, "secs": 4.4, "outcome": "match", "n_findings": 19}
+{"item": "game", "game": "module_0204_llama-3-3-70b.json", "module_id": "module_0204", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 1, "secs": 4.2, "outcome": "match", "n_findings": 27}
+{"item": "game", "game": "module_0204_nova-lite.json", "module_id": "module_0204", "model_id": "nova-lite", "hcl_valid": true, "remote_modules": 1, "secs": 4.3, "outcome": "match", "n_findings": 12}
+{"item": "game", "game": "module_0204_nova-pro.json", "module_id": "module_0204", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 1, "secs": 4.1, "outcome": "match", "n_findings": 10}
+{"item": "game", "game": "module_0204_qwen3-32b.json", "module_id": "module_0204", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 1, "secs": 4.1, "outcome": "match", "n_findings": 11}
+{"item": "game", "game": "module_0211_claude-sonnet-4-5.json", "module_id": "module_0211", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 4, "secs": 4.8, "outcome": "match", "n_findings": 28}
+{"item": "game", "game": "module_0211_claude-sonnet-5.json", "module_id": "module_0211", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 2, "secs": 4.2, "outcome": "match", "n_findings": 2}
+{"item": "game", "game": "module_0211_deepseek-r1.json", "module_id": "module_0211", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 2, "secs": 4.4, "outcome": "match", "n_findings": 2}
+{"item": "game", "game": "module_0211_deepseek-v3-2.json", "module_id": "module_0211", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 2, "secs": 4.4, "outcome": "match", "n_findings": 4}
+{"item": "game", "game": "module_0211_grok-4-6.json", "module_id": "module_0211", "model_id": "grok-4-6", "hcl_valid": true, "remote_modules": 2, "secs": 4.4, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0211_kimi-k2-5.json", "module_id": "module_0211", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 2, "secs": 4.8, "outcome": "match", "n_findings": 27}
+{"item": "game", "game": "module_0211_nova-pro.json", "module_id": "module_0211", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 2, "secs": 3.9, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0211_qwen3-32b.json", "module_id": "module_0211", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 2, "secs": 4.4, "outcome": "match", "n_findings": 7}
+{"item": "game", "game": "module_0214_claude-sonnet-4-5.json", "module_id": "module_0214", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 4, "secs": 4.6, "outcome": "match", "n_findings": 5}
+{"item": "game", "game": "module_0214_claude-sonnet-5.json", "module_id": "module_0214", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 4, "secs": 4.0, "outcome": "match", "n_findings": 1}
+{"item": "game", "game": "module_0214_deepseek-r1.json", "module_id": "module_0214", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 4, "secs": 4.5, "outcome": "match", "n_findings": 6}
+{"item": "game", "game": "module_0214_deepseek-v3-2.json", "module_id": "module_0214", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 4, "secs": 4.7, "outcome": "match", "n_findings": 6}
+{"item": "game", "game": "module_0214_grok-4-6.json", "module_id": "module_0214", "model_id": "grok-4-6", "hcl_valid": true, "remote_modules": 4, "secs": 4.0, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0214_kimi-k2-5.json", "module_id": "module_0214", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 4, "secs": 4.6, "outcome": "match", "n_findings": 6}
+{"item": "game", "game": "module_0214_llama-3-3-70b.json", "module_id": "module_0214", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 4, "secs": 4.6, "outcome": "match", "n_findings": 7}
+{"item": "game", "game": "module_0214_nova-lite.json", "module_id": "module_0214", "model_id": "nova-lite", "hcl_valid": true, "remote_modules": 4, "secs": 4.6, "outcome": "match", "n_findings": 11}
+{"item": "game", "game": "module_0214_nova-pro.json", "module_id": "module_0214", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 4, "secs": 4.6, "outcome": "match", "n_findings": 10}
+{"item": "game", "game": "module_0214_qwen3-32b.json", "module_id": "module_0214", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 4, "secs": 4.2, "outcome": "match", "n_findings": 7}
+{"item": "game", "game": "module_0215_claude-sonnet-4-5.json", "module_id": "module_0215", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 7, "secs": 5.2, "outcome": "match", "n_findings": 10}
+{"item": "game", "game": "module_0215_claude-sonnet-5.json", "module_id": "module_0215", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 7, "secs": 4.3, "outcome": "match", "n_findings": 1}
+{"item": "game", "game": "module_0215_deepseek-r1.json", "module_id": "module_0215", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 7, "secs": 5.3, "outcome": "match", "n_findings": 10}
+{"item": "game", "game": "module_0215_deepseek-v3-2.json", "module_id": "module_0215", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 7, "secs": 4.3, "outcome": "match", "n_findings": 9}
+{"item": "game", "game": "module_0215_grok-4-6.json", "module_id": "module_0215", "model_id": "grok-4-6", "hcl_valid": true, "remote_modules": 7, "secs": 4.4, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0215_kimi-k2-5.json", "module_id": "module_0215", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 7, "secs": 5.2, "outcome": "match", "n_findings": 10}
+{"item": "game", "game": "module_0215_llama-3-3-70b.json", "module_id": "module_0215", "model_id": "llama-3-3-70b", "hcl_valid": false, "remote_modules": 7, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0215_nova-lite.json", "module_id": "module_0215", "model_id": "nova-lite", "hcl_valid": true, "remote_modules": 7, "secs": 4.4, "outcome": "match", "n_findings": 10}
+{"item": "game", "game": "module_0215_nova-pro.json", "module_id": "module_0215", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 7, "secs": 5.3, "outcome": "match", "n_findings": 14}
+{"item": "game", "game": "module_0215_qwen3-32b.json", "module_id": "module_0215", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 7, "secs": 5.2, "outcome": "match", "n_findings": 14}
+{"item": "game", "game": "module_0224_claude-sonnet-4-5.json", "module_id": "module_0224", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 35, "secs": 6.4, "outcome": "match", "n_findings": 52}
+{"item": "game", "game": "module_0224_claude-sonnet-5.json", "module_id": "module_0224", "model_id": "claude-sonnet-5", "hcl_valid": false, "remote_modules": 27, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0224_deepseek-r1.json", "module_id": "module_0224", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 35, "secs": 6.3, "outcome": "match", "n_findings": 3}
+{"item": "game", "game": "module_0224_deepseek-v3-2.json", "module_id": "module_0224", "model_id": "deepseek-v3-2", "hcl_valid": false, "remote_modules": 23, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0224_kimi-k2-5.json", "module_id": "module_0224", "model_id": "kimi-k2-5", "hcl_valid": false, "remote_modules": 19, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0224_llama-3-3-70b.json", "module_id": "module_0224", "model_id": "llama-3-3-70b", "hcl_valid": false, "remote_modules": 19, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0224_nova-lite.json", "module_id": "module_0224", "model_id": "nova-lite", "hcl_valid": false, "remote_modules": 11, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0224_nova-pro.json", "module_id": "module_0224", "model_id": "nova-pro", "hcl_valid": false, "remote_modules": 11, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0236_claude-sonnet-4-5.json", "module_id": "module_0236", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 9, "secs": 10.5, "outcome": "match", "n_findings": 86}
+{"item": "game", "game": "module_0236_claude-sonnet-5.json", "module_id": "module_0236", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 4, "secs": 4.0, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0236_deepseek-r1.json", "module_id": "module_0236", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 7, "secs": 4.5, "outcome": "match", "n_findings": 22}
+{"item": "game", "game": "module_0236_deepseek-v3-2.json", "module_id": "module_0236", "model_id": "deepseek-v3-2", "hcl_valid": false, "remote_modules": 5, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0236_grok-4-6.json", "module_id": "module_0236", "model_id": "grok-4-6", "hcl_valid": false, "remote_modules": 5, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0236_kimi-k2-5.json", "module_id": "module_0236", "model_id": "kimi-k2-5", "hcl_valid": false, "remote_modules": 5, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0236_llama-3-3-70b.json", "module_id": "module_0236", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 5, "secs": 4.4, "outcome": "match", "n_findings": 11}
+{"item": "game", "game": "module_0236_nova-lite.json", "module_id": "module_0236", "model_id": "nova-lite", "hcl_valid": false, "remote_modules": 3, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0236_nova-pro.json", "module_id": "module_0236", "model_id": "nova-pro", "hcl_valid": false, "remote_modules": 3, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0237_claude-sonnet-4-5.json", "module_id": "module_0237", "model_id": "claude-sonnet-4-5", "hcl_valid": false, "remote_modules": 6, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0237_claude-sonnet-5.json", "module_id": "module_0237", "model_id": "claude-sonnet-5", "hcl_valid": false, "remote_modules": 4, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0237_deepseek-r1.json", "module_id": "module_0237", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 1, "secs": 4.1, "outcome": "match", "n_findings": 19}
+{"item": "game", "game": "module_0237_deepseek-v3-2.json", "module_id": "module_0237", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 3, "secs": 3.9, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0237_grok-4-6.json", "module_id": "module_0237", "model_id": "grok-4-6", "hcl_valid": false, "remote_modules": 3, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0237_kimi-k2-5.json", "module_id": "module_0237", "model_id": "kimi-k2-5", "hcl_valid": false, "remote_modules": 4, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0237_nova-pro.json", "module_id": "module_0237", "model_id": "nova-pro", "hcl_valid": false, "remote_modules": 2, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0240_claude-sonnet-4-5.json", "module_id": "module_0240", "model_id": "claude-sonnet-4-5", "hcl_valid": false, "remote_modules": 3, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0240_claude-sonnet-5.json", "module_id": "module_0240", "model_id": "claude-sonnet-5", "hcl_valid": false, "remote_modules": 3, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0240_deepseek-r1.json", "module_id": "module_0240", "model_id": "deepseek-r1", "hcl_valid": false, "remote_modules": 3, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0240_deepseek-v3-2.json", "module_id": "module_0240", "model_id": "deepseek-v3-2", "hcl_valid": false, "remote_modules": 3, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0240_grok-4-6.json", "module_id": "module_0240", "model_id": "grok-4-6", "hcl_valid": false, "remote_modules": 1, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0240_kimi-k2-5.json", "module_id": "module_0240", "model_id": "kimi-k2-5", "hcl_valid": false, "remote_modules": 3, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0240_llama-3-3-70b.json", "module_id": "module_0240", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 4, "secs": 4.2, "outcome": "match", "n_findings": 5}
+{"item": "game", "game": "module_0240_nova-lite.json", "module_id": "module_0240", "model_id": "nova-lite", "hcl_valid": false, "remote_modules": 1, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0240_nova-pro.json", "module_id": "module_0240", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 4, "secs": 4.2, "outcome": "match", "n_findings": 9}
+{"item": "game", "game": "module_0299_claude-sonnet-4-5.json", "module_id": "module_0299", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 12, "secs": 7.6, "outcome": "match", "n_findings": 35}
+{"item": "game", "game": "module_0299_claude-sonnet-5.json", "module_id": "module_0299", "model_id": "claude-sonnet-5", "hcl_valid": false, "remote_modules": 10, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0299_deepseek-r1.json", "module_id": "module_0299", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 12, "secs": 7.9, "outcome": "match", "n_findings": 5}
+{"item": "game", "game": "module_0299_deepseek-v3-2.json", "module_id": "module_0299", "model_id": "deepseek-v3-2", "hcl_valid": false, "remote_modules": 12, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0299_grok-4-6.json", "module_id": "module_0299", "model_id": "grok-4-6", "hcl_valid": false, "remote_modules": 10, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0299_kimi-k2-5.json", "module_id": "module_0299", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 12, "secs": 7.4, "outcome": "match", "n_findings": 5}
+{"item": "game", "game": "module_0299_llama-3-3-70b.json", "module_id": "module_0299", "model_id": "llama-3-3-70b", "hcl_valid": false, "remote_modules": 10, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0299_nova-lite.json", "module_id": "module_0299", "model_id": "nova-lite", "hcl_valid": false, "remote_modules": 10, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0299_nova-pro.json", "module_id": "module_0299", "model_id": "nova-pro", "hcl_valid": false, "remote_modules": 10, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0315_claude-sonnet-4-5.json", "module_id": "module_0315", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 4, "secs": 4.1, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0315_claude-sonnet-5.json", "module_id": "module_0315", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 5, "secs": 4.1, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0315_deepseek-r1.json", "module_id": "module_0315", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 4, "secs": 4.1, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0315_deepseek-v3-2.json", "module_id": "module_0315", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 4, "secs": 4.1, "outcome": "match", "n_findings": 4}
+{"item": "game", "game": "module_0315_grok-4-6.json", "module_id": "module_0315", "model_id": "grok-4-6", "hcl_valid": true, "remote_modules": 5, "secs": 4.1, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0315_kimi-k2-5.json", "module_id": "module_0315", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 5, "secs": 4.2, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0315_llama-3-3-70b.json", "module_id": "module_0315", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 5, "secs": 4.2, "outcome": "match", "n_findings": 4}
+{"item": "game", "game": "module_0315_nova-lite.json", "module_id": "module_0315", "model_id": "nova-lite", "hcl_valid": true, "remote_modules": 5, "secs": 4.3, "outcome": "match", "n_findings": 15}
+{"item": "game", "game": "module_0315_nova-pro.json", "module_id": "module_0315", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 4, "secs": 4.4, "outcome": "match", "n_findings": 12}
+{"item": "game", "game": "module_0315_qwen3-32b.json", "module_id": "module_0315", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 5, "secs": 4.4, "outcome": "match", "n_findings": 23}
+{"item": "game", "game": "module_0316_claude-sonnet-4-5.json", "module_id": "module_0316", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 3, "secs": 3.9, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0316_claude-sonnet-5.json", "module_id": "module_0316", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 4, "secs": 4.0, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0316_deepseek-r1.json", "module_id": "module_0316", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 3, "secs": 4.0, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0316_deepseek-v3-2.json", "module_id": "module_0316", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 3, "secs": 4.0, "outcome": "match", "n_findings": 8}
+{"item": "game", "game": "module_0316_kimi-k2-5.json", "module_id": "module_0316", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 4, "secs": 3.9, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0316_llama-3-3-70b.json", "module_id": "module_0316", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 4, "secs": 4.0, "outcome": "match", "n_findings": 4}
+{"item": "game", "game": "module_0316_nova-lite.json", "module_id": "module_0316", "model_id": "nova-lite", "hcl_valid": true, "remote_modules": 4, "secs": 4.0, "outcome": "match", "n_findings": 9}
+{"item": "game", "game": "module_0316_nova-pro.json", "module_id": "module_0316", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 3, "secs": 4.0, "outcome": "match", "n_findings": 9}
+{"item": "game", "game": "module_0316_qwen3-32b.json", "module_id": "module_0316", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 4, "secs": 3.9, "outcome": "match", "n_findings": 3}
+{"item": "game", "game": "module_0317_claude-sonnet-4-5.json", "module_id": "module_0317", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 3, "secs": 3.9, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0317_claude-sonnet-5.json", "module_id": "module_0317", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 4, "secs": 4.2, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0317_deepseek-r1.json", "module_id": "module_0317", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 3, "secs": 4.1, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0317_deepseek-v3-2.json", "module_id": "module_0317", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 3, "secs": 4.2, "outcome": "match", "n_findings": 9}
+{"item": "game", "game": "module_0317_grok-4-6.json", "module_id": "module_0317", "model_id": "grok-4-6", "hcl_valid": true, "remote_modules": 4, "secs": 4.1, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0317_kimi-k2-5.json", "module_id": "module_0317", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 4, "secs": 4.0, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0317_llama-3-3-70b.json", "module_id": "module_0317", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 4, "secs": 4.1, "outcome": "match", "n_findings": 25}
+{"item": "game", "game": "module_0317_nova-lite.json", "module_id": "module_0317", "model_id": "nova-lite", "hcl_valid": true, "remote_modules": 4, "secs": 4.0, "outcome": "match", "n_findings": 9}
+{"item": "game", "game": "module_0317_nova-pro.json", "module_id": "module_0317", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 3, "secs": 4.0, "outcome": "match", "n_findings": 10}
+{"item": "game", "game": "module_0317_qwen3-32b.json", "module_id": "module_0317", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 4, "secs": 4.1, "outcome": "match", "n_findings": 23}
+{"item": "game", "game": "module_0318_claude-sonnet-4-5.json", "module_id": "module_0318", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 4, "secs": 4.1, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0318_claude-sonnet-5.json", "module_id": "module_0318", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 5, "secs": 4.1, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0318_deepseek-r1.json", "module_id": "module_0318", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 4, "secs": 4.2, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0318_deepseek-v3-2.json", "module_id": "module_0318", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 4, "secs": 4.3, "outcome": "match", "n_findings": 10}
+{"item": "game", "game": "module_0318_grok-4-6.json", "module_id": "module_0318", "model_id": "grok-4-6", "hcl_valid": true, "remote_modules": 5, "secs": 4.2, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0318_kimi-k2-5.json", "module_id": "module_0318", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 5, "secs": 4.2, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0318_llama-3-3-70b.json", "module_id": "module_0318", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 5, "secs": 4.2, "outcome": "match", "n_findings": 9}
+{"item": "game", "game": "module_0318_nova-lite.json", "module_id": "module_0318", "model_id": "nova-lite", "hcl_valid": true, "remote_modules": 5, "secs": 4.2, "outcome": "match", "n_findings": 15}
+{"item": "game", "game": "module_0318_nova-pro.json", "module_id": "module_0318", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 4, "secs": 4.2, "outcome": "match", "n_findings": 11}
+{"item": "game", "game": "module_0318_qwen3-32b.json", "module_id": "module_0318", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 5, "secs": 4.1, "outcome": "match", "n_findings": 7}
+{"item": "game", "game": "module_0319_claude-sonnet-4-5.json", "module_id": "module_0319", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 3, "secs": 3.9, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0319_claude-sonnet-5.json", "module_id": "module_0319", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 5, "secs": 4.0, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0319_deepseek-r1.json", "module_id": "module_0319", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 3, "secs": 4.0, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0319_deepseek-v3-2.json", "module_id": "module_0319", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 3, "secs": 4.0, "outcome": "match", "n_findings": 8}
+{"item": "game", "game": "module_0319_grok-4-6.json", "module_id": "module_0319", "model_id": "grok-4-6", "hcl_valid": true, "remote_modules": 5, "secs": 4.1, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0319_kimi-k2-5.json", "module_id": "module_0319", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 5, "secs": 4.0, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0319_llama-3-3-70b.json", "module_id": "module_0319", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 3, "secs": 4.0, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0319_nova-lite.json", "module_id": "module_0319", "model_id": "nova-lite", "hcl_valid": true, "remote_modules": 5, "secs": 4.4, "outcome": "match", "n_findings": 26}
+{"item": "game", "game": "module_0319_nova-pro.json", "module_id": "module_0319", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 3, "secs": 4.1, "outcome": "match", "n_findings": 9}
+{"item": "game", "game": "module_0319_qwen3-32b.json", "module_id": "module_0319", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 5, "secs": 3.9, "outcome": "match", "n_findings": 3}
+{"item": "game", "game": "module_0332_claude-sonnet-4-5.json", "module_id": "module_0332", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 8, "secs": 6.2, "outcome": "match", "n_findings": 18}
+{"item": "game", "game": "module_0332_claude-sonnet-5.json", "module_id": "module_0332", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 8, "secs": 5.6, "outcome": "match", "n_findings": 14}
+{"item": "game", "game": "module_0332_deepseek-r1.json", "module_id": "module_0332", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 8, "secs": 5.3, "outcome": "match", "n_findings": 8}
+{"item": "game", "game": "module_0332_deepseek-v3-2.json", "module_id": "module_0332", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 8, "secs": 6.1, "outcome": "match", "n_findings": 33}
+{"item": "game", "game": "module_0332_grok-4-6.json", "module_id": "module_0332", "model_id": "grok-4-6", "hcl_valid": true, "remote_modules": 8, "secs": 5.6, "outcome": "match", "n_findings": 13}
+{"item": "game", "game": "module_0332_kimi-k2-5.json", "module_id": "module_0332", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 8, "secs": 5.3, "outcome": "match", "n_findings": 6}
+{"item": "game", "game": "module_0332_llama-3-3-70b.json", "module_id": "module_0332", "model_id": "llama-3-3-70b", "hcl_valid": false, "remote_modules": 9, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0332_nova-lite.json", "module_id": "module_0332", "model_id": "nova-lite", "hcl_valid": false, "remote_modules": 8, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0332_nova-pro.json", "module_id": "module_0332", "model_id": "nova-pro", "hcl_valid": false, "remote_modules": 8, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0332_qwen3-32b.json", "module_id": "module_0332", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 8, "secs": 3.8, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0333_claude-sonnet-4-5.json", "module_id": "module_0333", "model_id": "claude-sonnet-4-5", "hcl_valid": false, "remote_modules": 1, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0333_deepseek-r1.json", "module_id": "module_0333", "model_id": "deepseek-r1", "hcl_valid": false, "remote_modules": 1, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0334_claude-sonnet-4-5.json", "module_id": "module_0334", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 5, "secs": 4.3, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0334_claude-sonnet-5.json", "module_id": "module_0334", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 5, "secs": 4.4, "outcome": "match", "n_findings": 1}
+{"item": "game", "game": "module_0334_deepseek-r1.json", "module_id": "module_0334", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 5, "secs": 4.3, "outcome": "match", "n_findings": 1}
+{"item": "game", "game": "module_0334_deepseek-v3-2.json", "module_id": "module_0334", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 5, "secs": 4.6, "outcome": "match", "n_findings": 6}
+{"item": "game", "game": "module_0334_grok-4-6.json", "module_id": "module_0334", "model_id": "grok-4-6", "hcl_valid": true, "remote_modules": 5, "secs": 4.5, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0334_kimi-k2-5.json", "module_id": "module_0334", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 5, "secs": 4.5, "outcome": "match", "n_findings": 6}
+{"item": "game", "game": "module_0334_llama-3-3-70b.json", "module_id": "module_0334", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 5, "secs": 4.3, "outcome": "match", "n_findings": 6}
+{"item": "game", "game": "module_0334_nova-lite.json", "module_id": "module_0334", "model_id": "nova-lite", "hcl_valid": true, "remote_modules": 5, "secs": 4.2, "outcome": "match", "n_findings": 11}
+{"item": "game", "game": "module_0334_nova-pro.json", "module_id": "module_0334", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 5, "secs": 4.5, "outcome": "match", "n_findings": 7}
+{"item": "game", "game": "module_0334_qwen3-32b.json", "module_id": "module_0334", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 5, "secs": 4.3, "outcome": "match", "n_findings": 7}
+{"item": "game", "game": "module_0365_claude-sonnet-4-5.json", "module_id": "module_0365", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 12, "secs": 44.1, "outcome": "match", "n_findings": 27}
+{"item": "game", "game": "module_0365_claude-sonnet-5.json", "module_id": "module_0365", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 12, "secs": 5.0, "outcome": "match", "n_findings": 2}
+{"item": "game", "game": "module_0365_deepseek-r1.json", "module_id": "module_0365", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 12, "secs": 5.0, "outcome": "match", "n_findings": 11}
+{"item": "game", "game": "module_0365_deepseek-v3-2.json", "module_id": "module_0365", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 12, "secs": 44.6, "outcome": "match", "n_findings": 27}
+{"item": "game", "game": "module_0365_grok-4-6.json", "module_id": "module_0365", "model_id": "grok-4-6", "hcl_valid": false, "remote_modules": 10, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0365_kimi-k2-5.json", "module_id": "module_0365", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 12, "secs": 44.1, "outcome": "match", "n_findings": 24}
+{"item": "game", "game": "module_0365_llama-3-3-70b.json", "module_id": "module_0365", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 7, "secs": 45.1, "outcome": "match", "n_findings": 23}
+{"item": "game", "game": "module_0365_nova-lite.json", "module_id": "module_0365", "model_id": "nova-lite", "hcl_valid": false, "remote_modules": 8, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0365_nova-pro.json", "module_id": "module_0365", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 9, "secs": 3.9, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0365_qwen3-32b.json", "module_id": "module_0365", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 12, "secs": 4.9, "outcome": "match", "n_findings": 16}
+{"item": "game", "game": "module_0366_claude-sonnet-4-5.json", "module_id": "module_0366", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 12, "secs": 47.7, "outcome": "match", "n_findings": 31}
+{"item": "game", "game": "module_0366_claude-sonnet-5.json", "module_id": "module_0366", "model_id": "claude-sonnet-5", "hcl_valid": false, "remote_modules": 8, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0366_deepseek-r1.json", "module_id": "module_0366", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 12, "secs": 5.2, "outcome": "match", "n_findings": 2}
+{"item": "game", "game": "module_0366_deepseek-v3-2.json", "module_id": "module_0366", "model_id": "deepseek-v3-2", "hcl_valid": false, "remote_modules": 8, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0366_kimi-k2-5.json", "module_id": "module_0366", "model_id": "kimi-k2-5", "hcl_valid": false, "remote_modules": 8, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0366_llama-3-3-70b.json", "module_id": "module_0366", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 3, "secs": 3.8, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0366_nova-lite.json", "module_id": "module_0366", "model_id": "nova-lite", "hcl_valid": false, "remote_modules": 1, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0366_nova-pro.json", "module_id": "module_0366", "model_id": "nova-pro", "hcl_valid": false, "remote_modules": 1, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0367_claude-sonnet-4-5.json", "module_id": "module_0367", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 7, "secs": 5.9, "outcome": "match", "n_findings": 27}
+{"item": "game", "game": "module_0367_claude-sonnet-5.json", "module_id": "module_0367", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 7, "secs": 4.3, "outcome": "match", "n_findings": 3}
+{"item": "game", "game": "module_0367_deepseek-r1.json", "module_id": "module_0367", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 7, "secs": 5.6, "outcome": "match", "n_findings": 13}
+{"item": "game", "game": "module_0367_deepseek-v3-2.json", "module_id": "module_0367", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 7, "secs": 5.8, "outcome": "match", "n_findings": 10}
+{"item": "game", "game": "module_0367_grok-4-6.json", "module_id": "module_0367", "model_id": "grok-4-6", "hcl_valid": true, "remote_modules": 7, "secs": 4.4, "outcome": "match", "n_findings": 1}
+{"item": "game", "game": "module_0367_kimi-k2-5.json", "module_id": "module_0367", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 7, "secs": 5.9, "outcome": "match", "n_findings": 14}
+{"item": "game", "game": "module_0367_llama-3-3-70b.json", "module_id": "module_0367", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 7, "secs": 5.7, "outcome": "match", "n_findings": 21}
+{"item": "game", "game": "module_0367_nova-lite.json", "module_id": "module_0367", "model_id": "nova-lite", "hcl_valid": true, "remote_modules": 7, "secs": 4.0, "outcome": "match", "n_findings": 11}
+{"item": "game", "game": "module_0367_nova-pro.json", "module_id": "module_0367", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 7, "secs": 4.2, "outcome": "match", "n_findings": 10}
+{"item": "game", "game": "module_0367_qwen3-32b.json", "module_id": "module_0367", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 7, "secs": 4.1, "outcome": "match", "n_findings": 10}
+{"item": "game", "game": "module_0370_claude-sonnet-4-5.json", "module_id": "module_0370", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 11, "secs": 4.7, "outcome": "match", "n_findings": 18}
+{"item": "game", "game": "module_0370_claude-sonnet-5.json", "module_id": "module_0370", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 11, "secs": 11.4, "outcome": "match", "n_findings": 15}
+{"item": "game", "game": "module_0370_deepseek-r1.json", "module_id": "module_0370", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 11, "secs": 11.2, "outcome": "match", "n_findings": 20}
+{"item": "game", "game": "module_0370_deepseek-v3-2.json", "module_id": "module_0370", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 11, "secs": 45.8, "outcome": "match", "n_findings": 15}
+{"item": "game", "game": "module_0370_grok-4-6.json", "module_id": "module_0370", "model_id": "grok-4-6", "hcl_valid": false, "remote_modules": 7, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0370_kimi-k2-5.json", "module_id": "module_0370", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 11, "secs": 4.7, "outcome": "match", "n_findings": 11}
+{"item": "game", "game": "module_0370_llama-3-3-70b.json", "module_id": "module_0370", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 8, "secs": 3.9, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0370_nova-lite.json", "module_id": "module_0370", "model_id": "nova-lite", "hcl_valid": false, "remote_modules": 7, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0370_nova-pro.json", "module_id": "module_0370", "model_id": "nova-pro", "hcl_valid": false, "remote_modules": 11, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0370_qwen3-32b.json", "module_id": "module_0370", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 11, "secs": 11.2, "outcome": "match", "n_findings": 24}
+{"item": "game", "game": "module_0371_claude-sonnet-4-5.json", "module_id": "module_0371", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 8, "secs": 6.8, "outcome": "match", "n_findings": 17}
+{"item": "game", "game": "module_0371_claude-sonnet-5.json", "module_id": "module_0371", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 8, "secs": 8.4, "outcome": "match", "n_findings": 12}
+{"item": "game", "game": "module_0371_deepseek-r1.json", "module_id": "module_0371", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 8, "secs": 4.3, "outcome": "match", "n_findings": 17}
+{"item": "game", "game": "module_0371_deepseek-v3-2.json", "module_id": "module_0371", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 8, "secs": 25.5, "outcome": "match", "n_findings": 16}
+{"item": "game", "game": "module_0371_grok-4-6.json", "module_id": "module_0371", "model_id": "grok-4-6", "hcl_valid": true, "remote_modules": 8, "secs": 4.3, "outcome": "match", "n_findings": 1}
+{"item": "game", "game": "module_0371_kimi-k2-5.json", "module_id": "module_0371", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 8, "secs": 8.9, "outcome": "match", "n_findings": 12}
+{"item": "game", "game": "module_0371_llama-3-3-70b.json", "module_id": "module_0371", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 8, "secs": 8.5, "outcome": "match", "n_findings": 15}
+{"item": "game", "game": "module_0371_nova-lite.json", "module_id": "module_0371", "model_id": "nova-lite", "hcl_valid": true, "remote_modules": 8, "secs": 4.2, "outcome": "match", "n_findings": 12}
+{"item": "game", "game": "module_0371_nova-pro.json", "module_id": "module_0371", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 8, "secs": 3.9, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0371_qwen3-32b.json", "module_id": "module_0371", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 8, "secs": 4.3, "outcome": "match", "n_findings": 13}
+{"item": "game", "game": "module_0372_claude-sonnet-4-5.json", "module_id": "module_0372", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 15, "secs": 5.0, "outcome": "match", "n_findings": 7}
+{"item": "game", "game": "module_0372_claude-sonnet-5.json", "module_id": "module_0372", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 15, "secs": 5.2, "outcome": "match", "n_findings": 6}
+{"item": "game", "game": "module_0372_deepseek-r1.json", "module_id": "module_0372", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 16, "secs": 4.0, "outcome": "match", "n_findings": 25}
+{"item": "game", "game": "module_0372_deepseek-v3-2.json", "module_id": "module_0372", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 15, "secs": 30.1, "outcome": "match", "n_findings": 36}
+{"item": "game", "game": "module_0372_grok-4-6.json", "module_id": "module_0372", "model_id": "grok-4-6", "hcl_valid": false, "remote_modules": 11, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0372_kimi-k2-5.json", "module_id": "module_0372", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 15, "secs": 5.0, "outcome": "match", "n_findings": 25}
+{"item": "game", "game": "module_0372_llama-3-3-70b.json", "module_id": "module_0372", "model_id": "llama-3-3-70b", "hcl_valid": false, "remote_modules": 11, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0372_nova-lite.json", "module_id": "module_0372", "model_id": "nova-lite", "hcl_valid": false, "remote_modules": 11, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0372_nova-pro.json", "module_id": "module_0372", "model_id": "nova-pro", "hcl_valid": false, "remote_modules": 13, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0372_qwen3-32b.json", "module_id": "module_0372", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 15, "secs": 12.3, "outcome": "match", "n_findings": 37}
+{"item": "game", "game": "module_0373_claude-sonnet-4-5.json", "module_id": "module_0373", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 9, "secs": 4.2, "outcome": "match", "n_findings": 2}
+{"item": "game", "game": "module_0373_claude-sonnet-5.json", "module_id": "module_0373", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 9, "secs": 23.2, "outcome": "match", "n_findings": 13}
+{"item": "game", "game": "module_0373_deepseek-r1.json", "module_id": "module_0373", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 9, "secs": 4.2, "outcome": "match", "n_findings": 1}
+{"item": "game", "game": "module_0373_deepseek-v3-2.json", "module_id": "module_0373", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 9, "secs": 4.1, "outcome": "match", "n_findings": 35}
+{"item": "game", "game": "module_0373_grok-4-6.json", "module_id": "module_0373", "model_id": "grok-4-6", "hcl_valid": true, "remote_modules": 8, "secs": 3.8, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0373_kimi-k2-5.json", "module_id": "module_0373", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 9, "secs": 4.2, "outcome": "match", "n_findings": 12}
+{"item": "game", "game": "module_0373_llama-3-3-70b.json", "module_id": "module_0373", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 9, "secs": 7.2, "outcome": "match", "n_findings": 24}
+{"item": "game", "game": "module_0373_nova-lite.json", "module_id": "module_0373", "model_id": "nova-lite", "hcl_valid": true, "remote_modules": 9, "secs": 4.1, "outcome": "match", "n_findings": 12}
+{"item": "game", "game": "module_0373_nova-pro.json", "module_id": "module_0373", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 9, "secs": 23.7, "outcome": "match", "n_findings": 19}
+{"item": "game", "game": "module_0373_qwen3-32b.json", "module_id": "module_0373", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 9, "secs": 7.5, "outcome": "match", "n_findings": 28}
+{"item": "game", "game": "module_0375_claude-sonnet-4-5.json", "module_id": "module_0375", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 7, "secs": 8.0, "outcome": "match", "n_findings": 19}
+{"item": "game", "game": "module_0375_claude-sonnet-5.json", "module_id": "module_0375", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 7, "secs": 4.5, "outcome": "match", "n_findings": 2}
+{"item": "game", "game": "module_0375_deepseek-r1.json", "module_id": "module_0375", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 7, "secs": 7.6, "outcome": "match", "n_findings": 13}
+{"item": "game", "game": "module_0375_deepseek-v3-2.json", "module_id": "module_0375", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 7, "secs": 7.9, "outcome": "match", "n_findings": 13}
+{"item": "game", "game": "module_0375_grok-4-6.json", "module_id": "module_0375", "model_id": "grok-4-6", "hcl_valid": true, "remote_modules": 7, "secs": 4.8, "outcome": "match", "n_findings": 9}
+{"item": "game", "game": "module_0375_kimi-k2-5.json", "module_id": "module_0375", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 7, "secs": 8.0, "outcome": "match", "n_findings": 20}
+{"item": "game", "game": "module_0375_llama-3-3-70b.json", "module_id": "module_0375", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 7, "secs": 7.4, "outcome": "match", "n_findings": 32}
+{"item": "game", "game": "module_0375_nova-lite.json", "module_id": "module_0375", "model_id": "nova-lite", "hcl_valid": true, "remote_modules": 7, "secs": 4.4, "outcome": "match", "n_findings": 12}
+{"item": "game", "game": "module_0375_nova-pro.json", "module_id": "module_0375", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 7, "secs": 3.8, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0375_qwen3-32b.json", "module_id": "module_0375", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 7, "secs": 7.9, "outcome": "match", "n_findings": 12}
+{"item": "game", "game": "module_0376_claude-sonnet-4-5.json", "module_id": "module_0376", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 6, "secs": 7.8, "outcome": "match", "n_findings": 34}
+{"item": "game", "game": "module_0376_claude-sonnet-5.json", "module_id": "module_0376", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 6, "secs": 4.5, "outcome": "match", "n_findings": 7}
+{"item": "game", "game": "module_0376_deepseek-r1.json", "module_id": "module_0376", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 6, "secs": 7.6, "outcome": "match", "n_findings": 29}
+{"item": "game", "game": "module_0376_deepseek-v3-2.json", "module_id": "module_0376", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 7, "secs": 24.6, "outcome": "match", "n_findings": 27}
+{"item": "game", "game": "module_0376_grok-4-6.json", "module_id": "module_0376", "model_id": "grok-4-6", "hcl_valid": true, "remote_modules": 6, "secs": 4.6, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0376_kimi-k2-5.json", "module_id": "module_0376", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 6, "secs": 7.8, "outcome": "match", "n_findings": 31}
+{"item": "game", "game": "module_0376_llama-3-3-70b.json", "module_id": "module_0376", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 6, "secs": 8.0, "outcome": "match", "n_findings": 65}
+{"item": "game", "game": "module_0376_nova-lite.json", "module_id": "module_0376", "model_id": "nova-lite", "hcl_valid": true, "remote_modules": 6, "secs": 4.4, "outcome": "match", "n_findings": 27}
+{"item": "game", "game": "module_0376_nova-pro.json", "module_id": "module_0376", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 6, "secs": 3.7, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0376_qwen3-32b.json", "module_id": "module_0376", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 11, "secs": 27.0, "outcome": "match", "n_findings": 25}
+{"item": "game", "game": "module_0400_claude-sonnet-4-5.json", "module_id": "module_0400", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 2, "secs": 4.8, "outcome": "match", "n_findings": 3}
+{"item": "game", "game": "module_0400_claude-sonnet-5.json", "module_id": "module_0400", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 2, "secs": 4.7, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0400_deepseek-r1.json", "module_id": "module_0400", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 2, "secs": 4.8, "outcome": "match", "n_findings": 4}
+{"item": "game", "game": "module_0400_deepseek-v3-2.json", "module_id": "module_0400", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 2, "secs": 4.7, "outcome": "match", "n_findings": 3}
+{"item": "game", "game": "module_0400_grok-4-6.json", "module_id": "module_0400", "model_id": "grok-4-6", "hcl_valid": true, "remote_modules": 2, "secs": 4.8, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0400_kimi-k2-5.json", "module_id": "module_0400", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 2, "secs": 4.8, "outcome": "match", "n_findings": 2}
+{"item": "game", "game": "module_0400_llama-3-3-70b.json", "module_id": "module_0400", "model_id": "llama-3-3-70b", "hcl_valid": false, "remote_modules": 2, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0400_nova-pro.json", "module_id": "module_0400", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 1, "secs": 4.5, "outcome": "match", "n_findings": 6}
+{"item": "game", "game": "module_0400_qwen3-32b.json", "module_id": "module_0400", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 2, "secs": 4.8, "outcome": "match", "n_findings": 4}
+{"item": "game", "game": "module_0401_claude-sonnet-4-5.json", "module_id": "module_0401", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 6, "secs": 5.7, "outcome": "match", "n_findings": 12}
+{"item": "game", "game": "module_0401_claude-sonnet-5.json", "module_id": "module_0401", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 6, "secs": 4.2, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0401_deepseek-r1.json", "module_id": "module_0401", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 6, "secs": 4.0, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0401_deepseek-v3-2.json", "module_id": "module_0401", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 6, "secs": 5.6, "outcome": "match", "n_findings": 7}
+{"item": "game", "game": "module_0401_grok-4-6.json", "module_id": "module_0401", "model_id": "grok-4-6", "hcl_valid": false, "remote_modules": 1, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0401_kimi-k2-5.json", "module_id": "module_0401", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 6, "secs": 5.7, "outcome": "match", "n_findings": 7}
+{"item": "game", "game": "module_0401_llama-3-3-70b.json", "module_id": "module_0401", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 6, "secs": 5.7, "outcome": "match", "n_findings": 11}
+{"item": "game", "game": "module_0401_nova-lite.json", "module_id": "module_0401", "model_id": "nova-lite", "hcl_valid": true, "remote_modules": 6, "secs": 4.1, "outcome": "match", "n_findings": 6}
+{"item": "game", "game": "module_0401_nova-pro.json", "module_id": "module_0401", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 6, "secs": 3.8, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0401_qwen3-32b.json", "module_id": "module_0401", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 6, "secs": 5.7, "outcome": "match", "n_findings": 9}
+{"item": "game", "game": "module_0403_claude-sonnet-4-5.json", "module_id": "module_0403", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 2, "secs": 4.0, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0403_claude-sonnet-5.json", "module_id": "module_0403", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 2, "secs": 4.1, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0403_deepseek-r1.json", "module_id": "module_0403", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 2, "secs": 4.1, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0403_deepseek-v3-2.json", "module_id": "module_0403", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 2, "secs": 4.1, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0403_grok-4-6.json", "module_id": "module_0403", "model_id": "grok-4-6", "hcl_valid": true, "remote_modules": 2, "secs": 4.2, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0403_kimi-k2-5.json", "module_id": "module_0403", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 2, "secs": 4.1, "outcome": "match", "n_findings": 2}
+{"item": "game", "game": "module_0403_llama-3-3-70b.json", "module_id": "module_0403", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 2, "secs": 4.1, "outcome": "match", "n_findings": 4}
+{"item": "game", "game": "module_0403_nova-lite.json", "module_id": "module_0403", "model_id": "nova-lite", "hcl_valid": true, "remote_modules": 2, "secs": 4.4, "outcome": "match", "n_findings": 2}
+{"item": "game", "game": "module_0403_nova-pro.json", "module_id": "module_0403", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 2, "secs": 4.3, "outcome": "match", "n_findings": 4}
+{"item": "game", "game": "module_0403_qwen3-32b.json", "module_id": "module_0403", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 2, "secs": 4.2, "outcome": "match", "n_findings": 4}
+{"item": "game", "game": "module_0404_claude-sonnet-4-5.json", "module_id": "module_0404", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 11, "secs": 4.6, "outcome": "match", "n_findings": 22}
+{"item": "game", "game": "module_0404_claude-sonnet-5.json", "module_id": "module_0404", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 11, "secs": 4.6, "outcome": "match", "n_findings": 22}
+{"item": "game", "game": "module_0404_deepseek-r1.json", "module_id": "module_0404", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 11, "secs": 4.5, "outcome": "match", "n_findings": 44}
+{"item": "game", "game": "module_0404_deepseek-v3-2.json", "module_id": "module_0404", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 11, "secs": 5.2, "outcome": "match", "n_findings": 47}
+{"item": "game", "game": "module_0404_kimi-k2-5.json", "module_id": "module_0404", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 11, "secs": 5.1, "outcome": "match", "n_findings": 25}
+{"item": "game", "game": "module_0404_llama-3-3-70b.json", "module_id": "module_0404", "model_id": "llama-3-3-70b", "hcl_valid": false, "remote_modules": 9, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0404_nova-lite.json", "module_id": "module_0404", "model_id": "nova-lite", "hcl_valid": false, "remote_modules": 8, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0404_nova-pro.json", "module_id": "module_0404", "model_id": "nova-pro", "hcl_valid": false, "remote_modules": 8, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0404_qwen3-32b.json", "module_id": "module_0404", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 11, "secs": 4.1, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0405_claude-sonnet-4-5.json", "module_id": "module_0405", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 2, "secs": 4.4, "outcome": "match", "n_findings": 9}
+{"item": "game", "game": "module_0405_claude-sonnet-5.json", "module_id": "module_0405", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 2, "secs": 4.3, "outcome": "match", "n_findings": 9}
+{"item": "game", "game": "module_0405_deepseek-r1.json", "module_id": "module_0405", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 2, "secs": 4.3, "outcome": "match", "n_findings": 11}
+{"item": "game", "game": "module_0405_deepseek-v3-2.json", "module_id": "module_0405", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 2, "secs": 4.1, "outcome": "match", "n_findings": 3}
+{"item": "game", "game": "module_0405_kimi-k2-5.json", "module_id": "module_0405", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 2, "secs": 4.1, "outcome": "match", "n_findings": 3}
+{"item": "game", "game": "module_0405_llama-3-3-70b.json", "module_id": "module_0405", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 2, "secs": 4.0, "outcome": "match", "n_findings": 4}
+{"item": "game", "game": "module_0405_nova-lite.json", "module_id": "module_0405", "model_id": "nova-lite", "hcl_valid": true, "remote_modules": 2, "secs": 4.1, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0405_nova-pro.json", "module_id": "module_0405", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 2, "secs": 4.0, "outcome": "match", "n_findings": 2}
+{"item": "game", "game": "module_0405_qwen3-32b.json", "module_id": "module_0405", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 2, "secs": 4.0, "outcome": "match", "n_findings": 2}
+{"item": "game", "game": "module_0406_claude-sonnet-4-5.json", "module_id": "module_0406", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 11, "secs": 4.3, "outcome": "match", "n_findings": 2}
+{"item": "game", "game": "module_0406_claude-sonnet-5.json", "module_id": "module_0406", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 11, "secs": 4.4, "outcome": "match", "n_findings": 1}
+{"item": "game", "game": "module_0406_deepseek-r1.json", "module_id": "module_0406", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 11, "secs": 4.4, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0406_deepseek-v3-2.json", "module_id": "module_0406", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 11, "secs": 18.3, "outcome": "match", "n_findings": 37}
+{"item": "game", "game": "module_0406_grok-4-6.json", "module_id": "module_0406", "model_id": "grok-4-6", "hcl_valid": false, "remote_modules": 7, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0406_kimi-k2-5.json", "module_id": "module_0406", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 11, "secs": 13.0, "outcome": "match", "n_findings": 34}
+{"item": "game", "game": "module_0406_llama-3-3-70b.json", "module_id": "module_0406", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 11, "secs": 4.4, "outcome": "match", "n_findings": 27}
+{"item": "game", "game": "module_0406_nova-lite.json", "module_id": "module_0406", "model_id": "nova-lite", "hcl_valid": true, "remote_modules": 11, "secs": 4.0, "outcome": "match", "n_findings": 12}
+{"item": "game", "game": "module_0406_nova-pro.json", "module_id": "module_0406", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 11, "secs": 13.0, "outcome": "match", "n_findings": 75}
+{"item": "game", "game": "module_0406_qwen3-32b.json", "module_id": "module_0406", "model_id": "qwen3-32b", "hcl_valid": false, "remote_modules": 7, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0407_claude-sonnet-4-5.json", "module_id": "module_0407", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 11, "secs": 4.5, "outcome": "match", "n_findings": 1}
+{"item": "game", "game": "module_0407_claude-sonnet-5.json", "module_id": "module_0407", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 11, "secs": 4.4, "outcome": "match", "n_findings": 2}
+{"item": "game", "game": "module_0407_deepseek-r1.json", "module_id": "module_0407", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 11, "secs": 4.4, "outcome": "match", "n_findings": 15}
+{"item": "game", "game": "module_0407_deepseek-v3-2.json", "module_id": "module_0407", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 11, "secs": 4.4, "outcome": "match", "n_findings": 28}
+{"item": "game", "game": "module_0407_grok-4-6.json", "module_id": "module_0407", "model_id": "grok-4-6", "hcl_valid": true, "remote_modules": 11, "secs": 4.3, "outcome": "match", "n_findings": 1}
+{"item": "game", "game": "module_0407_kimi-k2-5.json", "module_id": "module_0407", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 11, "secs": 4.4, "outcome": "match", "n_findings": 17}
+{"item": "game", "game": "module_0407_llama-3-3-70b.json", "module_id": "module_0407", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 11, "secs": 4.3, "outcome": "match", "n_findings": 26}
+{"item": "game", "game": "module_0407_nova-lite.json", "module_id": "module_0407", "model_id": "nova-lite", "hcl_valid": true, "remote_modules": 11, "secs": 4.4, "outcome": "match", "n_findings": 52}
+{"item": "game", "game": "module_0407_nova-pro.json", "module_id": "module_0407", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 11, "secs": 3.8, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0407_qwen3-32b.json", "module_id": "module_0407", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 11, "secs": 4.5, "outcome": "match", "n_findings": 32}
+{"item": "game", "game": "module_0408_claude-sonnet-4-5.json", "module_id": "module_0408", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 5, "secs": 4.4, "outcome": "match", "n_findings": 10}
+{"item": "game", "game": "module_0408_claude-sonnet-5.json", "module_id": "module_0408", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 5, "secs": 4.2, "outcome": "match", "n_findings": 10}
+{"item": "game", "game": "module_0408_deepseek-r1.json", "module_id": "module_0408", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 5, "secs": 4.2, "outcome": "match", "n_findings": 10}
+{"item": "game", "game": "module_0408_deepseek-v3-2.json", "module_id": "module_0408", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 5, "secs": 5.9, "outcome": "match", "n_findings": 19}
+{"item": "game", "game": "module_0408_grok-4-6.json", "module_id": "module_0408", "model_id": "grok-4-6", "hcl_valid": false, "remote_modules": 5, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0408_kimi-k2-5.json", "module_id": "module_0408", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 5, "secs": 5.8, "outcome": "match", "n_findings": 10}
+{"item": "game", "game": "module_0408_llama-3-3-70b.json", "module_id": "module_0408", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 5, "secs": 5.9, "outcome": "match", "n_findings": 13}
+{"item": "game", "game": "module_0408_nova-lite.json", "module_id": "module_0408", "model_id": "nova-lite", "hcl_valid": true, "remote_modules": 5, "secs": 5.8, "outcome": "match", "n_findings": 20}
+{"item": "game", "game": "module_0408_nova-pro.json", "module_id": "module_0408", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 5, "secs": 5.9, "outcome": "match", "n_findings": 19}
+{"item": "game", "game": "module_0408_qwen3-32b.json", "module_id": "module_0408", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 5, "secs": 5.9, "outcome": "match", "n_findings": 10}
+{"item": "game", "game": "module_0410_claude-sonnet-4-5.json", "module_id": "module_0410", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 3, "secs": 4.3, "outcome": "match", "n_findings": 10}
+{"item": "game", "game": "module_0410_claude-sonnet-5.json", "module_id": "module_0410", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 3, "secs": 4.3, "outcome": "match", "n_findings": 10}
+{"item": "game", "game": "module_0410_deepseek-r1.json", "module_id": "module_0410", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 3, "secs": 4.2, "outcome": "match", "n_findings": 12}
+{"item": "game", "game": "module_0410_deepseek-v3-2.json", "module_id": "module_0410", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 3, "secs": 4.3, "outcome": "match", "n_findings": 19}
+{"item": "game", "game": "module_0410_grok-4-6.json", "module_id": "module_0410", "model_id": "grok-4-6", "hcl_valid": true, "remote_modules": 3, "secs": 4.2, "outcome": "match", "n_findings": 10}
+{"item": "game", "game": "module_0410_kimi-k2-5.json", "module_id": "module_0410", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 3, "secs": 4.4, "outcome": "match", "n_findings": 3}
+{"item": "game", "game": "module_0410_llama-3-3-70b.json", "module_id": "module_0410", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 3, "secs": 4.6, "outcome": "match", "n_findings": 19}
+{"item": "game", "game": "module_0410_nova-lite.json", "module_id": "module_0410", "model_id": "nova-lite", "hcl_valid": true, "remote_modules": 3, "secs": 4.6, "outcome": "match", "n_findings": 19}
+{"item": "game", "game": "module_0410_nova-pro.json", "module_id": "module_0410", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 3, "secs": 4.7, "outcome": "match", "n_findings": 19}
+{"item": "game", "game": "module_0410_qwen3-32b.json", "module_id": "module_0410", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 3, "secs": 4.6, "outcome": "match", "n_findings": 19}
+{"item": "game", "game": "module_0411_claude-sonnet-4-5.json", "module_id": "module_0411", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 5, "secs": 5.2, "outcome": "match", "n_findings": 5}
+{"item": "game", "game": "module_0411_claude-sonnet-5.json", "module_id": "module_0411", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 4, "secs": 4.6, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0411_deepseek-r1.json", "module_id": "module_0411", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 4, "secs": 3.9, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0411_deepseek-v3-2.json", "module_id": "module_0411", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 4, "secs": 5.0, "outcome": "match", "n_findings": 4}
+{"item": "game", "game": "module_0411_grok-4-6.json", "module_id": "module_0411", "model_id": "grok-4-6", "hcl_valid": true, "remote_modules": 4, "secs": 4.6, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0411_kimi-k2-5.json", "module_id": "module_0411", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 4, "secs": 4.6, "outcome": "match", "n_findings": 4}
+{"item": "game", "game": "module_0411_llama-3-3-70b.json", "module_id": "module_0411", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 4, "secs": 5.3, "outcome": "match", "n_findings": 4}
+{"item": "game", "game": "module_0411_nova-lite.json", "module_id": "module_0411", "model_id": "nova-lite", "hcl_valid": false, "remote_modules": 1, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0411_nova-pro.json", "module_id": "module_0411", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 4, "secs": 5.2, "outcome": "match", "n_findings": 4}
+{"item": "game", "game": "module_0411_qwen3-32b.json", "module_id": "module_0411", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 4, "secs": 5.0, "outcome": "match", "n_findings": 4}
+{"item": "game", "game": "module_0412_claude-sonnet-4-5.json", "module_id": "module_0412", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 9, "secs": 4.9, "outcome": "match", "n_findings": 14}
+{"item": "game", "game": "module_0412_claude-sonnet-5.json", "module_id": "module_0412", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 9, "secs": 4.4, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0412_deepseek-r1.json", "module_id": "module_0412", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 9, "secs": 4.1, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0412_deepseek-v3-2.json", "module_id": "module_0412", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 9, "secs": 5.2, "outcome": "match", "n_findings": 9}
+{"item": "game", "game": "module_0412_grok-4-6.json", "module_id": "module_0412", "model_id": "grok-4-6", "hcl_valid": true, "remote_modules": 9, "secs": 4.6, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0412_kimi-k2-5.json", "module_id": "module_0412", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 9, "secs": 5.2, "outcome": "match", "n_findings": 12}
+{"item": "game", "game": "module_0412_llama-3-3-70b.json", "module_id": "module_0412", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 9, "secs": 5.2, "outcome": "match", "n_findings": 9}
+{"item": "game", "game": "module_0412_nova-lite.json", "module_id": "module_0412", "model_id": "nova-lite", "hcl_valid": true, "remote_modules": 10, "secs": 4.5, "outcome": "match", "n_findings": 10}
+{"item": "game", "game": "module_0412_nova-pro.json", "module_id": "module_0412", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 9, "secs": 4.6, "outcome": "match", "n_findings": 11}
+{"item": "game", "game": "module_0412_qwen3-32b.json", "module_id": "module_0412", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 9, "secs": 4.9, "outcome": "match", "n_findings": 10}
+{"item": "game", "game": "module_0413_claude-sonnet-4-5.json", "module_id": "module_0413", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 2, "secs": 4.4, "outcome": "match", "n_findings": 2}
+{"item": "game", "game": "module_0413_claude-sonnet-5.json", "module_id": "module_0413", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 2, "secs": 4.3, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0413_deepseek-r1.json", "module_id": "module_0413", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 2, "secs": 4.0, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0413_deepseek-v3-2.json", "module_id": "module_0413", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 2, "secs": 4.4, "outcome": "match", "n_findings": 2}
+{"item": "game", "game": "module_0413_grok-4-6.json", "module_id": "module_0413", "model_id": "grok-4-6", "hcl_valid": true, "remote_modules": 2, "secs": 4.4, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0413_kimi-k2-5.json", "module_id": "module_0413", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 2, "secs": 4.5, "outcome": "match", "n_findings": 2}
+{"item": "game", "game": "module_0413_llama-3-3-70b.json", "module_id": "module_0413", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 2, "secs": 4.3, "outcome": "match", "n_findings": 2}
+{"item": "game", "game": "module_0413_nova-lite.json", "module_id": "module_0413", "model_id": "nova-lite", "hcl_valid": true, "remote_modules": 2, "secs": 4.2, "outcome": "match", "n_findings": 2}
+{"item": "game", "game": "module_0413_nova-pro.json", "module_id": "module_0413", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 2, "secs": 4.3, "outcome": "match", "n_findings": 2}
+{"item": "game", "game": "module_0413_qwen3-32b.json", "module_id": "module_0413", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 2, "secs": 4.4, "outcome": "match", "n_findings": 2}
+{"item": "game", "game": "module_0414_claude-sonnet-4-5.json", "module_id": "module_0414", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 3, "secs": 4.4, "outcome": "match", "n_findings": 3}
+{"item": "game", "game": "module_0414_claude-sonnet-5.json", "module_id": "module_0414", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 3, "secs": 4.4, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0414_deepseek-r1.json", "module_id": "module_0414", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 3, "secs": 4.0, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0414_deepseek-v3-2.json", "module_id": "module_0414", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 3, "secs": 4.5, "outcome": "match", "n_findings": 3}
+{"item": "game", "game": "module_0414_grok-4-6.json", "module_id": "module_0414", "model_id": "grok-4-6", "hcl_valid": true, "remote_modules": 3, "secs": 4.4, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0414_kimi-k2-5.json", "module_id": "module_0414", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 3, "secs": 4.4, "outcome": "match", "n_findings": 3}
+{"item": "game", "game": "module_0414_llama-3-3-70b.json", "module_id": "module_0414", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 3, "secs": 4.3, "outcome": "match", "n_findings": 3}
+{"item": "game", "game": "module_0414_nova-lite.json", "module_id": "module_0414", "model_id": "nova-lite", "hcl_valid": true, "remote_modules": 3, "secs": 4.3, "outcome": "match", "n_findings": 3}
+{"item": "game", "game": "module_0414_nova-pro.json", "module_id": "module_0414", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 3, "secs": 4.0, "outcome": "match", "n_findings": 3}
+{"item": "game", "game": "module_0414_qwen3-32b.json", "module_id": "module_0414", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 3, "secs": 4.4, "outcome": "match", "n_findings": 3}
+{"item": "game", "game": "module_0415_claude-sonnet-4-5.json", "module_id": "module_0415", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 3, "secs": 4.2, "outcome": "match", "n_findings": 1}
+{"item": "game", "game": "module_0415_claude-sonnet-5.json", "module_id": "module_0415", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 3, "secs": 4.1, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0415_deepseek-r1.json", "module_id": "module_0415", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 3, "secs": 4.0, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0415_deepseek-v3-2.json", "module_id": "module_0415", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 3, "secs": 4.3, "outcome": "match", "n_findings": 3}
+{"item": "game", "game": "module_0415_grok-4-6.json", "module_id": "module_0415", "model_id": "grok-4-6", "hcl_valid": true, "remote_modules": 3, "secs": 4.1, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0415_kimi-k2-5.json", "module_id": "module_0415", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 3, "secs": 4.3, "outcome": "match", "n_findings": 3}
+{"item": "game", "game": "module_0415_llama-3-3-70b.json", "module_id": "module_0415", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 3, "secs": 4.1, "outcome": "match", "n_findings": 5}
+{"item": "game", "game": "module_0415_nova-lite.json", "module_id": "module_0415", "model_id": "nova-lite", "hcl_valid": false, "remote_modules": 1, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0415_nova-pro.json", "module_id": "module_0415", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 3, "secs": 3.8, "outcome": "match", "n_findings": 3}
+{"item": "game", "game": "module_0415_qwen3-32b.json", "module_id": "module_0415", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 3, "secs": 4.2, "outcome": "match", "n_findings": 3}
+{"item": "game", "game": "module_0417_claude-sonnet-4-5.json", "module_id": "module_0417", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 7, "secs": 4.4, "outcome": "match", "n_findings": 7}
+{"item": "game", "game": "module_0417_claude-sonnet-5.json", "module_id": "module_0417", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 7, "secs": 4.6, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0417_deepseek-r1.json", "module_id": "module_0417", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 7, "secs": 4.2, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0417_deepseek-v3-2.json", "module_id": "module_0417", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 7, "secs": 5.0, "outcome": "match", "n_findings": 10}
+{"item": "game", "game": "module_0417_grok-4-6.json", "module_id": "module_0417", "model_id": "grok-4-6", "hcl_valid": true, "remote_modules": 7, "secs": 4.5, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0417_kimi-k2-5.json", "module_id": "module_0417", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 7, "secs": 5.0, "outcome": "match", "n_findings": 7}
+{"item": "game", "game": "module_0417_llama-3-3-70b.json", "module_id": "module_0417", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 7, "secs": 4.3, "outcome": "match", "n_findings": 7}
+{"item": "game", "game": "module_0417_nova-lite.json", "module_id": "module_0417", "model_id": "nova-lite", "hcl_valid": true, "remote_modules": 7, "secs": 4.6, "outcome": "match", "n_findings": 7}
+{"item": "game", "game": "module_0417_nova-pro.json", "module_id": "module_0417", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 7, "secs": 3.8, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0417_qwen3-32b.json", "module_id": "module_0417", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 7, "secs": 5.0, "outcome": "match", "n_findings": 7}
+{"item": "game", "game": "module_0418_claude-sonnet-4-5.json", "module_id": "module_0418", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 1, "secs": 4.0, "outcome": "match", "n_findings": 2}
+{"item": "game", "game": "module_0418_claude-sonnet-5.json", "module_id": "module_0418", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 1, "secs": 4.1, "outcome": "match", "n_findings": 2}
+{"item": "game", "game": "module_0418_deepseek-r1.json", "module_id": "module_0418", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 1, "secs": 4.1, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0418_deepseek-v3-2.json", "module_id": "module_0418", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 1, "secs": 4.1, "outcome": "match", "n_findings": 3}
+{"item": "game", "game": "module_0418_grok-4-6.json", "module_id": "module_0418", "model_id": "grok-4-6", "hcl_valid": true, "remote_modules": 1, "secs": 4.0, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0418_kimi-k2-5.json", "module_id": "module_0418", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 1, "secs": 3.9, "outcome": "match", "n_findings": 1}
+{"item": "game", "game": "module_0418_llama-3-3-70b.json", "module_id": "module_0418", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 1, "secs": 3.9, "outcome": "match", "n_findings": 3}
+{"item": "game", "game": "module_0418_nova-lite.json", "module_id": "module_0418", "model_id": "nova-lite", "hcl_valid": true, "remote_modules": 1, "secs": 3.9, "outcome": "match", "n_findings": 3}
+{"item": "game", "game": "module_0418_nova-pro.json", "module_id": "module_0418", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 1, "secs": 3.9, "outcome": "match", "n_findings": 1}
+{"item": "game", "game": "module_0418_qwen3-32b.json", "module_id": "module_0418", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 1, "secs": 4.0, "outcome": "match", "n_findings": 3}
+{"item": "game", "game": "module_0419_claude-sonnet-4-5.json", "module_id": "module_0419", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 6, "secs": 4.3, "outcome": "match", "n_findings": 9}
+{"item": "game", "game": "module_0419_claude-sonnet-5.json", "module_id": "module_0419", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 6, "secs": 4.0, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0419_deepseek-r1.json", "module_id": "module_0419", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 6, "secs": 4.0, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0419_deepseek-v3-2.json", "module_id": "module_0419", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 6, "secs": 4.3, "outcome": "match", "n_findings": 9}
+{"item": "game", "game": "module_0419_grok-4-6.json", "module_id": "module_0419", "model_id": "grok-4-6", "hcl_valid": false, "remote_modules": 6, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0419_kimi-k2-5.json", "module_id": "module_0419", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 6, "secs": 4.3, "outcome": "match", "n_findings": 10}
+{"item": "game", "game": "module_0419_llama-3-3-70b.json", "module_id": "module_0419", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 6, "secs": 3.9, "outcome": "match", "n_findings": 10}
+{"item": "game", "game": "module_0419_nova-pro.json", "module_id": "module_0419", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 6, "secs": 4.3, "outcome": "match", "n_findings": 9}
+{"item": "game", "game": "module_0419_qwen3-32b.json", "module_id": "module_0419", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 6, "secs": 4.4, "outcome": "match", "n_findings": 9}
+{"item": "game", "game": "module_0420_claude-sonnet-4-5.json", "module_id": "module_0420", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 10, "secs": 10.7, "outcome": "match", "n_findings": 11}
+{"item": "game", "game": "module_0420_claude-sonnet-5.json", "module_id": "module_0420", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 10, "secs": 4.7, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0420_deepseek-r1.json", "module_id": "module_0420", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 10, "secs": 4.2, "outcome": "match", "n_findings": 23}
+{"item": "game", "game": "module_0420_deepseek-v3-2.json", "module_id": "module_0420", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 10, "secs": 10.5, "outcome": "match", "n_findings": 14}
+{"item": "game", "game": "module_0420_grok-4-6.json", "module_id": "module_0420", "model_id": "grok-4-6", "hcl_valid": false, "remote_modules": 3, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0420_kimi-k2-5.json", "module_id": "module_0420", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 10, "secs": 10.7, "outcome": "match", "n_findings": 11}
+{"item": "game", "game": "module_0420_llama-3-3-70b.json", "module_id": "module_0420", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 10, "secs": 10.8, "outcome": "match", "n_findings": 11}
+{"item": "game", "game": "module_0420_nova-lite.json", "module_id": "module_0420", "model_id": "nova-lite", "hcl_valid": false, "remote_modules": 4, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0420_nova-pro.json", "module_id": "module_0420", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 10, "secs": 4.4, "outcome": "match", "n_findings": 15}
+{"item": "game", "game": "module_0420_qwen3-32b.json", "module_id": "module_0420", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 10, "secs": 9.0, "outcome": "match", "n_findings": 11}
+{"item": "game", "game": "module_0421_claude-sonnet-4-5.json", "module_id": "module_0421", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 9, "secs": 10.6, "outcome": "match", "n_findings": 10}
+{"item": "game", "game": "module_0421_claude-sonnet-5.json", "module_id": "module_0421", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 9, "secs": 4.6, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0421_deepseek-r1.json", "module_id": "module_0421", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 9, "secs": 10.9, "outcome": "match", "n_findings": 10}
+{"item": "game", "game": "module_0421_deepseek-v3-2.json", "module_id": "module_0421", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 9, "secs": 10.7, "outcome": "match", "n_findings": 13}
+{"item": "game", "game": "module_0421_grok-4-6.json", "module_id": "module_0421", "model_id": "grok-4-6", "hcl_valid": false, "remote_modules": 2, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0421_kimi-k2-5.json", "module_id": "module_0421", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 9, "secs": 10.6, "outcome": "match", "n_findings": 10}
+{"item": "game", "game": "module_0421_llama-3-3-70b.json", "module_id": "module_0421", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 9, "secs": 10.7, "outcome": "match", "n_findings": 13}
+{"item": "game", "game": "module_0421_nova-lite.json", "module_id": "module_0421", "model_id": "nova-lite", "hcl_valid": false, "remote_modules": 9, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0421_nova-pro.json", "module_id": "module_0421", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 9, "secs": 3.8, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0421_qwen3-32b.json", "module_id": "module_0421", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 9, "secs": 10.7, "outcome": "match", "n_findings": 13}
+{"item": "game", "game": "module_0423_claude-sonnet-4-5.json", "module_id": "module_0423", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 1, "secs": 4.1, "outcome": "match", "n_findings": 1}
+{"item": "game", "game": "module_0423_claude-sonnet-5.json", "module_id": "module_0423", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 1, "secs": 4.0, "outcome": "match", "n_findings": 2}
+{"item": "game", "game": "module_0423_deepseek-r1.json", "module_id": "module_0423", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 1, "secs": 4.0, "outcome": "match", "n_findings": 2}
+{"item": "game", "game": "module_0423_deepseek-v3-2.json", "module_id": "module_0423", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 1, "secs": 4.0, "outcome": "match", "n_findings": 1}
+{"item": "game", "game": "module_0423_grok-4-6.json", "module_id": "module_0423", "model_id": "grok-4-6", "hcl_valid": true, "remote_modules": 1, "secs": 4.1, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0423_kimi-k2-5.json", "module_id": "module_0423", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 1, "secs": 4.1, "outcome": "match", "n_findings": 1}
+{"item": "game", "game": "module_0423_llama-3-3-70b.json", "module_id": "module_0423", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 1, "secs": 4.1, "outcome": "match", "n_findings": 3}
+{"item": "game", "game": "module_0423_nova-lite.json", "module_id": "module_0423", "model_id": "nova-lite", "hcl_valid": true, "remote_modules": 1, "secs": 4.1, "outcome": "match", "n_findings": 3}
+{"item": "game", "game": "module_0423_nova-pro.json", "module_id": "module_0423", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 1, "secs": 4.0, "outcome": "match", "n_findings": 3}
+{"item": "game", "game": "module_0423_qwen3-32b.json", "module_id": "module_0423", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 1, "secs": 3.9, "outcome": "match", "n_findings": 3}
+{"item": "game", "game": "module_0425_claude-sonnet-4-5.json", "module_id": "module_0425", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 6, "secs": 4.4, "outcome": "match", "n_findings": 7}
+{"item": "game", "game": "module_0425_claude-sonnet-5.json", "module_id": "module_0425", "model_id": "claude-sonnet-5", "hcl_valid": false, "remote_modules": 6, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0425_deepseek-r1.json", "module_id": "module_0425", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 6, "secs": 4.3, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0425_deepseek-v3-2.json", "module_id": "module_0425", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 6, "secs": 4.5, "outcome": "match", "n_findings": 6}
+{"item": "game", "game": "module_0425_kimi-k2-5.json", "module_id": "module_0425", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 6, "secs": 4.6, "outcome": "match", "n_findings": 7}
+{"item": "game", "game": "module_0425_llama-3-3-70b.json", "module_id": "module_0425", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 6, "secs": 4.6, "outcome": "match", "n_findings": 6}
+{"item": "game", "game": "module_0425_nova-lite.json", "module_id": "module_0425", "model_id": "nova-lite", "hcl_valid": false, "remote_modules": 5, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0425_nova-pro.json", "module_id": "module_0425", "model_id": "nova-pro", "hcl_valid": false, "remote_modules": 6, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0425_qwen3-32b.json", "module_id": "module_0425", "model_id": "qwen3-32b", "hcl_valid": false, "remote_modules": 6, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0426_claude-sonnet-4-5.json", "module_id": "module_0426", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 2, "secs": 4.3, "outcome": "match", "n_findings": 11}
+{"item": "game", "game": "module_0426_claude-sonnet-5.json", "module_id": "module_0426", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 2, "secs": 4.2, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0426_deepseek-r1.json", "module_id": "module_0426", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 2, "secs": 4.3, "outcome": "match", "n_findings": 6}
+{"item": "game", "game": "module_0426_deepseek-v3-2.json", "module_id": "module_0426", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 2, "secs": 4.3, "outcome": "match", "n_findings": 8}
+{"item": "game", "game": "module_0426_grok-4-6.json", "module_id": "module_0426", "model_id": "grok-4-6", "hcl_valid": true, "remote_modules": 2, "secs": 4.3, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0426_kimi-k2-5.json", "module_id": "module_0426", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 2, "secs": 4.2, "outcome": "match", "n_findings": 2}
+{"item": "game", "game": "module_0426_llama-3-3-70b.json", "module_id": "module_0426", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 2, "secs": 4.2, "outcome": "match", "n_findings": 12}
+{"item": "game", "game": "module_0426_nova-lite.json", "module_id": "module_0426", "model_id": "nova-lite", "hcl_valid": true, "remote_modules": 2, "secs": 4.2, "outcome": "match", "n_findings": 20}
+{"item": "game", "game": "module_0426_nova-pro.json", "module_id": "module_0426", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 2, "secs": 4.2, "outcome": "match", "n_findings": 9}
+{"item": "game", "game": "module_0426_qwen3-32b.json", "module_id": "module_0426", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 2, "secs": 4.3, "outcome": "match", "n_findings": 3}
+{"item": "game", "game": "module_0427_claude-sonnet-4-5.json", "module_id": "module_0427", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 2, "secs": 4.3, "outcome": "match", "n_findings": 2}
+{"item": "game", "game": "module_0427_claude-sonnet-5.json", "module_id": "module_0427", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 2, "secs": 4.3, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0427_deepseek-r1.json", "module_id": "module_0427", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 2, "secs": 4.3, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0427_deepseek-v3-2.json", "module_id": "module_0427", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 2, "secs": 4.2, "outcome": "match", "n_findings": 2}
+{"item": "game", "game": "module_0427_grok-4-6.json", "module_id": "module_0427", "model_id": "grok-4-6", "hcl_valid": true, "remote_modules": 2, "secs": 4.3, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0427_kimi-k2-5.json", "module_id": "module_0427", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 2, "secs": 4.2, "outcome": "match", "n_findings": 2}
+{"item": "game", "game": "module_0427_llama-3-3-70b.json", "module_id": "module_0427", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 2, "secs": 4.3, "outcome": "match", "n_findings": 2}
+{"item": "game", "game": "module_0427_nova-lite.json", "module_id": "module_0427", "model_id": "nova-lite", "hcl_valid": true, "remote_modules": 4, "secs": 4.3, "outcome": "match", "n_findings": 6}
+{"item": "game", "game": "module_0427_nova-pro.json", "module_id": "module_0427", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 2, "secs": 3.9, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0427_qwen3-32b.json", "module_id": "module_0427", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 2, "secs": 4.4, "outcome": "match", "n_findings": 2}
+{"item": "game", "game": "module_0428_claude-sonnet-4-5.json", "module_id": "module_0428", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 5, "secs": 4.4, "outcome": "match", "n_findings": 5}
+{"item": "game", "game": "module_0428_claude-sonnet-5.json", "module_id": "module_0428", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 3, "secs": 4.2, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0428_deepseek-r1.json", "module_id": "module_0428", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 3, "secs": 4.2, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0428_deepseek-v3-2.json", "module_id": "module_0428", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 3, "secs": 4.3, "outcome": "match", "n_findings": 5}
+{"item": "game", "game": "module_0428_grok-4-6.json", "module_id": "module_0428", "model_id": "grok-4-6", "hcl_valid": true, "remote_modules": 3, "secs": 4.4, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0428_kimi-k2-5.json", "module_id": "module_0428", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 3, "secs": 4.3, "outcome": "match", "n_findings": 3}
+{"item": "game", "game": "module_0428_llama-3-3-70b.json", "module_id": "module_0428", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 3, "secs": 4.3, "outcome": "match", "n_findings": 3}
+{"item": "game", "game": "module_0428_nova-lite.json", "module_id": "module_0428", "model_id": "nova-lite", "hcl_valid": true, "remote_modules": 5, "secs": 4.2, "outcome": "match", "n_findings": 7}
+{"item": "game", "game": "module_0428_nova-pro.json", "module_id": "module_0428", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 3, "secs": 4.3, "outcome": "match", "n_findings": 3}
+{"item": "game", "game": "module_0428_qwen3-32b.json", "module_id": "module_0428", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 3, "secs": 4.3, "outcome": "match", "n_findings": 3}
+{"item": "game", "game": "module_0429_claude-sonnet-4-5.json", "module_id": "module_0429", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 5, "secs": 4.9, "outcome": "match", "n_findings": 6}
+{"item": "game", "game": "module_0429_claude-sonnet-5.json", "module_id": "module_0429", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 5, "secs": 4.4, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0429_deepseek-r1.json", "module_id": "module_0429", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 5, "secs": 4.5, "outcome": "match", "n_findings": 8}
+{"item": "game", "game": "module_0429_deepseek-v3-2.json", "module_id": "module_0429", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 5, "secs": 4.7, "outcome": "match", "n_findings": 6}
+{"item": "game", "game": "module_0429_grok-4-6.json", "module_id": "module_0429", "model_id": "grok-4-6", "hcl_valid": true, "remote_modules": 5, "secs": 4.4, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0429_kimi-k2-5.json", "module_id": "module_0429", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 5, "secs": 4.8, "outcome": "match", "n_findings": 6}
+{"item": "game", "game": "module_0429_llama-3-3-70b.json", "module_id": "module_0429", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 5, "secs": 4.8, "outcome": "match", "n_findings": 6}
+{"item": "game", "game": "module_0429_nova-lite.json", "module_id": "module_0429", "model_id": "nova-lite", "hcl_valid": false, "remote_modules": 5, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0429_nova-pro.json", "module_id": "module_0429", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 5, "secs": 4.0, "outcome": "match", "n_findings": 5}
+{"item": "game", "game": "module_0429_qwen3-32b.json", "module_id": "module_0429", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 5, "secs": 4.7, "outcome": "match", "n_findings": 9}
+{"item": "game", "game": "module_0430_claude-sonnet-4-5.json", "module_id": "module_0430", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 5, "secs": 4.4, "outcome": "match", "n_findings": 5}
+{"item": "game", "game": "module_0430_claude-sonnet-5.json", "module_id": "module_0430", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 5, "secs": 4.4, "outcome": "match", "n_findings": 5}
+{"item": "game", "game": "module_0430_deepseek-r1.json", "module_id": "module_0430", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 5, "secs": 4.3, "outcome": "match", "n_findings": 3}
+{"item": "game", "game": "module_0430_deepseek-v3-2.json", "module_id": "module_0430", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 5, "secs": 4.4, "outcome": "match", "n_findings": 8}
+{"item": "game", "game": "module_0430_grok-4-6.json", "module_id": "module_0430", "model_id": "grok-4-6", "hcl_valid": false, "remote_modules": 5, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0430_kimi-k2-5.json", "module_id": "module_0430", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 5, "secs": 4.5, "outcome": "match", "n_findings": 5}
+{"item": "game", "game": "module_0430_llama-3-3-70b.json", "module_id": "module_0430", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 5, "secs": 4.5, "outcome": "match", "n_findings": 5}
+{"item": "game", "game": "module_0430_nova-pro.json", "module_id": "module_0430", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 5, "secs": 4.4, "outcome": "match", "n_findings": 5}
+{"item": "game", "game": "module_0430_qwen3-32b.json", "module_id": "module_0430", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 6, "secs": 4.5, "outcome": "match", "n_findings": 7}
+{"item": "game", "game": "module_0432_claude-sonnet-4-5.json", "module_id": "module_0432", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 5, "secs": 5.0, "outcome": "match", "n_findings": 42}
+{"item": "game", "game": "module_0432_claude-sonnet-5.json", "module_id": "module_0432", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 5, "secs": 5.0, "outcome": "match", "n_findings": 11}
+{"item": "game", "game": "module_0432_deepseek-r1.json", "module_id": "module_0432", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 5, "secs": 4.5, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0432_deepseek-v3-2.json", "module_id": "module_0432", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 5, "secs": 5.0, "outcome": "match", "n_findings": 15}
+{"item": "game", "game": "module_0432_grok-4-6.json", "module_id": "module_0432", "model_id": "grok-4-6", "hcl_valid": false, "remote_modules": 5, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0432_kimi-k2-5.json", "module_id": "module_0432", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 5, "secs": 5.2, "outcome": "match", "n_findings": 13}
+{"item": "game", "game": "module_0432_llama-3-3-70b.json", "module_id": "module_0432", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 5, "secs": 5.1, "outcome": "match", "n_findings": 11}
+{"item": "game", "game": "module_0432_nova-lite.json", "module_id": "module_0432", "model_id": "nova-lite", "hcl_valid": true, "remote_modules": 5, "secs": 4.4, "outcome": "match", "n_findings": 5}
+{"item": "game", "game": "module_0432_nova-pro.json", "module_id": "module_0432", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 5, "secs": 3.8, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0432_qwen3-32b.json", "module_id": "module_0432", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 7, "secs": 5.2, "outcome": "match", "n_findings": 13}
+{"item": "game", "game": "module_0433_claude-sonnet-4-5.json", "module_id": "module_0433", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 5, "secs": 4.3, "outcome": "match", "n_findings": 7}
+{"item": "game", "game": "module_0433_claude-sonnet-5.json", "module_id": "module_0433", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 5, "secs": 4.2, "outcome": "match", "n_findings": 4}
+{"item": "game", "game": "module_0433_deepseek-r1.json", "module_id": "module_0433", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 5, "secs": 4.1, "outcome": "match", "n_findings": 2}
+{"item": "game", "game": "module_0433_deepseek-v3-2.json", "module_id": "module_0433", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 5, "secs": 4.5, "outcome": "match", "n_findings": 10}
+{"item": "game", "game": "module_0433_grok-4-6.json", "module_id": "module_0433", "model_id": "grok-4-6", "hcl_valid": true, "remote_modules": 5, "secs": 4.2, "outcome": "match", "n_findings": 3}
+{"item": "game", "game": "module_0433_kimi-k2-5.json", "module_id": "module_0433", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 5, "secs": 4.3, "outcome": "match", "n_findings": 5}
+{"item": "game", "game": "module_0433_llama-3-3-70b.json", "module_id": "module_0433", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 5, "secs": 4.2, "outcome": "match", "n_findings": 10}
+{"item": "game", "game": "module_0433_nova-pro.json", "module_id": "module_0433", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 5, "secs": 3.9, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0433_qwen3-32b.json", "module_id": "module_0433", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 5, "secs": 4.3, "outcome": "match", "n_findings": 10}
+{"item": "game", "game": "module_0435_claude-sonnet-4-5.json", "module_id": "module_0435", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 6, "secs": 4.3, "outcome": "match", "n_findings": 7}
+{"item": "game", "game": "module_0435_claude-sonnet-5.json", "module_id": "module_0435", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 7, "secs": 4.2, "outcome": "match", "n_findings": 1}
+{"item": "game", "game": "module_0435_deepseek-r1.json", "module_id": "module_0435", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 6, "secs": 3.9, "outcome": "match", "n_findings": 1}
+{"item": "game", "game": "module_0435_deepseek-v3-2.json", "module_id": "module_0435", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 6, "secs": 4.3, "outcome": "match", "n_findings": 7}
+{"item": "game", "game": "module_0435_grok-4-6.json", "module_id": "module_0435", "model_id": "grok-4-6", "hcl_valid": false, "remote_modules": 5, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0435_kimi-k2-5.json", "module_id": "module_0435", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 7, "secs": 4.4, "outcome": "match", "n_findings": 8}
+{"item": "game", "game": "module_0435_llama-3-3-70b.json", "module_id": "module_0435", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 6, "secs": 4.4, "outcome": "match", "n_findings": 7}
+{"item": "game", "game": "module_0435_nova-lite.json", "module_id": "module_0435", "model_id": "nova-lite", "hcl_valid": false, "remote_modules": 5, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0435_nova-pro.json", "module_id": "module_0435", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 6, "secs": 4.3, "outcome": "match", "n_findings": 7}
+{"item": "game", "game": "module_0435_qwen3-32b.json", "module_id": "module_0435", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 7, "secs": 4.0, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0436_claude-sonnet-4-5.json", "module_id": "module_0436", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 22, "secs": 7.1, "outcome": "match", "n_findings": 24}
+{"item": "game", "game": "module_0436_claude-sonnet-5.json", "module_id": "module_0436", "model_id": "claude-sonnet-5", "hcl_valid": false, "remote_modules": 22, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0436_deepseek-r1.json", "module_id": "module_0436", "model_id": "deepseek-r1", "hcl_valid": false, "remote_modules": 22, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0436_deepseek-v3-2.json", "module_id": "module_0436", "model_id": "deepseek-v3-2", "hcl_valid": false, "remote_modules": 20, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0436_grok-4-6.json", "module_id": "module_0436", "model_id": "grok-4-6", "hcl_valid": false, "remote_modules": 1, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0436_kimi-k2-5.json", "module_id": "module_0436", "model_id": "kimi-k2-5", "hcl_valid": false, "remote_modules": 22, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0436_llama-3-3-70b.json", "module_id": "module_0436", "model_id": "llama-3-3-70b", "hcl_valid": false, "remote_modules": 7, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0436_nova-lite.json", "module_id": "module_0436", "model_id": "nova-lite", "hcl_valid": false, "remote_modules": 4, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0436_nova-pro.json", "module_id": "module_0436", "model_id": "nova-pro", "hcl_valid": false, "remote_modules": 5, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0437_claude-sonnet-4-5.json", "module_id": "module_0437", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 13, "secs": 5.9, "outcome": "match", "n_findings": 14}
+{"item": "game", "game": "module_0437_claude-sonnet-5.json", "module_id": "module_0437", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 13, "secs": 5.2, "outcome": "match", "n_findings": 1}
+{"item": "game", "game": "module_0437_deepseek-r1.json", "module_id": "module_0437", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 13, "secs": 5.2, "outcome": "match", "n_findings": 1}
+{"item": "game", "game": "module_0437_deepseek-v3-2.json", "module_id": "module_0437", "model_id": "deepseek-v3-2", "hcl_valid": false, "remote_modules": 13, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0437_grok-4-6.json", "module_id": "module_0437", "model_id": "grok-4-6", "hcl_valid": false, "remote_modules": 2, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0437_kimi-k2-5.json", "module_id": "module_0437", "model_id": "kimi-k2-5", "hcl_valid": false, "remote_modules": 13, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0437_llama-3-3-70b.json", "module_id": "module_0437", "model_id": "llama-3-3-70b", "hcl_valid": false, "remote_modules": 9, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0437_nova-lite.json", "module_id": "module_0437", "model_id": "nova-lite", "hcl_valid": false, "remote_modules": 6, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0437_nova-pro.json", "module_id": "module_0437", "model_id": "nova-pro", "hcl_valid": false, "remote_modules": 7, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0438_claude-sonnet-4-5.json", "module_id": "module_0438", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 4, "secs": 5.3, "outcome": "match", "n_findings": 4}
+{"item": "game", "game": "module_0438_claude-sonnet-5.json", "module_id": "module_0438", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 4, "secs": 4.7, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0438_deepseek-r1.json", "module_id": "module_0438", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 4, "secs": 3.9, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0438_deepseek-v3-2.json", "module_id": "module_0438", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 4, "secs": 5.2, "outcome": "match", "n_findings": 4}
+{"item": "game", "game": "module_0438_grok-4-6.json", "module_id": "module_0438", "model_id": "grok-4-6", "hcl_valid": true, "remote_modules": 4, "secs": 4.8, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0438_kimi-k2-5.json", "module_id": "module_0438", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 4, "secs": 4.7, "outcome": "match", "n_findings": 7}
+{"item": "game", "game": "module_0438_llama-3-3-70b.json", "module_id": "module_0438", "model_id": "llama-3-3-70b", "hcl_valid": false, "remote_modules": 3, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0438_nova-lite.json", "module_id": "module_0438", "model_id": "nova-lite", "hcl_valid": false, "remote_modules": 3, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0438_nova-pro.json", "module_id": "module_0438", "model_id": "nova-pro", "hcl_valid": false, "remote_modules": 4, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0438_qwen3-32b.json", "module_id": "module_0438", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 4, "secs": 5.2, "outcome": "match", "n_findings": 4}
+{"item": "game", "game": "module_0439_claude-sonnet-4-5.json", "module_id": "module_0439", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 5, "secs": 4.8, "outcome": "match", "n_findings": 5}
+{"item": "game", "game": "module_0439_claude-sonnet-5.json", "module_id": "module_0439", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 5, "secs": 4.5, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0439_deepseek-r1.json", "module_id": "module_0439", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 5, "secs": 4.1, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0439_deepseek-v3-2.json", "module_id": "module_0439", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 5, "secs": 4.8, "outcome": "match", "n_findings": 7}
+{"item": "game", "game": "module_0439_grok-4-6.json", "module_id": "module_0439", "model_id": "grok-4-6", "hcl_valid": true, "remote_modules": 5, "secs": 4.5, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0439_kimi-k2-5.json", "module_id": "module_0439", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 5, "secs": 4.8, "outcome": "match", "n_findings": 5}
+{"item": "game", "game": "module_0439_llama-3-3-70b.json", "module_id": "module_0439", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 5, "secs": 4.7, "outcome": "match", "n_findings": 5}
+{"item": "game", "game": "module_0439_nova-lite.json", "module_id": "module_0439", "model_id": "nova-lite", "hcl_valid": true, "remote_modules": 5, "secs": 4.4, "outcome": "match", "n_findings": 5}
+{"item": "game", "game": "module_0439_nova-pro.json", "module_id": "module_0439", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 5, "secs": 4.2, "outcome": "match", "n_findings": 5}
+{"item": "game", "game": "module_0439_qwen3-32b.json", "module_id": "module_0439", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 5, "secs": 4.7, "outcome": "match", "n_findings": 5}
+{"item": "game", "game": "module_0440_claude-sonnet-4-5.json", "module_id": "module_0440", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 3, "secs": 4.3, "outcome": "match", "n_findings": 4}
+{"item": "game", "game": "module_0440_claude-sonnet-5.json", "module_id": "module_0440", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 3, "secs": 4.6, "outcome": "match", "n_findings": 1}
+{"item": "game", "game": "module_0440_deepseek-r1.json", "module_id": "module_0440", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 3, "secs": 4.4, "outcome": "match", "n_findings": 1}
+{"item": "game", "game": "module_0440_deepseek-v3-2.json", "module_id": "module_0440", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 3, "secs": 4.3, "outcome": "match", "n_findings": 4}
+{"item": "game", "game": "module_0440_grok-4-6.json", "module_id": "module_0440", "model_id": "grok-4-6", "hcl_valid": true, "remote_modules": 3, "secs": 4.2, "outcome": "match", "n_findings": 1}
+{"item": "game", "game": "module_0440_kimi-k2-5.json", "module_id": "module_0440", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 3, "secs": 4.2, "outcome": "match", "n_findings": 4}
+{"item": "game", "game": "module_0440_llama-3-3-70b.json", "module_id": "module_0440", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 3, "secs": 4.3, "outcome": "match", "n_findings": 4}
+{"item": "game", "game": "module_0440_nova-lite.json", "module_id": "module_0440", "model_id": "nova-lite", "hcl_valid": true, "remote_modules": 3, "secs": 4.2, "outcome": "match", "n_findings": 4}
+{"item": "game", "game": "module_0440_nova-pro.json", "module_id": "module_0440", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 3, "secs": 4.3, "outcome": "match", "n_findings": 4}
+{"item": "game", "game": "module_0440_qwen3-32b.json", "module_id": "module_0440", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 3, "secs": 4.4, "outcome": "match", "n_findings": 4}
+{"item": "game", "game": "module_0441_claude-sonnet-4-5.json", "module_id": "module_0441", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 4, "secs": 4.5, "outcome": "match", "n_findings": 4}
+{"item": "game", "game": "module_0441_claude-sonnet-5.json", "module_id": "module_0441", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 4, "secs": 4.5, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0441_deepseek-r1.json", "module_id": "module_0441", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 4, "secs": 4.3, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0441_deepseek-v3-2.json", "module_id": "module_0441", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 4, "secs": 4.4, "outcome": "match", "n_findings": 4}
+{"item": "game", "game": "module_0441_grok-4-6.json", "module_id": "module_0441", "model_id": "grok-4-6", "hcl_valid": true, "remote_modules": 4, "secs": 4.3, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0441_kimi-k2-5.json", "module_id": "module_0441", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 4, "secs": 4.4, "outcome": "match", "n_findings": 4}
+{"item": "game", "game": "module_0441_llama-3-3-70b.json", "module_id": "module_0441", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 4, "secs": 4.3, "outcome": "match", "n_findings": 5}
+{"item": "game", "game": "module_0441_nova-lite.json", "module_id": "module_0441", "model_id": "nova-lite", "hcl_valid": true, "remote_modules": 4, "secs": 4.4, "outcome": "match", "n_findings": 5}
+{"item": "game", "game": "module_0441_nova-pro.json", "module_id": "module_0441", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 4, "secs": 4.5, "outcome": "match", "n_findings": 4}
+{"item": "game", "game": "module_0441_qwen3-32b.json", "module_id": "module_0441", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 4, "secs": 4.6, "outcome": "match", "n_findings": 4}
+{"item": "game", "game": "module_0443_claude-sonnet-4-5.json", "module_id": "module_0443", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 3, "secs": 4.3, "outcome": "match", "n_findings": 3}
+{"item": "game", "game": "module_0443_claude-sonnet-5.json", "module_id": "module_0443", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 3, "secs": 4.3, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0443_deepseek-r1.json", "module_id": "module_0443", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 3, "secs": 4.0, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0443_deepseek-v3-2.json", "module_id": "module_0443", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 3, "secs": 4.3, "outcome": "match", "n_findings": 3}
+{"item": "game", "game": "module_0443_grok-4-6.json", "module_id": "module_0443", "model_id": "grok-4-6", "hcl_valid": true, "remote_modules": 3, "secs": 4.2, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0443_kimi-k2-5.json", "module_id": "module_0443", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 3, "secs": 4.1, "outcome": "match", "n_findings": 5}
+{"item": "game", "game": "module_0443_llama-3-3-70b.json", "module_id": "module_0443", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 3, "secs": 4.2, "outcome": "match", "n_findings": 5}
+{"item": "game", "game": "module_0443_nova-lite.json", "module_id": "module_0443", "model_id": "nova-lite", "hcl_valid": true, "remote_modules": 3, "secs": 4.2, "outcome": "match", "n_findings": 3}
+{"item": "game", "game": "module_0443_nova-pro.json", "module_id": "module_0443", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 3, "secs": 4.0, "outcome": "match", "n_findings": 3}
+{"item": "game", "game": "module_0443_qwen3-32b.json", "module_id": "module_0443", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 3, "secs": 4.3, "outcome": "match", "n_findings": 3}
+{"item": "game", "game": "module_0444_claude-sonnet-4-5.json", "module_id": "module_0444", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 10, "secs": 5.7, "outcome": "match", "n_findings": 19}
+{"item": "game", "game": "module_0444_claude-sonnet-5.json", "module_id": "module_0444", "model_id": "claude-sonnet-5", "hcl_valid": false, "remote_modules": 10, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0444_deepseek-r1.json", "module_id": "module_0444", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 10, "secs": 4.8, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0444_deepseek-v3-2.json", "module_id": "module_0444", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 10, "secs": 5.6, "outcome": "match", "n_findings": 20}
+{"item": "game", "game": "module_0444_grok-4-6.json", "module_id": "module_0444", "model_id": "grok-4-6", "hcl_valid": false, "remote_modules": 2, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0444_kimi-k2-5.json", "module_id": "module_0444", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 10, "secs": 5.6, "outcome": "match", "n_findings": 20}
+{"item": "game", "game": "module_0444_llama-3-3-70b.json", "module_id": "module_0444", "model_id": "llama-3-3-70b", "hcl_valid": false, "remote_modules": 10, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0444_nova-lite.json", "module_id": "module_0444", "model_id": "nova-lite", "hcl_valid": false, "remote_modules": 10, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0444_nova-pro.json", "module_id": "module_0444", "model_id": "nova-pro", "hcl_valid": false, "remote_modules": 10, "outcome": "skipped_hcl_invalid"}
+{"item": "game", "game": "module_0444_qwen3-32b.json", "module_id": "module_0444", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 10, "secs": 5.7, "outcome": "match", "n_findings": 20}
+{"item": "game", "game": "module_0445_claude-sonnet-4-5.json", "module_id": "module_0445", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 8, "secs": 5.0, "outcome": "match", "n_findings": 12}
+{"item": "game", "game": "module_0445_claude-sonnet-5.json", "module_id": "module_0445", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 8, "secs": 4.8, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0445_deepseek-r1.json", "module_id": "module_0445", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 8, "secs": 4.1, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0445_deepseek-v3-2.json", "module_id": "module_0445", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 8, "secs": 5.1, "outcome": "match", "n_findings": 8}
+{"item": "game", "game": "module_0445_grok-4-6.json", "module_id": "module_0445", "model_id": "grok-4-6", "hcl_valid": true, "remote_modules": 8, "secs": 4.6, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0445_kimi-k2-5.json", "module_id": "module_0445", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 8, "secs": 5.1, "outcome": "match", "n_findings": 8}
+{"item": "game", "game": "module_0445_llama-3-3-70b.json", "module_id": "module_0445", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 8, "secs": 4.4, "outcome": "match", "n_findings": 8}
+{"item": "game", "game": "module_0445_nova-lite.json", "module_id": "module_0445", "model_id": "nova-lite", "hcl_valid": true, "remote_modules": 9, "secs": 4.7, "outcome": "match", "n_findings": 9}
+{"item": "game", "game": "module_0445_nova-pro.json", "module_id": "module_0445", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 8, "secs": 3.9, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0445_qwen3-32b.json", "module_id": "module_0445", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 8, "secs": 5.2, "outcome": "match", "n_findings": 8}
+{"item": "game", "game": "module_0446_claude-sonnet-4-5.json", "module_id": "module_0446", "model_id": "claude-sonnet-4-5", "hcl_valid": true, "remote_modules": 2, "secs": 4.3, "outcome": "match", "n_findings": 9}
+{"item": "game", "game": "module_0446_claude-sonnet-5.json", "module_id": "module_0446", "model_id": "claude-sonnet-5", "hcl_valid": true, "remote_modules": 2, "secs": 4.3, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0446_deepseek-r1.json", "module_id": "module_0446", "model_id": "deepseek-r1", "hcl_valid": true, "remote_modules": 2, "secs": 4.3, "outcome": "match", "n_findings": 0}
+{"item": "game", "game": "module_0446_deepseek-v3-2.json", "module_id": "module_0446", "model_id": "deepseek-v3-2", "hcl_valid": true, "remote_modules": 2, "secs": 4.4, "outcome": "match", "n_findings": 6}
+{"item": "game", "game": "module_0446_kimi-k2-5.json", "module_id": "module_0446", "model_id": "kimi-k2-5", "hcl_valid": true, "remote_modules": 2, "secs": 4.4, "outcome": "match", "n_findings": 6}
+{"item": "game", "game": "module_0446_llama-3-3-70b.json", "module_id": "module_0446", "model_id": "llama-3-3-70b", "hcl_valid": true, "remote_modules": 2, "secs": 4.5, "outcome": "match", "n_findings": 9}
+{"item": "game", "game": "module_0446_nova-lite.json", "module_id": "module_0446", "model_id": "nova-lite", "hcl_valid": true, "remote_modules": 2, "secs": 4.2, "outcome": "match", "n_findings": 3}
+{"item": "game", "game": "module_0446_nova-pro.json", "module_id": "module_0446", "model_id": "nova-pro", "hcl_valid": true, "remote_modules": 2, "secs": 4.4, "outcome": "match", "n_findings": 6}
+{"item": "game", "game": "module_0446_qwen3-32b.json", "module_id": "module_0446", "model_id": "qwen3-32b", "hcl_valid": true, "remote_modules": 2, "secs": 4.5, "outcome": "match", "n_findings": 6}

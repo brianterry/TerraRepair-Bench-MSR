@@ -1,0 +1,208 @@
+{
+  "module_id": "module_0429",
+  "model_id": "kimi-k2-5",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0099",
+      "title": "Missing description for security group.",
+      "severity": "LOW",
+      "resource_name": "module.sg",
+      "resource_type": "module",
+      "file_path": "cloudposse/security-group/aws/main.tf",
+      "start_line": 144,
+      "end_line": 144
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "this",
+      "resource_type": "this",
+      "file_path": "/context.tf",
+      "start_line": 23,
+      "end_line": 46
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_111",
+      "title": "Ensure IAM policies does not allow write access without constraints",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.main",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/iam.tf",
+      "start_line": 42,
+      "end_line": 120
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_356",
+      "title": "Ensure no IAM policies documents allow \"*\" as a statement's resource for restrictable actions",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.main",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/iam.tf",
+      "start_line": 42,
+      "end_line": 120
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_108",
+      "title": "Ensure IAM policies does not allow data exfiltration",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.main",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/iam.tf",
+      "start_line": 42,
+      "end_line": 120
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "sg",
+      "resource_type": "sg",
+      "file_path": "/main.tf",
+      "start_line": 36,
+      "end_line": 44
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "ssm_tls_ssh_key_pair",
+      "resource_type": "ssm_tls_ssh_key_pair",
+      "file_path": "/main.tf",
+      "start_line": 46,
+      "end_line": 56
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "bastion_autoscale_group",
+      "resource_type": "bastion_autoscale_group",
+      "file_path": "/main.tf",
+      "start_line": 95,
+      "end_line": 121
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "vpc",
+      "resource_type": "vpc",
+      "file_path": "/remote-state.tf",
+      "start_line": 1,
+      "end_line": 8
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0099",
+      "title": "Missing description for security group.",
+      "severity": "LOW",
+      "resource_name": "module.sg",
+      "resource_type": "module",
+      "file_path": "cloudposse/security-group/aws/main.tf",
+      "start_line": 144,
+      "end_line": 144
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "this",
+      "resource_type": "this",
+      "file_path": "/main.tf",
+      "start_line": 23,
+      "end_line": 46
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "sg",
+      "resource_type": "sg",
+      "file_path": "/main.tf",
+      "start_line": 448,
+      "end_line": 457
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "ssm_tls_ssh_key_pair",
+      "resource_type": "ssm_tls_ssh_key_pair",
+      "file_path": "/main.tf",
+      "start_line": 459,
+      "end_line": 469
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "bastion_autoscale_group",
+      "resource_type": "bastion_autoscale_group",
+      "file_path": "/main.tf",
+      "start_line": 508,
+      "end_line": 534
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "vpc",
+      "resource_type": "vpc",
+      "file_path": "/main.tf",
+      "start_line": 574,
+      "end_line": 581
+    }
+  ],
+  "target_count": 9,
+  "resolved_count": 3,
+  "introduced_count": 0,
+  "unchanged_count": 6,
+  "repair_success_rate": 0.3333333333333333,
+  "regression_rate": 0.0,
+  "net_delta": 3,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 3,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 6
+    }
+  },
+  "repair_cost_usd": 0.0159826,
+  "repair_tokens": 10589,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0429_kimi-k2-5.repaired.tf",
+  "raw_response_path": "module_0429_kimi-k2-5.raw.txt",
+  "repaired_code_sha256": "4b58d157b91ffcea5e1ec1b0ab65ef91e6ad283159eaa7459d4d3401035d4126"
+}

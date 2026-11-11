@@ -1,0 +1,141 @@
+module "this" {
+  source  = "git::https://github.com/cloudposse/terraform-null-label.git?ref=7ddf3b0a0c654d0a668cb0d0fd0dfb9b0d2dfd2a"
+
+  enabled             = var.enabled
+  namespace           = var.namespace
+  tenant              = var.tenant
+  environment         = var.environment
+  stage               = var.stage
+  name                = var.name
+  delimiter           = var.delimiter
+  attributes          = var.attributes
+  tags                = var.tags
+  additional_tag_map  = var.additional_tag_map
+  label_order         = var.label_order
+  regex_replace_chars = var.regex_replace_chars
+  id_length_limit     = var.id_length_limit
+  label_key_case      = var.label_key_case
+  label_value_case    = var.label_value_case
+  descriptor_formats  = var.descriptor_formats
+  labels_as_tags      = var.labels_as_tags
+
+  context = var.context
+}
+
+data "aws_iam_policy_document" "github_action_runner" {
+  count = local.enabled ? 1 : 0
+
+  statement {
+    sid     = "AllowAssumeCICDRole"
+    actions = ["sts:AssumeRole"]
+    resources = [
+      format(
+        var.tenant != null ? (
+          "arn:${local.aws_partition}:iam::%[3]s:role/%[1]s-%[2]s-gbl-identity-cicd"
+        ) : "arn:${local.aws_partition}:iam::%[3]s:role/%[1]s-gbl-identity-cicd",
+        module.this.namespace,
+        module.this.tenant,
+      local.identity_account_id)
+    ]
+  }
+
+  statement {
+    sid = "AllowECRActions"
+    actions = [
+      "ecr:BatchCheckLayerAvailability",
+      "ecr:BatchDeleteImage",
+      "ecr:BatchGetImage",
+      "ecr:CompleteLayerUpload",
+      "ecr:DeleteLifecyclePolicy",
+      "ecr:DescribeImages",
+      "ecr:DescribeImageScanFindings",
+      "ecr:DescribeRepositories",
+      "ecr:GetAuthorizationToken",
+      "ecr:GetDownloadUrlForLayer",
+      "ecr:GetLifecyclePolicy",
+      "ecr:GetLifecyclePolicyPreview",
+      "ecr:GetRepositoryPolicy",
+      "ecr:InitiateLayerUpload",
+      "ecr:ListImages",
+      "ecr:PutImage",
+      "ecr:PutImageScanningConfiguration",
+      "ecr:PutImageTagMutability",
+      "ecr:PutLifecyclePolicy",
+      "ecr:StartImageScan",
+      "ecr:StartLifecyclePolicyPreview",
+      "ecr:TagResource",
+      "ecr:UntagResource",
+      "ecr:UploadLayerPart",
+    ]
+    resources = ["arn:${local.aws_partition}:ecr:${var.region}:${local.identity_account_id}:repository/*"]
+  }
+
+  statement {
+    sid     = "AllowGetGitHubToken"
+    actions = ["ssm:GetParameters"]
+    resources = [
+      join("", data.aws_ssm_parameter.github_token.*.arn)
+    ]
+  }
+}
+
+module "sg" {
+  source  = "git::https://github.com/cloudposse/terraform-aws-security-group.git?ref=0c408030c473e2a19bb7d0a9a294a7b1755c9c2a"
+
+  security_group_description = "Security group for GitHub runner"
+  allow_all_egress           = true
+  vpc_id                     = local.vpc_id
+
+  context = module.this.context
+}
+
+module "autoscale_group" {
+  source  = "git::https://github.com/cloudposse/terraform-aws-ec2-autoscale-group.git?ref=5c0f0a0a4e3e3b3e3e3b3e3e3e3e3e3e3e3e3e3"
+
+  image_id                    = join("", data.aws_ami.runner.*.id)
+  instance_type               = var.instance_type
+  mixed_instances_policy      = var.mixed_instances_policy
+  subnet_ids                  = local.vpc_private_subnet_ids
+  health_check_type           = "EC2"
+  min_size                    = var.min_size
+  max_size                    = var.max_size
+  default_cooldown            = var.default_cooldown
+  scale_down_cooldown_seconds = var.scale_down_cooldown_seconds
+  wait_for_capacity_timeout   = var.wait_for_capacity_timeout
+  user_data_base64            = join("", data.cloudinit_config.config.*.rendered)
+  tags                        = module.this.tags
+  security_group_ids          = [module.sg.id]
+  iam_instance_profile_name   = join("", aws_iam_instance_profile.github_action_runner.*.name)
+  block_device_mappings       = var.block_device_mappings
+  associate_public_ip_address = false
+  max_instance_lifetime       = var.max_instance_lifetime
+
+  autoscaling_policies_enabled            = true
+  cpu_utilization_high_threshold_percent  = var.cpu_utilization_high_threshold_percent
+  cpu_utilization_high_period_seconds     = var.cpu_utilization_high_period_seconds
+  cpu_utilization_high_evaluation_periods = var.cpu_utilization_high_evaluation_periods
+  cpu_utilization_low_threshold_percent   = var.cpu_utilization_low_threshold_percent
+  cpu_utilization_low_period_seconds      = var.cpu_utilization_low_period_seconds
+  cpu_utilization_low_evaluation_periods  = var.cpu_utilization_low_evaluation_periods
+
+  context = module.this.context
+}
+
+module "vpc" {
+  source  = "git::https://github.com/cloudposse/terraform-aws-stack-config.git?ref=1234567890abcdef"
+
+  component = "vpc"
+
+  context = module.this.context
+}
+
+module "account_map" {
+  source  = "git::https://github.com/cloudposse/terraform-aws-stack-config.git?ref=1234567890abcdef"
+
+  component   = "account-map"
+  environment = var.account_map_environment_name
+  stage       = var.account_map_stage_name
+  tenant      = var.account_map_tenant_name
+
+  context = module.this.context
+}

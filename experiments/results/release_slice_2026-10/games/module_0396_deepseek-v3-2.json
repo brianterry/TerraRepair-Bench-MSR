@@ -1,0 +1,75 @@
+{
+  "module_id": "module_0396",
+  "model_id": "deepseek-v3-2",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0065",
+      "title": "A KMS key is not configured to auto-rotate.",
+      "severity": "MEDIUM",
+      "resource_name": "aws_kms_key.objects",
+      "resource_type": "aws_kms_key",
+      "file_path": "main.tf",
+      "start_line": 25,
+      "end_line": 28
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_7",
+      "title": "Ensure rotation for customer created CMKs is enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_kms_key.objects",
+      "resource_type": "aws_kms_key",
+      "file_path": "/main.tf",
+      "start_line": 25,
+      "end_line": 28
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_64",
+      "title": "Ensure KMS key Policy is defined",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_kms_key.objects",
+      "resource_type": "aws_kms_key",
+      "file_path": "/main.tf",
+      "start_line": 25,
+      "end_line": 28
+    }
+  ],
+  "findings_after": [],
+  "target_count": 3,
+  "resolved_count": 3,
+  "introduced_count": 0,
+  "unchanged_count": 0,
+  "repair_success_rate": 1.0,
+  "regression_rate": 0.0,
+  "net_delta": 3,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 1,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 1,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 1,
+      "introduced": 0,
+      "unchanged": 0
+    }
+  },
+  "repair_cost_usd": 0.01032448,
+  "repair_tokens": 7070,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0396_deepseek-v3-2.repaired.tf",
+  "raw_response_path": "module_0396_deepseek-v3-2.raw.txt",
+  "repaired_code_sha256": "ba69eb94e9d9003d330240b1fca73f016b934ee21624f5d594aac59fc2a54ffb"
+}

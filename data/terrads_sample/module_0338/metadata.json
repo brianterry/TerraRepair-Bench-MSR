@@ -1,0 +1,71 @@
+{
+  "findings_count": 11,
+  "findings": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_300",
+      "title": "",
+      "resource_name": "aws_s3_bucket_lifecycle_configuration.aft_access_logs_primary_backend_bucket"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_28",
+      "title": "",
+      "resource_name": "aws_dynamodb_table.lock-table"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_62",
+      "title": "",
+      "resource_name": "aws_s3_bucket.primary-backend-bucket"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_62",
+      "title": "",
+      "resource_name": "aws_s3_bucket.secondary-backend-bucket"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_62",
+      "title": "",
+      "resource_name": "aws_s3_bucket.aft_access_logs_primary_backend_bucket"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_18",
+      "title": "",
+      "resource_name": "aws_s3_bucket.secondary-backend-bucket"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_64",
+      "title": "",
+      "resource_name": "aws_kms_key.encrypt-primary-region"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_64",
+      "title": "",
+      "resource_name": "aws_kms_key.encrypt-secondary-region"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_61",
+      "title": "",
+      "resource_name": "aws_s3_bucket.primary-backend-bucket"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_61",
+      "title": "",
+      "resource_name": "aws_s3_bucket.secondary-backend-bucket"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_144",
+      "title": "",
+      "resource_name": "aws_s3_bucket.aft_access_logs_primary_backend_bucket"
+    }
+  ]
+}

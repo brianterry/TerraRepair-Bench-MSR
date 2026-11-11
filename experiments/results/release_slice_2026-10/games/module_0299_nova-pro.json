@@ -1,0 +1,160 @@
+{
+  "module_id": "module_0299",
+  "model_id": "nova-pro",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0065",
+      "title": "A KMS key is not configured to auto-rotate.",
+      "severity": "MEDIUM",
+      "resource_name": "module.baselines-modernisation-platform",
+      "resource_type": "module",
+      "file_path": "github.com/ministryofjustice/modernisation-platform-terraform-baselines?ref=35c27b19f923053a9ab0525d45c9301dca743359/config.tf",
+      "start_line": 133,
+      "end_line": 139
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "module.baselines-modernisation-platform",
+      "resource_type": "module",
+      "file_path": "github.com/ministryofjustice/modernisation-platform-terraform-baselines?ref=35c27b19f923053a9ab0525d45c9301dca743359/github.com/ministryofjustice/modernisation-platform-terraform-s3-bucket?ref=9facf9fc8f8b8e3f93ffbda822028534b9a75399/main.tf",
+      "start_line": 30,
+      "end_line": 41
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "module.cost-management-bucket",
+      "resource_type": "module",
+      "file_path": "github.com/ministryofjustice/modernisation-platform-terraform-s3-bucket?ref=9facf9fc8f8b8e3f93ffbda822028534b9a75399/main.tf",
+      "start_line": 30,
+      "end_line": 41
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "module.member_information_bucket",
+      "resource_type": "module",
+      "file_path": "github.com/ministryofjustice/modernisation-platform-terraform-s3-bucket?ref=9facf9fc8f8b8e3f93ffbda822028534b9a75399/main.tf",
+      "start_line": 30,
+      "end_line": 41
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "module.state-bucket",
+      "resource_type": "module",
+      "file_path": "github.com/ministryofjustice/modernisation-platform-terraform-s3-bucket?ref=9facf9fc8f8b8e3f93ffbda822028534b9a75399/main.tf",
+      "start_line": 30,
+      "end_line": 41
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0065",
+      "title": "A KMS key is not configured to auto-rotate.",
+      "severity": "MEDIUM",
+      "resource_name": "module.baselines-modernisation-platform",
+      "resource_type": "module",
+      "file_path": "github.com/ministryofjustice/modernisation-platform-terraform-baselines?ref=35c27b19f923053a9ab0525d45c9301dca743359/config.tf",
+      "start_line": 133,
+      "end_line": 139
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "module.baselines-modernisation-platform",
+      "resource_type": "module",
+      "file_path": "github.com/ministryofjustice/modernisation-platform-terraform-baselines?ref=35c27b19f923053a9ab0525d45c9301dca743359/github.com/ministryofjustice/modernisation-platform-terraform-s3-bucket?ref=9facf9fc8f8b8e3f93ffbda822028534b9a75399/main.tf",
+      "start_line": 30,
+      "end_line": 41
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "module.cost-management-bucket",
+      "resource_type": "module",
+      "file_path": "github.com/ministryofjustice/modernisation-platform-terraform-s3-bucket?ref=9facf9fc8f8b8e3f93ffbda822028534b9a75399/main.tf",
+      "start_line": 30,
+      "end_line": 41
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "module.member_information_bucket",
+      "resource_type": "module",
+      "file_path": "github.com/ministryofjustice/modernisation-platform-terraform-s3-bucket?ref=9facf9fc8f8b8e3f93ffbda822028534b9a75399/main.tf",
+      "start_line": 30,
+      "end_line": 41
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "module.state-bucket",
+      "resource_type": "module",
+      "file_path": "github.com/ministryofjustice/modernisation-platform-terraform-s3-bucket?ref=9facf9fc8f8b8e3f93ffbda822028534b9a75399/main.tf",
+      "start_line": 30,
+      "end_line": 41
+    }
+  ],
+  "target_count": 5,
+  "resolved_count": 0,
+  "introduced_count": 0,
+  "unchanged_count": 5,
+  "repair_success_rate": 0.0,
+  "regression_rate": 0.0,
+  "net_delta": 0,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 1
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 4
+    },
+    "other": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    }
+  },
+  "repair_cost_usd": 0.030005999999999998,
+  "repair_tokens": 30006,
+  "hcl_valid": false,
+  "failure_metadata": {
+    "source_chars": 64533,
+    "est_input_tokens": 16133,
+    "max_tokens": 40000,
+    "size_driven_failure": false,
+    "repair_error": "Repaired code failed HCL validation"
+  },
+  "repaired_code_path": "module_0299_nova-pro.repaired.tf",
+  "raw_response_path": "module_0299_nova-pro.raw.txt",
+  "repaired_code_sha256": "2935d78fa472efcb60c54ab244cbf908c22ba447b30cde75ca0ede762599da77"
+}

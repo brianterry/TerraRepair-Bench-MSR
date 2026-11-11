@@ -1,0 +1,4 @@
+{"kind": "candidate", "id": "module_0003", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:28:27.837677+00:00"}
+{"kind": "candidate", "id": "module_0004", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:28:32.070517+00:00"}
+{"kind": "candidate", "id": "module_0005", "reason": "finding count 1 outside [3,50]", "ts": "2026-10-28T14:28:38.129035+00:00"}
+{"kind": "candidate", "id": "module_0006", "reason": "finding count 1 outside [3,50]", "ts": "2026-10-28T14:28:44.721438+00:00"}

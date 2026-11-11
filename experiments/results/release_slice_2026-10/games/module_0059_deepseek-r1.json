@@ -1,0 +1,307 @@
+{
+  "module_id": "module_0059",
+  "model_id": "deepseek-r1",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0178",
+      "title": "VPC Flow Logs is a feature that enables you to capture information about the IP traffic going to and from network interfaces in your VPC. After you've created a flow log, you can view and retrieve its data in Amazon CloudWatch Logs. It is recommended that VPC Flow Logs be enabled for packet \"Rejects\" for VPCs.",
+      "severity": "MEDIUM",
+      "resource_name": "aws_vpc.main",
+      "resource_type": "aws_vpc",
+      "file_path": "1-vpc.tf",
+      "start_line": 1,
+      "end_line": 11
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0164",
+      "title": "Instances in a subnet should not receive a public IP address by default.",
+      "severity": "HIGH",
+      "resource_name": "aws_subnet.public-us-east-1a",
+      "resource_type": "aws_subnet",
+      "file_path": "3-subnets.tf",
+      "start_line": 29,
+      "end_line": 29
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0164",
+      "title": "Instances in a subnet should not receive a public IP address by default.",
+      "severity": "HIGH",
+      "resource_name": "aws_subnet.public-us-east-1b",
+      "resource_type": "aws_subnet",
+      "file_path": "3-subnets.tf",
+      "start_line": 42,
+      "end_line": 42
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0038",
+      "title": "EKS Clusters should have cluster control plane logging turned on",
+      "severity": "MEDIUM",
+      "resource_name": "aws_eks_cluster.cluster",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "6-eks.tf",
+      "start_line": 25,
+      "end_line": 45
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0039",
+      "title": "EKS should have the encryption of secrets enabled",
+      "severity": "HIGH",
+      "resource_name": "aws_eks_cluster.cluster",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "6-eks.tf",
+      "start_line": 25,
+      "end_line": 45
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0040",
+      "title": "EKS Clusters should have the public access disabled",
+      "severity": "CRITICAL",
+      "resource_name": "aws_eks_cluster.cluster",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "6-eks.tf",
+      "start_line": 33,
+      "end_line": 33
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0041",
+      "title": "EKS cluster should not have open CIDR range for public access",
+      "severity": "CRITICAL",
+      "resource_name": "aws_eks_cluster.cluster",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "6-eks.tf",
+      "start_line": 34,
+      "end_line": 34
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_184",
+      "title": "Ensure resource is encrypted by KMS using a customer managed Key (CMK)",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_efs_file_system.eks",
+      "resource_type": "aws_efs_file_system",
+      "file_path": "/13-efs.tf",
+      "start_line": 1,
+      "end_line": 15
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_130",
+      "title": "Ensure VPC subnets do not assign public IP by default",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_subnet.public-us-east-1a",
+      "resource_type": "aws_subnet",
+      "file_path": "/3-subnets.tf",
+      "start_line": 25,
+      "end_line": 36
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_130",
+      "title": "Ensure VPC subnets do not assign public IP by default",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_subnet.public-us-east-1b",
+      "resource_type": "aws_subnet",
+      "file_path": "/3-subnets.tf",
+      "start_line": 38,
+      "end_line": 49
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_37",
+      "title": "Ensure Amazon EKS control plane logging is enabled for all log types",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_eks_cluster.cluster",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "/6-eks.tf",
+      "start_line": 25,
+      "end_line": 45
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_38",
+      "title": "Ensure Amazon EKS public endpoint not accessible to 0.0.0.0/0",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_eks_cluster.cluster",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "/6-eks.tf",
+      "start_line": 25,
+      "end_line": 45
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_39",
+      "title": "Ensure Amazon EKS public endpoint disabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_eks_cluster.cluster",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "/6-eks.tf",
+      "start_line": 25,
+      "end_line": 45
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_339",
+      "title": "Ensure EKS clusters run on a supported Kubernetes version",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_eks_cluster.cluster",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "/6-eks.tf",
+      "start_line": 25,
+      "end_line": 45
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_58",
+      "title": "Ensure EKS Cluster has Secrets Encryption Enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_eks_cluster.cluster",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "/6-eks.tf",
+      "start_line": 25,
+      "end_line": 45
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_12",
+      "title": "Ensure the default security group of every VPC restricts all traffic",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_vpc.main",
+      "resource_type": "aws_vpc",
+      "file_path": "/1-vpc.tf",
+      "start_line": 1,
+      "end_line": 11
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_11",
+      "title": "Ensure VPC flow logging is enabled in all VPCs",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_vpc.main",
+      "resource_type": "aws_vpc",
+      "file_path": "/1-vpc.tf",
+      "start_line": 1,
+      "end_line": 11
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0039",
+      "title": "EKS should have the encryption of secrets enabled",
+      "severity": "HIGH",
+      "resource_name": "aws_eks_cluster.cluster",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "main.tf",
+      "start_line": 297,
+      "end_line": 317
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0178",
+      "title": "VPC Flow Logs is a feature that enables you to capture information about the IP traffic going to and from network interfaces in your VPC. After you've created a flow log, you can view and retrieve its data in Amazon CloudWatch Logs. It is recommended that VPC Flow Logs be enabled for packet \"Rejects\" for VPCs.",
+      "severity": "MEDIUM",
+      "resource_name": "aws_vpc.main",
+      "resource_type": "aws_vpc",
+      "file_path": "main.tf",
+      "start_line": 22,
+      "end_line": 31
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_184",
+      "title": "Ensure resource is encrypted by KMS using a customer managed Key (CMK)",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_efs_file_system.eks",
+      "resource_type": "aws_efs_file_system",
+      "file_path": "/main.tf",
+      "start_line": 126,
+      "end_line": 136
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_339",
+      "title": "Ensure EKS clusters run on a supported Kubernetes version",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_eks_cluster.cluster",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "/main.tf",
+      "start_line": 297,
+      "end_line": 317
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_58",
+      "title": "Ensure EKS Cluster has Secrets Encryption Enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_eks_cluster.cluster",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "/main.tf",
+      "start_line": 297,
+      "end_line": 317
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_12",
+      "title": "Ensure the default security group of every VPC restricts all traffic",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_vpc.main",
+      "resource_type": "aws_vpc",
+      "file_path": "/main.tf",
+      "start_line": 22,
+      "end_line": 31
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_11",
+      "title": "Ensure VPC flow logging is enabled in all VPCs",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_vpc.main",
+      "resource_type": "aws_vpc",
+      "file_path": "/main.tf",
+      "start_line": 22,
+      "end_line": 31
+    }
+  ],
+  "target_count": 17,
+  "resolved_count": 10,
+  "introduced_count": 0,
+  "unchanged_count": 7,
+  "repair_success_rate": 0.5882352941176471,
+  "regression_rate": 0.0,
+  "net_delta": 10,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 8,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 3
+    },
+    "observability": {
+      "resolved": 2,
+      "introduced": 0,
+      "unchanged": 2
+    },
+    "other": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 2
+    }
+  },
+  "repair_cost_usd": 0.0362936,
+  "repair_tokens": 15202,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0059_deepseek-r1.repaired.tf",
+  "raw_response_path": "module_0059_deepseek-r1.raw.txt",
+  "repaired_code_sha256": "ef1bb0539736eea5628033fbef69a87f08947ca586058030a0189d2d2dd0486e"
+}

@@ -1,0 +1,29 @@
+{
+  "findings_count": 4,
+  "findings": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_274",
+      "title": "",
+      "resource_name": "aws_iam_role_policy_attachment.atlantis"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "cur_reports_s3_bucket"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "cur_reports_integration_athena_s3_bucket"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_274",
+      "title": "",
+      "resource_name": "aws_ssoadmin_managed_policy_attachment.this[\"AdministratorAccess\"]"
+    }
+  ]
+}

@@ -1,0 +1,86 @@
+{
+  "module_id": "module_0150",
+  "model_id": "grok-4-6",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0017",
+      "title": "CloudWatch log groups should be encrypted using CMK",
+      "severity": "LOW",
+      "resource_name": "aws_cloudwatch_log_group.default_vpc_flow_logs[0]",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "main.tf",
+      "start_line": 21,
+      "end_line": 28
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0101",
+      "title": "AWS best practice to not use the default VPC for workflows",
+      "severity": "HIGH",
+      "resource_name": "aws_default_vpc.default",
+      "resource_type": "aws_default_vpc",
+      "file_path": "main.tf",
+      "start_line": 46,
+      "end_line": 51
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_158",
+      "title": "Ensure that CloudWatch Log Group is encrypted by KMS",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.default_vpc_flow_logs[0]",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/main.tf",
+      "start_line": 21,
+      "end_line": 28
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_148",
+      "title": "Ensure no default VPC is planned to be provisioned",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_default_vpc.default",
+      "resource_type": "aws_default_vpc",
+      "file_path": "/main.tf",
+      "start_line": 46,
+      "end_line": 51
+    }
+  ],
+  "findings_after": [],
+  "target_count": 4,
+  "resolved_count": 4,
+  "introduced_count": 0,
+  "unchanged_count": 0,
+  "repair_success_rate": 1.0,
+  "regression_rate": 0.0,
+  "net_delta": 4,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 2,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 2,
+      "introduced": 0,
+      "unchanged": 0
+    }
+  },
+  "repair_cost_usd": 0.08968000000000001,
+  "repair_tokens": 16316,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0150_grok-4-6.repaired.tf",
+  "raw_response_path": "module_0150_grok-4-6.raw.txt",
+  "repaired_code_sha256": "25f7beb80b36de3888b32043514310deb3eece515e824982d46567548d7ae3c4"
+}

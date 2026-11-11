@@ -1,0 +1,142 @@
+{
+  "module_id": "module_0446",
+  "model_id": "nova-lite",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0025",
+      "title": "DynamoDB tables should use at rest encryption with a Customer Managed Key",
+      "severity": "LOW",
+      "resource_name": "module.tfstate_backend",
+      "resource_type": "module",
+      "file_path": "cloudposse/tfstate-backend/aws/main.tf",
+      "start_line": 244,
+      "end_line": 246
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "module.tfstate_backend",
+      "resource_type": "module",
+      "file_path": "cloudposse/tfstate-backend/aws/main.tf",
+      "start_line": 144,
+      "end_line": 153
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0132",
+      "title": "S3 encryption should use Customer Managed Keys",
+      "severity": "HIGH",
+      "resource_name": "module.tfstate_backend",
+      "resource_type": "module",
+      "file_path": "cloudposse/tfstate-backend/aws/main.tf",
+      "start_line": 184,
+      "end_line": 194
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "this",
+      "resource_type": "this",
+      "file_path": "/context.tf",
+      "start_line": 23,
+      "end_line": 46
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "label",
+      "resource_type": "label",
+      "file_path": "/iam.tf",
+      "start_line": 24,
+      "end_line": 37
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "tfstate_backend",
+      "resource_type": "tfstate_backend",
+      "file_path": "/main.tf",
+      "start_line": 5,
+      "end_line": 16
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "this",
+      "resource_type": "this",
+      "file_path": "/main.tf",
+      "start_line": 20,
+      "end_line": 43
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "label",
+      "resource_type": "label",
+      "file_path": "/main.tf",
+      "start_line": 302,
+      "end_line": 315
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "tfstate_backend",
+      "resource_type": "tfstate_backend",
+      "file_path": "/main.tf",
+      "start_line": 429,
+      "end_line": 440
+    }
+  ],
+  "target_count": 6,
+  "resolved_count": 3,
+  "introduced_count": 0,
+  "unchanged_count": 3,
+  "repair_success_rate": 0.5,
+  "regression_rate": 0.0,
+  "net_delta": 3,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 2,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 1,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 3
+    }
+  },
+  "repair_cost_usd": 0.0017344,
+  "repair_tokens": 11673,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0446_nova-lite.repaired.tf",
+  "raw_response_path": "module_0446_nova-lite.raw.txt",
+  "repaired_code_sha256": "0c06450b14e89498ffa83a69aec617c08a2c1b83f3c7f1acd9ec921414e4b8ec"
+}

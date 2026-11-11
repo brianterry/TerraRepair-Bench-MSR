@@ -1,0 +1,1099 @@
+```hcl
+# Vendor AMI
+data "aws_ami" "ph-vendor-ami-latest" {
+  most_recent = true
+  owners      = [var.vendor_ami_account_number]
+  filter {
+    name   = "name"
+    values = [var.vendor_ami_name_string]
+  }
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+  filter {
+    name   = "root-device-type"
+    values = ["ebs"]
+  }
+}
+
+# Create AMI with KMS CMK from latest Vendor AMI
+resource "aws_ami_copy" "ph-latest-vendor-ami-with-cmk" {
+  name              = "${var.name_prefix}-encrypted-ami"
+  description       = "KMS CMK-encrypted AMI of latest official vendor AMI"
+  source_ami_id     = data.aws_ami.ph-vendor-ami-latest.id
+  source_ami_region = var.aws_region
+  encrypted         = true
+  kms_key_id        = aws_kms_key.ph-kmscmk-ec2.arn
+  tags = {
+    Name = "${var.name_prefix}-encrypted-ami"
+  }
+  timeouts {
+    create = "120m"
+    delete = "5m"
+  }
+}
+
+
+resource "random_string" "ph-random" {
+  length  = 5
+  upper   = false
+  special = false
+}
+
+variable "aws_region" {
+  type = string
+}
+
+variable "aws_az" {
+  type    = number
+  default = 0
+}
+
+variable "aws_profile" {
+  type = string
+}
+
+variable "vpc_cidr" {
+  type = string
+}
+
+variable "pubnet_cidr" {
+  type = string
+}
+
+variable "pubnet_instance_ip" {
+  type = string
+}
+
+variable "mgmt_cidr" {
+  type        = string
+  description = "Subnet CIDR allowed to access WebUI and SSH, e.g. <home ip address>/32"
+}
+
+variable "client_cidrs" {
+  type        = list(any)
+  description = "List of subnets (in CIDR notation) granted access to DNS without VPN"
+  default     = []
+}
+
+variable "vpn_cidr" {
+  type        = string
+  description = "Subnet CIDR allowed to access the VPN, e.g. 0.0.0.0/0 for world access (enrollment still required)"
+}
+
+variable "dns_novpn" {
+  type        = number
+  description = "1 permits mgmt_cidr access to pihole DNS without VPN."
+}
+
+variable "instance_type" {
+  type        = string
+  description = "The type of EC2 instance to deploy"
+}
+
+variable "instance_key" {
+  type        = string
+  description = "A public key for SSH access to instance(s)"
+}
+
+variable "instance_vol_size" {
+  type        = number
+  description = "The volume size of the instances' root block device"
+}
+
+variable "name_prefix" {
+  type        = string
+  description = "A friendly name prefix for the AMI and EC2 instances, e.g. 'ph' or 'dev'"
+}
+
+variable "vendor_ami_account_number" {
+  type        = string
+  description = "The account number of the vendor supplying the base AMI"
+}
+
+variable "vendor_ami_name_string" {
+  type        = string
+  description = "The search string for the name of the AMI from the AMI Vendor"
+}
+
+variable "pihole_password" {
+  type        = string
+  description = "Password to access the Pihole web console"
+}
+
+terraform {
+  required_providers {
+    aws = {
+      source = "hashicorp/aws"
+    }
+  }
+}
+
+provider "aws" {
+  region  = var.aws_region
+  profile = var.aws_profile
+}
+
+# region azs
+data "aws_availability_zones" "ph-azs" {
+  state = "available"
+  filter {
+    name   = "zone-type"
+    values = ["availability-zone"]
+  }
+}
+
+# account id
+data "aws_caller_identity" "ph-aws-account" {
+}
+
+variable "kms_manager" {
+  type        = string
+  description = "An IAM user for management of KMS key"
+}
+
+# kms cmk manager - granted access to KMS CMKs
+data "aws_iam_user" "ph-kmsmanager" {
+  user_name = var.kms_manager
+}
+
+variable "docker_network" {
+  type        = string
+  description = "docker network ip"
+}
+
+variable "docker_gw" {
+  type        = string
+  description = "docker network gateway ip"
+}
+
+variable "docker_doh" {
+  type        = string
+  description = "cloudflared_doh container ip"
+}
+
+variable "docker_pihole" {
+  type        = string
+  description = "pihole container ip"
+}
+
+variable "docker_wireguard" {
+  type        = string
+  description = "wireguard container ip"
+}
+
+variable "docker_webproxy" {
+  type        = string
+  description = "https web proxy container ip"
+}
+
+variable "wireguard_network" {
+  type        = string
+  description = "wireguard vpn network ip"
+}
+
+variable "wireguard_peers" {
+  type        = number
+  description = "number of peers to generate for wireguard"
+}
+
+variable "doh_provider" {
+  type        = string
+  description = "DNS over HTTPS provider, one of adguard applied-privacy cloudflare google hurricane-electric libre-dns opendns opendns pi-dns quad9-recommended"
+}
+
+variable "vpn_traffic" {
+  type        = string
+  description = "dns or all, sets the Wireguard VPN client configuration to route only dns traffic or all traffic through the VPN."
+}
+
+
+# SSM Managed Policy
+data "aws_iam_policy" "ph-instance-policy-ssm" {
+  arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+}
+
+# Instance Policy SSM Parameter
+resource "aws_iam_policy" "ph-instance-policy-ssmparameter" {
+  name        = "ph-instance-policy-ssmparameter"
+  path        = "/"
+  description = "Provides ph instances access to ssm parameter(s)"
+  policy      = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "GetSSMParameter",
+      "Effect": "Allow",
+      "Action": [
+        "ssm:GetParameters"
+      ],
+      "Resource": ["${aws_ssm_parameter.ph-ssm-param-pass.arn}"]
+    },
+    {
+      "Sid": "SSMCMK",
+      "Effect": "Allow",
+      "Action": "kms:Decrypt",
+      "Resource": ["${aws_kms_key.ph-kmscmk-ssm.arn}"]
+    }
+  ]
+}
+EOF
+}
+
+# Instance Policy S3
+resource "aws_iam_policy" "ph-instance-policy-s3" {
+  name        = "ph-instance-policy-s3"
+  path        = "/"
+  description = "Provides ph instances access to s3 objects/bucket"
+  policy      = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "ListObjectsinBucket",
+      "Effect": "Allow",
+      "Action": [
+        "s3:ListBucket"
+      ],
+      "Resource": ["${aws_s3_bucket.ph-bucket.arn}"]
+    },
+    {
+      "Sid": "GetObjectsinBucketPrefix",
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject",
+        "s3:GetObjectVersion"
+      ],
+      "Resource": ["${aws_s3_bucket.ph-bucket.arn}/playbooks/*","${aws_s3_bucket.ph-bucket.arn}/pihole/*","${aws_s3_bucket.ph-bucket.arn}/wireguard/*"]
+    },
+    {
+      "Sid": "PutObjectsinBucketPrefix",
+      "Effect": "Allow",
+      "Action": [
+        "s3:PutObject",
+        "s3:PutObjectAcl"
+      ],
+      "Resource": ["${aws_s3_bucket.ph-bucket.arn}/ssm/*","${aws_s3_bucket.ph-bucket.arn}/pihole/*","${aws_s3_bucket.ph-bucket.arn}/wireguard/*"]
+    },
+    {
+      "Sid": "S3CMK",
+      "Effect": "Allow",
+      "Action": [
+        "kms:Encrypt",
+        "kms:ReEncrypt*",
+        "kms:GenerateDataKey*",
+        "kms:DescribeKey"
+      ],
+      "Resource": ["${aws_kms_key.ph-kmscmk-s3.arn}"]
+    }
+  ]
+}
+EOF
+}
+
+# Instance Role
+resource "aws_iam_role" "ph-instance-iam-role" {
+  name               = "ph-instance-profile-${random_string.ph-random.result}-role"
+  path               = "/"
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+      {
+          "Action": "sts:AssumeRole",
+          "Principal": {
+             "Service": "ec2.amazonaws.com"
+          },
+          "Effect": "Allow",
+          "Sid": ""
+      }
+  ]
+}
+EOF
+}
+
+# Instance Role Attachments
+resource "aws_iam_role_policy_attachment" "ph-iam-attach-ssm" {
+  role       = aws_iam_role.ph-instance-iam-role.name
+  policy_arn = data.aws_iam_policy.ph-instance-policy-ssm.arn
+}
+
+resource "aws_iam_role_policy_attachment" "ph-iam-attach-ssmparameter" {
+  role       = aws_iam_role.ph-instance-iam-role.name
+  policy_arn = aws_iam_policy.ph-instance-policy-ssmparameter.arn
+}
+
+resource "aws_iam_role_policy_attachment" "ph-iam-attach-s3" {
+  role       = aws_iam_role.ph-instance-iam-role.name
+  policy_arn = aws_iam_policy.ph-instance-policy-s3.arn
+}
+
+# Instance Profile
+resource "aws_iam_instance_profile" "ph-instance-profile" {
+  name = "ph-instance-profile-${random_string.ph-random.result}"
+  role = aws_iam_role.ph-instance-iam-role.name
+}
+
+
+# Instance Key
+resource "aws_key_pair" "ph-instance-key" {
+  key_name   = "ph-ssh-key${random_string.ph-random.result}"
+  public_key = var.instance_key
+  tags = {
+    Name = "ph-ssh-key"
+  }
+}
+
+# Instance(s)
+resource "aws_instance" "ph-instance" {
+  ami                    = aws_ami_copy.ph-latest-vendor-ami-with-cmk.id
+  instance_type          = var.instance_type
+  iam_instance_profile   = aws_iam_instance_profile.ph-instance-profile.name
+  key_name               = aws_key_pair.ph-instance-key.key_name
+  subnet_id              = aws_subnet.ph-pubnet.id
+  private_ip             = var.pubnet_instance_ip
+  vpc_security_group_ids = [aws_security_group.ph-pubsg.id]
+  tags = {
+    Name       = "${var.name_prefix}-cloudblock",
+    cloudblock = "True"
+  }
+  user_data = <<EOF
+#!/bin/bash
+# replace systemd-resolved with static dns derived from dhcp
+DNS_SERVER=$(resolvectl | awk -F ': ' '/DNS Servers/ { print $2 }')
+systemctl disable systemd-resolved
+systemctl stop systemd-resolved
+rm -f /etc/resolv.conf
+tee /etc/resolv.conf << EOM
+nameserver $DNS_SERVER
+options edns0
+search ec2.internal
+EOM
+EOF
+  root_block_device {
+    volume_size = var.instance_vol_size
+    volume_type = "standard"
+    encrypted   = "true"
+    kms_key_id  = aws_kms_key.ph-kmscmk-ec2.arn
+  }
+  depends_on = [aws_iam_role_policy_attachment.ph-iam-attach-ssm, aws_iam_role_policy_attachment.ph-iam-attach-s3]
+  disable_api_termination = true
+  detailed_monitoring     = true
+  ebs_optimized            = true
+  metadata_options {
+    http_endpoint = "enabled"
+    http_tokens   = "required"
+  }
+}
+
+# Elastic IP for Instance(s)
+resource "aws_eip" "ph-eip-1" {
+  vpc                       = true
+  instance                  = aws_instance.ph-instance.id
+  associate_with_private_ip = var.pubnet_instance_ip
+  depends_on                = [aws_internet_gateway.ph-gw]
+}
+
+
+resource "aws_kms_key" "ph-kmscmk-s3" {
+  description              = "Key for ph s3"
+  key_usage                = "ENCRYPT_DECRYPT"
+  customer_master_key_spec = "SYMMETRIC_DEFAULT"
+  enable_key_rotation      = "true"
+  tags = {
+    Name = "ph-kmscmk-s3"
+  }
+  policy = <<EOF
+{
+  "Id": "ph-kmskeypolicy-s3",
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "Enable IAM User Permissions",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "${data.aws_iam_user.ph-kmsmanager.arn}"
+      },
+      "Action": "kms:*",
+      "Resource": "*"
+    },
+    {
+      "Sid": "Allow EC2 Encrypt",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "${aws_iam_role.ph-instance-iam-role.arn}"
+      },
+      "Action": [
+        "kms:Encrypt",
+        "kms:ReEncrypt*",
+        "kms:GenerateDataKey*",
+        "kms:DescribeKey"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "kms:CallerAccount": "${data.aws_caller_identity.ph-aws-account.account_id}",
+          "kms:ViaService": "ec2.${var.aws_region}.amazonaws.com"
+        }
+      }
+    },
+    {
+      "Sid": "Allow access through S3",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "${aws_iam_role.ph-instance-iam-role.arn}"
+      },
+      "Action": [
+        "kms:Encrypt",
+        "kms:Decrypt",
+        "kms:ReEncrypt*",
+        "kms:GenerateDataKey*",
+        "kms:DescribeKey"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "kms:CallerAccount": "${data.aws_caller_identity.ph-aws-account.account_id}",
+          "kms:ViaService": "s3.${var.aws_region}.amazonaws.com"
+        }
+      }
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_kms_alias" "ph-kmscmk-s3-alias" {
+  name          = "alias/ph-ksmcmk-s3"
+  target_key_id = aws_kms_key.ph-kmscmk-s3.key_id
+}
+
+resource "aws_kms_key" "ph-kmscmk-ec2" {
+  description              = "Key for ph ec2/ebs"
+  key_usage                = "ENCRYPT_DECRYPT"
+  customer_master_key_spec = "SYMMETRIC_DEFAULT"
+  enable_key_rotation      = "true"
+  tags = {
+    Name = "ph-kmscmk-ec2"
+  }
+  policy = <<EOF
+{
+  "Id": "ph-kmskeypolicy-ec2",
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "Enable IAM User Permissions",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "${data.aws_iam_user.ph-kmsmanager.arn}"
+      },
+      "Action": "kms:*",
+      "Resource": "*"
+    },
+    {
+      "Sid": "Allow attachment of persistent resources",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "${aws_iam_role.ph-instance-iam-role.arn}"
+      },
+      "Action": [
+        "kms:CreateGrant",
+        "kms:ListGrants",
+        "kms:RevokeGrant"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "Bool": {
+          "kms:GrantIsForAWSResource": "true"
+        }
+      }
+    },
+    {
+      "Sid": "Allow access through EC2",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "${aws_iam_role.ph-instance-iam-role.arn}"
+      },
+      "Action": [
+        "kms:Encrypt",
+        "kms:Decrypt",
+        "kms:ReEncrypt*",
+        "kms:GenerateDataKey*",
+        "kms:DescribeKey"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "kms:CallerAccount": "${data.aws_caller_identity.ph-aws-account.account_id}",
+          "kms:ViaService": "ec2.${var.aws_region}.amazonaws.com"
+        }
+      }
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_kms_alias" "ph-kmscmk-ec2-alias" {
+  name          = "alias/ph-ksmcmk-ec2"
+  target_key_id = aws_kms_key.ph-kmscmk-ec2.key_id
+}
+
+resource "aws_kms_key" "ph-kmscmk-ssm" {
+  description              = "Key for ph ssm"
+  key_usage                = "ENCRYPT_DECRYPT"
+  customer_master_key_spec = "SYMMETRIC_DEFAULT"
+  enable_key_rotation      = "true"
+  tags = {
+    Name = "ph-kmscmk-ssm"
+  }
+  policy = <<EOF
+{
+  "Id": "ph-kmskeypolicy-ssm",
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "Enable IAM User Permissions",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "${data.aws_iam_user.ph-kmsmanager.arn}"
+      },
+      "Action": "kms:*",
+      "Resource": "*"
+    },
+    {
+      "Sid": "Allow access through EC2",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "${aws_iam_role.ph-instance-iam-role.arn}"
+      },
+      "Action": "kms:Decrypt",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "kms:CallerAccount": "${data.aws_caller_identity.ph-aws-account.account_id}",
+          "kms:ViaService": "ssm.${var.aws_region}.amazonaws.com"
+        }
+      }
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_kms_alias" "ph-kmscmk-ssm-alias" {
+  name          = "alias/ph-ksmcmk-ssm"
+  target_key_id = aws_kms_key.ph-kmscmk-ssm.key_id
+}
+
+
+# vpc and gateway
+resource "aws_vpc" "ph-vpc" {
+  cidr_block           = var.vpc_cidr
+  enable_dns_support   = "true"
+  enable_dns_hostnames = "true"
+  tags = {
+    Name = "ph-vpc"
+  }
+}
+
+# internet gateway 
+resource "aws_internet_gateway" "ph-gw" {
+  vpc_id = aws_vpc.ph-vpc.id
+  tags = {
+    Name = "ph-gw"
+  }
+}
+
+# public route table
+resource "aws_route_table" "ph-pubrt" {
+  vpc_id = aws_vpc.ph-vpc.id
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.ph-gw.id
+  }
+  tags = {
+    Name = "ph-pubrt"
+  }
+}
+
+# public subnet
+resource "aws_subnet" "ph-pubnet" {
+  vpc_id            = aws_vpc.ph-vpc.id
+  availability_zone = data.aws_availability_zones.ph-azs.names[var.aws_az]
+  cidr_block        = var.pubnet_cidr
+  tags = {
+    Name = "ph-pubnet"
+  }
+  depends_on = [aws_internet_gateway.ph-gw]
+}
+
+# public route table associations
+resource "aws_route_table_association" "rt-assoc-pubnet" {
+  subnet_id      = aws_subnet.ph-pubnet.id
+  route_table_id = aws_route_table.ph-pubrt.id
+}
+
+
+output "cloudblock-output" {
+  value = <<OUTPUT
+  
+#############  
+## OUTPUTS ##
+#############
+  
+## SSH (VPN) ##
+ssh ubuntu@${aws_eip.ph-eip-1.public_ip}
+(ssh ubuntu@${var.docker_gw})
+  
+## WebUI (VPN) ##
+https://${aws_eip.ph-eip-1.public_ip}/admin/
+(https://${var.docker_webproxy}/admin/)
+  
+## Wireguard Configurations ##
+https://s3.console.aws.amazon.com/s3/buckets/${aws_s3_bucket.ph-bucket.id}/wireguard/?region=${var.aws_region}&tab=overview
+
+#############
+## UPDATES ##
+#############
+
+# SSH to the server
+ssh ubuntu@${aws_eip.ph-eip-1.public_ip}
+
+# Remove the old containers and exit SSH (service is down until completion of next step!)
+sudo docker rm -f cloudflared_doh pihole web_proxy wireguard && exit
+
+# Use AWS CLI to re-run SSM association (ansible playbook) 
+~/.local/bin/aws ssm start-associations-once --region ${var.aws_region} --association-ids ${aws_ssm_association.ph-ssm-assoc.association_id}
+
+#############
+## DESTROY ##
+#############
+
+# To destroy the project via terraform, run:
+terraform destroy -var-file="aws.tfvars"
+
+OUTPUT
+}
+
+
+# s3 bucket
+resource "aws_s3_bucket" "ph-bucket" {
+  bucket        = "${var.name_prefix}-${random_string.ph-random.result}"
+  force_destroy = true
+}
+
+# Resource to avoid error "AccessControlListNotSupported: The bucket does not allow ACLs"
+resource "aws_s3_bucket_ownership_controls" "s3_bucket_acl_ownership" {
+  bucket = aws_s3_bucket.ph-bucket.id
+  rule {
+    object_ownership = "ObjectWriter"
+  }
+}
+
+# acl
+resource "aws_s3_bucket_acl" "ph-bucket" {
+  bucket = aws_s3_bucket.ph-bucket.id
+  acl    = "private"
+  depends_on = [aws_s3_bucket_ownership_controls.s3_bucket_acl_ownership]
+}
+
+# versioning
+resource "aws_s3_bucket_versioning" "ph-bucket" {
+  bucket = aws_s3_bucket.ph-bucket.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+# encryption
+resource "aws_s3_bucket_server_side_encryption_configuration" "ph-bucket" {
+  bucket = aws_s3_bucket.ph-bucket.id
+  rule {
+    apply_server_side_encryption_by_default {
+      kms_master_key_id = aws_kms_key.ph-kmscmk-s3.arn
+      sse_algorithm     = "aws:kms"
+    }
+  }
+}
+
+# access policy
+resource "aws_s3_bucket_policy" "ph-bucket-policy" {
+  bucket = aws_s3_bucket.ph-bucket.id
+  policy = data.aws_iam_policy_document.ph-bucket-policy.json
+}
+
+# s3 block all public access to bucket
+resource "aws_s3_bucket_public_access_block" "ph-bucket-pubaccessblock" {
+  bucket                  = aws_s3_bucket.ph-bucket.id
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
+# s3 objects (playbook)
+resource "aws_s3_object" "ph-files" {
+  for_each       = fileset("../playbooks/", "*")
+  bucket         = aws_s3_bucket.ph-bucket.id
+  key            = "playbook/${each.value}"
+  content_base64 = base64encode(file("${path.module}/../playbooks/${each.value}"))
+  kms_key_id     = aws_kms_key.ph-kmscmk-s3.arn
+}
+
+# policy data
+data "aws_iam_policy_document" "ph-bucket-policy" {
+  statement {
+    sid       = "KMSManager"
+    effect    = "Allow"
+    actions   = ["s3:*"]
+    resources = ["arn:aws:s3:::${var.name_prefix}-${random_string.ph-random.result}", "arn:aws:s3:::${var.name_prefix}-${random_string.ph-random.result}/*"]
+    principals {
+      type        = "AWS"
+      identifiers = ["${data.aws_iam_user.ph-kmsmanager.arn}"]
+    }
+  }
+
+  statement {
+    sid       = "InstanceListGet"
+    effect    = "Allow"
+    actions   = ["s3:ListBucket", "s3:GetObject", "s3:GetObjectVersion", "s3:GetObjectTagging"]
+    resources = ["arn:aws:s3:::${var.name_prefix}-${random_string.ph-random.result}", "arn:aws:s3:::${var.name_prefix}-${random_string.ph-random.result}/*"]
+    principals {
+      type        = "AWS"
+      identifiers = ["${aws_iam_role.ph-instance-iam-role.arn}"]
+    }
+  }
+
+  statement {
+    sid       = "InstancePut"
+    effect    = "Allow"
+    actions   = ["s3:PutObject", "s3:PutObjectAcl", "s3:PutObjectTagging"]
+    resources = ["arn:aws:s3:::${var.name_prefix}-${random_string.ph-random.result}/ssm/*", "arn:aws:s3:::${var.name_prefix}-${random_string.ph-random.result}/wireguard/*"]
+    principals {
+      type        = "AWS"
+      identifiers = ["${aws_iam_role.ph-instance-iam-role.arn}"]
+    }
+  }
+}
+
+
+# security groups
+resource "aws_security_group" "ph-pubsg" {
+  name        = "ph-pubsg"
+  description = "Security group for public traffic"
+  vpc_id      = aws_vpc.ph-vpc.id
+  tags = {
+    Name = "ph-pubsg"
+  }
+}
+
+# public sg rules
+resource "aws_security_group_rule" "ph-pubsg-mgmt-ssh-in" {
+  security_group_id = aws_security_group.ph-pubsg.id
+  type              = "ingress"
+  description       = "IN FROM MGMT - SSH MGMT"
+  from_port         = "22"
+  to_port           = "22"
+  protocol          = "tcp"
+  cidr_blocks       = [var.mgmt_cidr]
+}
+
+resource "aws_security_group_rule" "ph-pubsg-mgmt-https-in" {
+  security_group_id = aws_security_group.ph-pubsg.id
+  type              = "ingress"
+  description       = "IN FROM MGMT - HTTPS"
+  from_port         = "443"
+  to_port           = "443"
+  protocol          = "tcp"
+  cidr_blocks       = [var.mgmt_cidr]
+}
+
+resource "aws_security_group_rule" "ph-pubsg-mgmt-dnstcp-in" {
+  count             = var.dns_novpn * 1
+  security_group_id = aws_security_group.ph-pubsg.id
+  type              = "ingress"
+  description       = "IN FROM MGMT - DNS TCP"
+  from_port         = "53"
+  to_port           = "53"
+  protocol          = "tcp"
+  cidr_blocks       = [var.mgmt_cidr]
+}
+
+resource "aws_security_group_rule" "ph-pubsg-client-dnstcp-in" {
+  count             = length(var.client_cidrs) == 0? 0 : 1
+  security_group_id = aws_security_group.ph-pubsg.id
+  type              = "ingress"
+  description       = "IN FROM CLIENT - DNS TCP"
+  from_port         = "53"
+  to_port           = "53"
+  protocol          = "tcp"
+  cidr_blocks       = var.client_cidrs
+}
+
+resource "aws_security_group_rule" "ph-pubsg-mgmt-dnsudp-in" {
+  count             = var.dns_novpn * 1
+  security_group_id = aws_security_group.ph-pubsg.id
+  type              = "ingress"
+  description       = "IN FROM MGMT - DNS UDP"
+  from_port         = "53"
+  to_port           = "53"
+  protocol          = "udp"
+  cidr_blocks       = [var.mgmt_cidr]
+}
+
+resource "aws_security_group_rule" "ph-pubsg-client-dnsudp-in" {
+  count             = length(var.client_cidrs) == 0? 0 : 1
+  security_group_id = aws_security_group.ph-pubsg.id
+  type              = "ingress"
+  description       = "IN FROM CLIENT - DNS UDP"
+  from_port         = "53"
+  to_port           = "53"
+  protocol          = "udp"
+  cidr_blocks       = var.client_cidrs
+}
+
+resource "aws_security_group_rule" "ph-pubsg-mgmt-wireguard-in" {
+  security_group_id = aws_security_group.ph-pubsg.id
+  type              = "ingress"
+  description       = "IN FROM WORLD - WIREGUARD"
+  from_port         = "51820"
+  to_port           = "51820"
+  protocol          = "udp"
+  cidr_blocks       = [var.vpn_cidr]
+}
+
+resource "aws_security_group_rule" "ph-pubsg-out-tcp" {
+  security_group_id = aws_security_group.ph-pubsg.id
+  type              = "egress"
+  description       = "OUT TO WORLD - TCP"
+  from_port         = 0
+  to_port           = 65535
+  protocol          = "tcp"
+  cidr_blocks       = ["10.0.0.0/8"]
+}
+
+resource "aws_security_group_rule" "ph-pubsg-out-udp" {
+  security_group_id = aws_security_group.ph-pubsg.id
+  type              = "egress"
+  description       = "OUT TO WORLD - UDP"
+  from_port         = 0
+  to_port           = 65535
+  protocol          = "udp"
+  cidr_blocks       = ["10.0.0.0/8"]
+}
+
+
+# pihole password as ssm parameter
+resource "aws_ssm_parameter" "ph-ssm-param-pass" {
+  name   = "${var.name_prefix}-pihole-web-password"
+  type   = "SecureString"
+  key_id = aws_kms_key.ph-kmscmk-ssm.key_id
+  value  = var.pihole_password
+}
+
+# document to install deps and run playbook
+resource "aws_ssm_document" "ph-ssm-doc" {
+  name          = "${var.name_prefix}-ssm-doc"
+  document_type = "Command"
+  content       = <<DOC
+  {
+    "schemaVersion": "2.2",
+    "description": "Ansible Playbooks via SSM for Ubuntu 18.04 ARM, installs Ansible properly.",
+    "parameters": {
+    "SourceType": {
+      "description": "(Optional) Specify the source type.",
+      "type": "String",
+      "allowedValues": [
+      "GitHub",
+      "S3"
+      ]
+    },
+    "SourceInfo": {
+      "description": "Specify 'path'. Important: If you specify S3, then the IAM instance profile on your managed instances must be configured with read access to Amazon S3.",
+      "type": "StringMap",
+      "displayType": "textarea",
+      "default": {}
+    },
+    "PlaybookFile": {
+      "type": "String",
+      "description": "(Optional) The Playbook file to run (including relative path). If the main Playbook file is located in the./automation directory, then specify automation/playbook.yml.",
+      "default": "hello-world-playbook.yml",
+      "allowedPattern": "[(a-z_A-Z0-9\\-)/]+(.yml|.yaml)$"
+    },
+    "ExtraVariables": {
+      "type": "String",
+      "description": "(Optional) Additional variables to pass to Ansible at runtime. Enter key/value pairs separated by a space. For example: color=red flavor=cherry",
+      "default": "SSM=True",
+      "displayType": "textarea",
+      "allowedPattern": "^$|^\\w+\\=[^\\s|:();&]+(\\s\\w+\\=[^\\s|:();&]+)*$"
+    },
+    "Verbose": {
+      "type": "String",
+      "description": "(Optional) Set the verbosity level for logging Playbook executions. Specify -v for low verbosity, -vv or vvv for medium verbosity, and -vvvv for debug level.",
+      "allowedValues": [
+      "-v",
+      "-vv",
+      "-vvv",
+      "-vvvv"
+      ],
+      "default": "-v"
+    }
+    },
+    "mainSteps": [
+    {
+      "action": "aws:downloadContent",
+      "name": "downloadContent",
+      "inputs": {
+      "SourceType": "{{ SourceType }}",
+      "SourceInfo": "{{ SourceInfo }}"
+      }
+    },
+    {
+      "action": "aws:runShellScript",
+      "name": "runShellScript",
+      "inputs": {
+      "runCommand": [
+        "#!/bin/bash",
+        "# Ensure ansible is installed",
+        "apt-get update",
+        "DEBIAN_FRONTEND=noninteractive apt-get -y install python3-pip git",
+        "pip3 install --upgrade pip",
+        "pip3 install --upgrade ansible cryptography pyOpenssl",
+        "echo \"Running Ansible in `pwd`\"",
+        "#this section locates files and unzips them",
+        "for zip in $(find -iname '*.zip'); do",
+        "  unzip -o $zip",
+        "done",
+        "PlaybookFile=\"{{PlaybookFile}}\"",
+        "if [! -f  \"$${PlaybookFile}\" ] ; then",
+        "   echo \"The specified Playbook file doesn't exist in the downloaded bundle. Please review the relative path and file name.\" >&2",
+        "   exit 2",
+        "fi",
+        "ansible-playbook -i \"localhost,\" -c local -e \"{{ExtraVariables}}\" \"{{Verbose}}\" \"$${PlaybookFile}\""
+      ]
+      }
+    }
+    ]
+  }
+DOC
+}
+
+# ansible playbook association for tag:value cloudblock:True
+resource "aws_ssm_association" "ph-ssm-assoc" {
+  association_name = "${var.name_prefix}-ssm-assoc"
+  name             = aws_ssm_document.ph-ssm-doc.name
+  targets {
+    key    = "tag:cloudblock"
+    values = ["True"]
+  }
+  output_location {
+    s3_bucket_name = aws_s3_bucket.ph-bucket.id
+    s3_key_prefix  = "ssm"
+  }
+  parameters = {
+    ExtraVariables = "SSM=True aws_region=${var.aws_region} name_prefix=${var.name_prefix} s3_bucket=${aws_s3_bucket.ph-bucket.id} kms_key_id=${aws_kms_key.ph-kmscmk-s3.key_id} docker_network=${var.docker_network} docker_gw=${var.docker_gw} docker_doh=${var.docker_doh} docker_pihole=${var.docker_pihole} docker_wireguard=${var.docker_wireguard} docker_webproxy=${var.docker_webproxy} wireguard_network=${var.wireguard_network} doh_provider=${var.doh_provider} dns_novpn=${var.dns_novpn} wireguard_peers=${var.wireguard_peers} vpn_traffic=${var.vpn_traffic}"
+    PlaybookFile   = data.aws_ami.ph-vendor_ami_latest.architecture == "arm64"? "cloudblock_aws_arm.yml" : "cloudblock_aws_amd64.yml"
+    SourceInfo     = "{\"path\":\"https://s3.${var.aws_region}.amazonaws.com/${aws_s3_bucket.ph-bucket.id}/playbook/\"}"
+    SourceType     = "S3"
+    Verbose        = "-v"
+  }
+  depends_on = [aws_iam_role_policy_attachment.ph-iam-attach-ssm, aws_iam_role_policy_attachment.ph-iam-attach-s3, aws_s3_object.ph-files]
+}
+
+# VPC Flow Logs
+resource "aws_vpc_flow_log" "ph-vpc-flow-log" {
+  vpc_id            = aws_vpc.ph-vpc.id
+  traffic_type      = "REJECT"
+  log_destination   = aws_s3_bucket.ph-bucket.id
+  max_aggregation_interval = 60
+}
+
+# S3 Bucket Logging
+resource "aws_s3_bucket_logging" "ph-bucket-logging" {
+  bucket = aws_s3_bucket.ph-bucket.id
+  server_access_logs {
+    destination_bucket = aws_s3_bucket.ph-bucket.id
+    destination_prefix = "logs/"
+  }
+}
+
+# S3 Bucket Event Notifications
+resource "aws_s3_bucket_notification" "ph-bucket-notification" {
+  bucket = aws_s3_bucket.ph-bucket.id
+  topic_configuration {
+    topic_arn = aws_sns_topic.ph-bucket-notification-topic.arn
+    event_types = ["s3:ObjectCreated:*"]
+  }
+}
+
+# SNS Topic for S3 Bucket Notifications
+resource "aws_sns_topic" "ph-bucket-notification-topic" {
+  name = "ph-bucket-notification-topic"
+}
+
+# S3 Bucket Lifecycle Configuration
+resource "aws_s3_bucket_lifecycle_rule" "ph-bucket-lifecycle" {
+  bucket = aws_s3_bucket.ph-bucket.id
+  id     = "ph-bucket-lifecycle-rule"
+  transition {
+    days          = 30
+    storage_class = "STANDARD_IA"
+  }
+  expiration {
+    days = 90
+  }
+}
+
+# S3 Bucket Ownership Controls
+resource "aws_s3_bucket_ownership_controls" "s3_bucket_acl_ownership" {
+  bucket = aws_s3_bucket.ph-bucket.id
+  rule {
+    object_ownership = "ObjectWriter"
+  }
+}
+
+# S3 Bucket Access Logging
+resource "aws_s3_bucket_access_logs" "ph-bucket-access-logs" {
+  bucket = aws_s3_bucket.ph-bucket.id
+  target_bucket = aws_s3_bucket.ph-bucket.id
+  target_prefix = "access-logs/"
+}
+
+# S3 Bucket Cross-Region Replication
+resource "aws_s3_bucket_replication" "ph-bucket-replication" {
+  bucket = aws_s3_bucket.ph-bucket.id
+  role   = aws_iam_role.ph-replication-role.arn
+  rule {
+    destination {
+      bucket = aws_s3_bucket.ph-bucket.id
+    }
+    prefix = "replication/"
+  }
+}
+
+# IAM Role for S3 Bucket Replication
+resource "aws_iam_role" "ph-replication-role" {
+  name = "ph-replication-role"
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "s3.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+EOF
+}
+
+# IAM Role Policy for S3 Bucket Replication
+resource "aws_iam_role_policy" "ph-replication-policy" {
+  role = aws_iam_role.ph-replication-role.id
+  policy = <<EOF

@@ -1,0 +1,29 @@
+{
+  "findings_count": 4,
+  "findings": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "",
+      "resource_name": "aws_security_group.cluster"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_65",
+      "title": "",
+      "resource_name": "aws_ecs_cluster.main"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_79",
+      "title": "",
+      "resource_name": "aws_launch_configuration.main"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_315",
+      "title": "",
+      "resource_name": "aws_autoscaling_group.main"
+    }
+  ]
+}

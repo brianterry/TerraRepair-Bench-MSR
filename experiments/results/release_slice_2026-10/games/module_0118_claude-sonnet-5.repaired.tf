@@ -1,0 +1,1815 @@
+locals {
+  job_retry_enabled = var.job_retry != null && var.job_retry.enable ? true : false
+
+  job_retry = {
+    prefix                      = var.prefix
+    tags                        = local.tags
+    aws_partition               = var.aws_partition
+    architecture                = var.lambda_architecture
+    runtime                     = var.lambda_runtime
+    security_group_ids          = var.lambda_security_group_ids
+    subnet_ids                  = var.lambda_subnet_ids
+    kms_key_arn                 = var.kms_key_arn
+    lambda_tags                 = var.lambda_tags
+    log_level                   = var.log_level
+    logging_kms_key_id          = var.logging_kms_key_id
+    logging_retention_in_days   = var.logging_retention_in_days
+    metrics                     = var.metrics
+    role_path                   = var.role_path
+    role_permissions_boundary   = var.role_permissions_boundary
+    s3_bucket                   = var.lambda_s3_bucket
+    s3_key                      = var.runners_lambda_s3_key
+    s3_object_version           = var.runners_lambda_s3_object_version
+    zip                         = var.lambda_zip
+    tracing_config              = var.tracing_config
+    github_app_parameters       = var.github_app_parameters
+    enable_organization_runners = var.enable_organization_runners
+    sqs_build_queue             = var.sqs_build_queue
+    ghes_url                    = var.ghes_url
+  }
+}
+
+module "job_retry" {
+  source = "./job-retry"
+  count  = local.job_retry_enabled ? 1 : 0
+
+  config = local.job_retry
+}
+
+
+locals {
+  runner_log_files = (
+    var.runner_log_files != null
+    ? var.runner_log_files
+    : [
+      {
+        "prefix_log_group" : true,
+        "file_path" : "/var/log/messages",
+        "log_group_name" : "messages",
+        "log_stream_name" : "{instance_id}"
+      },
+      {
+        "log_group_name" : "user_data",
+        "prefix_log_group" : true,
+        "file_path" : var.runner_os == "windows" ? "C:/UserData.log" : "/var/log/user-data.log",
+        "log_stream_name" : "{instance_id}"
+      },
+      {
+        "log_group_name" : "runner",
+        "prefix_log_group" : true,
+        "file_path" : var.runner_os == "windows" ? "C:/actions-runner/_diag/Runner_*.log" : "/opt/actions-runner/_diag/Runner_**.log",
+        "log_stream_name" : "{instance_id}"
+      },
+      {
+        "log_group_name" : "runner-startup",
+        "prefix_log_group" : true,
+        "file_path" : var.runner_os == "windows" ? "C:/runner-startup.log" : "/var/log/runner-startup.log",
+        "log_stream_name" : "{instance_id}"
+      }
+    ]
+  )
+  logfiles = var.enable_cloudwatch_agent ? [for l in local.runner_log_files : {
+    "log_group_name" : l.prefix_log_group ? "/github-self-hosted-runners/${var.prefix}/${l.log_group_name}" : "/${l.log_group_name}"
+    "log_stream_name" : l.log_stream_name
+    "file_path" : l.file_path
+  }] : []
+
+  loggroups_names = distinct([for l in local.logfiles : l.log_group_name])
+
+}
+
+
+resource "aws_ssm_parameter" "cloudwatch_agent_config_runner" {
+  count  = var.enable_cloudwatch_agent ? 1 : 0
+  name   = "${var.ssm_paths.root}/${var.ssm_paths.config}/cloudwatch_agent_config_runner"
+  type   = "SecureString"
+  key_id = var.kms_key_arn
+  value = var.cloudwatch_config != null ? var.cloudwatch_config : templatefile("${path.module}/templates/cloudwatch_config.json", {
+    logfiles = jsonencode(local.logfiles)
+  })
+  tags = local.tags
+}
+
+resource "aws_cloudwatch_log_group" "gh_runners" {
+  count             = length(local.loggroups_names)
+  name              = local.loggroups_names[count.index]
+  retention_in_days = var.logging_retention_in_days
+  kms_key_id        = var.logging_kms_key_id
+  tags              = local.tags
+}
+
+resource "aws_iam_role_policy" "cloudwatch" {
+  count = var.enable_cloudwatch_agent ? 1 : 0
+  name  = "CloudWatchLogginAndMetrics"
+  role  = aws_iam_role.runner.name
+  policy = templatefile("${path.module}/policies/instance-cloudwatch-policy.json",
+    {
+      ssm_parameter_arn = aws_ssm_parameter.cloudwatch_agent_config_runner[0].arn
+    }
+  )
+}
+
+
+locals {
+  tags = merge(
+    {
+      "Name" = format("%s-action-runner", var.prefix)
+    },
+    {
+      "ghr:ssm_config_path" = "${var.ssm_paths.root}/${var.ssm_paths.config}"
+    },
+    var.tags,
+  )
+
+  name_sg                         = var.overrides["name_sg"] == "" ? local.tags["Name"] : var.overrides["name_sg"]
+  name_runner                     = var.overrides["name_runner"] == "" ? local.tags["Name"] : var.overrides["name_runner"]
+  role_path                       = var.role_path == null ? "/${var.prefix}/" : var.role_path
+  instance_profile_path           = var.instance_profile_path == null ? "/${var.prefix}/" : var.instance_profile_path
+  lambda_zip                      = var.lambda_zip == null ? "${path.module}/../../lambdas/functions/control-plane/runners.zip" : var.lambda_zip
+  userdata_template               = var.userdata_template == null ? local.default_userdata_template[var.runner_os] : var.userdata_template
+  kms_key_arn                     = var.kms_key_arn != null ? var.kms_key_arn : ""
+  s3_location_runner_distribution = var.enable_runner_binaries_syncer ? "s3://${var.s3_runner_binaries.id}/${var.s3_runner_binaries.key}" : ""
+  default_ami = {
+    "windows" = { name = ["Windows_Server-2022-English-Full-ECS_Optimized-*"] }
+    "linux"   = var.runner_architecture == "arm64" ? { name = ["al2023-ami-2023.*-kernel-6.*-arm64"] } : { name = ["al2023-ami-2023.*-kernel-6.*-x86_64"] }
+  }
+
+  default_userdata_template = {
+    "windows" = "${path.module}/templates/user-data.ps1"
+    "linux"   = "${path.module}/templates/user-data.sh"
+  }
+
+  userdata_install_runner = {
+    "windows" = "${path.module}/templates/install-runner.ps1"
+    "linux"   = "${path.module}/templates/install-runner.sh"
+  }
+
+  userdata_start_runner = {
+    "windows" = "${path.module}/templates/start-runner.ps1"
+    "linux"   = "${path.module}/templates/start-runner.sh"
+  }
+
+  ami_kms_key_arn = var.ami_kms_key_arn != null ? var.ami_kms_key_arn : ""
+  ami_filter      = merge(local.default_ami[var.runner_os], var.ami_filter)
+
+  enable_job_queued_check = var.enable_job_queued_check == null ? !var.enable_ephemeral_runners : var.enable_job_queued_check
+
+  arn_ssm_parameters_path_config = "arn:${var.aws_partition}:ssm:${var.aws_region}:${data.aws_caller_identity.current.account_id}:parameter${var.ssm_paths.root}/${var.ssm_paths.config}"
+
+  token_path = "${var.ssm_paths.root}/${var.ssm_paths.tokens}"
+
+  user_data = var.enable_userdata ? (var.userdata_content == null ? templatefile(local.userdata_template, {
+    enable_debug_logging            = var.enable_user_data_debug_logging
+    s3_location_runner_distribution = local.s3_location_runner_distribution
+    pre_install                     = var.userdata_pre_install
+    install_runner = templatefile(local.userdata_install_runner[var.runner_os], {
+      S3_LOCATION_RUNNER_DISTRIBUTION = local.s3_location_runner_distribution
+      RUNNER_ARCHITECTURE             = var.runner_architecture
+    })
+    post_install       = var.userdata_post_install
+    hook_job_started   = var.runner_hook_job_started
+    hook_job_completed = var.runner_hook_job_completed
+    start_runner = templatefile(local.userdata_start_runner[var.runner_os], {
+      metadata_tags = var.metadata_options != null ? var.metadata_options.instance_metadata_tags : "enabled"
+    })
+    ghes_url        = var.ghes_url
+    ghes_ssl_verify = var.ghes_ssl_verify
+
+    ## retain these for backwards compatibility
+    environment                     = var.prefix
+    enable_cloudwatch_agent         = var.enable_cloudwatch_agent
+    ssm_key_cloudwatch_agent_config = var.enable_cloudwatch_agent ? aws_ssm_parameter.cloudwatch_agent_config_runner[0].name : ""
+  }) : var.userdata_content) : ""
+}
+
+data "aws_ami" "runner" {
+  most_recent = "true"
+
+  dynamic "filter" {
+    for_each = local.ami_filter
+    content {
+      name   = filter.key
+      values = filter.value
+    }
+  }
+
+  owners = var.ami_owners
+}
+
+resource "aws_launch_template" "runner" {
+  name = "${var.prefix}-action-runner"
+
+  dynamic "block_device_mappings" {
+    for_each = var.block_device_mappings != null ? var.block_device_mappings : []
+    content {
+      device_name = block_device_mappings.value.device_name
+
+      ebs {
+        delete_on_termination = block_device_mappings.value.delete_on_termination
+        encrypted             = block_device_mappings.value.encrypted
+        iops                  = block_device_mappings.value.iops
+        kms_key_id            = block_device_mappings.value.kms_key_id
+        snapshot_id           = block_device_mappings.value.snapshot_id
+        throughput            = block_device_mappings.value.throughput
+        volume_size           = block_device_mappings.value.volume_size
+        volume_type           = block_device_mappings.value.volume_type
+      }
+    }
+  }
+
+  dynamic "metadata_options" {
+    for_each = var.metadata_options != null ? [var.metadata_options] : []
+
+    content {
+      http_endpoint               = metadata_options.value.http_endpoint
+      http_tokens                 = metadata_options.value.http_tokens
+      http_put_response_hop_limit = metadata_options.value.http_put_response_hop_limit
+      instance_metadata_tags      = metadata_options.value.instance_metadata_tags
+    }
+  }
+
+  dynamic "metadata_options" {
+    for_each = var.metadata_options != null ? [] : [0]
+
+    content {
+      instance_metadata_tags = "enabled"
+    }
+  }
+
+  dynamic "credit_specification" {
+    for_each = var.credit_specification != null ? [var.credit_specification] : []
+    content {
+      cpu_credits = credit_specification.value
+    }
+  }
+
+  monitoring {
+    enabled = var.enable_runner_detailed_monitoring
+  }
+
+  iam_instance_profile {
+    name = aws_iam_instance_profile.runner.name
+  }
+
+  instance_initiated_shutdown_behavior = "terminate"
+  image_id                             = data.aws_ami.runner.id
+  key_name                             = var.key_name
+  ebs_optimized                        = var.ebs_optimized
+
+  vpc_security_group_ids = !var.associate_public_ipv4_address ? compact(concat(
+    var.enable_managed_runner_security_group ? [aws_security_group.runner_sg[0].id] : [],
+    var.runner_additional_security_group_ids,
+  )) : []
+
+  tag_specifications {
+    resource_type = "instance"
+    tags = merge(
+      local.tags,
+      {
+        "Name" = format("%s", local.name_runner)
+      },
+      {
+        "ghr:runner_name_prefix" = var.runner_name_prefix
+      },
+      var.runner_ec2_tags
+    )
+  }
+
+  tag_specifications {
+    resource_type = "volume"
+    tags = merge(
+      local.tags,
+      {
+        "Name" = format("%s", local.name_runner)
+      },
+      {
+        "ghr:runner_name_prefix" = var.runner_name_prefix
+      },
+      var.runner_ec2_tags
+    )
+  }
+
+  user_data = var.runner_os == "windows" ? base64encode(local.user_data) : base64gzip(local.user_data)
+
+  tags = local.tags
+
+  update_default_version = true
+
+  dynamic "network_interfaces" {
+    for_each = var.associate_public_ipv4_address ? [var.associate_public_ipv4_address] : []
+    iterator = associate_public_ipv4_address
+    content {
+      associate_public_ip_address = associate_public_ipv4_address.value
+      security_groups = compact(concat(
+        var.enable_managed_runner_security_group ? [aws_security_group.runner_sg[0].id] : [],
+        var.runner_additional_security_group_ids,
+      ))
+    }
+  }
+}
+
+resource "aws_security_group" "runner_sg" {
+  count       = var.enable_managed_runner_security_group ? 1 : 0
+  name_prefix = "${var.prefix}-github-actions-runner-sg"
+  description = "Github Actions Runner security group"
+
+  vpc_id = var.vpc_id
+
+  ingress = []
+
+  dynamic "egress" {
+    for_each = var.egress_rules
+    iterator = each
+
+    content {
+      cidr_blocks      = each.value.cidr_blocks
+      ipv6_cidr_blocks = each.value.ipv6_cidr_blocks
+      prefix_list_ids  = each.value.prefix_list_ids
+      from_port        = each.value.from_port
+      protocol         = each.value.protocol
+      security_groups  = each.value.security_groups
+      self             = each.value.self
+      to_port          = each.value.to_port
+      description      = each.value.description
+    }
+  }
+
+  tags = merge(
+    local.tags,
+    {
+      "Name" = format("%s", local.name_sg)
+    },
+  )
+}
+
+
+output "launch_template" {
+  value = aws_launch_template.runner
+}
+
+output "role_runner" {
+  value = aws_iam_role.runner
+}
+
+output "lambda_scale_up" {
+  value = aws_lambda_function.scale_up
+}
+
+output "lambda_scale_up_log_group" {
+  value = aws_cloudwatch_log_group.scale_up
+}
+
+output "role_scale_up" {
+  value = aws_iam_role.scale_up
+}
+
+output "lambda_scale_down" {
+  value = aws_lambda_function.scale_down
+}
+
+output "lambda_scale_down_log_group" {
+  value = aws_cloudwatch_log_group.scale_down
+}
+
+output "role_scale_down" {
+  value = aws_iam_role.scale_down
+}
+
+output "lambda_pool" {
+  value = try(module.pool[0].lambda, null)
+}
+
+output "lambda_pool_log_group" {
+  value = try(module.pool[0].lambda_log_group, null)
+}
+
+output "role_pool" {
+  value = try(module.pool[0].role_pool, null)
+}
+
+output "runners_log_groups" {
+  description = "List of log groups from different log files of runner machine."
+  value       = try(aws_cloudwatch_log_group.gh_runners, [])
+}
+
+output "logfiles" {
+  value       = local.logfiles
+  description = "List of logfiles to send to CloudWatch. Object description: `log_group_name`: Name of the log group, `file_path`: path to the log file, `log_stream_name`: name of the log stream."
+}
+
+
+data "aws_iam_policy_document" "lambda_assume_role_policy" {
+  statement {
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["lambda.amazonaws.com"]
+    }
+  }
+}
+
+resource "aws_iam_policy" "ami_id_ssm_parameter_read" {
+  count       = var.ami_id_ssm_parameter_name != null ? 1 : 0
+  name        = "${var.prefix}-ami-id-ssm-parameter-read"
+  path        = local.role_path
+  description = "Allows for reading ${var.prefix} GitHub runner AMI ID from an SSM parameter"
+  tags        = local.tags
+  policy      = <<-JSON
+    {
+      "Version": "2012-10-17",
+      "Statement": [
+        {
+          "Effect": "Allow",
+          "Action": [
+            "ssm:GetParameter"
+          ],
+          "Resource": [
+            "arn:${var.aws_partition}:ssm:${var.aws_region}:${data.aws_caller_identity.current.account_id}:parameter/${trimprefix(var.ami_id_ssm_parameter_name, "/")}"
+          ]
+        }
+      ]
+    }
+  JSON
+}
+
+data "aws_iam_policy_document" "lambda_xray" {
+  count = var.tracing_config.mode != null ? 1 : 0
+  statement {
+    actions = [
+      "xray:BatchGetTraces",
+      "xray:GetTraceSummaries",
+      "xray:PutTelemetryRecords",
+      "xray:PutTraceSegments"
+    ]
+    effect = "Allow"
+    resources = [
+      "*"
+    ]
+    sid = "AllowXRay"
+  }
+}
+
+
+data "aws_caller_identity" "current" {}
+
+resource "aws_iam_role" "runner" {
+  name                 = "${var.prefix}-runner-role"
+  assume_role_policy   = templatefile("${path.module}/policies/instance-role-trust-policy.json", {})
+  path                 = local.role_path
+  permissions_boundary = var.role_permissions_boundary
+  tags                 = local.tags
+}
+
+resource "aws_iam_instance_profile" "runner" {
+  name = "${var.prefix}-runner-profile"
+  role = aws_iam_role.runner.name
+  path = local.instance_profile_path
+  tags = local.tags
+}
+
+resource "aws_iam_role_policy" "runner_session_manager_aws_managed" {
+  name   = "runner-ssm-session"
+  count  = var.enable_ssm_on_runners ? 1 : 0
+  role   = aws_iam_role.runner.name
+  policy = templatefile("${path.module}/policies/instance-ssm-policy.json", {})
+}
+
+resource "aws_iam_role_policy" "ssm_parameters" {
+  name = "runner-ssm-parameters"
+  role = aws_iam_role.runner.name
+  policy = templatefile("${path.module}/policies/instance-ssm-parameters-policy.json",
+    {
+      arn_ssm_parameters_path_tokens = "arn:${var.aws_partition}:ssm:${var.aws_region}:${data.aws_caller_identity.current.account_id}:parameter${var.ssm_paths.root}/${var.ssm_paths.tokens}"
+      arn_ssm_parameters_path_config = local.arn_ssm_parameters_path_config
+    }
+  )
+}
+
+resource "aws_iam_role_policy" "dist_bucket" {
+  count = var.enable_runner_binaries_syncer ? 1 : 0
+
+  name = "distribution-bucket"
+  role = aws_iam_role.runner.name
+  policy = templatefile("${path.module}/policies/instance-s3-policy.json",
+    {
+      s3_arn = "${var.s3_runner_binaries.arn}/${var.s3_runner_binaries.key}"
+    }
+  )
+}
+
+resource "aws_iam_role_policy_attachment" "xray_tracing" {
+  count      = var.tracing_config.mode != null ? 1 : 0
+  role       = aws_iam_role.runner.name
+  policy_arn = "arn:${var.aws_partition}:iam::aws:policy/AWSXRayDaemonWriteAccess"
+}
+
+resource "aws_iam_role_policy" "describe_tags" {
+  name   = "runner-describe-tags"
+  role   = aws_iam_role.runner.name
+  policy = file("${path.module}/policies/instance-describe-tags-policy.json")
+}
+
+resource "aws_iam_role_policy_attachment" "managed_policies" {
+  count      = length(var.runner_iam_role_managed_policy_arns)
+  role       = aws_iam_role.runner.name
+  policy_arn = element(var.runner_iam_role_managed_policy_arns, count.index)
+}
+
+
+resource "aws_iam_role_policy" "ec2" {
+  name   = "ec2"
+  role   = aws_iam_role.runner.name
+  policy = templatefile("${path.module}/policies/instance-ec2.json", {})
+}
+
+# see also logging.tf for logging and metrics policies
+
+
+module "pool" {
+  count = length(var.pool_config) == 0 ? 0 : 1
+
+  source = "./pool"
+
+  config = {
+    prefix = var.prefix
+    ghes = {
+      ssl_verify = var.ghes_ssl_verify
+      url        = var.ghes_url
+    }
+    github_app_parameters         = var.github_app_parameters
+    instance_allocation_strategy  = var.instance_allocation_strategy
+    instance_max_spot_price       = var.instance_max_spot_price
+    instance_target_capacity_type = var.instance_target_capacity_type
+    instance_types                = var.instance_types
+    kms_key_arn                   = local.kms_key_arn
+    ami_kms_key_arn               = local.ami_kms_key_arn
+    lambda = {
+      log_level                      = var.log_level
+      logging_retention_in_days      = var.logging_retention_in_days
+      logging_kms_key_id             = var.logging_kms_key_id
+      reserved_concurrent_executions = var.pool_lambda_reserved_concurrent_executions
+      s3_bucket                      = var.lambda_s3_bucket
+      s3_key                         = var.runners_lambda_s3_key
+      s3_object_version              = var.runners_lambda_s3_object_version
+      security_group_ids             = var.lambda_security_group_ids
+      subnet_ids                     = var.lambda_subnet_ids
+      architecture                   = var.lambda_architecture
+      memory_size                    = var.pool_lambda_memory_size
+      runtime                        = var.lambda_runtime
+      timeout                        = var.pool_lambda_timeout
+      zip                            = local.lambda_zip
+    }
+    pool                      = var.pool_config
+    role_path                 = local.role_path
+    role_permissions_boundary = var.role_permissions_boundary
+    runner = {
+      disable_runner_autoupdate            = var.disable_runner_autoupdate
+      ephemeral                            = var.enable_ephemeral_runners
+      enable_jit_config                    = var.enable_jit_config
+      enable_on_demand_failover_for_errors = var.enable_on_demand_failover_for_errors
+      boot_time_in_minutes                 = var.runner_boot_time_in_minutes
+      labels                               = var.runner_labels
+      launch_template                      = aws_launch_template.runner
+      group_name                           = var.runner_group_name
+      name_prefix                          = var.runner_name_prefix
+      pool_owner                           = var.pool_runner_owner
+      role                                 = aws_iam_role.runner
+    }
+    subnet_ids                           = var.subnet_ids
+    ssm_token_path                       = "${var.ssm_paths.root}/${var.ssm_paths.tokens}"
+    ssm_config_path                      = "${var.ssm_paths.root}/${var.ssm_paths.config}"
+    ami_id_ssm_parameter_name            = var.ami_id_ssm_parameter_name
+    ami_id_ssm_parameter_read_policy_arn = var.ami_id_ssm_parameter_name != null ? aws_iam_policy.ami_id_ssm_parameter_read[0].arn : null
+    tags                                 = local.tags
+    lambda_tags                          = var.lambda_tags
+    arn_ssm_parameters_path_config       = local.arn_ssm_parameters_path_config
+  }
+
+  aws_partition  = var.aws_partition
+  tracing_config = var.tracing_config
+}
+
+
+resource "aws_ssm_parameter" "runner_config_run_as" {
+  name   = "${var.ssm_paths.root}/${var.ssm_paths.config}/run_as"
+  type   = "SecureString"
+  key_id = var.kms_key_arn
+  value  = var.runner_as_root ? "root" : var.runner_run_as
+  tags   = local.tags
+}
+
+resource "aws_ssm_parameter" "runner_agent_mode" {
+  name   = "${var.ssm_paths.root}/${var.ssm_paths.config}/agent_mode"
+  type   = "SecureString"
+  key_id = var.kms_key_arn
+  value  = var.enable_ephemeral_runners ? "ephemeral" : "persistent"
+  tags   = local.tags
+}
+
+resource "aws_ssm_parameter" "disable_default_labels" {
+  name   = "${var.ssm_paths.root}/${var.ssm_paths.config}/disable_default_labels"
+  type   = "SecureString"
+  key_id = var.kms_key_arn
+  value  = var.runner_disable_default_labels
+  tags   = local.tags
+}
+
+resource "aws_ssm_parameter" "jit_config_enabled" {
+  name   = "${var.ssm_paths.root}/${var.ssm_paths.config}/enable_jit_config"
+  type   = "SecureString"
+  key_id = var.kms_key_arn
+  value  = var.enable_jit_config == null ? var.enable_ephemeral_runners : var.enable_jit_config
+  tags   = local.tags
+}
+
+resource "aws_ssm_parameter" "runner_enable_cloudwatch" {
+  name   = "${var.ssm_paths.root}/${var.ssm_paths.config}/enable_cloudwatch"
+  type   = "SecureString"
+  key_id = var.kms_key_arn
+  value  = var.enable_cloudwatch_agent
+  tags   = local.tags
+}
+
+resource "aws_ssm_parameter" "token_path" {
+  name   = "${var.ssm_paths.root}/${var.ssm_paths.config}/token_path"
+  type   = "SecureString"
+  key_id = var.kms_key_arn
+  value  = "${var.ssm_paths.root}/${var.ssm_paths.tokens}"
+  tags   = local.tags
+}
+
+
+locals {
+  # Windows Runners can take their sweet time to do anything
+  min_runtime_defaults = {
+    "windows" = 15
+    "linux"   = 5
+  }
+}
+resource "aws_lambda_function" "scale_down" {
+  s3_bucket                      = var.lambda_s3_bucket != null ? var.lambda_s3_bucket : null
+  s3_key                         = var.runners_lambda_s3_key != null ? var.runners_lambda_s3_key : null
+  s3_object_version              = var.runners_lambda_s3_object_version != null ? var.runners_lambda_s3_object_version : null
+  filename                       = var.lambda_s3_bucket == null ? local.lambda_zip : null
+  source_code_hash               = var.lambda_s3_bucket == null ? filebase64sha256(local.lambda_zip) : null
+  function_name                  = "${var.prefix}-scale-down"
+  role                            = aws_iam_role.scale_down.arn
+  handler                         = "index.scaleDownHandler"
+  runtime                         = var.lambda_runtime
+  timeout                         = var.lambda_timeout_scale_down
+  tags                            = merge(local.tags, var.lambda_tags)
+  memory_size                     = var.lambda_scale_down_memory_size
+  architectures                   = [var.lambda_architecture]
+  reserved_concurrent_executions  = 10
+  kms_key_arn                     = var.kms_key_arn
+
+  environment {
+    variables = {
+      ENVIRONMENT                              = var.prefix
+      ENABLE_METRIC_GITHUB_APP_RATE_LIMIT      = var.metrics.enable && var.metrics.metric.enable_github_app_rate_limit
+      GHES_URL                                 = var.ghes_url
+      LOG_LEVEL                                = var.log_level
+      MINIMUM_RUNNING_TIME_IN_MINUTES          = coalesce(var.minimum_running_time_in_minutes, local.min_runtime_defaults[var.runner_os])
+      NODE_TLS_REJECT_UNAUTHORIZED             = var.ghes_url != null && !var.ghes_ssl_verify ? 0 : 1
+      PARAMETER_GITHUB_APP_ID_NAME             = var.github_app_parameters.id.name
+      PARAMETER_GITHUB_APP_KEY_BASE64_NAME     = var.github_app_parameters.key_base64.name
+      POWERTOOLS_LOGGER_LOG_EVENT              = var.log_level == "debug" ? "true" : "false"
+      RUNNER_BOOT_TIME_IN_MINUTES              = var.runner_boot_time_in_minutes
+      SCALE_DOWN_CONFIG                        = jsonencode(var.idle_config)
+      POWERTOOLS_SERVICE_NAME                  = "runners-scale-down"
+      POWERTOOLS_METRICS_NAMESPACE             = var.metrics.namespace
+      POWERTOOLS_TRACE_ENABLED                 = var.tracing_config.mode != null ? true : false
+      POWERTOOLS_TRACER_CAPTURE_HTTPS_REQUESTS = var.tracing_config.capture_http_requests
+      POWERTOOLS_TRACER_CAPTURE_ERROR          = var.tracing_config.capture_error
+    }
+  }
+
+  dynamic "vpc_config" {
+    for_each = var.lambda_subnet_ids != null && var.lambda_security_group_ids != null ? [true] : []
+    content {
+      security_group_ids = var.lambda_security_group_ids
+      subnet_ids         = var.lambda_subnet_ids
+    }
+  }
+
+  tracing_config {
+    mode = var.tracing_config.mode != null ? var.tracing_config.mode : "Active"
+  }
+
+  dead_letter_config {
+    target_arn = var.sqs_build_queue.arn
+  }
+}
+
+resource "aws_cloudwatch_log_group" "scale_down" {
+  name              = "/aws/lambda/${aws_lambda_function.scale_down.function_name}"
+  retention_in_days = var.logging_retention_in_days
+  kms_key_id        = var.logging_kms_key_id
+  tags              = var.tags
+}
+
+resource "aws_cloudwatch_event_rule" "scale_down" {
+  name                = "${var.prefix}-scale-down-rule"
+  schedule_expression = var.scale_down_schedule_expression
+  tags                = var.tags
+}
+
+resource "aws_cloudwatch_event_target" "scale_down" {
+  rule = aws_cloudwatch_event_rule.scale_down.name
+  arn  = aws_lambda_function.scale_down.arn
+}
+
+resource "aws_lambda_permission" "scale_down" {
+  statement_id  = "AllowExecutionFromCloudWatch"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.scale_down.function_name
+  principal     = "events.amazonaws.com"
+  source_arn    = aws_cloudwatch_event_rule.scale_down.arn
+}
+
+resource "aws_iam_role" "scale_down" {
+  name                 = "${var.prefix}-action-scale-down-lambda-role"
+  assume_role_policy   = data.aws_iam_policy_document.lambda_assume_role_policy.json
+  path                 = local.role_path
+  permissions_boundary = var.role_permissions_boundary
+  tags                 = local.tags
+}
+
+resource "aws_iam_role_policy" "scale_down" {
+  name = "scale-down-policy"
+  role = aws_iam_role.scale_down.name
+  policy = templatefile("${path.module}/policies/lambda-scale-down.json", {
+    environment               = var.prefix
+    github_app_id_arn         = var.github_app_parameters.id.arn
+    github_app_key_base64_arn = var.github_app_parameters.key_base64.arn
+    kms_key_arn               = local.kms_key_arn
+  })
+}
+
+resource "aws_iam_role_policy" "scale_down_logging" {
+  name = "logging-policy"
+  role = aws_iam_role.scale_down.name
+  policy = templatefile("${path.module}/policies/lambda-cloudwatch.json", {
+    log_group_arn = aws_cloudwatch_log_group.scale_down.arn
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "scale_down_vpc_execution_role" {
+  count      = length(var.lambda_subnet_ids) > 0 ? 1 : 0
+  role       = aws_iam_role.scale_down.name
+  policy_arn = "arn:${var.aws_partition}:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
+}
+
+resource "aws_iam_role_policy" "scale_down_xray" {
+  count  = var.tracing_config.mode != null ? 1 : 0
+  name   = "xray-policy"
+  policy = data.aws_iam_policy_document.lambda_xray[0].json
+  role   = aws_iam_role.scale_down.name
+}
+
+
+locals {
+  job_retry_config = local.job_retry_enabled ? {
+    enable         = var.job_retry.enable
+    maxAttempts    = var.job_retry.max_attempts
+    delayInSeconds = var.job_retry.delay_in_seconds
+    delayBackoff   = var.job_retry.delay_backoff
+    queueUrl       = module.job_retry[0].job_retry_check_queue.url
+  } : {}
+}
+
+resource "aws_lambda_function" "scale_up" {
+  s3_bucket                      = var.lambda_s3_bucket != null ? var.lambda_s3_bucket : null
+  s3_key                         = var.runners_lambda_s3_key != null ? var.runners_lambda_s3_key : null
+  s3_object_version              = var.runners_lambda_s3_object_version != null ? var.runners_lambda_s3_object_version : null
+  filename                       = var.lambda_s3_bucket == null ? local.lambda_zip : null
+  source_code_hash               = var.lambda_s3_bucket == null ? filebase64sha256(local.lambda_zip) : null
+  function_name                  = "${var.prefix}-scale-up"
+  role                           = aws_iam_role.scale_up.arn
+  handler                        = "index.scaleUpHandler"
+  runtime                        = var.lambda_runtime
+  timeout                        = var.lambda_timeout_scale_up
+  reserved_concurrent_executions = var.scale_up_reserved_concurrent_executions
+  memory_size                    = var.lambda_scale_up_memory_size
+  tags                           = merge(local.tags, var.lambda_tags)
+  architectures                  = [var.lambda_architecture]
+  kms_key_arn                    = var.kms_key_arn
+  environment {
+    variables = {
+      AMI_ID_SSM_PARAMETER_NAME                = var.ami_id_ssm_parameter_name
+      DISABLE_RUNNER_AUTOUPDATE                = var.disable_runner_autoupdate
+      ENABLE_EPHEMERAL_RUNNERS                 = var.enable_ephemeral_runners
+      ENABLE_JIT_CONFIG                        = var.enable_jit_config
+      ENABLE_JOB_QUEUED_CHECK                  = local.enable_job_queued_check
+      ENABLE_METRIC_GITHUB_APP_RATE_LIMIT      = var.metrics.enable && var.metrics.metric.enable_github_app_rate_limit
+      ENABLE_ORGANIZATION_RUNNERS              = var.enable_organization_runners
+      ENVIRONMENT                              = var.prefix
+      GHES_URL                                 = var.ghes_url
+      INSTANCE_ALLOCATION_STRATEGY             = var.instance_allocation_strategy
+      INSTANCE_MAX_SPOT_PRICE                  = var.instance_max_spot_price
+      INSTANCE_TARGET_CAPACITY_TYPE            = var.instance_target_capacity_type
+      INSTANCE_TYPES                           = join(",", var.instance_types)
+      LAUNCH_TEMPLATE_NAME                     = aws_launch_template.runner.name
+      LOG_LEVEL                                = var.log_level
+      MINIMUM_RUNNING_TIME_IN_MINUTES          = coalesce(var.minimum_running_time_in_minutes, local.min_runtime_defaults[var.runner_os])
+      NODE_TLS_REJECT_UNAUTHORIZED             = var.ghes_url != null && !var.ghes_ssl_verify ? 0 : 1
+      PARAMETER_GITHUB_APP_ID_NAME             = var.github_app_parameters.id.name
+      PARAMETER_GITHUB_APP_KEY_BASE64_NAME     = var.github_app_parameters.key_base64.name
+      POWERTOOLS_LOGGER_LOG_EVENT              = var.log_level == "debug" ? "true" : "false"
+      POWERTOOLS_METRICS_NAMESPACE             = var.metrics.namespace
+      POWERTOOLS_TRACE_ENABLED                 = var.tracing_config.mode != null ? true : false
+      POWERTOOLS_TRACER_CAPTURE_HTTPS_REQUESTS = var.tracing_config.capture_http_requests
+      POWERTOOLS_TRACER_CAPTURE_ERROR          = var.tracing_config.capture_error
+      RUNNER_LABELS                            = lower(join(",", var.runner_labels))
+      RUNNER_GROUP_NAME                        = var.runner_group_name
+      RUNNER_NAME_PREFIX                       = var.runner_name_prefix
+      RUNNERS_MAXIMUM_COUNT                    = var.runners_maximum_count
+      POWERTOOLS_SERVICE_NAME                  = "runners-scale-up"
+      SSM_TOKEN_PATH                           = local.token_path
+      SSM_CONFIG_PATH                          = "${var.ssm_paths.root}/${var.ssm_paths.config}"
+      SUBNET_IDS                               = join(",", var.subnet_ids)
+      ENABLE_ON_DEMAND_FAILOVER_FOR_ERRORS     = jsonencode(var.enable_on_demand_failover_for_errors)
+      JOB_RETRY_CONFIG                         = jsonencode(local.job_retry_config)
+    }
+  }
+
+  dynamic "vpc_config" {
+    for_each = var.lambda_subnet_ids != null && var.lambda_security_group_ids != null ? [true] : []
+    content {
+      security_group_ids = var.lambda_security_group_ids
+      subnet_ids         = var.lambda_subnet_ids
+    }
+  }
+
+  tracing_config {
+    mode = var.tracing_config.mode != null ? var.tracing_config.mode : "Active"
+  }
+
+  dead_letter_config {
+    target_arn = var.sqs_build_queue.arn
+  }
+}
+
+resource "aws_cloudwatch_log_group" "scale_up" {
+  name              = "/aws/lambda/${aws_lambda_function.scale_up.function_name}"
+  retention_in_days = var.logging_retention_in_days
+  kms_key_id        = var.logging_kms_key_id
+  tags              = var.tags
+}
+
+resource "aws_lambda_event_source_mapping" "scale_up" {
+  event_source_arn = var.sqs_build_queue.arn
+  function_name    = aws_lambda_function.scale_up.arn
+  batch_size       = 1
+}
+
+resource "aws_lambda_permission" "scale_runners_lambda" {
+  statement_id  = "AllowExecutionFromSQS"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.scale_up.function_name
+  principal     = "sqs.amazonaws.com"
+  source_arn    = var.sqs_build_queue.arn
+}
+
+resource "aws_iam_role" "scale_up" {
+  name                 = "${var.prefix}-action-scale-up-lambda-role"
+  assume_role_policy   = data.aws_iam_policy_document.lambda_assume_role_policy.json
+  path                 = local.role_path
+  permissions_boundary = var.role_permissions_boundary
+  tags                 = local.tags
+}
+
+resource "aws_iam_role_policy" "scale_up" {
+  name = "scale-up-policy"
+  role = aws_iam_role.scale_up.name
+  policy = templatefile("${path.module}/policies/lambda-scale-up.json", {
+    arn_runner_instance_role  = aws_iam_role.runner.arn
+    sqs_arn                   = var.sqs_build_queue.arn
+    github_app_id_arn         = var.github_app_parameters.id.arn
+    github_app_key_base64_arn = var.github_app_parameters.key_base64.arn
+    ssm_config_path           = "arn:${var.aws_partition}:ssm:${var.aws_region}:${data.aws_caller_identity.current.account_id}:parameter${var.ssm_paths.root}/${var.ssm_paths.config}"
+    kms_key_arn               = local.kms_key_arn
+    ami_kms_key_arn           = local.ami_kms_key_arn
+  })
+}
+
+resource "aws_iam_role_policy" "scale_up_logging" {
+  name = "logging-policy"
+  role = aws_iam_role.scale_up.name
+  policy = templatefile("${path.module}/policies/lambda-cloudwatch.json", {
+    log_group_arn = aws_cloudwatch_log_group.scale_up.arn
+  })
+}
+
+resource "aws_iam_role_policy" "service_linked_role" {
+  count  = var.create_service_linked_role_spot ? 1 : 0
+  name   = "service_linked_role"
+  role   = aws_iam_role.scale_up.name
+  policy = templatefile("${path.module}/policies/service-linked-role-create-policy.json", { aws_partition = var.aws_partition })
+}
+
+resource "aws_iam_role_policy_attachment" "scale_up_vpc_execution_role" {
+  count      = length(var.lambda_subnet_ids) > 0 ? 1 : 0
+  role       = aws_iam_role.scale_up.name
+  policy_arn = "arn:${var.aws_partition}:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
+}
+
+resource "aws_iam_role_policy_attachment" "ami_id_ssm_parameter_read" {
+  count      = var.ami_id_ssm_parameter_name != null ? 1 : 0
+  role       = aws_iam_role.scale_up.name
+  policy_arn = aws_iam_policy.ami_id_ssm_parameter_read[0].arn
+}
+
+resource "aws_iam_role_policy" "scale_up_xray" {
+  count  = var.tracing_config.mode != null ? 1 : 0
+  name   = "xray-policy"
+  policy = data.aws_iam_policy_document.lambda_xray[0].json
+  role   = aws_iam_role.scale_up.name
+}
+
+resource "aws_iam_role_policy" "job_retry_sqs_publish" {
+  count = local.job_retry_enabled ? 1 : 0
+  name  = "publish-retry-check-sqs-policy"
+  role  = aws_iam_role.scale_up.name
+
+  policy = templatefile("${path.module}/policies/lambda-publish-sqs-policy.json", {
+    sqs_resource_arns = jsonencode([module.job_retry[0].job_retry_check_queue.arn])
+    kms_key_arn       = var.kms_key_arn != null ? var.kms_key_arn : ""
+  })
+}
+
+
+locals {
+  ssm_housekeeper = {
+    schedule_expression = var.ssm_housekeeper.schedule_expression
+    state               = var.ssm_housekeeper.state
+    lambda_timeout      = var.ssm_housekeeper.lambda_timeout
+    lambda_memory_size  = var.ssm_housekeeper.lambda_memory_size
+    config = {
+      tokenPath      = var.ssm_housekeeper.config.tokenPath == null ? local.token_path : var.ssm_housekeeper.config.tokenPath
+      minimumDaysOld = var.ssm_housekeeper.config.minimumDaysOld
+      dryRun         = var.ssm_housekeeper.config.dryRun
+    }
+  }
+}
+
+resource "aws_lambda_function" "ssm_housekeeper" {
+  s3_bucket                      = var.lambda_s3_bucket != null ? var.lambda_s3_bucket : null
+  s3_key                         = var.runners_lambda_s3_key != null ? var.runners_lambda_s3_key : null
+  s3_object_version              = var.runners_lambda_s3_object_version != null ? var.runners_lambda_s3_object_version : null
+  filename                       = var.lambda_s3_bucket == null ? local.lambda_zip : null
+  source_code_hash               = var.lambda_s3_bucket == null ? filebase64sha256(local.lambda_zip) : null
+  function_name                  = "${var.prefix}-ssm-housekeeper"
+  role                            = aws_iam_role.ssm_housekeeper.arn
+  handler                         = "index.ssmHousekeeper"
+  runtime                         = var.lambda_runtime
+  timeout                         = local.ssm_housekeeper.lambda_timeout
+  tags                            = merge(local.tags, var.lambda_tags)
+  memory_size                     = local.ssm_housekeeper.lambda_memory_size
+  architectures                   = [var.lambda_architecture]
+  reserved_concurrent_executions  = 10
+  kms_key_arn                     = var.kms_key_arn
+
+  environment {
+    variables = {
+      ENVIRONMENT                              = var.prefix
+      LOG_LEVEL                                = var.log_level
+      SSM_CLEANUP_CONFIG                       = jsonencode(local.ssm_housekeeper.config)
+      POWERTOOLS_SERVICE_NAME                  = "ssm-housekeeper"
+      POWERTOOLS_TRACE_ENABLED                 = var.tracing_config.mode != null ? true : false
+      POWERTOOLS_TRACER_CAPTURE_HTTPS_REQUESTS = var.tracing_config.capture_http_requests
+      POWERTOOLS_TRACER_CAPTURE_ERROR          = var.tracing_config.capture_error
+    }
+  }
+
+  dynamic "vpc_config" {
+    for_each = var.lambda_subnet_ids != null && var.lambda_security_group_ids != null ? [true] : []
+    content {
+      security_group_ids = var.lambda_security_group_ids
+      subnet_ids         = var.lambda_subnet_ids
+    }
+  }
+
+  tracing_config {
+    mode = var.tracing_config.mode != null ? var.tracing_config.mode : "Active"
+  }
+
+  dead_letter_config {
+    target_arn = var.sqs_build_queue.arn
+  }
+}
+
+resource "aws_cloudwatch_log_group" "ssm_housekeeper" {
+  name              = "/aws/lambda/${aws_lambda_function.ssm_housekeeper.function_name}"
+  retention_in_days = var.logging_retention_in_days
+  kms_key_id        = var.logging_kms_key_id
+  tags              = var.tags
+}
+
+resource "aws_cloudwatch_event_rule" "ssm_housekeeper" {
+  name                = "${var.prefix}-ssm-housekeeper"
+  schedule_expression = local.ssm_housekeeper.schedule_expression
+  tags                = var.tags
+  state               = local.ssm_housekeeper.state
+}
+
+resource "aws_cloudwatch_event_target" "ssm_housekeeper" {
+  rule = aws_cloudwatch_event_rule.ssm_housekeeper.name
+  arn  = aws_lambda_function.ssm_housekeeper.arn
+}
+
+resource "aws_lambda_permission" "ssm_housekeeper" {
+  statement_id  = "AllowExecutionFromCloudWatch"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.ssm_housekeeper.function_name
+  principal     = "events.amazonaws.com"
+  source_arn    = aws_cloudwatch_event_rule.ssm_housekeeper.arn
+}
+
+resource "aws_iam_role" "ssm_housekeeper" {
+  name                 = "${var.prefix}-ssm-hk-lambda"
+  description          = "Lambda role for SSM Housekeeper (${var.prefix})"
+  assume_role_policy   = data.aws_iam_policy_document.lambda_assume_role_policy.json
+  path                 = local.role_path
+  permissions_boundary = var.role_permissions_boundary
+  tags                 = local.tags
+}
+
+resource "aws_iam_role_policy" "ssm_housekeeper" {
+  name = "ssm-policy"
+  role = aws_iam_role.ssm_housekeeper.name
+  policy = templatefile("${path.module}/policies/lambda-ssm-housekeeper.json", {
+    ssm_token_path = "arn:${var.aws_partition}:ssm:${var.aws_region}:${data.aws_caller_identity.current.account_id}:parameter${local.token_path}"
+  })
+}
+
+resource "aws_iam_role_policy" "ssm_housekeeper_logging" {
+  name = "logging-policy"
+  role = aws_iam_role.ssm_housekeeper.name
+  policy = templatefile("${path.module}/policies/lambda-cloudwatch.json", {
+    log_group_arn = aws_cloudwatch_log_group.ssm_housekeeper.arn
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "ssm_housekeeper_vpc_execution_role" {
+  count      = length(var.lambda_subnet_ids) > 0 ? 1 : 0
+  role       = aws_iam_role.ssm_housekeeper.name
+  policy_arn = "arn:${var.aws_partition}:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
+}
+
+resource "aws_iam_role_policy" "ssm_housekeeper_xray" {
+  count  = var.tracing_config.mode != null ? 1 : 0
+  name   = "xray-policy"
+  policy = data.aws_iam_policy_document.lambda_xray[0].json
+  role   = aws_iam_role.ssm_housekeeper.name
+}
+
+
+variable "aws_region" {
+  description = "AWS region."
+  type        = string
+}
+
+variable "vpc_id" {
+  description = "The VPC for the security groups."
+  type        = string
+}
+
+variable "subnet_ids" {
+  description = "List of subnets in which the action runners will be launched, the subnets needs to be subnets in the `vpc_id`."
+  type        = list(string)
+}
+
+variable "overrides" {
+  description = "This map provides the possibility to override some defaults. The following attributes are supported: `name_sg` overrides the `Name` tag for all security groups created by this module. `name_runner_agent_instance` overrides the `Name` tag for the ec2 instance defined in the auto launch configuration. `name_docker_machine_runners` overrides the `Name` tag spot instances created by the runner agent."
+  type        = map(string)
+
+  default = {
+    name_runner = ""
+    name_sg     = ""
+  }
+}
+
+variable "tags" {
+  description = "Map of tags that will be added to created resources. By default resources will be tagged with name."
+  type        = map(string)
+  default     = {}
+}
+
+variable "prefix" {
+  description = "The prefix used for naming resources"
+  type        = string
+  default     = "github-actions"
+}
+
+variable "s3_runner_binaries" {
+  description = "Bucket details for cached GitHub binary."
+  type = object({
+    arn = string
+    id  = string
+    key = string
+  })
+}
+
+variable "block_device_mappings" {
+  description = "The EC2 instance block device configuration. Takes the following keys: `device_name`, `delete_on_termination`, `volume_type`, `volume_size`, `encrypted`, `iops`, `throughput`, `kms_key_id`, `snapshot_id`."
+  type = list(object({
+    delete_on_termination = optional(bool, true)
+    device_name           = optional(string, "/dev/xvda")
+    encrypted             = optional(bool, true)
+    iops                  = optional(number)
+    kms_key_id            = optional(string)
+    snapshot_id           = optional(string)
+    throughput            = optional(number)
+    volume_size           = number
+    volume_type           = optional(string, "gp3")
+  }))
+  default = [{
+    volume_size = 30
+  }]
+}
+
+variable "ebs_optimized" {
+  description = "The EC2 EBS optimized configuration."
+  type        = bool
+  default     = false
+}
+
+variable "instance_target_capacity_type" {
+  description = "Default lifecyle used runner instances, can be either `spot` or `on-demand`."
+  type        = string
+  default     = "spot"
+
+  validation {
+    condition     = contains(["spot", "on-demand"], var.instance_target_capacity_type)
+    error_message = "The instance target capacity should be either spot or on-demand."
+  }
+}
+
+variable "instance_allocation_strategy" {
+  description = "The allocation strategy for spot instances. AWS recommends to use `capacity-optimized` however the AWS default is `lowest-price`."
+  type        = string
+  default     = "lowest-price"
+
+  validation {
+    condition     = contains(["lowest-price", "diversified", "capacity-optimized", "capacity-optimized-prioritized", "price-capacity-optimized"], var.instance_allocation_strategy)
+    error_message = "The instance allocation strategy does not match the allowed values."
+  }
+}
+
+variable "instance_max_spot_price" {
+  description = "Max price price for spot intances per hour. This variable will be passed to the create fleet as max spot price for the fleet."
+  type        = string
+  default     = null
+}
+
+variable "runner_os" {
+  description = "The EC2 Operating System type to use for action runner instances (linux,windows)."
+  type        = string
+  default     = "linux"
+
+  validation {
+    condition     = contains(["linux", "windows"], var.runner_os)
+    error_message = "Valid values for runner_os are (linux, windows)."
+  }
+}
+
+variable "instance_types" {
+  description = "List of instance types for the action runner. Defaults are based on runner_os (al2023 for linux and Windows Server Core for win)."
+  type        = list(string)
+  default     = null
+}
+
+variable "ami_filter" {
+  description = "Map of lists used to create the AMI filter for the action runner AMI."
+  type        = map(list(string))
+  default     = { state = ["available"] }
+  validation {
+    # check the availability of the AMI
+    condition     = contains(keys(var.ami_filter), "state")
+    error_message = "The \"ami_filter\" variable must contain the \"state\" key with the value \"available\"."
+  }
+}
+
+variable "ami_owners" {
+  description = "The list of owners used to select the AMI of action runner instances."
+  type        = list(string)
+  default     = ["amazon"]
+}
+
+variable "ami_id_ssm_parameter_name" {
+  description = "Externally managed SSM parameter (of data type aws:ec2:image) that contains the AMI ID to launch runner instances from. Overrides ami_filter"
+  type        = string
+  default     = null
+}
+
+variable "ami_kms_key_arn" {
+  description = "Optional CMK Key ARN to be used to launch an instance from a shared encrypted AMI"
+  type        = string
+  default     = null
+}
+
+variable "enable_userdata" {
+  description = "Should the userdata script be enabled for the runner. Set this to false if you are using your own prebuilt AMI"
+  type        = bool
+  default     = true
+}
+
+variable "userdata_template" {
+  description = "Alternative user-data template file path, replacing the default template. By providing your own user_data you have to take care of installing all required software, including the action runner. Variables userdata_pre/post_install are ignored."
+  type        = string
+  default     = null
+}
+
+variable "userdata_content" {
+  description = "Alternative user-data content, replacing the templated one. By providing your own user_data you have to take care of installing all required software, including the action runner and registering the runner.  Be-aware configuration paramaters in SSM as well as tags are treated as internals. Changes will not trigger a breaking release."
+  type        = string
+  default     = null
+}
+
+variable "userdata_pre_install" {
+  description = "User-data script snippet to insert before GitHub action runner install"
+  type        = string
+  default     = ""
+}
+
+variable "userdata_post_install" {
+  description = "User-data script snippet to insert after GitHub action runner install"
+  type        = string
+  default     = ""
+}
+
+variable "runner_hook_job_started" {
+  description = "Script to be ran in the runner environment at the beginning of every job"
+  type        = string
+  default     = ""
+}
+
+variable "runner_hook_job_completed" {
+  description = "Script to be ran in the runner environment at the end of every job"
+  type        = string
+  default     = ""
+}
+
+variable "sqs_build_queue" {
+  description = "SQS queue to consume accepted build events."
+  type = object({
+    arn = string
+    url = string
+  })
+}
+
+variable "enable_organization_runners" {
+  description = "Register runners to organization, instead of repo level"
+  type        = bool
+}
+
+variable "github_app_parameters" {
+  description = "Parameter Store for GitHub App Parameters."
+  type = object({
+    key_base64 = map(string)
+    id         = map(string)
+  })
+}
+
+variable "lambda_scale_down_memory_size" {
+  description = "Memory size limit in MB for scale down lambda."
+  type        = number
+  default     = 512
+}
+
+variable "scale_down_schedule_expression" {
+  description = "Scheduler expression to check every x for scale down."
+  type        = string
+  default     = "cron(*/5 * * * ? *)"
+}
+
+variable "minimum_running_time_in_minutes" {
+  description = "The time an ec2 action runner should be running at minimum before terminated if non busy. If not set the default is calculated based on the OS."
+  type        = number
+  default     = null
+}
+
+variable "runner_boot_time_in_minutes" {
+  description = "The minimum time for an EC2 runner to boot and register as a runner."
+  type        = number
+  default     = 5
+}
+
+variable "runner_disable_default_labels" {
+  description = "Disable default labels for the runners (os, architecture and `self-hosted`). If enabled, the runner will only have the extra labels provided in `runner_extra_labels`."
+  type        = bool
+  default     = false
+}
+
+variable "runner_labels" {
+  description = "All the labels for the runners (GitHub) including the default one's(e.g: self-hosted, linux, x64, label1, label2). Separate each label by a comma"
+  type        = list(string)
+}
+
+variable "runner_group_name" {
+  description = "Name of the runner group."
+  type        = string
+  default     = "Default"
+}
+
+variable "lambda_zip" {
+  description = "File location of the lambda zip file."
+  type        = string
+  default     = null
+}
+
+variable "lambda_timeout_scale_down" {
+  description = "Time out for the scale down lambda in seconds."
+  type        = number
+  default     = 60
+}
+
+variable "scale_up_reserved_concurrent_executions" {
+  description = "Amount of reserved concurrent executions for the scale-up lambda function. A value of 0 disables lambda from being triggered and -1 removes any concurrency limitations."
+  type        = number
+  default     = 1
+}
+
+variable "lambda_scale_up_memory_size" {
+  description = "Memory size limit in MB for scale-up lambda."
+  type        = number
+  default     = 512
+}
+
+variable "lambda_timeout_scale_up" {
+  description = "Time out for the scale up lambda in seconds."
+  type        = number
+  default     = 60
+}
+
+variable "role_permissions_boundary" {
+  description = "Permissions boundary that will be added to the created role for the lambda."
+  type        = string
+  default     = null
+}
+
+variable "role_path" {
+  description = "The path that will be added to the role; if not set, the prefix will be used."
+  type        = string
+  default     = null
+}
+
+variable "instance_profile_path" {
+  description = "The path that will be added to the instance_profile, if not set the prefix will be used."
+  type        = string
+  default     = null
+}
+
+variable "runner_as_root" {
+  description = "Run the action runner under the root user. Variable `runner_run_as` will be ignored."
+  type        = bool
+  default     = false
+}
+
+variable "runner_run_as" {
+  description = "Run the GitHub actions agent as user."
+  type        = string
+  default     = "ec2-user"
+}
+
+variable "runners_maximum_count" {
+  description = "The maximum number of runners that will be created. Setting the variable to `-1` desiables the maximum check."
+  type        = number
+  default     = 3
+}
+
+variable "runner_architecture" {
+  description = "The platform architecture of the runner instance_type."
+  type        = string
+  default     = "x64"
+}
+
+variable "idle_config" {
+  description = "List of time period that can be defined as cron expression to keep a minimum amount of runners active instead of scaling down to 0. By defining this list you can ensure that in time periods that match the cron expression within 5 seconds a runner is kept idle."
+  type = list(object({
+    cron             = string
+    timeZone         = string
+    idleCount        = number
+    evictionStrategy = optional(string, "oldest_first")
+  }))
+  default = []
+}
+
+variable "logging_retention_in_days" {
+  description = "Specifies the number of days you want to retain log events for the lambda log group. Possible values are: 0, 1, 3, 5, 7, 14, 30, 60, 90, 120, 150, 180, 365, 400, 545, 731, 1827, and 3653."
+  type        = number
+  default     = 365
+}
+
+variable "logging_kms_key_id" {
+  description = "Specifies the kms key id to encrypt the logs with"
+  type        = string
+  default     = null
+}
+
+variable "enable_ssm_on_runners" {
+  description = "Enable to allow access to the runner instances for debugging purposes via SSM. Note that this adds additional permissions to the runner instances."
+  type        = bool
+}
+
+variable "lambda_s3_bucket" {
+  description = "S3 bucket from which to specify lambda functions. This is an alternative to providing local files directly."
+  type        = string
+  default     = null
+}
+
+variable "runners_lambda_s3_key" {
+  description = "S3 key for runners lambda function. Required if using S3 bucket to specify lambdas."
+  type        = string
+  default     = null
+}
+
+variable "runners_lambda_s3_object_version" {
+  description = "S3 object version for runners lambda function. Useful if S3 versioning is enabled on source bucket."
+  type        = string
+  default     = null
+}
+
+variable "create_service_linked_role_spot" {
+  description = "(optional) create the service linked role for spot instances that is required by the scale-up lambda."
+  type        = bool
+  default     = false
+}
+
+variable "aws_partition" {
+  description = "(optional) partition for the base arn if not 'aws'"
+  type        = string
+  default     = "aws"
+}
+
+variable "runner_iam_role_managed_policy_arns" {
+  description = "Attach AWS or customer-managed IAM policies (by ARN) to the runner IAM role"
+  type        = list(string)
+  default     = []
+}
+
+variable "enable_cloudwatch_agent" {
+  description = "Enabling the cloudwatch agent on the ec2 runner instances, the runner contains default config. Configuration can be overridden via `cloudwatch_config`."
+  type        = bool
+  default     = true
+}
+
+variable "enable_managed_runner_security_group" {
+  description = "Enabling the default managed security group creation. Unmanaged security groups can be specified via `runner_additional_security_group_ids`."
+  type        = bool
+  default     = true
+}
+
+variable "cloudwatch_config" {
+  description = "(optional) Replaces the module default cloudwatch log config. See https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Agent-Configuration-File-Details.html for details."
+  type        = string
+  default     = null
+}
+
+variable "runner_log_files" {
+  description = "(optional) List of logfiles to send to CloudWatch, will only be used if `enable_cloudwatch_agent` is set to true. Object description: `log_group_name`: Name of the log group, `prefix_log_group`: If true, the log group name will be prefixed with `/github-self-hosted-runners/<var.prefix>`, `file_path`: path to the log file, `log_stream_name`: name of the log stream."
+  type = list(object({
+    log_group_name   = string
+    prefix_log_group = bool
+    file_path        = string
+    log_stream_name  = string
+  }))
+  default = null
+}
+
+variable "ghes_url" {
+  description = "GitHub Enterprise Server URL. DO NOT SET IF USING PUBLIC GITHUB"
+  type        = string
+  default     = null
+}
+
+variable "ghes_ssl_verify" {
+  description = "GitHub Enterprise SSL verification. Set to 'false' when custom certificate (chains) is used for GitHub Enterprise Server (insecure)."
+  type        = bool
+  default     = true
+}
+
+variable "lambda_subnet_ids" {
+  description = "List of subnets in which the lambda will be launched, the subnets needs to be subnets in the `vpc_id`."
+  type        = list(string)
+  default     = []
+}
+
+variable "lambda_security_group_ids" {
+  description = "List of security group IDs associated with the Lambda function."
+  type        = list(string)
+  default     = []
+}
+
+variable "key_name" {
+  description = "Key pair name"
+  type        = string
+  default     = null
+}
+
+variable "runner_additional_security_group_ids" {
+  description = "(optional) List of additional security groups IDs to apply to the runner"
+  type        = list(string)
+  default     = []
+}
+
+variable "kms_key_arn" {
+  description = "Optional CMK Key ARN to be used for Parameter Store."
+  type        = string
+  default     = null
+}
+
+variable "enable_runner_detailed_monitoring" {
+  description = "Enable detailed monitoring for runners"
+  type        = bool
+  default     = false
+}
+
+variable "egress_rules" {
+  description = "List of egress rules for the GitHub runner instances."
+  type = list(object({
+    cidr_blocks      = list(string)
+    ipv6_cidr_blocks = list(string)
+    prefix_list_ids  = list(string)
+    from_port        = number
+    protocol         = string
+    security_groups  = list(string)
+    self             = bool
+    to_port          = number
+    description      = string
+  }))
+  default = [{
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+    prefix_list_ids  = null
+    from_port        = 443
+    protocol         = "tcp"
+    security_groups  = null
+    self             = null
+    to_port          = 443
+    description      = null
+  }]
+}
+
+variable "log_level" {
+  description = "Logging level for lambda logging. Valid values are  'silly', 'trace', 'debug', 'info', 'warn', 'error', 'fatal'."
+  type        = string
+  default     = "info"
+  validation {
+    condition = anytrue([
+      var.log_level == "silly",
+      var.log_level == "trace",
+      var.log_level == "debug",
+      var.log_level == "info",
+      var.log_level == "warn",
+      var.log_level == "error",
+      var.log_level == "fatal",
+    ])
+    error_message = "`log_level` value not valid. Valid values are 'silly', 'trace', 'debug', 'info', 'warn', 'error', 'fatal'."
+  }
+}
+
+variable "runner_ec2_tags" {
+  description = "Map of tags that will be added to the launch template instance tag specifications."
+  type        = map(string)
+  default     = {}
+}
+
+variable "metadata_options" {
+  description = "Metadata options for the ec2 runner instances. By default, the module uses metadata tags for bootstrapping the runner, only disable `instance_metadata_tags` when using custom scripts for starting the runner."
+  type        = map(any)
+  default = {
+    instance_metadata_tags      = "enabled"
+    http_endpoint               = "enabled"
+    http_tokens                 = "required"
+    http_put_response_hop_limit = 1
+  }
+}
+
+variable "enable_ephemeral_runners" {
+  description = "Enable ephemeral runners, runners will only be used once."
+  type        = bool
+  default     = false
+}
+
+variable "enable_job_queued_check" {
+  description = "Only scale if the job event received by the scale up lambda is is in the state queued. By default enabled for non ephemeral runners and disabled for ephemeral. Set this variable to overwrite the default behavior."
+  type        = bool
+  default     = null
+}
+
+variable "pool_lambda_timeout" {
+  description = "Time out for the pool lambda in seconds."
+  type        = number
+  default     = 60
+}
+
+variable "pool_lambda_memory_size" {
+  description = "Lambda Memory size limit in MB for pool lambda"
+  type        = number
+  default     = 512
+}
+
+variable "pool_runner_owner" {
+  description = "The pool will deploy runners to the GitHub org ID, set this value to the org to which you want the runners deployed. Repo level is not supported."
+  type        = string
+  default     = null
+}
+
+variable "pool_lambda_reserved_concurrent_executions" {
+  description = "Amount of reserved concurrent executions for the scale-up lambda function. A value of 0 disables lambda from being triggered and -1 removes any concurrency limitations."
+  type        = number
+  default     = 1
+}
+
+variable "pool_config" {
+  description = "The configuration for updating the pool. The `pool_size` to adjust to by the events triggered by the `schedule_expression`. For example you can configure a cron expression for week days to adjust the pool to 10 and another expression for the weekend to adjust the pool to 1. Use `schedule_expression_timezone ` to override the schedule time zone (defaults to UTC)."
+  type = list(object({
+    schedule_expression          = string
+    schedule_expression_timezone = optional(string)
+    size                         = number
+  }))
+  default = []
+}
+
+variable "disable_runner_autoupdate" {
+  description = "Disable the auto update of the github runner agent. Be aware there is a grace period of 30 days, see also the [GitHub article](https://github.blog/changelog/2022-02-01-github-actions-self-hosted-runners-can-now-disable-automatic-updates/)"
+  type        = bool
+  default     = false
+}
+
+variable "lambda_runtime" {
+  description = "AWS Lambda runtime."
+  type        = string
+  default     = "nodejs22.x"
+}
+
+variable "lambda_architecture" {
+  description = "AWS Lambda architecture. Lambda functions using Graviton processors ('arm64') tend to have better price/performance than 'x86_64' functions. "
+  type        = string
+  default     = "arm64"
+  validation {
+    condition     = contains(["arm64", "x86_64"], var.lambda_architecture)
+    error_message = "`lambda_architecture` value is not valid, valid values are: `arm64` and `x86_64`."
+  }
+}
+variable "enable_runner_binaries_syncer" {
+  description = "Option to disable the lambda to sync GitHub runner distribution, useful when using a pre-build AMI."
+  type        = bool
+  default     = true
+}
+
+variable "enable_user_data_debug_logging" {
+  description = "Option to enable debug logging for user-data, this logs all secrets as well."
+  type        = bool
+  default     = false
+}
+
+variable "ssm_paths" {
+  description = "The root path used in SSM to store configuration and secrets."
+  type = object({
+    root   = string
+    tokens = string
+    config = string
+  })
+}
+
+variable "runner_name_prefix" {
+  description = "The prefix used for the GitHub runner name. The prefix will be used in the default start script to prefix the instance name when register the runner in GitHub. The value is availabe via an EC2 tag 'ghr:runner_name_prefix'."
+  type        = string
+  default     = ""
+  validation {
+    condition     = length(var.runner_name_prefix) <= 45
+    error_message = "The prefix used for the GitHub runner name must be less than 32 characters. AWS instances id are 17 chars, https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/resource-ids.html"
+  }
+}
+
+variable "tracing_config" {
+  description = "Configuration for lambda tracing."
+  type = object({
+    mode                  = optional(string, null)
+    capture_http_requests = optional(bool, false)
+    capture_error         = optional(bool, false)
+  })
+  default = {}
+}
+
+
+variable "credit_specification" {
+  description = "The credit option for CPU usage of a T instance. Can be unset, \"standard\" or \"unlimited\"."
+  type        = string
+  default     = null
+
+  validation {
+    condition     = var.credit_specification == null ? true : contains(["standard", "unlimited"], var.credit_specification)
+    error_message = "Valid values for credit_specification are (null, \"standard\", \"unlimited\")."
+  }
+}
+
+variable "enable_jit_config" {
+  description = "Overwrite the default behavior for JIT configuration. By default JIT configuration is enabled for ephemeral runners and disabled for non-ephemeral runners. In case of GHES check first if the JIT config API is avaialbe. In case you upgradeing from 3.x to 4.x you can set `enable_jit_config` to `false` to avoid a breaking change when having your own AMI."
+  type        = bool
+  default     = null
+}
+
+variable "associate_public_ipv4_address" {
+  description = "Associate public IPv4 with the runner. Only tested with IPv4"
+  type        = bool
+  default     = false
+}
+
+variable "ssm_housekeeper" {
+  description = <<EOF
+  Configuration for the SSM housekeeper lambda. This lambda deletes token / JIT config from SSM.
+
+  `schedule_expression`: is used to configure the schedule for the lambda.
+  `state`: state of the cloudwatch event rule. Valid values are `DISABLED`, `ENABLED`, and `ENABLED_WITH_ALL_CLOUDTRAIL_MANAGEMENT_EVENTS`.
+  `lambda_memory_size`: lambda memery size limit.
+  `lambda_timeout`: timeout for the lambda in seconds.
+  `config`: configuration for the lambda function. Token path will be read by default from the module.
+  EOF
+  type = object({
+    schedule_expression = optional(string, "rate(1 day)")
+    state               = optional(string, "ENABLED")
+    lambda_memory_size  = optional(number, 512)
+    lambda_timeout      = optional(number, 60)
+    config = object({
+      tokenPath      = optional(string)
+      minimumDaysOld = optional(number, 1)
+      dryRun         = optional(bool, false)
+    })
+  })
+  default = { config = {} }
+}
+
+variable "enable_on_demand_failover_for_errors" {
+  description = "Enable on-demand failover. For example to fall back to on demand when no spot capacity is available the variable can be set to `InsufficientInstanceCapacity`. When not defined the default behavior is to retry later."
+  type        = list(string)
+  default     = []
+}
+
+variable "lambda_tags" {
+  description = "Map of tags that will be added to all the lambda function resources. Note these are additional tags to the default tags."
+  type        = map(string)
+  default     = {}
+}
+
+variable "metrics" {
+  description = "Configuration for metrics created by the module, by default metrics are disabled to avoid additional costs. When metrics are enable all metrics are created unless explicit configured otherwise."
+  type = object({
+    enable    = optional(bool, false)
+    namespace = optional(string, "GitHub Runners")
+    metric = optional(object({
+      enable_github_app_rate_limit    = optional(bool, true)
+      enable_job_retry                = optional(bool, true)
+      enable_spot_termination_warning = optional(bool, true)
+    }), {})
+  })
+  default = {}
+}
+
+variable "job_retry" {
+  description = <<-EOF
+    Configure job retries. The configuration enables job retries (for ephemeral runners). After creating the insances a message will be published to a job retry queue. The job retry check lambda is checking after a delay if the job is queued. If not the message will be published again on the scale-up (build queue). Using this feature can impact the reate limit of the GitHub app.
+
+    `enable`: Enable or disable the job retry feature.
+    `delay_in_seconds`: The delay in seconds before the job retry check lambda will check the job status.
+    `delay_backoff`: The backoff factor for the delay.
+    `lambda_memory_size`: Memory size limit in MB for the job retry check lambda.
+    'lambda_reserved_concurrent_executions': Amount of reserved concurrent executions for the job retry check lambda function. A value of 0 disables lambda from being triggered and -1 removes any concurrency limitations.
+    `lambda_timeout`: Time out of the job retry check lambda in seconds.
+    `max_attempts`: The maximum number of attempts to retry the job.
+  EOF
+
+  type = object({
+    enable                                = optional(bool, false)
+    delay_in_seconds                      = optional(number, 300)
+    delay_backoff                         = optional(number, 2)
+    lambda_memory_size                    = optional(number, 256)
+    lambda_reserved_concurrent_executions = optional(number, 1)
+
+    lambda_timeout = optional(number, 30)
+
+    max_attempts = optional(number, 1)
+  })
+  default = {}
+
+  validation {
+    condition     = var.job_retry.enable == false || (var.job_retry.enable == true && var.job_retry.delay_in_seconds <= 900)
+    error_message = "The maxium message delay for SWS is 900 seconds."
+  }
+}
+
+
+terraform {
+  required_version = ">= 1.3.0"
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.27"
+    }
+  }
+}

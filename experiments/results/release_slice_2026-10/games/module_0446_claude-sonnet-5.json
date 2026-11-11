@@ -1,0 +1,108 @@
+{
+  "module_id": "module_0446",
+  "model_id": "claude-sonnet-5",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0025",
+      "title": "DynamoDB tables should use at rest encryption with a Customer Managed Key",
+      "severity": "LOW",
+      "resource_name": "module.tfstate_backend",
+      "resource_type": "module",
+      "file_path": "cloudposse/tfstate-backend/aws/main.tf",
+      "start_line": 244,
+      "end_line": 246
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "module.tfstate_backend",
+      "resource_type": "module",
+      "file_path": "cloudposse/tfstate-backend/aws/main.tf",
+      "start_line": 144,
+      "end_line": 153
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0132",
+      "title": "S3 encryption should use Customer Managed Keys",
+      "severity": "HIGH",
+      "resource_name": "module.tfstate_backend",
+      "resource_type": "module",
+      "file_path": "cloudposse/tfstate-backend/aws/main.tf",
+      "start_line": 184,
+      "end_line": 194
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "this",
+      "resource_type": "this",
+      "file_path": "/context.tf",
+      "start_line": 23,
+      "end_line": 46
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "label",
+      "resource_type": "label",
+      "file_path": "/iam.tf",
+      "start_line": 24,
+      "end_line": 37
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "tfstate_backend",
+      "resource_type": "tfstate_backend",
+      "file_path": "/main.tf",
+      "start_line": 5,
+      "end_line": 16
+    }
+  ],
+  "findings_after": [],
+  "target_count": 6,
+  "resolved_count": 6,
+  "introduced_count": 0,
+  "unchanged_count": 0,
+  "repair_success_rate": 1.0,
+  "regression_rate": 0.0,
+  "net_delta": 6,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 2,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 1,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 3,
+      "introduced": 0,
+      "unchanged": 0
+    }
+  },
+  "repair_cost_usd": 0.32025200000000004,
+  "repair_tokens": 38474,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0446_claude-sonnet-5.repaired.tf",
+  "raw_response_path": "module_0446_claude-sonnet-5.raw.txt",
+  "repaired_code_sha256": "0d99274bc8bc8ea7fe1875d94cf3b3546f37d7ef907949a89b8fe34d4cbd9258"
+}

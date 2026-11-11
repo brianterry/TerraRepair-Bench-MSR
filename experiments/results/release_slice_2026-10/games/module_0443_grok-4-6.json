@@ -1,0 +1,75 @@
+{
+  "module_id": "module_0443",
+  "model_id": "grok-4-6",
+  "findings_before": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "this",
+      "resource_type": "this",
+      "file_path": "/context.tf",
+      "start_line": 23,
+      "end_line": 46
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "security_hub",
+      "resource_type": "security_hub",
+      "file_path": "/main.tf",
+      "start_line": 44,
+      "end_line": 61
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "account_map",
+      "resource_type": "account_map",
+      "file_path": "/remote-state.tf",
+      "start_line": 1,
+      "end_line": 12
+    }
+  ],
+  "findings_after": [],
+  "target_count": 3,
+  "resolved_count": 3,
+  "introduced_count": 0,
+  "unchanged_count": 0,
+  "repair_success_rate": 1.0,
+  "regression_rate": 0.0,
+  "net_delta": 3,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 3,
+      "introduced": 0,
+      "unchanged": 0
+    }
+  },
+  "repair_cost_usd": 0.17475000000000002,
+  "repair_tokens": 33253,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0443_grok-4-6.repaired.tf",
+  "raw_response_path": "module_0443_grok-4-6.raw.txt",
+  "repaired_code_sha256": "93b00054661a669c306b559839e69c8713905c01621e4afb2b2140ad9b3b6106"
+}

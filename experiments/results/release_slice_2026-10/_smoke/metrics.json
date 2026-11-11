@@ -1,0 +1,41 @@
+{
+  "ts": "2026-10-28T14:30:53.023729+00:00",
+  "done": 6,
+  "total": 6,
+  "pct": 100.0,
+  "elapsed_sec": 114.6,
+  "games_per_min": 3.14,
+  "events": {
+    "scored": 6,
+    "scored_hcl_valid": 4,
+    "scored_hcl_invalid": 2,
+    "throttled": 0,
+    "timed_out": 0,
+    "scan_failed": 0,
+    "resumed": 0,
+    "size_driven": 0
+  },
+  "total_cost_usd": 0.0187,
+  "by_model": {
+    "nova-lite": {
+      "scored": 3,
+      "hcl_valid": 2,
+      "throttled": 0,
+      "timed_out": 0,
+      "scan_failed": 0,
+      "resumed": 0,
+      "size_driven": 0,
+      "cost_usd": 0.0093
+    },
+    "qwen3-32b": {
+      "scored": 3,
+      "hcl_valid": 2,
+      "throttled": 0,
+      "timed_out": 0,
+      "scan_failed": 0,
+      "resumed": 0,
+      "size_driven": 0,
+      "cost_usd": 0.0095
+    }
+  }
+}

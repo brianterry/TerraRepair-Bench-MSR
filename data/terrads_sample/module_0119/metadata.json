@@ -1,0 +1,35 @@
+{
+  "findings_count": 5,
+  "findings": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_50",
+      "title": "",
+      "resource_name": "aws_lambda_function.pool"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_116",
+      "title": "",
+      "resource_name": "aws_lambda_function.pool"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_173",
+      "title": "",
+      "resource_name": "aws_lambda_function.pool"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_272",
+      "title": "",
+      "resource_name": "aws_lambda_function.pool"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_297",
+      "title": "",
+      "resource_name": "aws_scheduler_schedule.pool"
+    }
+  ]
+}

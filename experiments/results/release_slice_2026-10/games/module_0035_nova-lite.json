@@ -1,0 +1,219 @@
+{
+  "module_id": "module_0035",
+  "model_id": "nova-lite",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0098",
+      "title": "Secrets Manager should use customer managed keys",
+      "severity": "LOW",
+      "resource_name": "aws_secretsmanager_secret.argocd",
+      "resource_type": "aws_secretsmanager_secret",
+      "file_path": "main.tf",
+      "start_line": 103,
+      "end_line": 106
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0178",
+      "title": "VPC Flow Logs is a feature that enables you to capture information about the IP traffic going to and from network interfaces in your VPC. After you've created a flow log, you can view and retrieve its data in Amazon CloudWatch Logs. It is recommended that VPC Flow Logs be enabled for packet \"Rejects\" for VPCs.",
+      "severity": "MEDIUM",
+      "resource_name": "module.vpc",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/vpc/aws/main.tf",
+      "start_line": 28,
+      "end_line": 51
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_394",
+      "title": "Ensure aws_availability_zones data source pins zone identity so its result set does not silently expand when AWS adds an Availability Zone",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_availability_zones.available",
+      "resource_type": "aws_availability_zones",
+      "file_path": "/main.tf",
+      "start_line": 23,
+      "end_line": 29
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_149",
+      "title": "Ensure that Secrets Manager secret is encrypted using KMS CMK",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_secretsmanager_secret.argocd",
+      "resource_type": "aws_secretsmanager_secret",
+      "file_path": "/main.tf",
+      "start_line": 103,
+      "end_line": 106
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "vpc",
+      "resource_type": "vpc",
+      "file_path": "/main.tf",
+      "start_line": 31,
+      "end_line": 54
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "acm",
+      "resource_type": "acm",
+      "file_path": "/main.tf",
+      "start_line": 75,
+      "end_line": 91
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_57",
+      "title": "Ensure Secrets Manager secrets should have automatic rotation enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_secretsmanager_secret.argocd",
+      "resource_type": "aws_secretsmanager_secret",
+      "file_path": "/main.tf",
+      "start_line": 103,
+      "end_line": 106
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_38",
+      "title": "Ensure Domain Name System Security Extensions (DNSSEC) signing is enabled for Amazon Route 53 public hosted zones",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_route53_zone.sub",
+      "resource_type": "aws_route53_zone",
+      "file_path": "/main.tf",
+      "start_line": 62,
+      "end_line": 64
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_39",
+      "title": "Ensure Domain Name System (DNS) query logging is enabled for Amazon Route 53 hosted zones",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_route53_zone.sub",
+      "resource_type": "aws_route53_zone",
+      "file_path": "/main.tf",
+      "start_line": 62,
+      "end_line": 64
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "vpc",
+      "resource_type": "vpc",
+      "file_path": "/main.tf",
+      "start_line": 32,
+      "end_line": 55
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "acm",
+      "resource_type": "acm",
+      "file_path": "/main.tf",
+      "start_line": 76,
+      "end_line": 92
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_394",
+      "title": "Ensure aws_availability_zones data source pins zone identity so its result set does not silently expand when AWS adds an Availability Zone",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_availability_zones.available",
+      "resource_type": "aws_availability_zones",
+      "file_path": "/main.tf",
+      "start_line": 23,
+      "end_line": 30
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_57",
+      "title": "Ensure Secrets Manager secrets should have automatic rotation enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_secretsmanager_secret.argocd",
+      "resource_type": "aws_secretsmanager_secret",
+      "file_path": "/main.tf",
+      "start_line": 104,
+      "end_line": 109
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_38",
+      "title": "Ensure Domain Name System Security Extensions (DNSSEC) signing is enabled for Amazon Route 53 public hosted zones",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_route53_zone.sub",
+      "resource_type": "aws_route53_zone",
+      "file_path": "/main.tf",
+      "start_line": 63,
+      "end_line": 65
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_64",
+      "title": "Ensure KMS key Policy is defined",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_kms_key.argocd_kms",
+      "resource_type": "aws_kms_key",
+      "file_path": "/main.tf",
+      "start_line": 111,
+      "end_line": 114
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_39",
+      "title": "Ensure Domain Name System (DNS) query logging is enabled for Amazon Route 53 hosted zones",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_route53_zone.sub",
+      "resource_type": "aws_route53_zone",
+      "file_path": "/main.tf",
+      "start_line": 63,
+      "end_line": 65
+    }
+  ],
+  "target_count": 9,
+  "resolved_count": 3,
+  "introduced_count": 1,
+  "unchanged_count": 6,
+  "repair_success_rate": 0.3333333333333333,
+  "regression_rate": 0.1111111111111111,
+  "net_delta": 2,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 0,
+      "introduced": 1,
+      "unchanged": 1
+    },
+    "data_protection": {
+      "resolved": 2,
+      "introduced": 0,
+      "unchanged": 1
+    },
+    "observability": {
+      "resolved": 1,
+      "introduced": 0,
+      "unchanged": 1
+    },
+    "other": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 3
+    }
+  },
+  "repair_cost_usd": 0.0005353000000000001,
+  "repair_tokens": 3732,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0035_nova-lite.repaired.tf",
+  "raw_response_path": "module_0035_nova-lite.raw.txt",
+  "repaired_code_sha256": "e588cf82eec24734b6f705176ae729036e3f41e962a1160bde56ff964153527a"
+}

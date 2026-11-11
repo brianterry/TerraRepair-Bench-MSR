@@ -1,0 +1,53 @@
+{
+  "findings_count": 8,
+  "findings": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_79",
+      "title": "",
+      "resource_name": "aws_instance.phishing-server[0]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_88",
+      "title": "",
+      "resource_name": "aws_instance.phishing-server[0]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_126",
+      "title": "",
+      "resource_name": "aws_instance.phishing-server[0]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_135",
+      "title": "",
+      "resource_name": "aws_instance.phishing-server[0]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_8",
+      "title": "",
+      "resource_name": "aws_instance.phishing-server[0]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_260",
+      "title": "",
+      "resource_name": "aws_security_group.phishing-server"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "",
+      "resource_name": "aws_security_group.phishing-server"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_41",
+      "title": "",
+      "resource_name": "aws_instance.phishing-server[0]"
+    }
+  ]
+}

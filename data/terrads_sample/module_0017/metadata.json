@@ -1,0 +1,53 @@
+{
+  "findings_count": 8,
+  "findings": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_356",
+      "title": "",
+      "resource_name": "aws_iam_policy_document.cloudwatch_read_only"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_111",
+      "title": "",
+      "resource_name": "aws_iam_policy_document.cloudwatch_full_access"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_356",
+      "title": "",
+      "resource_name": "aws_iam_policy_document.cloudwatch_full_access"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_273",
+      "title": "",
+      "resource_name": "aws_iam_user.example[0]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_40",
+      "title": "",
+      "resource_name": "aws_iam_user_policy_attachment.neo_cloudwatch_full_access"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_40",
+      "title": "",
+      "resource_name": "aws_iam_user_policy_attachment.neo_cloudwatch_read_only"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_273",
+      "title": "",
+      "resource_name": "aws_iam_user.example[1]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_273",
+      "title": "",
+      "resource_name": "aws_iam_user.example[2]"
+    }
+  ]
+}

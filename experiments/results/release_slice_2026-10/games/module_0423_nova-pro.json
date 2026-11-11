@@ -1,0 +1,120 @@
+{
+  "module_id": "module_0423",
+  "model_id": "nova-pro",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0143",
+      "title": "IAM policies should not be granted directly to users.",
+      "severity": "LOW",
+      "resource_name": "aws_iam_user.default[0]",
+      "resource_type": "aws_iam_user",
+      "file_path": "main.tf",
+      "start_line": 5,
+      "end_line": 11
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "this",
+      "resource_type": "this",
+      "file_path": "/context.tf",
+      "start_line": 23,
+      "end_line": 46
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_273",
+      "title": "Ensure access is controlled through SSO and not AWS IAM defined users",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_user.default",
+      "resource_type": "aws_iam_user",
+      "file_path": "/main.tf",
+      "start_line": 5,
+      "end_line": 11
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_40",
+      "title": "Ensure IAM policies are attached only to groups or roles (Reducing access management complexity may in-turn reduce opportunity for a principal to inadvertently receive or retain excessive privileges.)",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_user_policy_attachment.default",
+      "resource_type": "aws_iam_user_policy_attachment",
+      "file_path": "/main.tf",
+      "start_line": 32,
+      "end_line": 35
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0123",
+      "title": "IAM groups should have MFA enforcement activated.",
+      "severity": "MEDIUM",
+      "resource_name": "aws_iam_group.default[0]",
+      "resource_type": "aws_iam_group",
+      "file_path": "main.tf",
+      "start_line": 30,
+      "end_line": 35
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_273",
+      "title": "Ensure access is controlled through SSO and not AWS IAM defined users",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_user.default",
+      "resource_type": "aws_iam_user",
+      "file_path": "/main.tf",
+      "start_line": 37,
+      "end_line": 43
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "this",
+      "resource_type": "this",
+      "file_path": "/main.tf",
+      "start_line": 1,
+      "end_line": 24
+    }
+  ],
+  "target_count": 4,
+  "resolved_count": 2,
+  "introduced_count": 1,
+  "unchanged_count": 2,
+  "repair_success_rate": 0.5,
+  "regression_rate": 0.25,
+  "net_delta": 1,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 2,
+      "introduced": 1,
+      "unchanged": 1
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 1
+    }
+  },
+  "repair_cost_usd": 0.004902,
+  "repair_tokens": 4902,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0423_nova-pro.repaired.tf",
+  "raw_response_path": "module_0423_nova-pro.raw.txt",
+  "repaired_code_sha256": "f799e4ad5c0b4ae81435941f45fdce466aa608e2d16d28a858d20b06df9b6197"
+}

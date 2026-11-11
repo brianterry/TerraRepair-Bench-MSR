@@ -1,0 +1,83 @@
+{
+  "findings_count": 13,
+  "findings": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_150",
+      "title": "",
+      "resource_name": "aws_alb.alb"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_91",
+      "title": "",
+      "resource_name": "aws_alb.alb"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_131",
+      "title": "",
+      "resource_name": "aws_alb.alb"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_2",
+      "title": "",
+      "resource_name": "aws_alb_listener.http"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "",
+      "resource_name": "aws_security_group.alb"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_260",
+      "title": "",
+      "resource_name": "aws_security_group_rule.https_from_anywhere"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "",
+      "resource_name": "aws_security_group_rule.https_from_anywhere"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "",
+      "resource_name": "aws_security_group_rule.outbound_internet_access"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_382",
+      "title": "",
+      "resource_name": "aws_security_group_rule.outbound_internet_access"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_20",
+      "title": "",
+      "resource_name": "aws_alb.alb"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_103",
+      "title": "",
+      "resource_name": "aws_alb_listener.http"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_378",
+      "title": "",
+      "resource_name": "aws_alb_target_group.default"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_28",
+      "title": "",
+      "resource_name": "aws_alb.alb"
+    }
+  ]
+}

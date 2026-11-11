@@ -1,0 +1,75 @@
+{
+  "module_id": "module_0206",
+  "model_id": "deepseek-r1",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0178",
+      "title": "VPC Flow Logs is a feature that enables you to capture information about the IP traffic going to and from network interfaces in your VPC. After you've created a flow log, you can view and retrieve its data in Amazon CloudWatch Logs. It is recommended that VPC Flow Logs be enabled for packet \"Rejects\" for VPCs.",
+      "severity": "MEDIUM",
+      "resource_name": "aws_vpc.main",
+      "resource_type": "aws_vpc",
+      "file_path": "vpc.tf",
+      "start_line": 1,
+      "end_line": 15
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_12",
+      "title": "Ensure the default security group of every VPC restricts all traffic",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_vpc.main",
+      "resource_type": "aws_vpc",
+      "file_path": "/vpc.tf",
+      "start_line": 1,
+      "end_line": 15
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_11",
+      "title": "Ensure VPC flow logging is enabled in all VPCs",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_vpc.main",
+      "resource_type": "aws_vpc",
+      "file_path": "/vpc.tf",
+      "start_line": 1,
+      "end_line": 15
+    }
+  ],
+  "findings_after": [],
+  "target_count": 3,
+  "resolved_count": 3,
+  "introduced_count": 0,
+  "unchanged_count": 0,
+  "repair_success_rate": 1.0,
+  "regression_rate": 0.0,
+  "net_delta": 3,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 2,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 1,
+      "introduced": 0,
+      "unchanged": 0
+    }
+  },
+  "repair_cost_usd": 0.0212912,
+  "repair_tokens": 8363,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0206_deepseek-r1.repaired.tf",
+  "raw_response_path": "module_0206_deepseek-r1.raw.txt",
+  "repaired_code_sha256": "79e2e2b98398a675cb80633f4b4e9108e46e1e36e00f60c95a67c1a6a563cc7a"
+}

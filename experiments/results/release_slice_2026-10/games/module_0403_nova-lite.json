@@ -1,0 +1,109 @@
+{
+  "module_id": "module_0403",
+  "model_id": "nova-lite",
+  "findings_before": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "label",
+      "resource_type": "label",
+      "file_path": "/main.tf",
+      "start_line": 1,
+      "end_line": 7
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "kops_metadata",
+      "resource_type": "kops_metadata",
+      "file_path": "/main.tf",
+      "start_line": 9,
+      "end_line": 12
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_34",
+      "title": "AWS SSM Parameter should be Encrypted",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_ssm_parameter.aws_metrics_iam_role",
+      "resource_type": "aws_ssm_parameter",
+      "file_path": "/main.tf",
+      "start_line": 117,
+      "end_line": 123
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_34",
+      "title": "AWS SSM Parameter should be Encrypted",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_ssm_parameter.aws_metrics_iam_namespace[0]",
+      "resource_type": "aws_ssm_parameter",
+      "file_path": "/main.tf",
+      "start_line": 125,
+      "end_line": 132
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_34",
+      "title": "AWS SSM Parameter should be Encrypted",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_ssm_parameter.aws_metrics_iam_role",
+      "resource_type": "aws_ssm_parameter",
+      "file_path": "/main.tf",
+      "start_line": 117,
+      "end_line": 124
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_34",
+      "title": "AWS SSM Parameter should be Encrypted",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_ssm_parameter.aws_metrics_iam_namespace[0]",
+      "resource_type": "aws_ssm_parameter",
+      "file_path": "/main.tf",
+      "start_line": 126,
+      "end_line": 134
+    }
+  ],
+  "target_count": 4,
+  "resolved_count": 2,
+  "introduced_count": 0,
+  "unchanged_count": 2,
+  "repair_success_rate": 0.5,
+  "regression_rate": 0.0,
+  "net_delta": 2,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 2
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 2,
+      "introduced": 0,
+      "unchanged": 0
+    }
+  },
+  "repair_cost_usd": 0.0005737000000000001,
+  "repair_tokens": 3909,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0403_nova-lite.repaired.tf",
+  "raw_response_path": "module_0403_nova-lite.raw.txt",
+  "repaired_code_sha256": "31082238cdff63f63bbd09a6a70977628510579ec67b71cab9280dca671fc988"
+}

@@ -1,0 +1,72 @@
+{
+  "started": "2026-10-30T00:56:09.480673+00:00",
+  "results": "/app/rel",
+  "trivy_timeout_env": "900",
+  "scanner_versions": {
+    "trivy": "Version: 0.74.0",
+    "checkov": "3.3.20"
+  },
+  "git_commit": "d9a1da72cda243422d7aab99446bc325293a4ae6",
+  "n_games": 2614,
+  "finished": "2026-10-30T03:51:20.498651+00:00",
+  "inputs": {
+    "match": 262
+  },
+  "inputs_with_remote_modules": {
+    "match": 93
+  },
+  "games": {
+    "match": 2420,
+    "skipped_hcl_invalid": 194
+  },
+  "games_with_remote_modules": {
+    "match": 785,
+    "skipped_hcl_invalid": 107
+  },
+  "games_by_model": {
+    "claude-sonnet-4-5": {
+      "match": 259,
+      "skipped_hcl_invalid": 3
+    },
+    "claude-sonnet-5": {
+      "skipped_hcl_invalid": 13,
+      "match": 245
+    },
+    "deepseek-r1": {
+      "match": 259,
+      "skipped_hcl_invalid": 3
+    },
+    "deepseek-v3-2": {
+      "skipped_hcl_invalid": 15,
+      "match": 247
+    },
+    "grok-4-6": {
+      "skipped_hcl_invalid": 29,
+      "match": 231
+    },
+    "kimi-k2-5": {
+      "skipped_hcl_invalid": 13,
+      "match": 249
+    },
+    "llama-3-3-70b": {
+      "skipped_hcl_invalid": 27,
+      "match": 235
+    },
+    "nova-lite": {
+      "skipped_hcl_invalid": 45,
+      "match": 217
+    },
+    "nova-pro": {
+      "skipped_hcl_invalid": 26,
+      "match": 236
+    },
+    "qwen3-32b": {
+      "skipped_hcl_invalid": 20,
+      "match": 242
+    }
+  },
+  "capture": {
+    "modules": 484,
+    "checks_bundle_digest": "sha256:b591e9190cff4aa4e385b1a25bccfd9ecf178d3c77fd194e1410b7ce7e1df058"
+  }
+}

@@ -1,0 +1,98 @@
+provider "aws" {
+  region = "us-east-2"
+}
+
+resource "aws_s3_bucket" "terraform_state" {
+  bucket = "antonputra-terraform-state"
+
+  lifecycle {
+    prevent_destroy = true
+  }
+
+  versioning {
+    enabled = true
+  }
+
+  logging {
+    target_bucket = "antonputra-logs-bucket"
+    target_prefix = "logs/"
+  }
+
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm = "aws:kms"
+        kms_master_key_id = "arn:aws:kms:us-east-2:123456789012:key/abcd1234-a123-456a-a12b-a123b4cd56ef"
+      }
+    }
+  }
+
+  public_access_block_configuration {
+    block_public_acls       = true
+    block_public_policy     = true
+    ignore_public_acls      = true
+    restrict_public_buckets = true
+  }
+
+  lifecycle_rule {
+    id      = "logs-retention"
+    enabled = true
+
+    expiration {
+      days = 365
+    }
+  }
+
+  replication {
+    role = "arn:aws:iam::123456789012:role/replication-role"
+
+    rule {
+      id      = "replicate-logs"
+      prefix  = "logs/"
+
+      destination {
+        bucket = "antonputra-replicated-bucket"
+
+        storage_class = "STANDARD"
+      }
+    }
+  }
+}
+
+resource "aws_dynamodb_table" "terraform_state" {
+  name         = "terraform-state"
+  billing_mode = "PAY_PER_REQUEST"
+  hash_key     = "LockID"
+
+  point_in_time_recovery_specification {
+    enabled = true
+  }
+
+  server_side_encryption_configuration {
+    encrypted_attributes {
+      attribute_name = "LockID"
+      encryption_type = "KMS"
+    }
+  }
+
+  attribute {
+    name = "LockID"
+    type = "S"
+  }
+}
+
+terraform {
+  backend "s3" {
+    key = "global/s3/terraform.tfstate"
+  }
+}
+
+output "s3_bucket_arn" {
+  value       = aws_s3_bucket.terraform_state.arn
+  description = "The ARN of the S3 bucket"
+}
+
+output "dynamodb_table_name" {
+  value       = aws_dynamodb_table.terraform_state.name
+  description = "The name of the DynamoDB table"
+}

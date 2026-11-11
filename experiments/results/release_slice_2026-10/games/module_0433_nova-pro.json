@@ -1,0 +1,119 @@
+{
+  "module_id": "module_0433",
+  "model_id": "nova-pro",
+  "findings_before": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "acm",
+      "resource_type": "acm",
+      "file_path": "/acm.tf",
+      "start_line": 14,
+      "end_line": 34
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "this",
+      "resource_type": "this",
+      "file_path": "/context.tf",
+      "start_line": 23,
+      "end_line": 46
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "utils",
+      "resource_type": "utils",
+      "file_path": "/main.tf",
+      "start_line": 56,
+      "end_line": 59
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "vpc",
+      "resource_type": "vpc",
+      "file_path": "/remote-state.tf",
+      "start_line": 1,
+      "end_line": 11
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "private_ca[0]",
+      "resource_type": "private_ca[0]",
+      "file_path": "/remote-state.tf",
+      "start_line": 13,
+      "end_line": 24
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_34",
+      "title": "AWS SSM Parameter should be Encrypted",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_ssm_parameter.acm_arn",
+      "resource_type": "aws_ssm_parameter",
+      "file_path": "/acm.tf",
+      "start_line": 36,
+      "end_line": 46
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_39",
+      "title": "Ensure Domain Name System (DNS) query logging is enabled for Amazon Route 53 hosted zones",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_route53_zone.default",
+      "resource_type": "aws_route53_zone",
+      "file_path": "/main.tf",
+      "start_line": 17,
+      "end_line": 25
+    }
+  ],
+  "findings_after": [],
+  "target_count": 7,
+  "resolved_count": 7,
+  "introduced_count": 0,
+  "unchanged_count": 0,
+  "repair_success_rate": 1.0,
+  "regression_rate": 0.0,
+  "net_delta": 7,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 1,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 1,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 5,
+      "introduced": 0,
+      "unchanged": 0
+    }
+  },
+  "repair_cost_usd": 0.012366000000000002,
+  "repair_tokens": 12366,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0433_nova-pro.repaired.tf",
+  "raw_response_path": "module_0433_nova-pro.raw.txt",
+  "repaired_code_sha256": "e88384882a6641ba200a097100adb8d9a66359def43714407c3ef6c14db138bc"
+}

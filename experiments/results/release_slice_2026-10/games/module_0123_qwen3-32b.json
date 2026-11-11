@@ -1,0 +1,208 @@
+{
+  "module_id": "module_0123",
+  "model_id": "qwen3-32b",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0008",
+      "title": "Launch configuration with unencrypted block device.",
+      "severity": "HIGH",
+      "resource_name": "aws_launch_configuration.main",
+      "resource_type": "aws_launch_configuration",
+      "file_path": "main.tf",
+      "start_line": 212,
+      "end_line": 216
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0034",
+      "title": "ECS clusters should have container insights enabled",
+      "severity": "LOW",
+      "resource_name": "aws_ecs_cluster.main",
+      "resource_type": "aws_ecs_cluster",
+      "file_path": "main.tf",
+      "start_line": 158,
+      "end_line": 164
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "aws_security_group.cluster",
+      "resource_type": "aws_security_group",
+      "file_path": "main.tf",
+      "start_line": 145,
+      "end_line": 145
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0124",
+      "title": "Missing description for security group rule.",
+      "severity": "LOW",
+      "resource_name": "aws_security_group.cluster",
+      "resource_type": "aws_security_group",
+      "file_path": "main.tf",
+      "start_line": 134,
+      "end_line": 139
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0130",
+      "title": "aws_instance should activate session tokens for Instance Metadata Service.",
+      "severity": "HIGH",
+      "resource_name": "aws_launch_configuration.main",
+      "resource_type": "aws_launch_configuration",
+      "file_path": "main.tf",
+      "start_line": 193,
+      "end_line": 221
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "Ensure every security group and rule has a description",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group.cluster",
+      "resource_type": "aws_security_group",
+      "file_path": "/main.tf",
+      "start_line": 129,
+      "end_line": 156
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_65",
+      "title": "Ensure container insights are enabled on ECS cluster",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_ecs_cluster.main",
+      "resource_type": "aws_ecs_cluster",
+      "file_path": "/main.tf",
+      "start_line": 158,
+      "end_line": 164
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_79",
+      "title": "Ensure Instance Metadata Service Version 1 is not enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_launch_configuration.main",
+      "resource_type": "aws_launch_configuration",
+      "file_path": "/main.tf",
+      "start_line": 193,
+      "end_line": 221
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_315",
+      "title": "Ensure EC2 Auto Scaling groups use EC2 launch templates",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_autoscaling_group.main",
+      "resource_type": "aws_autoscaling_group",
+      "file_path": "/main.tf",
+      "start_line": 223,
+      "end_line": 255
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0124",
+      "title": "Missing description for security group rule.",
+      "severity": "LOW",
+      "resource_name": "aws_security_group.cluster",
+      "resource_type": "aws_security_group",
+      "file_path": "main.tf",
+      "start_line": 134,
+      "end_line": 139
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0130",
+      "title": "aws_instance should activate session tokens for Instance Metadata Service.",
+      "severity": "HIGH",
+      "resource_name": "aws_launch_configuration.main",
+      "resource_type": "aws_launch_configuration",
+      "file_path": "main.tf",
+      "start_line": 208,
+      "end_line": 212
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0130",
+      "title": "aws_instance should activate session tokens for Instance Metadata Service.",
+      "severity": "HIGH",
+      "resource_name": "aws_launch_template.main",
+      "resource_type": "aws_launch_template",
+      "file_path": "main.tf",
+      "start_line": 247,
+      "end_line": 251
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "Ensure every security group and rule has a description",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group.cluster",
+      "resource_type": "aws_security_group",
+      "file_path": "/main.tf",
+      "start_line": 129,
+      "end_line": 156
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_79",
+      "title": "Ensure Instance Metadata Service Version 1 is not enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_launch_configuration.main",
+      "resource_type": "aws_launch_configuration",
+      "file_path": "/main.tf",
+      "start_line": 197,
+      "end_line": 232
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_79",
+      "title": "Ensure Instance Metadata Service Version 1 is not enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_launch_template.main",
+      "resource_type": "aws_launch_template",
+      "file_path": "/main.tf",
+      "start_line": 234,
+      "end_line": 276
+    }
+  ],
+  "target_count": 9,
+  "resolved_count": 5,
+  "introduced_count": 2,
+  "unchanged_count": 4,
+  "repair_success_rate": 0.5555555555555556,
+  "regression_rate": 0.2222222222222222,
+  "net_delta": 3,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 1,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 1,
+      "introduced": 1,
+      "unchanged": 1
+    },
+    "observability": {
+      "resolved": 2,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 1,
+      "introduced": 1,
+      "unchanged": 3
+    }
+  },
+  "repair_cost_usd": 0.0023372,
+  "repair_tokens": 5843,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0123_qwen3-32b.repaired.tf",
+  "raw_response_path": "module_0123_qwen3-32b.raw.txt",
+  "repaired_code_sha256": "76f05b81390e849944e0c1f3d80fd9f7338adf054048f0b160f94b68b61c8997"
+}

@@ -1,0 +1,219 @@
+{
+  "module_id": "module_0154",
+  "model_id": "nova-lite",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0017",
+      "title": "CloudWatch log groups should be encrypted using CMK",
+      "severity": "LOW",
+      "resource_name": "aws_cloudwatch_log_group.custom",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "main.tf",
+      "start_line": 485,
+      "end_line": 488
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0096",
+      "title": "Unencrypted SQS queue.",
+      "severity": "HIGH",
+      "resource_name": "aws_sqs_queue.dlq",
+      "resource_type": "aws_sqs_queue",
+      "file_path": "main.tf",
+      "start_line": 481,
+      "end_line": 483
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "module.s3_bucket",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/s3-bucket/aws/main.tf",
+      "start_line": 77,
+      "end_line": 89
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0132",
+      "title": "S3 encryption should use Customer Managed Keys",
+      "severity": "HIGH",
+      "resource_name": "module.s3_bucket",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/s3-bucket/aws/main.tf",
+      "start_line": 77,
+      "end_line": 89
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_27",
+      "title": "Ensure all data stored in the SQS queue is encrypted",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_sqs_queue.dlq",
+      "resource_type": "aws_sqs_queue",
+      "file_path": "/main.tf",
+      "start_line": 481,
+      "end_line": 483
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_158",
+      "title": "Ensure that CloudWatch Log Group is encrypted by KMS",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.custom",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/main.tf",
+      "start_line": 485,
+      "end_line": 488
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_338",
+      "title": "Ensure CloudWatch log groups retains logs for at least 1 year",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.custom",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/main.tf",
+      "start_line": 485,
+      "end_line": 488
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "s3_bucket",
+      "resource_type": "s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 463,
+      "end_line": 479
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0017",
+      "title": "CloudWatch log groups should be encrypted using CMK",
+      "severity": "LOW",
+      "resource_name": "aws_cloudwatch_log_group.custom",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "main.tf",
+      "start_line": 500,
+      "end_line": 504
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "module.s3_bucket",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/s3-bucket/aws/main.tf",
+      "start_line": 77,
+      "end_line": 89
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0132",
+      "title": "S3 encryption should use Customer Managed Keys",
+      "severity": "HIGH",
+      "resource_name": "module.s3_bucket",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/s3-bucket/aws/main.tf",
+      "start_line": 77,
+      "end_line": 89
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "s3_bucket",
+      "resource_type": "s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 456,
+      "end_line": 482
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_158",
+      "title": "Ensure that CloudWatch Log Group is encrypted by KMS",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.custom",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/main.tf",
+      "start_line": 500,
+      "end_line": 504
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_64",
+      "title": "Ensure KMS key Policy is defined",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_kms_key.s3_bucket_kmk",
+      "resource_type": "aws_kms_key",
+      "file_path": "/main.tf",
+      "start_line": 484,
+      "end_line": 487
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_64",
+      "title": "Ensure KMS key Policy is defined",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_kms_key.sqs_dlq_kmk",
+      "resource_type": "aws_kms_key",
+      "file_path": "/main.tf",
+      "start_line": 495,
+      "end_line": 498
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_64",
+      "title": "Ensure KMS key Policy is defined",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_kms_key.log_group_kmk",
+      "resource_type": "aws_kms_key",
+      "file_path": "/main.tf",
+      "start_line": 506,
+      "end_line": 509
+    }
+  ],
+  "target_count": 8,
+  "resolved_count": 3,
+  "introduced_count": 3,
+  "unchanged_count": 5,
+  "repair_success_rate": 0.375,
+  "regression_rate": 0.375,
+  "net_delta": 0,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 0,
+      "introduced": 3,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 2,
+      "introduced": 0,
+      "unchanged": 3
+    },
+    "observability": {
+      "resolved": 1,
+      "introduced": 0,
+      "unchanged": 1
+    },
+    "other": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 1
+    }
+  },
+  "repair_cost_usd": 0.0015554000000000002,
+  "repair_tokens": 10523,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0154_nova-lite.repaired.tf",
+  "raw_response_path": "module_0154_nova-lite.raw.txt",
+  "repaired_code_sha256": "1f7b33ea9d30b9e6a9ba37609a5704d308a2f66283e4761492ae2c1ac7dca568"
+}

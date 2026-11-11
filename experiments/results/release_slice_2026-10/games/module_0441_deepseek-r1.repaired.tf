@@ -1,0 +1,450 @@
+module "this" {
+  source  = "git::https://github.com/cloudposse/terraform-null-label.git?ref=58c525e7d58fd9c0b5703c13f0753c7b9a647b89"
+  version = "0.25.0"
+
+  enabled             = var.enabled
+  namespace           = var.namespace
+  tenant              = var.tenant
+  environment         = var.environment
+  stage               = var.stage
+  name                = var.name
+  delimiter           = var.delimiter
+  attributes          = var.attributes
+  tags                = var.tags
+  additional_tag_map  = var.additional_tag_map
+  label_order         = var.label_order
+  regex_replace_chars = var.regex_replace_chars
+  id_length_limit     = var.id_length_limit
+  label_key_case      = var.label_key_case
+  label_value_case    = var.label_value_case
+  descriptor_formats  = var.descriptor_formats
+  labels_as_tags      = var.labels_as_tags
+
+  context = var.context
+}
+
+variable "context" {
+  type = any
+  default = {
+    enabled             = true
+    namespace           = null
+    tenant              = null
+    environment         = null
+    stage               = null
+    name                = null
+    delimiter           = null
+    attributes          = []
+    tags                = {}
+    additional_tag_map  = {}
+    regex_replace_chars = null
+    label_order         = []
+    id_length_limit     = null
+    label_key_case      = null
+    label_value_case    = null
+    descriptor_formats  = {}
+    labels_as_tags = ["unset"]
+  }
+
+  validation {
+    condition     = lookup(var.context, "label_key_case", null) == null ? true : contains(["lower", "title", "upper"], var.context["label_key_case"])
+    error_message = "Allowed values: `lower`, `title`, `upper`."
+  }
+
+  validation {
+    condition     = lookup(var.context, "label_value_case", null) == null ? true : contains(["lower", "title", "upper", "none"], var.context["label_value_case"])
+    error_message = "Allowed values: `lower`, `title`, `upper`, `none`."
+  }
+}
+
+variable "enabled" {
+  type        = bool
+  default     = null
+}
+
+variable "namespace" {
+  type        = string
+  default     = null
+}
+
+variable "tenant" {
+  type        = string
+  default     = null
+}
+
+variable "environment" {
+  type        = string
+  default     = null
+}
+
+variable "stage" {
+  type        = string
+  default     = null
+}
+
+variable "name" {
+  type        = string
+  default     = null
+}
+
+variable "delimiter" {
+  type        = string
+  default     = null
+}
+
+variable "attributes" {
+  type        = list(string)
+  default     = []
+}
+
+variable "labels_as_tags" {
+  type        = set(string)
+  default     = ["default"]
+}
+
+variable "tags" {
+  type        = map(string)
+  default     = {}
+}
+
+variable "additional_tag_map" {
+  type        = map(string)
+  default     = {}
+}
+
+variable "label_order" {
+  type        = list(string)
+  default     = null
+}
+
+variable "regex_replace_chars" {
+  type        = string
+  default     = null
+}
+
+variable "id_length_limit" {
+  type        = number
+  default     = null
+  validation {
+    condition     = var.id_length_limit == null ? true : var.id_length_limit >= 6 || var.id_length_limit == 0
+    error_message = "The id_length_limit must be >= 6 if supplied (not null), or 0 for unlimited length."
+  }
+}
+
+variable "label_key_case" {
+  type        = string
+  default     = null
+  validation {
+    condition     = var.label_key_case == null ? true : contains(["lower", "title", "upper"], var.label_key_case)
+    error_message = "Allowed values: `lower`, `title`, `upper`."
+  }
+}
+
+variable "label_value_case" {
+  type        = string
+  default     = null
+  validation {
+    condition     = var.label_value_case == null ? true : contains(["lower", "title", "upper", "none"], var.label_value_case)
+    error_message = "Allowed values: `lower`, `title`, `upper`, `none`."
+  }
+}
+
+variable "descriptor_formats" {
+  type        = any
+  default     = {}
+}
+
+locals {
+  enabled     = module.this.enabled
+  account_map = module.account_map.outputs.full_account_map
+
+  current_account_id                     = one(data.aws_caller_identity.this[*].account_id)
+  member_account_id_list                 = [for a in keys(local.account_map) : (local.account_map[a]) if local.account_map[a] != local.current_account_id]
+  org_delegated_administrator_account_id = local.account_map[var.delegated_administrator_account_name]
+  org_management_account_id              = var.organization_management_account_name == null ? local.account_map[module.account_map.outputs.root_account_account_name] : local.account_map[var.organization_management_account_name]
+  is_org_delegated_administrator_account = local.current_account_id == local.org_delegated_administrator_account_id
+  is_org_management_account              = local.current_account_id == local.org_management_account_id
+
+  create_sns_topic           = local.enabled && var.create_sns_topic
+  create_guardduty_collector = local.enabled && ((local.is_org_delegated_administrator_account && !var.admin_delegated) || local.is_org_management_account)
+  create_org_delegation      = local.enabled && local.is_org_management_account
+  create_org_configuration   = local.enabled && local.is_org_delegated_administrator_account && var.admin_delegated
+}
+
+data "aws_caller_identity" "this" {
+  count = local.enabled ? 1 : 0
+}
+
+resource "aws_guardduty_organization_admin_account" "this" {
+  count = local.create_org_delegation ? 1 : 0
+
+  admin_account_id = local.org_delegated_administrator_account_id
+}
+
+module "guardduty" {
+  count   = local.create_guardduty_collector ? 1 : 0
+  source  = "git::https://github.com/cloudposse/terraform-aws-guardduty.git?ref=0a1b2c3d4e5f67890a1b2c3d4e5f67890a1b2c3d"
+  version = "0.5.0"
+
+  finding_publishing_frequency              = var.finding_publishing_frequency
+  create_sns_topic                          = local.create_sns_topic
+  findings_notification_arn                 = var.findings_notification_arn
+  subscribers                               = var.subscribers
+  enable_cloudwatch                         = var.cloudwatch_enabled
+  cloudwatch_event_rule_pattern_detail_type = var.cloudwatch_event_rule_pattern_detail_type
+  s3_protection_enabled                     = var.s3_protection_enabled
+
+  context = module.this.context
+}
+
+resource "awsutils_guardduty_organization_settings" "this" {
+  count = local.create_org_configuration ? 1 : 0
+
+  member_accounts = local.member_account_id_list
+  detector_id     = module.guardduty_delegated_detector[0].outputs.guardduty_detector_id
+}
+
+resource "aws_guardduty_organization_configuration" "this" {
+  count = local.create_org_configuration ? 1 : 0
+
+  auto_enable_organization_members = var.auto_enable_organization_members
+  detector_id                      = module.guardduty_delegated_detector[0].outputs.guardduty_detector_id
+
+  datasources {
+    s3_logs {
+      auto_enable = var.s3_protection_enabled
+    }
+    kubernetes {
+      audit_logs {
+        enable = var.kubernetes_audit_logs_enabled
+      }
+    }
+    malware_protection {
+      scan_ec2_instance_with_findings {
+        ebs_volumes {
+          auto_enable = var.malware_protection_scan_ec2_ebs_volumes_enabled
+        }
+      }
+    }
+  }
+}
+
+resource "aws_guardduty_detector_feature" "this" {
+  for_each = { for k, v in var.detector_features : k => v if local.create_org_configuration }
+
+  detector_id = module.guardduty_delegated_detector[0].outputs.guardduty_detector_id
+  name        = each.value.feature_name
+  status      = each.value.status
+
+  dynamic "additional_configuration" {
+    for_each = each.value.additional_configuration != null ? [each.value.additional_configuration] : []
+    content {
+      name   = additional_configuration.value.addon_name
+      status = additional_configuration.value.status
+    }
+  }
+}
+
+output "delegated_administrator_account_id" {
+  value       = local.org_delegated_administrator_account_id
+}
+
+output "guardduty_detector_arn" {
+  value       = local.create_guardduty_collector ? try(module.guardduty[0].guardduty_detector.arn, null) : null
+}
+
+output "guardduty_detector_id" {
+  value       = local.create_guardduty_collector ? try(module.guardduty[0].guardduty_detector.id, null) : null
+}
+
+output "sns_topic_name" {
+  value       = local.create_guardduty_collector ? try(module.guardduty[0].sns_topic.name, null) : null
+}
+
+output "sns_topic_subscriptions" {
+  value       = local.create_guardduty_collector ? try(module.guardduty[0].sns_topic_subscriptions, null) : null
+}
+
+provider "aws" {
+  region = var.region
+
+  profile = !var.privileged && module.iam_roles.profiles_enabled ? module.iam_roles.terraform_profile_name : null
+  dynamic "assume_role" {
+    for_each = var.privileged || module.iam_roles.profiles_enabled || (module.iam_roles.terraform_role_arn == null) ? [] : ["role"]
+    content {
+      role_arn = module.iam_roles.terraform_role_arn
+    }
+  }
+}
+
+provider "awsutils" {
+  region = var.region
+
+  profile = !var.privileged && module.iam_roles.profiles_enabled ? module.iam_roles.terraform_profile_name : null
+  dynamic "assume_role" {
+    for_each = var.privileged || module.iam_roles.profiles_enabled || (module.iam_roles.terraform_role_arn == null) ? [] : ["role"]
+    content {
+      role_arn = module.iam_roles.terraform_role_arn
+    }
+  }
+}
+
+module "iam_roles" {
+  source     = "../account-map/modules/iam-roles"
+  privileged = var.privileged
+
+  context = module.this.context
+}
+
+module "account_map" {
+  source  = "git::https://github.com/cloudposse/terraform-aws-stack-config.git//modules/remote-state?ref=e5d27c17a0a78f6388026dccc301921d76e73b48"
+  version = "1.5.0"
+
+  component   = "account-map"
+  tenant      = var.account_map_tenant != "" ? var.account_map_tenant : module.this.tenant
+  stage       = var.root_account_stage
+  environment = var.global_environment
+  privileged  = var.privileged
+
+  context = module.this.context
+}
+
+module "guardduty_delegated_detector" {
+  source  = "git::https://github.com/cloudposse/terraform-aws-stack-config.git//modules/remote-state?ref=e5d27c17a0a78f6388026dccc301921d76e73b48"
+  version = "1.5.0"
+
+  count = local.create_guardduty_collector ? 0 : 1
+
+  component  = "${var.delegated_admininstrator_component_name}/${module.this.environment}"
+  stage      = replace(var.delegated_administrator_account_name, "${module.this.tenant}-", "")
+  privileged = var.privileged
+
+  context = module.this.context
+}
+
+variable "account_map_tenant" {
+  type        = string
+  default     = "core"
+}
+
+variable "admin_delegated" {
+  type        = bool
+  default     = false
+}
+
+variable "auto_enable_organization_members" {
+  type        = string
+  default     = "NEW"
+}
+
+variable "cloudwatch_event_rule_pattern_detail_type" {
+  type        = string
+  default     = "GuardDuty Finding"
+}
+
+variable "create_sns_topic" {
+  type        = bool
+  default     = false
+}
+
+variable "delegated_admininstrator_component_name" {
+  type        = string
+  default     = "guardduty/delegated-administrator"
+}
+
+variable "delegated_administrator_account_name" {
+  type        = string
+  default     = "core-security"
+}
+
+variable "cloudwatch_enabled" {
+  type        = bool
+  default     = false
+}
+
+variable "finding_publishing_frequency" {
+  type        = string
+  default     = null
+}
+
+variable "findings_notification_arn" {
+  default     = null
+  type        = string
+}
+
+variable "global_environment" {
+  type        = string
+  default     = "gbl"
+}
+
+variable "kubernetes_audit_logs_enabled" {
+  type        = bool
+  default     = false
+}
+
+variable "malware_protection_scan_ec2_ebs_volumes_enabled" {
+  type        = bool
+  default     = false
+}
+
+variable "organization_management_account_name" {
+  type        = string
+  default     = null
+}
+
+variable "privileged" {
+  type        = bool
+  default     = false
+}
+
+variable "region" {
+  type        = string
+}
+
+variable "root_account_stage" {
+  type        = string
+  default     = "root"
+}
+
+variable "s3_protection_enabled" {
+  type        = bool
+  default     = true
+}
+
+variable "subscribers" {
+  type = map(object({
+    protocol               = string
+    endpoint               = string
+    endpoint_auto_confirms = bool
+    raw_message_delivery   = bool
+  }))
+  default     = {}
+}
+
+variable "detector_features" {
+  type = map(object({
+    feature_name = string
+    status       = string
+    additional_configuration = optional(object({
+      addon_name = string
+      status     = string
+    }), null)
+  }))
+  default     = {}
+  nullable    = false
+}
+
+terraform {
+  required_version = ">= 1.0.0"
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 5.0"
+    }
+
+    awsutils = {
+      source  = "cloudposse/awsutils"
+      version = ">= 0.16.0"
+    }
+  }
+}

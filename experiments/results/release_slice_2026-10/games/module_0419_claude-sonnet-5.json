@@ -1,0 +1,163 @@
+{
+  "module_id": "module_0419",
+  "model_id": "claude-sonnet-5",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0017",
+      "title": "CloudWatch log groups should be encrypted using CMK",
+      "severity": "LOW",
+      "resource_name": "module.api_gateway_rest_api",
+      "resource_type": "module",
+      "file_path": "cloudposse/api-gateway/aws/cloudposse/cloudwatch-logs/aws/main.tf",
+      "start_line": 20,
+      "end_line": 20
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0001",
+      "title": "API Gateway stages for V1 and V2 should have access logging enabled",
+      "severity": "MEDIUM",
+      "resource_name": "module.api_gateway_rest_api",
+      "resource_type": "module",
+      "file_path": "cloudposse/api-gateway/aws/main.tf",
+      "start_line": 52,
+      "end_line": 72
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0190",
+      "title": "Ensure that response caching is enabled for your Amazon API Gateway REST APIs.",
+      "severity": "LOW",
+      "resource_name": "module.api_gateway_rest_api",
+      "resource_type": "module",
+      "file_path": "cloudposse/api-gateway/aws/main.tf",
+      "start_line": 75,
+      "end_line": 85
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0005",
+      "title": "API Gateway domain name uses outdated SSL/TLS protocols.",
+      "severity": "HIGH",
+      "resource_name": "aws_api_gateway_domain_name.this[0]",
+      "resource_type": "aws_api_gateway_domain_name",
+      "file_path": "main.tf",
+      "start_line": 41,
+      "end_line": 51
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "this",
+      "resource_type": "this",
+      "file_path": "/context.tf",
+      "start_line": 23,
+      "end_line": 46
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "api_gateway_rest_api",
+      "resource_type": "api_gateway_rest_api",
+      "file_path": "/main.tf",
+      "start_line": 11,
+      "end_line": 27
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_206",
+      "title": "Ensure API Gateway Domain uses a modern security Policy",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_api_gateway_domain_name.this",
+      "resource_type": "aws_api_gateway_domain_name",
+      "file_path": "/main.tf",
+      "start_line": 41,
+      "end_line": 51
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "nlb",
+      "resource_type": "nlb",
+      "file_path": "/nlb.tf",
+      "start_line": 1,
+      "end_line": 23
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "dns_delegated",
+      "resource_type": "dns_delegated",
+      "file_path": "/remote-state.tf",
+      "start_line": 1,
+      "end_line": 9
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "acm",
+      "resource_type": "acm",
+      "file_path": "/remote-state.tf",
+      "start_line": 11,
+      "end_line": 23
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "vpc",
+      "resource_type": "vpc",
+      "file_path": "/remote-state.tf",
+      "start_line": 25,
+      "end_line": 32
+    }
+  ],
+  "findings_after": [],
+  "target_count": 11,
+  "resolved_count": 11,
+  "introduced_count": 0,
+  "unchanged_count": 0,
+  "repair_success_rate": 1.0,
+  "regression_rate": 0.0,
+  "net_delta": 11,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 1,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 2,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 1,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 7,
+      "introduced": 0,
+      "unchanged": 0
+    }
+  },
+  "repair_cost_usd": 0.155256,
+  "repair_tokens": 22552,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0419_claude-sonnet-5.repaired.tf",
+  "raw_response_path": "module_0419_claude-sonnet-5.raw.txt",
+  "repaired_code_sha256": "0fe1ab76d6cf44de86bae8242eb05dea60d9dea7b91c34dac443a6b55d523183"
+}

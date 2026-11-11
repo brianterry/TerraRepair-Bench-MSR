@@ -1,0 +1,351 @@
+{
+  "module_id": "module_0203",
+  "model_id": "claude-sonnet-4-5",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0028",
+      "title": "aws_instance should activate session tokens for Instance Metadata Service.",
+      "severity": "HIGH",
+      "resource_name": "aws_instance.Kafka-Client-EC2-Instance",
+      "resource_type": "aws_instance",
+      "file_path": "msk-client.tf",
+      "start_line": 38,
+      "end_line": 61
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0131",
+      "title": "Instance with unencrypted block device.",
+      "severity": "HIGH",
+      "resource_name": "aws_instance.Kafka-Client-EC2-Instance",
+      "resource_type": "aws_instance",
+      "file_path": "msk-client.tf",
+      "start_line": 38,
+      "end_line": 61
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0017",
+      "title": "CloudWatch log groups should be encrypted using CMK",
+      "severity": "LOW",
+      "resource_name": "aws_cloudwatch_log_group.cloudwatch_log_group",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "msk-cluster.tf",
+      "start_line": 1,
+      "end_line": 3
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0073",
+      "title": "A MSK cluster allows unencrypted data in transit.",
+      "severity": "HIGH",
+      "resource_name": "aws_msk_cluster.msk_cluster[0]",
+      "resource_type": "aws_msk_cluster",
+      "file_path": "msk-cluster.tf",
+      "start_line": 45,
+      "end_line": 45
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0179",
+      "title": "A MSK cluster allows unencrypted data at rest.",
+      "severity": "HIGH",
+      "resource_name": "aws_msk_cluster.msk_cluster[0]",
+      "resource_type": "aws_msk_cluster",
+      "file_path": "msk-cluster.tf",
+      "start_line": 14,
+      "end_line": 66
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "aws_security_group.KafkaClientInstanceSG",
+      "resource_type": "aws_security_group",
+      "file_path": "security_group.tf",
+      "start_line": 59,
+      "end_line": 59
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "aws_security_group.KafkaClusterSG",
+      "resource_type": "aws_security_group",
+      "file_path": "security_group.tf",
+      "start_line": 31,
+      "end_line": 31
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0124",
+      "title": "Missing description for security group rule.",
+      "severity": "LOW",
+      "resource_name": "aws_security_group.KafkaClientInstanceSG",
+      "resource_type": "aws_security_group",
+      "file_path": "security_group.tf",
+      "start_line": 55,
+      "end_line": 60
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0124",
+      "title": "Missing description for security group rule.",
+      "severity": "LOW",
+      "resource_name": "aws_security_group.KafkaClusterSG",
+      "resource_type": "aws_security_group",
+      "file_path": "security_group.tf",
+      "start_line": 6,
+      "end_line": 11
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0178",
+      "title": "VPC Flow Logs is a feature that enables you to capture information about the IP traffic going to and from network interfaces in your VPC. After you've created a flow log, you can view and retrieve its data in Amazon CloudWatch Logs. It is recommended that VPC Flow Logs be enabled for packet \"Rejects\" for VPCs.",
+      "severity": "MEDIUM",
+      "resource_name": "aws_vpc.msk_vpc",
+      "resource_type": "aws_vpc",
+      "file_path": "vpc.tf",
+      "start_line": 1,
+      "end_line": 10
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_135",
+      "title": "Ensure that EC2 is EBS optimized",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_instance.Kafka-Client-EC2-Instance",
+      "resource_type": "aws_instance",
+      "file_path": "/msk-client.tf",
+      "start_line": 38,
+      "end_line": 61
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_79",
+      "title": "Ensure Instance Metadata Service Version 1 is not enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_instance.Kafka-Client-EC2-Instance",
+      "resource_type": "aws_instance",
+      "file_path": "/msk-client.tf",
+      "start_line": 38,
+      "end_line": 61
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_8",
+      "title": "Ensure all data stored in the Launch configuration or instance Elastic Blocks Store is securely encrypted",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_instance.Kafka-Client-EC2-Instance",
+      "resource_type": "aws_instance",
+      "file_path": "/msk-client.tf",
+      "start_line": 38,
+      "end_line": 61
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_126",
+      "title": "Ensure that detailed monitoring is enabled for EC2 instances",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_instance.Kafka-Client-EC2-Instance",
+      "resource_type": "aws_instance",
+      "file_path": "/msk-client.tf",
+      "start_line": 38,
+      "end_line": 61
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_66",
+      "title": "Ensure that CloudWatch Log Group specifies retention days",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.cloudwatch_log_group",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/msk-cluster.tf",
+      "start_line": 1,
+      "end_line": 3
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_158",
+      "title": "Ensure that CloudWatch Log Group is encrypted by KMS",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.cloudwatch_log_group",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/msk-cluster.tf",
+      "start_line": 1,
+      "end_line": 3
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_338",
+      "title": "Ensure CloudWatch log groups retains logs for at least 1 year",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.cloudwatch_log_group",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/msk-cluster.tf",
+      "start_line": 1,
+      "end_line": 3
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_382",
+      "title": "Ensure no security groups allow egress from 0.0.0.0:0 to port -1",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group.KafkaClusterSG",
+      "resource_type": "aws_security_group",
+      "file_path": "/security_group.tf",
+      "start_line": 1,
+      "end_line": 40
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "Ensure every security group and rule has a description",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group.KafkaClusterSG",
+      "resource_type": "aws_security_group",
+      "file_path": "/security_group.tf",
+      "start_line": 1,
+      "end_line": 40
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_382",
+      "title": "Ensure no security groups allow egress from 0.0.0.0:0 to port -1",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group.KafkaClientInstanceSG",
+      "resource_type": "aws_security_group",
+      "file_path": "/security_group.tf",
+      "start_line": 42,
+      "end_line": 68
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "Ensure every security group and rule has a description",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group.KafkaClientInstanceSG",
+      "resource_type": "aws_security_group",
+      "file_path": "/security_group.tf",
+      "start_line": 42,
+      "end_line": 68
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_394",
+      "title": "Ensure aws_availability_zones data source pins zone identity so its result set does not silently expand when AWS adds an Availability Zone",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_availability_zones.available",
+      "resource_type": "aws_availability_zones",
+      "file_path": "/subnets.tf",
+      "start_line": 1,
+      "end_line": 1
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_12",
+      "title": "Ensure the default security group of every VPC restricts all traffic",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_vpc.msk_vpc",
+      "resource_type": "aws_vpc",
+      "file_path": "/vpc.tf",
+      "start_line": 1,
+      "end_line": 10
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_11",
+      "title": "Ensure VPC flow logging is enabled in all VPCs",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_vpc.msk_vpc",
+      "resource_type": "aws_vpc",
+      "file_path": "/vpc.tf",
+      "start_line": 1,
+      "end_line": 10
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_19",
+      "title": "Ensure that all EIP addresses allocated to a VPC are attached to EC2 instances",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_eip.nat",
+      "resource_type": "aws_eip",
+      "file_path": "/network-routing.tf",
+      "start_line": 14,
+      "end_line": 15
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_394",
+      "title": "Ensure aws_availability_zones data source pins zone identity so its result set does not silently expand when AWS adds an Availability Zone",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_availability_zones.available",
+      "resource_type": "aws_availability_zones",
+      "file_path": "/main.tf",
+      "start_line": 448,
+      "end_line": 450
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_290",
+      "title": "Ensure IAM policies does not allow write access without constraints",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_role_policy.vpc_flow_log_policy",
+      "resource_type": "aws_iam_role_policy",
+      "file_path": "/main.tf",
+      "start_line": 612,
+      "end_line": 634
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_355",
+      "title": "Ensure no IAM policies documents allow \"*\" as a statement's resource for restrictable actions",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_role_policy.vpc_flow_log_policy",
+      "resource_type": "aws_iam_role_policy",
+      "file_path": "/main.tf",
+      "start_line": 612,
+      "end_line": 634
+    }
+  ],
+  "target_count": 25,
+  "resolved_count": 24,
+  "introduced_count": 2,
+  "unchanged_count": 1,
+  "repair_success_rate": 0.96,
+  "regression_rate": 0.08,
+  "net_delta": 22,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 6,
+      "introduced": 2,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 5,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 5,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 8,
+      "introduced": 0,
+      "unchanged": 1
+    }
+  },
+  "repair_cost_usd": 0.102894,
+  "repair_tokens": 11878,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0203_claude-sonnet-4-5.repaired.tf",
+  "raw_response_path": "module_0203_claude-sonnet-4-5.raw.txt",
+  "repaired_code_sha256": "81dbe4230aac585bb11990b937bd5f0a90e547a841e4b685c68f7cfda0413ba4"
+}

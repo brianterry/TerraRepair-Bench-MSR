@@ -1,0 +1,170 @@
+resource "aws_elasticsearch_domain" "main" {
+  count = var.elasticsearch_logging_disabled || var.elasticsearch_open_access ? 1 : 0
+
+  domain_name           = var.name
+  elasticsearch_version = "6.0"
+
+  cluster_config {
+    instance_type = "t2.small.elasticsearch"
+    options = {
+      zone_awareness {
+        availability_zone_count = 3
+      }
+    }
+  }
+
+  ebs_options {
+    ebs_enabled = true
+    volume_type = "gp2"
+    volume_size = 10
+  }
+
+  log_publishing_options {
+    cloudwatch_log_group_arn = aws_cloudwatch_log_group.main.arn
+    log_type                 = "INDEX_SLOW_LOGS"
+    enabled =!var.elasticsearch_logging_disabled
+  }
+
+  log_publishing_options {
+    cloudwatch_log_group_arn = aws_cloudwatch_log_group.main.arn
+    log_type                 = "SEARCH_SLOW_LOGS"
+    enabled = !var.elasticsearch_logging_disabled
+  }
+
+  encryption_at_rest_options {
+    enabled                = true
+    kms_key_id             = aws_kms_key.main.arn
+  }
+
+  domain_endpoint_options {
+    enforce_https = true
+    tls_security_policy = "Policy-Min-TLS-1-2-2019-07"
+  }
+
+  vpc_options {
+    security_group_ids = [aws_security_group.main.id]
+    subnet_ids         = [aws_subnet.main[0].id, aws_subnet.main[1].id, aws_subnet.main[2].id]
+  }
+
+  fine_grained_access_control {
+    master_user_options {
+      master_user_arn = aws_iam_user.main.arn
+    }
+  }
+
+  depends_on = [
+    aws_cloudwatch_log_group.main,
+    aws_security_group.main,
+    aws_subnet.main
+  ]
+}
+
+resource "aws_cloudwatch_log_group" "main" {
+  name = var.name
+
+  retention_in_days = 365
+
+  kms_key_id = aws_kms_key.main.arn
+}
+
+resource "aws_cloudwatch_log_resource_policy" "main" {
+  count = var.elasticsearch_open_access &&!var.elasticsearch_logging_disabled? 1 : 0
+
+  policy_name = var.name
+
+  policy_document = <<CONFIG
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "es.amazonaws.com"
+      },
+      "Action": [
+        "logs:PutLogEvents",
+        "logs:PutLogEventsBatch",
+        "logs:CreateLogStream"
+      ],
+      "Resource": "arn:aws:logs:*"
+    }
+  ]
+}
+CONFIG
+}
+
+resource "aws_elasticsearch_domain_policy" "main" {
+  count = var.elasticsearch_open_access ? 1 : 0
+
+  domain_name = aws_elasticsearch_domain.main[0].domain_name
+
+  access_policies = <<POLICIES
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Action": "es:*",
+            "Principal": "*",
+            "Effect": "Allow",
+            "Resource": "${aws_elasticsearch_domain.main[0].arn}/*"
+        }
+    ]
+}
+POLICIES
+}
+
+resource "aws_kms_key" "main" {
+  description = "KMS key for Elasticsearch encryption"
+}
+
+resource "aws_security_group" "main" {
+  name        = "elasticsearch_sg"
+  vpc_id      = aws_vpc.main.id
+
+  ingress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_subnet" "main" {
+  count = 3
+
+  vpc_id     = aws_vpc.main.id
+  cidr_block = cidrsubnet(aws_vpc.main.cidr_block, 8, count.index)
+}
+
+resource "aws_vpc" "main" {
+  cidr_block = "10.0.0.0/16"
+}
+
+resource "aws_iam_user" "main" {
+  name = "elasticsearch_user"
+}
+
+variable "name" {
+  description = "es name"
+  type        = string
+  default     = "sadcloud"
+}
+
+variable "elasticsearch_logging_disabled" {
+  description = "Elasticsearch Service domains have logging disabled"
+  type        = bool
+  default     = false
+}
+
+variable "elasticsearch_open_access" {
+  description = "Elasticsearch Service domains have open access"
+  type        = bool
+  default     = false
+}

@@ -1,0 +1,65 @@
+{
+  "findings_count": 10,
+  "findings": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "",
+      "resource_name": "aws_security_group.vault"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_79",
+      "title": "",
+      "resource_name": "aws_instance.vault"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_126",
+      "title": "",
+      "resource_name": "aws_instance.vault"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_135",
+      "title": "",
+      "resource_name": "aws_instance.vault"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_8",
+      "title": "",
+      "resource_name": "aws_instance.vault"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "",
+      "resource_name": "aws_security_group.elb"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_127",
+      "title": "",
+      "resource_name": "aws_elb.vault"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_92",
+      "title": "",
+      "resource_name": "aws_elb.vault"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_376",
+      "title": "",
+      "resource_name": "aws_elb.vault"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_41",
+      "title": "",
+      "resource_name": "aws_instance.vault"
+    }
+  ]
+}

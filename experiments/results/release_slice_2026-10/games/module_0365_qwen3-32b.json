@@ -1,0 +1,461 @@
+{
+  "module_id": "module_0365",
+  "model_id": "qwen3-32b",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0342",
+      "title": "IAM Pass Role Filtering",
+      "severity": "MEDIUM",
+      "resource_name": "module.eks_blueprints_addons",
+      "resource_type": "module",
+      "file_path": "aws-ia/eks-blueprints-addons/aws/aws-ia/eks-blueprints-addon/aws/aws-ia/eks-blueprints-addons/aws/aws-ia/eks-blueprints-addon/aws/main.tf",
+      "start_line": 210,
+      "end_line": 256
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0038",
+      "title": "EKS Clusters should have cluster control plane logging turned on",
+      "severity": "MEDIUM",
+      "resource_name": "module.eks",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/eks/aws/main.tf",
+      "start_line": 35,
+      "end_line": 188
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0040",
+      "title": "EKS Clusters should have the public access disabled",
+      "severity": "CRITICAL",
+      "resource_name": "module.eks",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/eks/aws/main.tf",
+      "start_line": 70,
+      "end_line": 70
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0041",
+      "title": "EKS cluster should not have open CIDR range for public access",
+      "severity": "CRITICAL",
+      "resource_name": "module.eks",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/eks/aws/main.tf",
+      "start_line": 71,
+      "end_line": 71
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "module.eks",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/eks/aws/node_groups.tf",
+      "start_line": 247,
+      "end_line": 247
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0178",
+      "title": "VPC Flow Logs is a feature that enables you to capture information about the IP traffic going to and from network interfaces in your VPC. After you've created a flow log, you can view and retrieve its data in Amazon CloudWatch Logs. It is recommended that VPC Flow Logs be enabled for packet \"Rejects\" for VPCs.",
+      "severity": "MEDIUM",
+      "resource_name": "module.vpc",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/vpc/aws/main.tf",
+      "start_line": 28,
+      "end_line": 51
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_149",
+      "title": "Ensure that Secrets Manager secret is encrypted using KMS CMK",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_secretsmanager_secret.grafana",
+      "resource_type": "aws_secretsmanager_secret",
+      "file_path": "/addons.tf",
+      "start_line": 489,
+      "end_line": 492
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "eks_data_addons",
+      "resource_type": "eks_data_addons",
+      "file_path": "/addons.tf",
+      "start_line": 51,
+      "end_line": 322
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "eks_blueprints_addons",
+      "resource_type": "eks_blueprints_addons",
+      "file_path": "/addons.tf",
+      "start_line": 328,
+      "end_line": 430
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "s3_bucket",
+      "resource_type": "s3_bucket",
+      "file_path": "/addons.tf",
+      "start_line": 447,
+      "end_line": 465
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "amp_ingest_irsa[0]",
+      "resource_type": "amp_ingest_irsa[0]",
+      "file_path": "/amp.tf",
+      "start_line": 118,
+      "end_line": 138
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "eks",
+      "resource_type": "eks",
+      "file_path": "/eks.tf",
+      "start_line": 5,
+      "end_line": 155
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "ebs_csi_driver_irsa",
+      "resource_type": "ebs_csi_driver_irsa",
+      "file_path": "/eks.tf",
+      "start_line": 191,
+      "end_line": 203
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "emr_containers[\"data-team-a\"]",
+      "resource_type": "emr_containers[\"data-team-a\"]",
+      "file_path": "/emr-eks.tf",
+      "start_line": 1,
+      "end_line": 27
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "emr_containers[\"data-team-b\"]",
+      "resource_type": "emr_containers[\"data-team-b\"]",
+      "file_path": "/emr-eks.tf",
+      "start_line": 1,
+      "end_line": 27
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "fsx_s3_bucket",
+      "resource_type": "fsx_s3_bucket",
+      "file_path": "/fsx-for-lustre.tf",
+      "start_line": 75,
+      "end_line": 92
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_394",
+      "title": "Ensure aws_availability_zones data source pins zone identity so its result set does not silently expand when AWS adds an Availability Zone",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_availability_zones.available",
+      "resource_type": "aws_availability_zones",
+      "file_path": "/main.tf",
+      "start_line": 50,
+      "end_line": 50
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "spark_team_a_irsa",
+      "resource_type": "spark_team_a_irsa",
+      "file_path": "/spark-team.tf",
+      "start_line": 43,
+      "end_line": 66
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "vpc",
+      "resource_type": "vpc",
+      "file_path": "/vpc.tf",
+      "start_line": 7,
+      "end_line": 41
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "vpc_endpoints_sg",
+      "resource_type": "vpc_endpoints_sg",
+      "file_path": "/vpc.tf",
+      "start_line": 43,
+      "end_line": 70
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "vpc_endpoints",
+      "resource_type": "vpc_endpoints",
+      "file_path": "/vpc.tf",
+      "start_line": 72,
+      "end_line": 105
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_57",
+      "title": "Ensure Secrets Manager secrets should have automatic rotation enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_secretsmanager_secret.grafana",
+      "resource_type": "aws_secretsmanager_secret",
+      "file_path": "/addons.tf",
+      "start_line": 489,
+      "end_line": 492
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_394",
+      "title": "Ensure aws_availability_zones data source pins zone identity so its result set does not silently expand when AWS adds an Availability Zone",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_availability_zones.available",
+      "resource_type": "aws_availability_zones",
+      "file_path": "/main.tf",
+      "start_line": 1065,
+      "end_line": 1067
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "eks_data_addons",
+      "resource_type": "eks_data_addons",
+      "file_path": "/main.tf",
+      "start_line": 51,
+      "end_line": 322
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "eks_blueprints_addons",
+      "resource_type": "eks_blueprints_addons",
+      "file_path": "/main.tf",
+      "start_line": 328,
+      "end_line": 430
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "s3_bucket",
+      "resource_type": "s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 447,
+      "end_line": 465
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "amp_ingest_irsa[0]",
+      "resource_type": "amp_ingest_irsa[0]",
+      "file_path": "/main.tf",
+      "start_line": 621,
+      "end_line": 641
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "eks",
+      "resource_type": "eks",
+      "file_path": "/main.tf",
+      "start_line": 648,
+      "end_line": 807
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "ebs_csi_driver_irsa",
+      "resource_type": "ebs_csi_driver_irsa",
+      "file_path": "/main.tf",
+      "start_line": 843,
+      "end_line": 855
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "emr_containers[\"data-team-b\"]",
+      "resource_type": "emr_containers[\"data-team-b\"]",
+      "file_path": "/main.tf",
+      "start_line": 858,
+      "end_line": 884
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "fsx_s3_bucket",
+      "resource_type": "fsx_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 961,
+      "end_line": 978
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "spark_team_a_irsa",
+      "resource_type": "spark_team_a_irsa",
+      "file_path": "/main.tf",
+      "start_line": 1167,
+      "end_line": 1190
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "vpc",
+      "resource_type": "vpc",
+      "file_path": "/main.tf",
+      "start_line": 1460,
+      "end_line": 1494
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "vpc_endpoints_sg",
+      "resource_type": "vpc_endpoints_sg",
+      "file_path": "/main.tf",
+      "start_line": 1496,
+      "end_line": 1523
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "vpc_endpoints",
+      "resource_type": "vpc_endpoints",
+      "file_path": "/main.tf",
+      "start_line": 1525,
+      "end_line": 1558
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "emr_containers[\"data-team-a\"]",
+      "resource_type": "emr_containers[\"data-team-a\"]",
+      "file_path": "/main.tf",
+      "start_line": 858,
+      "end_line": 884
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_149",
+      "title": "Ensure that Secrets Manager secret is encrypted using KMS CMK",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_secretsmanager_secret.grafana",
+      "resource_type": "aws_secretsmanager_secret",
+      "file_path": "/main.tf",
+      "start_line": 489,
+      "end_line": 493
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_57",
+      "title": "Ensure Secrets Manager secrets should have automatic rotation enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_secretsmanager_secret.grafana",
+      "resource_type": "aws_secretsmanager_secret",
+      "file_path": "/main.tf",
+      "start_line": 489,
+      "end_line": 493
+    }
+  ],
+  "target_count": 22,
+  "resolved_count": 6,
+  "introduced_count": 0,
+  "unchanged_count": 16,
+  "repair_success_rate": 0.2727272727272727,
+  "regression_rate": 0.0,
+  "net_delta": 6,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 4,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 2
+    },
+    "observability": {
+      "resolved": 2,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 14
+    }
+  },
+  "repair_cost_usd": 0.010618800000000001,
+  "repair_tokens": 26547,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0365_qwen3-32b.repaired.tf",
+  "raw_response_path": "module_0365_qwen3-32b.raw.txt",
+  "repaired_code_sha256": "109923c740a0fb6692c41db396d6e2fc518b38dce4ab152908132a240a02d224"
+}

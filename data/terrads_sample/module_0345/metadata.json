@@ -1,0 +1,125 @@
+{
+  "findings_count": 25,
+  "findings": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_386",
+      "title": "",
+      "resource_name": "aws_ami.coreos_ami"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_79",
+      "title": "",
+      "resource_name": "aws_instance.bastion"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_126",
+      "title": "",
+      "resource_name": "aws_instance.bastion"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_135",
+      "title": "",
+      "resource_name": "aws_instance.bastion"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_8",
+      "title": "",
+      "resource_name": "aws_instance.bastion"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_130",
+      "title": "",
+      "resource_name": "aws_subnet.pub_subnet_generic"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "",
+      "resource_name": "aws_security_group.powerdns"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "",
+      "resource_name": "aws_security_group_rule.powerdns_egress"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_382",
+      "title": "",
+      "resource_name": "aws_security_group_rule.powerdns_egress"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_24",
+      "title": "",
+      "resource_name": "aws_security_group_rule.powerdns_ingress_ssh"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "",
+      "resource_name": "aws_security_group_rule.powerdns_ingress_ssh"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_260",
+      "title": "",
+      "resource_name": "aws_security_group_rule.powerdns_ingress_http"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "",
+      "resource_name": "aws_security_group_rule.powerdns_ingress_http"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "",
+      "resource_name": "aws_security_group_rule.powerdns_ingress_https"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "",
+      "resource_name": "aws_security_group_rule.powerdns_ingress_api"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "",
+      "resource_name": "aws_security_group_rule.powerdns_ingress_dns"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "",
+      "resource_name": "aws_security_group_rule.powerdns_ingress_dns_udp"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_260",
+      "title": "",
+      "resource_name": "aws_security_group.vpn_sg"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_24",
+      "title": "",
+      "resource_name": "aws_security_group.vpn_sg"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "",
+      "resource_name": "aws_security_group.vpn_sg"
+    }
+  ]
+}

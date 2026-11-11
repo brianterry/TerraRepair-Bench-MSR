@@ -1,0 +1,1042 @@
+# Copyright Amazon.com, Inc. or its affiliates. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+#####################################################
+# AFT Global Customizations Terraform
+#####################################################
+
+resource "aws_codebuild_project" "aft_global_customizations_terraform" {
+  depends_on     = [aws_cloudwatch_log_group.aft_global_customizations_terraform, time_sleep.wait_for_iam_eventual_consistency]
+  name           = "aft-global-customizations-terraform"
+  description    = "Job to apply Terraform provided by the customer global customizations repo"
+  build_timeout  = tostring(var.global_codebuild_timeout)
+  service_role   = aws_iam_role.aft_codebuild_customizations_role.arn
+  encryption_key = var.aft_kms_key_arn
+
+  artifacts {
+    type = "CODEPIPELINE"
+  }
+
+  environment {
+    compute_type                = var.codebuild_compute_type
+    image                       = "aws/codebuild/amazonlinux2-x86_64-standard:5.0"
+    type                        = "LINUX_CONTAINER"
+    image_pull_credentials_type = "CODEBUILD"
+
+    environment_variable {
+      name  = "AWS_PARTITION"
+      value = data.aws_partition.current.partition
+      type  = "PLAINTEXT"
+    }
+  }
+
+  logs_config {
+    cloudwatch_logs {
+      group_name = aws_cloudwatch_log_group.aft_global_customizations_terraform.name
+    }
+
+    s3_logs {
+      status   = "ENABLED"
+      location = "${aws_s3_bucket.aft_codepipeline_customizations_bucket.id}/aft-global-customizations-terraform-logs"
+    }
+  }
+
+  source {
+    type      = "CODEPIPELINE"
+    buildspec = data.local_file.aft_global_customizations_terraform.content
+  }
+
+  dynamic "vpc_config" {
+    for_each = var.aft_enable_vpc ? [1] : []
+    content {
+      vpc_id             = var.aft_vpc_id
+      subnets            = var.aft_vpc_private_subnets
+      security_group_ids = var.aft_vpc_default_sg
+    }
+
+  }
+
+  lifecycle {
+    ignore_changes = [project_visibility]
+  }
+
+}
+
+# Maintain this log group for log retention reasons. This is no longer used by AFT
+resource "aws_cloudwatch_log_group" "aft_global_customizations_api_helpers" {
+  name              = "/aws/codebuild/aft-global-customizations-api-helpers"
+  retention_in_days = var.cloudwatch_log_group_retention
+  kms_key_id        = var.cloudwatch_log_group_enable_cmk_encryption ? var.aft_kms_key_arn : null
+}
+
+resource "aws_cloudwatch_log_group" "aft_global_customizations_terraform" {
+  name              = "/aws/codebuild/aft-global-customizations-terraform"
+  retention_in_days = var.cloudwatch_log_group_retention
+  kms_key_id        = var.cloudwatch_log_group_enable_cmk_encryption ? var.aft_kms_key_arn : null
+}
+
+#####################################################
+# AFT Account Customizations Terraform
+#####################################################
+
+resource "aws_codebuild_project" "aft_account_customizations_terraform" {
+  depends_on     = [aws_cloudwatch_log_group.aft_account_customizations_terraform, time_sleep.wait_for_iam_eventual_consistency]
+  name           = "aft-account-customizations-terraform"
+  description    = "Job to apply Terraform provided by the customer account customizations repo"
+  build_timeout  = tostring(var.global_codebuild_timeout)
+  service_role   = aws_iam_role.aft_codebuild_customizations_role.arn
+  encryption_key = var.aft_kms_key_arn
+
+  artifacts {
+    type = "CODEPIPELINE"
+  }
+
+  environment {
+    compute_type                = var.codebuild_compute_type
+    image                       = "aws/codebuild/amazonlinux2-x86_64-standard:5.0"
+    type                        = "LINUX_CONTAINER"
+    image_pull_credentials_type = "CODEBUILD"
+    environment_variable {
+      name  = "AWS_PARTITION"
+      value = data.aws_partition.current.partition
+      type  = "PLAINTEXT"
+    }
+  }
+
+  logs_config {
+    cloudwatch_logs {
+      group_name = aws_cloudwatch_log_group.aft_account_customizations_terraform.name
+    }
+
+    s3_logs {
+      status   = "ENABLED"
+      location = "${aws_s3_bucket.aft_codepipeline_customizations_bucket.id}/aft-account-customizations-terraform-logs"
+    }
+  }
+
+  source {
+    type      = "CODEPIPELINE"
+    buildspec = data.local_file.aft_account_customizations_terraform.content
+  }
+
+  dynamic "vpc_config" {
+    for_each = var.aft_enable_vpc ? [1] : []
+
+    content {
+      vpc_id             = var.aft_vpc_id
+      subnets            = var.aft_vpc_private_subnets
+      security_group_ids = var.aft_vpc_default_sg
+    }
+  }
+
+  lifecycle {
+    ignore_changes = [project_visibility]
+  }
+
+}
+
+# Maintain this log group for log retention reasons. This is no longer used by AFT
+resource "aws_cloudwatch_log_group" "aft_account_customizations_api_helpers" {
+  name              = "/aws/codebuild/aft-account-customizations-api-helpers"
+  retention_in_days = var.cloudwatch_log_group_retention
+  kms_key_id        = var.cloudwatch_log_group_enable_cmk_encryption ? var.aft_kms_key_arn : null
+}
+
+resource "aws_cloudwatch_log_group" "aft_account_customizations_terraform" {
+  name              = "/aws/codebuild/aft-account-customizations-terraform"
+  retention_in_days = var.cloudwatch_log_group_retention
+  kms_key_id        = var.cloudwatch_log_group_enable_cmk_encryption ? var.aft_kms_key_arn : null
+}
+
+#####################################################
+# AFT Account Provisioning Framework SFN - aft-create-pipeline
+#####################################################
+
+resource "aws_codebuild_project" "aft_create_pipeline" {
+  depends_on     = [aws_cloudwatch_log_group.aft_create_pipeline, time_sleep.wait_for_iam_eventual_consistency]
+  name           = "aft-create-pipeline"
+  description    = "Job to run Terraform required to create account specific customizations pipeline"
+  build_timeout  = tostring(var.global_codebuild_timeout)
+  service_role   = aws_iam_role.aft_codebuild_customizations_role.arn
+  encryption_key = var.aft_kms_key_arn
+
+  artifacts {
+    type = "NO_ARTIFACTS"
+  }
+
+  environment {
+    compute_type                = var.codebuild_compute_type
+    image                       = "aws/codebuild/amazonlinux2-x86_64-standard:5.0"
+    type                        = "LINUX_CONTAINER"
+    image_pull_credentials_type = "CODEBUILD"
+
+    environment_variable {
+      name  = "ACCOUNT_ID"
+      value = "TBD"
+      type  = "PLAINTEXT"
+    }
+
+    environment_variable {
+      name  = "SSM_TF_S3_BUCKET"
+      value = var.aft_tf_s3_bucket_ssm_path
+      type  = "PLAINTEXT"
+    }
+
+    environment_variable {
+      name  = "SSM_TF_BACKEND_REGION"
+      value = var.aft_tf_backend_region_ssm_path
+      type  = "PLAINTEXT"
+    }
+
+    environment_variable {
+      name  = "SSM_TF_KMS_KEY_ID"
+      value = var.aft_tf_kms_key_id_ssm_path
+      type  = "PLAINTEXT"
+    }
+
+    environment_variable {
+      name  = "SSM_TF_DDB_TABLE"
+      value = var.aft_tf_ddb_table_ssm_path
+      type  = "PLAINTEXT"
+    }
+
+    environment_variable {
+      name  = "SSM_AWS_MODULE_SOURCE"
+      value = var.aft_tf_aws_customizations_module_url_ssm_path
+      type  = "PLAINTEXT"
+    }
+
+    environment_variable {
+      name  = "SSM_AWS_MODULE_GIT_REF"
+      value = var.aft_tf_aws_customizations_module_git_ref_ssm_path
+      type  = "PLAINTEXT"
+    }
+
+    environment_variable {
+      name  = "SSM_TF_VERSION"
+      value = var.aft_tf_version_ssm_path
+      type  = "PLAINTEXT"
+    }
+
+    environment_variable {
+      name  = "AWS_PARTITION"
+      value = data.aws_partition.current.partition
+      type  = "PLAINTEXT"
+    }
+  }
+
+  logs_config {
+    cloudwatch_logs {
+      group_name = aws_cloudwatch_log_group.aft_create_pipeline.name
+    }
+
+    s3_logs {
+      status   = "ENABLED"
+      location = "${aws_s3_bucket.aft_codepipeline_customizations_bucket.id}/aft-create-pipeline-logs"
+    }
+  }
+
+  source {
+    type      = "NO_SOURCE"
+    buildspec = data.local_file.aft_create_pipeline.content
+  }
+
+  dynamic "vpc_config" {
+    for_each = var.aft_enable_vpc ? [1] : []
+
+    content {
+      vpc_id             = var.aft_vpc_id
+      subnets            = var.aft_vpc_private_subnets
+      security_group_ids = var.aft_vpc_default_sg
+    }
+  }
+
+  lifecycle {
+    ignore_changes = [project_visibility]
+  }
+
+}
+
+resource "aws_cloudwatch_log_group" "aft_create_pipeline" {
+  name              = "/aws/codebuild/aft-create-pipeline"
+  retention_in_days = var.cloudwatch_log_group_retention
+  kms_key_id        = var.cloudwatch_log_group_enable_cmk_encryption ? var.aft_kms_key_arn : null
+}
+
+
+# Copyright Amazon.com, Inc. or its affiliates. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+data "aws_partition" "current" {}
+
+data "aws_region" "current" {}
+
+data "aws_caller_identity" "current" {}
+
+data "aws_region" "aft_management" {}
+data "aws_caller_identity" "aft_management" {}
+
+data "aws_iam_policy" "AWSLambdaBasicExecutionRole" {
+  name = "AWSLambdaBasicExecutionRole"
+}
+
+data "aws_iam_policy" "AWSLambdaVPCAccessExecutionRole" {
+  name = "AWSLambdaVPCAccessExecutionRole"
+}
+
+data "local_file" "aft_global_customizations_terraform" {
+  filename = "${path.module}/buildspecs/aft-global-customizations-terraform.yml"
+}
+
+data "local_file" "aft_account_customizations_terraform" {
+  filename = "${path.module}/buildspecs/aft-account-customizations-terraform.yml"
+}
+
+data "local_file" "aft_create_pipeline" {
+  filename = "${path.module}/buildspecs/aft-create-pipeline.yml"
+}
+
+
+# Copyright Amazon.com, Inc. or its affiliates. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+###################################################################
+# CodePipeline IAM Resources
+###################################################################
+
+resource "aws_iam_role" "aft_codepipeline_customizations_role" {
+  name               = "aft-codepipeline-customizations-role"
+  assume_role_policy = templatefile("${path.module}/iam/trust-policies/codepipeline.tpl", { none = "none" })
+}
+
+resource "aws_iam_role_policy" "aft_codepipeline_customizations_policy" {
+  name = "aft-codepipeline-customizations-policy"
+  role = aws_iam_role.aft_codepipeline_customizations_role.id
+
+  policy = templatefile("${path.module}/iam/role-policies/aft_codepipeline_customizations_policy.tpl", {
+    aws_s3_bucket_aft_codepipeline_customizations_bucket_arn = aws_s3_bucket.aft_codepipeline_customizations_bucket.arn
+    data_aws_partition_current_partition                     = data.aws_partition.current.partition
+    data_aws_region_current_name                             = data.aws_region.current.region
+    data_aws_caller_identity_current_account_id              = data.aws_caller_identity.current.account_id
+    data_aws_kms_alias_aft_key_target_key_arn                = var.aft_kms_key_arn
+  })
+}
+###################################################################
+# CodeBuild IAM Resources
+###################################################################
+
+resource "aws_iam_role" "aft_codebuild_customizations_role" {
+  name               = "aft-codebuild-customizations-role"
+  assume_role_policy = templatefile("${path.module}/iam/trust-policies/codebuild.tpl", { none = "none" })
+}
+
+resource "aws_iam_role_policy" "aft_codebuild_customizations_policy" {
+  role = aws_iam_role.aft_codebuild_customizations_role.name
+
+  policy = templatefile("${path.module}/iam/role-policies/aft_codebuild_customizations_policy.tpl", {
+    aws_s3_bucket_aft_codepipeline_customizations_bucket_arn = aws_s3_bucket.aft_codepipeline_customizations_bucket.arn
+    data_aws_partition_current_partition                     = data.aws_partition.current.partition
+    data_aws_region_current_name                             = data.aws_region.current.region
+    data_aws_caller_identity_current_account_id              = data.aws_caller_identity.current.account_id
+    data_aws_kms_alias_aft_key_target_key_arn                = var.aft_kms_key_arn
+    data_aws_dynamo_account_metadata_table                   = var.request_metadata_table_name
+  })
+}
+
+resource "time_sleep" "wait_for_iam_eventual_consistency" {
+  depends_on      = [aws_iam_role.aft_codebuild_customizations_role]
+  create_duration = "60s"
+}
+
+###################################################################
+# Step Functions - Invoke Customizations
+###################################################################
+
+resource "aws_iam_role" "aft_invoke_customizations_sfn" {
+  name               = "aft-invoke-customizations-execution-role"
+  assume_role_policy = templatefile("${path.module}/iam/trust-policies/states.tpl", { none = "none" })
+}
+
+resource "aws_iam_role_policy" "aft_invoke_customizations_sfn" {
+  name = "aft-invoke-customizations-policy"
+  role = aws_iam_role.aft_invoke_customizations_sfn.id
+
+  policy = templatefile("${path.module}/iam/role-policies/aft_states_invoke_customizations_policy.tpl", {
+    data_aws_partition_current_partition                     = data.aws_partition.current.partition
+    data_aws_region_aft-management_name                      = data.aws_region.aft_management.region
+    data_aws_caller_identity_aft-management_account_id       = data.aws_caller_identity.aft_management.account_id
+    invoke_account_provisioning_sfn_arn                      = var.invoke_account_provisioning_sfn_arn
+    aws_kms_key_aft_arn                                      = var.aft_kms_key_arn
+    sns_topic_enable_cmk_encryption                          = var.sns_topic_enable_cmk_encryption
+    aws_s3_bucket_aft_codepipeline_customizations_bucket_arn = aws_s3_bucket.aft_codepipeline_customizations_bucket.arn
+  })
+
+}
+
+###################################################################
+# Lambda - Identify Targets
+###################################################################
+
+resource "aws_iam_role" "aft_customizations_identify_targets_lambda" {
+  name               = "aft-identify-targets-execution-role"
+  assume_role_policy = templatefile("${path.module}/iam/trust-policies/lambda.tpl", { none = "none" })
+}
+
+resource "aws_iam_role_policy" "aft_identify_targets_lambda" {
+  name = "aft-identify-targets-policy"
+  role = aws_iam_role.aft_customizations_identify_targets_lambda.id
+
+  policy = templatefile("${path.module}/iam/role-policies/aft_identify_targets_lambda.tpl", {
+    data_aws_caller_identity_current_account_id              = data.aws_caller_identity.current.account_id
+    data_aws_partition_current_partition                     = data.aws_partition.current.partition
+    data_aws_region_current_name                             = data.aws_region.current.region
+    request_metadata_table_name                              = var.request_metadata_table_name
+    account_request_table_name                               = var.account_request_table_name
+    aws_kms_key_aft_arn                                      = var.aft_kms_key_arn
+    aft_sns_topic_arn                                        = var.aft_sns_topic_arn
+    aft_failure_sns_topic_arn                                = var.aft_failure_sns_topic_arn
+    invoke_account_provisioning_arn                          = var.invoke_account_provisioning_sfn_arn
+    aws_s3_bucket_aft_codepipeline_customizations_bucket_arn = aws_s3_bucket.aft_codepipeline_customizations_bucket.arn
+  })
+
+}
+
+resource "aws_iam_role_policy_attachment" "aft_identify_targets_lambda" {
+  count      = length(local.lambda_managed_policies)
+  role       = aws_iam_role.aft_customizations_identify_targets_lambda.name
+  policy_arn = local.lambda_managed_policies[count.index]
+}
+
+###################################################################
+# Lambda - Execute Pipeline
+###################################################################
+
+resource "aws_iam_role" "aft_customizations_execute_pipeline_lambda" {
+  name               = "aft-execute-pipeline-execution-role"
+  assume_role_policy = templatefile("${path.module}/iam/trust-policies/lambda.tpl", { none = "none" })
+}
+
+resource "aws_iam_role_policy" "aft_execute_pipeline_lambda" {
+  name = "aft-execute-pipeline-policy"
+  role = aws_iam_role.aft_customizations_execute_pipeline_lambda.id
+
+  policy = templatefile("${path.module}/iam/role-policies/aft_execute_pipeline_lambda.tpl", {
+    data_aws_partition_current_partition        = data.aws_partition.current.partition
+    data_aws_region_current_name                = data.aws_region.current.region
+    data_aws_caller_identity_current_account_id = data.aws_caller_identity.current.account_id
+    aws_kms_key_aft_arn                         = var.aft_kms_key_arn
+    aft_sns_topic_arn                           = var.aft_sns_topic_arn
+    aft_failure_sns_topic_arn                   = var.aft_failure_sns_topic_arn
+  })
+
+}
+
+resource "aws_iam_role_policy_attachment" "aft_execute_pipeline_lambda" {
+  count      = length(local.lambda_managed_policies)
+  role       = aws_iam_role.aft_customizations_execute_pipeline_lambda.name
+  policy_arn = local.lambda_managed_policies[count.index]
+}
+
+###################################################################
+# Lambda - Get Pipeline Executions
+###################################################################
+
+resource "aws_iam_role" "aft_customizations_get_pipeline_executions_lambda" {
+  name               = "aft-get-pipeline-status-execution-role"
+  assume_role_policy = templatefile("${path.module}/iam/trust-policies/lambda.tpl", { none = "none" })
+}
+
+resource "aws_iam_role_policy" "aft_get_pipeline_executions_lambda" {
+  name = "aft-get-pipeline-status-policy"
+  role = aws_iam_role.aft_customizations_get_pipeline_executions_lambda.id
+
+  policy = templatefile("${path.module}/iam/role-policies/aft_get_pipeline_status_lambda.tpl", {
+    data_aws_partition_current_partition        = data.aws_partition.current.partition
+    data_aws_region_current_name                = data.aws_region.current.region
+    data_aws_caller_identity_current_account_id = data.aws_caller_identity.current.account_id
+    aws_kms_key_aft_arn                         = var.aft_kms_key_arn
+    aft_sns_topic_arn                           = var.aft_sns_topic_arn
+    aft_failure_sns_topic_arn                   = var.aft_failure_sns_topic_arn
+  })
+
+}
+
+resource "aws_iam_role_policy_attachment" "aft_get_pipeline_executions_lambda" {
+  count      = length(local.lambda_managed_policies)
+  role       = aws_iam_role.aft_customizations_get_pipeline_executions_lambda.name
+  policy_arn = local.lambda_managed_policies[count.index]
+}
+
+resource "aws_iam_role_policy" "terraform_oss_backend_codebuild_customizations_policy" {
+  count = var.terraform_distribution == "oss" ? 1 : 0
+  name  = "ct-aft-codebuild-customizations-terraform-oss-backend-policy"
+  role  = aws_iam_role.aft_codebuild_customizations_role.id
+
+  policy = templatefile("${path.module}/iam/role-policies/ct_aft_codebuild_oss_backend_policy.tpl", {
+    data_aws_partition_current_partition              = data.aws_partition.current.partition
+    data_aws_region_current_name                      = data.aws_region.current.region
+    data_aws_caller_identity_current_account_id       = data.aws_caller_identity.current.account_id
+    data_aws_dynamo_terraform_oss_backend_table       = var.aft_config_backend_table_id
+    aws_s3_bucket_aft_terraform_oss_backend_bucket_id = var.aft_config_backend_bucket_id
+    aws_s3_bucket_aft_terraform_oss_kms_key_id        = var.aft_config_backend_kms_key_id
+  })
+}
+
+
+# Copyright Amazon.com, Inc. or its affiliates. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+######## customizations_identify_targets ########
+
+resource "aws_lambda_function" "aft_customizations_identify_targets" {
+  filename      = var.customizations_archive_path
+  function_name = "aft-customizations-identify-targets"
+  description   = "Identifies targets to be customized. Called from aft-trigger-customizations SFN."
+  role          = aws_iam_role.aft_customizations_identify_targets_lambda.arn
+  handler       = "aft_customizations_identify_targets.lambda_handler"
+
+  source_code_hash = var.customizations_archive_hash
+  memory_size      = 1024
+  runtime          = var.lambda_runtime_python_version
+  timeout          = "300"
+  layers           = [var.aft_common_layer_arn]
+  reserved_concurrent_executions = 1
+
+  dead_letter_config {
+    target_arn = aws_sns_topic.aft_lambda_dlq.arn
+  }
+
+  code_signing_config_arn = aws_lambda_code_signing_config.aft_lambda_code_signing.arn
+
+  tracing_config {
+    mode = "Active"
+  }
+
+  dynamic "vpc_config" {
+    for_each = var.aft_enable_vpc ? [1] : []
+
+    content {
+      subnet_ids         = var.aft_vpc_private_subnets
+      security_group_ids = var.aft_vpc_default_sg
+    }
+  }
+}
+
+resource "aws_cloudwatch_log_group" "aft_customizations_identify_targets" {
+  name              = "/aws/lambda/${aws_lambda_function.aft_customizations_identify_targets.function_name}"
+  retention_in_days = var.cloudwatch_log_group_retention
+  kms_key_id        = var.cloudwatch_log_group_enable_cmk_encryption ? var.aft_kms_key_arn : null
+}
+
+
+######## customizations_execute_pipeline ########
+
+resource "aws_lambda_function" "aft_customizations_execute_pipeline" {
+  filename      = var.customizations_archive_path
+  function_name = "aft-customizations-execute-pipeline"
+  description   = "Executes the CodePipeline for account baselining. Called from aft-trigger-customizations SFN"
+  role          = aws_iam_role.aft_customizations_execute_pipeline_lambda.arn
+  handler       = "aft_customizations_execute_pipeline.lambda_handler"
+
+  source_code_hash = var.customizations_archive_hash
+  memory_size      = 1024
+  runtime          = var.lambda_runtime_python_version
+  timeout          = "300"
+  layers           = [var.aft_common_layer_arn]
+  reserved_concurrent_executions = 1
+
+  dead_letter_config {
+    target_arn = aws_sns_topic.aft_lambda_dlq.arn
+  }
+
+  code_signing_config_arn = aws_lambda_code_signing_config.aft_lambda_code_signing.arn
+
+  tracing_config {
+    mode = "Active"
+  }
+
+  dynamic "vpc_config" {
+    for_each = var.aft_enable_vpc ? [1] : []
+
+    content {
+      subnet_ids         = var.aft_vpc_private_subnets
+      security_group_ids = var.aft_vpc_default_sg
+    }
+  }
+}
+
+resource "aws_cloudwatch_log_group" "aft_execute_pipeline" {
+  name              = "/aws/lambda/${aws_lambda_function.aft_customizations_execute_pipeline.function_name}"
+  retention_in_days = var.cloudwatch_log_group_retention
+  kms_key_id        = var.cloudwatch_log_group_enable_cmk_encryption ? var.aft_kms_key_arn : null
+}
+
+######## customizations_get_pipeline_executions ########
+
+resource "aws_lambda_function" "aft_customizations_get_pipeline_executions" {
+  filename      = var.customizations_archive_path
+  function_name = "aft-customizations-get-pipeline-executions"
+  description   = "Gets status of executing pipelines for baselining. Called from aft-trigger-customizations SFN"
+  role          = aws_iam_role.aft_customizations_get_pipeline_executions_lambda.arn
+  handler       = "aft_customizations_get_pipeline_executions.lambda_handler"
+
+  source_code_hash = var.customizations_archive_hash
+  memory_size      = 1024
+  runtime          = var.lambda_runtime_python_version
+  timeout          = "300"
+  layers           = [var.aft_common_layer_arn]
+  reserved_concurrent_executions = 1
+
+  dead_letter_config {
+    target_arn = aws_sns_topic.aft_lambda_dlq.arn
+  }
+
+  code_signing_config_arn = aws_lambda_code_signing_config.aft_lambda_code_signing.arn
+
+  tracing_config {
+    mode = "Active"
+  }
+
+  dynamic "vpc_config" {
+    for_each = var.aft_enable_vpc ? [1] : []
+
+    content {
+      subnet_ids         = var.aft_vpc_private_subnets
+      security_group_ids = var.aft_vpc_default_sg
+    }
+  }
+
+}
+
+resource "aws_cloudwatch_log_group" "aft_get_pipeline_executions" {
+  name              = "/aws/lambda/${aws_lambda_function.aft_customizations_get_pipeline_executions.function_name}"
+  retention_in_days = var.cloudwatch_log_group_retention
+  kms_key_id        = var.cloudwatch_log_group_enable_cmk_encryption ? var.aft_kms_key_arn : null
+}
+
+resource "aws_cloudwatch_log_group" "aft_customizations_invoke_account_provisioning" {
+  name              = "/aws/lambda/aft-customizations-invoke-account-provisioning"
+  retention_in_days = var.cloudwatch_log_group_retention
+  kms_key_id        = var.cloudwatch_log_group_enable_cmk_encryption ? var.aft_kms_key_arn : null
+}
+
+resource "aws_sns_topic" "aft_lambda_dlq" {
+  name              = "aft-lambda-dlq"
+  kms_master_key_id = var.sns_topic_enable_cmk_encryption ? var.aft_kms_key_arn : null
+}
+
+resource "aws_signer_signing_profile" "aft_lambda_signing_profile" {
+  platform_id = "AWSLambda-SHA384-ECDSA"
+  name        = "aft_lambda_signing_profile"
+}
+
+resource "aws_lambda_code_signing_config" "aft_lambda_code_signing" {
+  allowed_publishers {
+    signing_profile_version_arns = [
+      aws_signer_signing_profile.aft_lambda_signing_profile.arn
+    ]
+  }
+
+  policies {
+    untrusted_artifact_on_deployment = "Warn"
+  }
+}
+
+
+# Copyright Amazon.com, Inc. or its affiliates. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+locals {
+  lambda_managed_policies = [data.aws_iam_policy.AWSLambdaBasicExecutionRole.arn, data.aws_iam_policy.AWSLambdaVPCAccessExecutionRole.arn]
+}
+
+
+# Copyright Amazon.com, Inc. or its affiliates. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+output "aft_customizations_identify_targets_function_arn" {
+  value = aws_lambda_function.aft_customizations_identify_targets.arn
+}
+
+output "aft_customizations_execute_pipeline_function_arn" {
+  value = aws_lambda_function.aft_customizations_execute_pipeline.arn
+}
+
+output "aft_customizations_get_pipeline_executions_function_arn" {
+  value = aws_lambda_function.aft_customizations_get_pipeline_executions.arn
+}
+
+output "aft_codepipeline_customizations_bucket_name" {
+  value = aws_s3_bucket.aft_codepipeline_customizations_bucket.id
+}
+
+output "aft_codepipeline_customizations_bucket_arn" {
+  value = aws_s3_bucket.aft_codepipeline_customizations_bucket.arn
+}
+
+output "state_machine_arn" {
+  value = aws_sfn_state_machine.aft_invoke_customizations_sfn.arn
+}
+
+
+# Copyright Amazon.com, Inc. or its affiliates. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
+resource "aws_s3_bucket" "aft_codepipeline_customizations_bucket" {
+  bucket = "aft-customizations-pipeline-${data.aws_caller_identity.current.account_id}"
+}
+
+resource "aws_s3_bucket" "aft_codepipeline_customizations_bucket_logs" {
+  bucket = "aft-customizations-pipeline-logs-${data.aws_caller_identity.current.account_id}"
+}
+
+resource "aws_s3_bucket_logging" "aft_codepipeline_customizations_bucket_logging" {
+  bucket        = aws_s3_bucket.aft_codepipeline_customizations_bucket.id
+  target_bucket = aws_s3_bucket.aft_codepipeline_customizations_bucket_logs.id
+  target_prefix = "log/"
+}
+
+resource "aws_s3_bucket_policy" "aft_codepipeline_customizations_bucket" {
+  bucket = aws_s3_bucket.aft_codepipeline_customizations_bucket.id
+  policy = templatefile("${path.module}/s3/bucket-policies/aft_codepipeline_customizations_bucket.tpl", {
+    aft_codepipeline_customizations_bucket_arn = aws_s3_bucket.aft_codepipeline_customizations_bucket.arn
+  })
+}
+
+resource "aws_s3_bucket_public_access_block" "aft-codepipeline-customizations-block-public-access" {
+  bucket = aws_s3_bucket.aft_codepipeline_customizations_bucket.id
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
+resource "aws_s3_bucket_versioning" "aft-codepipeline-customizations-bucket-versioning" {
+  bucket = aws_s3_bucket.aft_codepipeline_customizations_bucket.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "aft-codepipeline-customizations-bucket-encryption" {
+  bucket = aws_s3_bucket.aft_codepipeline_customizations_bucket.id
+
+  rule {
+    apply_server_side_encryption_by_default {
+      kms_master_key_id = var.aft_kms_key_id
+      sse_algorithm     = "aws:kms"
+    }
+  }
+}
+
+resource "aws_s3_bucket_lifecycle_configuration" "aft_codepipeline_customizations_bucket" {
+  bucket = aws_s3_bucket.aft_codepipeline_customizations_bucket.id
+  rule {
+    id = "sfn-data"
+    filter {
+      prefix = "sfn/"
+    }
+    expiration {
+      days = var.sfn_s3_bucket_object_expiration_days
+    }
+    abort_incomplete_multipart_upload {
+      days_after_initiation = 7
+    }
+    status = "Enabled"
+  }
+}
+
+resource "aws_s3_bucket_replication_configuration" "aft_codepipeline_customizations_bucket_replication" {
+  bucket = aws_s3_bucket.aft_codepipeline_customizations_bucket.id
+  role   = aws_iam_role.aft_s3_replication_role.arn
+
+  rule {
+    id     = "replicate-all"
+    status = "Enabled"
+
+    destination {
+      bucket        = aws_s3_bucket.aft_codepipeline_customizations_bucket_replica.arn
+      storage_class = "STANDARD"
+    }
+  }
+}
+
+resource "aws_s3_bucket" "aft_codepipeline_customizations_bucket_replica" {
+  bucket   = "aft-customizations-pipeline-replica-${data.aws_caller_identity.current.account_id}"
+  provider = aws.replica
+}
+
+resource "aws_s3_bucket_versioning" "aft_codepipeline_customizations_bucket_replica_versioning" {
+  bucket   = aws_s3_bucket.aft_codepipeline_customizations_bucket_replica.id
+  provider = aws.replica
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+resource "aws_iam_role" "aft_s3_replication_role" {
+  name = "aft-s3-replication-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "s3.amazonaws.com"
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy" "aft_s3_replication_policy" {
+  role = aws_iam_role.aft_s3_replication_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = [
+          "s3:GetReplicationConfiguration",
+          "s3:ListBucket"
+        ]
+        Effect = "Allow"
+        Resource = [
+          aws_s3_bucket.aft_codepipeline_customizations_bucket.arn
+        ]
+      },
+      {
+        Action = [
+          "s3:GetObjectVersionForReplication",
+          "s3:GetObjectVersionAcl"
+        ]
+        Effect = "Allow"
+        Resource = [
+          "${aws_s3_bucket.aft_codepipeline_customizations_bucket.arn}/*"
+        ]
+      },
+      {
+        Action = [
+          "s3:ReplicateObject",
+          "s3:ReplicateDelete"
+        ]
+        Effect = "Allow"
+        Resource = [
+          "${aws_s3_bucket.aft_codepipeline_customizations_bucket_replica.arn}/*"
+        ]
+      }
+    ]
+  })
+}
+
+resource "aws_s3_bucket_notification" "aft_codepipeline_customizations_bucket_notification" {
+  bucket = aws_s3_bucket.aft_codepipeline_customizations_bucket.id
+
+  topic {
+    topic_arn = var.aft_sns_topic_arn
+    events    = ["s3:ObjectCreated:*"]
+  }
+}
+
+
+# Copyright Amazon.com, Inc. or its affiliates. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+locals {
+  state_machine_source = "${path.module}/states/invoke_customizations.asl.json"
+  replacements_map = {
+    current_partition                    = data.aws_partition.current.partition
+    identify_targets_function_arn        = aws_lambda_function.aft_customizations_identify_targets.arn
+    execute_pipeline_function_arn        = aws_lambda_function.aft_customizations_execute_pipeline.arn
+    get_pipeline_executions_function_arn = aws_lambda_function.aft_customizations_get_pipeline_executions.arn
+    invoke_account_provisioning_sfn_arn  = var.invoke_account_provisioning_sfn_arn
+    maximum_concurrent_customizations    = var.maximum_concurrent_customizations
+    aft_notification_arn                 = var.aft_sns_topic_arn
+    aft_failure_notification_arn         = var.aft_failure_sns_topic_arn
+  }
+}
+
+resource "aws_sfn_state_machine" "aft_invoke_customizations_sfn" {
+  name     = "aft-invoke-customizations"
+  role_arn = aws_iam_role.aft_invoke_customizations_sfn.arn
+  definition = replace(
+    templatefile("${local.state_machine_source}", local.replacements_map),
+    "/\"(MaxConcurrency|NumericLessThan)\": \"(\\d+)\"/",
+    "\"$1\": $2"
+  )
+
+  tracing_configuration {
+    enabled = true
+  }
+
+  logging_configuration {
+    log_destination        = "${aws_cloudwatch_log_group.aft_invoke_customizations_sfn.arn}:*"
+    include_execution_data = true
+    level                  = "ALL"
+  }
+}
+
+resource "aws_cloudwatch_log_group" "aft_invoke_customizations_sfn" {
+  name              = "/aws/vendedlogs/states/aft-invoke-customizations"
+  retention_in_days = var.cloudwatch_log_group_retention
+  kms_key_id        = var.cloudwatch_log_group_enable_cmk_encryption ? var.aft_kms_key_arn : null
+}
+
+
+# Copyright Amazon.com, Inc. or its affiliates. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+variable "aft_config_backend_kms_key_id" {
+  type = string
+}
+
+variable "aft_kms_key_id" {
+  type = string
+}
+
+variable "aft_kms_key_arn" {
+  type = string
+}
+
+variable "aft_tf_s3_bucket_ssm_path" {
+  type = string
+}
+
+variable "aft_tf_backend_region_ssm_path" {
+  type = string
+}
+
+variable "aft_tf_kms_key_id_ssm_path" {
+  type = string
+}
+
+variable "aft_tf_ddb_table_ssm_path" {
+  type = string
+}
+
+variable "aft_tf_version_ssm_path" {
+  type = string
+}
+
+variable "aft_tf_aws_customizations_module_url_ssm_path" {
+  type = string
+}
+
+variable "aft_tf_aws_customizations_module_git_ref_ssm_path" {
+  type = string
+}
+
+variable "aft_common_layer_arn" {
+  type = string
+}
+
+variable "cloudwatch_log_group_retention" {
+  type = string
+}
+
+variable "cloudwatch_log_group_enable_cmk_encryption" {
+  type = bool
+}
+
+variable "aft_sns_topic_arn" {
+  type = string
+}
+
+variable "aft_failure_sns_topic_arn" {
+  type = string
+}
+
+variable "account_request_table_name" {
+  type = string
+}
+
+variable "request_metadata_table_name" {
+  type = string
+}
+
+variable "terraform_distribution" {
+  type = string
+}
+
+variable "aft_config_backend_table_id" {
+  type = string
+}
+
+variable "aft_config_backend_bucket_id" {
+  type = string
+}
+
+variable "aft_vpc_id" {
+  type    = string
+  default = null
+}
+
+variable "aft_vpc_private_subnets" {
+  type    = list(string)
+  default = null
+}
+
+variable "aft_vpc_default_sg" {
+  type    = list(string)
+  default = null
+}
+
+variable "maximum_concurrent_customizations" {
+  type = number
+}
+
+variable "invoke_account_provisioning_sfn_arn" {
+  type = string
+}
+
+variable "customizations_archive_path" {
+  type = string
+}
+
+variable "customizations_archive_hash" {
+  type = string
+}
+
+variable "global_codebuild_timeout" {
+  type = number
+}
+
+variable "lambda_runtime_python_version" {
+  type = string
+}
+
+variable "aft_enable_vpc" {
+  type = bool
+}
+
+variable "codebuild_compute_type" {
+  type = string
+}
+
+variable "sns_topic_enable_cmk_encryption" {
+  type = bool
+}
+
+variable "sfn_s3_bucket_object_expiration_days" {
+  type = number
+}
+
+
+# Copyright Amazon.com, Inc. or its affiliates. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+terraform {
+  required_version = ">= 1.2.0, < 2.0.0"
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 6.0.0, < 7.0.0"
+      configuration_aliases = [aws.replica]
+    }
+  }
+}

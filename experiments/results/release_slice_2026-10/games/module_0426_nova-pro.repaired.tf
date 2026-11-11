@@ -1,0 +1,340 @@
+module "this" {
+  source  = "cloudposse/label/null"
+  version = "0.25.0"
+
+  enabled             = var.enabled
+  namespace           = var.namespace
+  tenant              = var.tenant
+  environment         = var.environment
+  stage               = var.stage
+  name                = var.name
+  delimiter           = var.delimiter
+  attributes          = var.attributes
+  tags                = var.tags
+  additional_tag_map  = var.additional_tag_map
+  label_order         = var.label_order
+  regex_replace_chars = var.regex_replace_chars
+  id_length_limit     = var.id_length_limit
+  label_key_case      = var.label_key_case
+  label_value_case    = var.label_value_case
+  descriptor_formats  = var.descriptor_formats
+  labels_as_tags      = var.labels_as_tags
+
+  context = var.context
+}
+
+data "aws_iam_policy_document" "ssosync_lambda_assume_role" {
+  statement {
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["lambda.amazonaws.com"]
+    }
+  }
+}
+
+data "aws_iam_policy_document" "ssosync_lambda_identity_center" {
+  statement {
+    effect   = "Allow"
+    actions  = [
+      "identitystore:DeleteUser",
+      "identitystore:CreateGroup",
+      "identitystore:CreateGroupMembership",
+      "identitystore:ListGroups",
+      "identitystore:ListUsers",
+      "identitystore:ListGroupMemberships",
+      "identitystore:IsMemberInGroups",
+      "identitystore:GetGroupMembershipId",
+      "identitystore:DeleteGroupMembership",
+      "identitystore:DeleteGroup",
+      "secretsmanager:GetSecretValue",
+      "kms:Decrypt",
+      "logs:PutLogEvents",
+      "logs:CreateLogStream",
+      "logs:CreateLogGroup"
+    ]
+    resources = []
+  }
+}
+
+resource "aws_iam_role" "default" {
+  count = local.enabled? 1 : 0
+
+  name               = module.this.id
+  assume_role_policy = data.aws_iam_policy_document.ssosync_lambda_assume_role.json
+
+  inline_policy {
+    name   = "ssosync_lambda_identity_center"
+    policy = data.aws_iam_policy_document.ssosync_lambda_identity_center.json
+  }
+}
+
+locals {
+  enabled                    = module.this.enabled
+  google_credentials         = one(data.aws_ssm_parameter.google_credentials[*].value)
+  scim_endpoint_url          = one(data.aws_ssm_parameter.scim_endpoint_url[*].value)
+  scim_endpoint_access_token = one(data.aws_ssm_parameter.scim_endpoint_access_token[*].value)
+  identity_store_id          = one(data.aws_ssm_parameter.identity_store_id[*].value)
+
+  ssosync_artifact_url = "${var.ssosync_url_prefix}/${var.ssosync_version}/ssosync_Linux_${var.architecture}.tar.gz"
+
+  download_artifact = "ssosync.tar.gz"
+}
+
+data "aws_ssm_parameter" "google_credentials" {
+  count = local.enabled? 1 : 0
+  name  = "${var.google_credentials_ssm_path}/google_credentials"
+}
+
+data "aws_ssm_parameter" "scim_endpoint_url" {
+  count = local.enabled? 1 : 0
+  name  = "${var.google_credentials_ssm_path}/scim_endpoint_url"
+}
+
+data "aws_ssm_parameter" "scim_endpoint_access_token" {
+  count = local.enabled? 1 : 0
+  name  = "${var.google_credentials_ssm_path}/scim_endpoint_access_token"
+}
+
+data "aws_ssm_parameter" "identity_store_id" {
+  count = local.enabled? 1 : 0
+  name  = "${var.google_credentials_ssm_path}/identity_store_id"
+}
+
+module "ssosync_artifact" {
+  count = local.enabled? 1 : 0
+
+  source  = "cloudposse/module-artifact/external"
+  version = "0.8.0"
+
+  filename    = local.download_artifact
+  module_name = "ssosync"
+  module_path = path.module
+  url         = local.ssosync_artifact_url
+}
+
+resource "null_resource" "extract_my_tgz" {
+  count = local.enabled? 1 : 0
+
+  provisioner "local-exec" {
+    command = "tar -xzf ${local.download_artifact} -C dist"
+  }
+
+  depends_on = [module.ssosync_artifact]
+}
+
+data "archive_file" "lambda" {
+  count = local.enabled? 1 : 0
+
+  type        = "zip"
+  source_file = "dist/ssosync"
+  output_path = "ssosync.zip"
+
+  depends_on = [null_resource.extract_my_tgz]
+}
+
+resource "aws_lambda_function" "ssosync" {
+  count = local.enabled? 1 : 0
+
+  function_name    = module.this.id
+  filename         = "ssosync.zip"
+  source_code_hash = module.ssosync_artifact[0].base64sha256
+  description      = "Syncs Google Workspace users and groups to AWS SSO"
+  role             = aws_iam_role.default[0].arn
+  handler          = "ssosync"
+  runtime          = "go1.x"
+  timeout          = 300
+  memory_size      = 128
+  tracing_config   = {
+    mode = "Active"
+  }
+  environment {
+    variables = {
+      SSOSYNC_LOG_LEVEL          = var.log_level
+      SSOSYNC_LOG_FORMAT         = var.log_format
+      SSOSYNC_GOOGLE_CREDENTIALS = local.google_credentials
+      SSOSYNC_GOOGLE_ADMIN       = var.google_admin_email
+      SSOSYNC_SCIM_ENDPOINT      = local.scim_endpoint_url
+      SSOSYNC_SCIM_ACCESS_TOKEN  = local.scim_endpoint_access_token
+      SSOSYNC_REGION             = var.region
+      SSOSYNC_IDENTITY_STORE_ID  = local.identity_store_id
+      SSOSYNC_USER_MATCH         = var.google_user_match
+      SSOSYNC_GROUP_MATCH        = var.google_group_match
+      SSOSYNC_SYNC_METHOD        = var.sync_method
+      SSOSYNC_IGNORE_GROUPS      = var.ignore_groups
+      SSOSYNC_IGNORE_USERS       = var.ignore_users
+      SSOSYNC_INCLUDE_GROUPS     = var.include_groups
+      SSOSYNC_LOAD_ASM_SECRETS   = false
+    }
+  }
+  depends_on = [null_resource.extract_my_tgz, data.archive_file.lambda]
+}
+
+resource "aws_cloudwatch_event_rule" "ssosync" {
+  count = var.enabled? 1 : 0
+
+  name                = module.this.id
+  description         = "Run ssosync on a schedule"
+  schedule_expression = var.schedule_expression
+
+}
+
+resource "aws_cloudwatch_event_target" "ssosync" {
+  count = var.enabled? 1 : 0
+
+  rule      = aws_cloudwatch_event_rule.ssosync[0].name
+  target_id = module.this.id
+  arn       = aws_lambda_function.ssosync[0].arn
+}
+
+resource "aws_lambda_permission" "allow_cloudwatch_execution" {
+  count = local.enabled? 1 : 0
+
+  statement_id  = "AllowExecutionFromCloudWatch"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.ssosync[0].arn
+  principal     = "events.amazonaws.com"
+  source_arn    = aws_cloudwatch_event_rule.ssosync[0].arn
+}
+
+output "arn" {
+  description = "ARN of the lambda function"
+  value       = one(aws_lambda_function.ssosync[*].arn)
+}
+
+output "invoke_arn" {
+  description = "Invoke ARN of the lambda function"
+  value       = one(aws_lambda_function.ssosync[*].invoke_arn)
+}
+
+output "qualified_arn" {
+  description = "ARN identifying your Lambda Function Version (if versioning is enabled via publish = true)"
+  value       = one(aws_lambda_function.ssosync[*].qualified_arn)
+}
+
+provider "aws" {
+  region = var.region
+}
+
+variable "region" {
+  type        = string
+  description = "AWS Region where AWS SSO is enabled"
+}
+
+variable "schedule_expression" {
+  type        = string
+  description = "Schedule for trigger the execution of ssosync (see CloudWatch schedule expressions)"
+  default     = "rate(15 minutes)"
+}
+
+variable "log_level" {
+  type        = string
+  description = "Log level for Lambda function logging"
+  default     = "warn"
+
+  validation {
+    condition     = contains(["panic", "fatal", "error", "warn", "info", "debug", "trace"], var.log_level)
+    error_message = "Allowed values: `panic`, `fatal`, `error`, `warn`, `info`, `debug`, `trace`"
+  }
+}
+
+variable "log_format" {
+  type        = string
+  description = "Log format for Lambda function logging"
+  default     = "json"
+
+  validation {
+    condition     = contains(["json", "text"], var.log_format)
+    error_message = "Allowed values: `json`, `text`"
+  }
+}
+
+variable "ssosync_url_prefix" {
+  type        = string
+  description = "URL prefix for ssosync binary"
+  default     = "https://github.com/Benbentwo/ssosync/releases/download"
+}
+
+variable "ssosync_version" {
+  type        = string
+  description = "Version of ssosync to use"
+  default     = "v2.0.2"
+}
+
+variable "architecture" {
+  type        = string
+  description = "Architecture of the Lambda function"
+  default     = "x86_64"
+}
+
+variable "google_credentials_ssm_path" {
+  type        = string
+  description = "SSM Path for `ssosync` secrets"
+  default     = "/ssosync"
+}
+
+variable "google_admin_email" {
+  type        = string
+  description = "Google Admin email"
+}
+
+variable "google_user_match" {
+  type        = string
+  description = "Google Workspace user filter query parameter, example: 'name:John* email:admin*', see: https://developers.google.com/admin-sdk/directory/v1/guides/search-users"
+  default     = ""
+}
+
+variable "google_group_match" {
+  type        = string
+  description = "Google Workspace group filter query parameter, example: 'name:Admin* email:aws-*', see: https://developers.google.com/admin-sdk/directory/v1/guides/search-groups"
+  default     = ""
+}
+
+variable "ignore_groups" {
+  type        = string
+  description = "Ignore these Google Workspace groups"
+  default     = ""
+}
+
+variable "ignore_users" {
+  type        = string
+  description = "Ignore these Google Workspace users"
+  default     = ""
+}
+
+variable "include_groups" {
+  type        = string
+  description = "Include only these Google Workspace groups. (Only applicable for sync_method user_groups)"
+  default     = ""
+}
+
+variable "sync_method" {
+  type        = string
+  description = "Sync method to use"
+  default     = "groups"
+
+  validation {
+    condition     = contains(["groups", "users_groups"], var.sync_method)
+    error_message = "Allowed values: `groups`, `users_groups`"
+  }
+}
+
+terraform {
+  required_version = ">= 1.0.0"
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 4.0"
+    }
+    archive = {
+      source  = "hashicorp/archive"
+      version = ">= 2.3.0"
+    }
+    null = {
+      source  = "hashicorp/null"
+      version = ">= 3.0"
+    }
+  }
+}

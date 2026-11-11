@@ -1,0 +1,113 @@
+{
+  "findings_count": 18,
+  "findings": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_79",
+      "title": "",
+      "resource_name": "aws_instance.ubuntu[0]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_126",
+      "title": "",
+      "resource_name": "aws_instance.ubuntu[0]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_135",
+      "title": "",
+      "resource_name": "aws_instance.ubuntu[0]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_8",
+      "title": "",
+      "resource_name": "aws_instance.ubuntu[0]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_79",
+      "title": "",
+      "resource_name": "aws_instance.ubuntu[1]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_88",
+      "title": "",
+      "resource_name": "aws_instance.ubuntu[1]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_126",
+      "title": "",
+      "resource_name": "aws_instance.ubuntu[1]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_135",
+      "title": "",
+      "resource_name": "aws_instance.ubuntu[1]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_8",
+      "title": "",
+      "resource_name": "aws_instance.ubuntu[1]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_79",
+      "title": "",
+      "resource_name": "aws_instance.ubuntu[2]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_126",
+      "title": "",
+      "resource_name": "aws_instance.ubuntu[2]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_135",
+      "title": "",
+      "resource_name": "aws_instance.ubuntu[2]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_8",
+      "title": "",
+      "resource_name": "aws_instance.ubuntu[2]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_12",
+      "title": "",
+      "resource_name": "aws_vpc.my_vpc"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_11",
+      "title": "",
+      "resource_name": "aws_vpc.my_vpc"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_41",
+      "title": "",
+      "resource_name": "aws_instance.ubuntu[0]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_41",
+      "title": "",
+      "resource_name": "aws_instance.ubuntu[2]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_41",
+      "title": "",
+      "resource_name": "aws_instance.ubuntu[1]"
+    }
+  ]
+}

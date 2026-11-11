@@ -1,0 +1,109 @@
+{
+  "module_id": "module_0418",
+  "model_id": "llama-3-3-70b",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0143",
+      "title": "IAM policies should not be granted directly to users.",
+      "severity": "LOW",
+      "resource_name": "aws_iam_user.default",
+      "resource_type": "aws_iam_user",
+      "file_path": "main.tf",
+      "start_line": 1,
+      "end_line": 5
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "this",
+      "resource_type": "this",
+      "file_path": "/context.tf",
+      "start_line": 23,
+      "end_line": 46
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_273",
+      "title": "Ensure access is controlled through SSO and not AWS IAM defined users",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_user.default",
+      "resource_type": "aws_iam_user",
+      "file_path": "/main.tf",
+      "start_line": 1,
+      "end_line": 5
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0123",
+      "title": "IAM groups should have MFA enforcement activated.",
+      "severity": "MEDIUM",
+      "resource_name": "aws_iam_group.default",
+      "resource_type": "aws_iam_group",
+      "file_path": "main.tf",
+      "start_line": 252,
+      "end_line": 255
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "this",
+      "resource_type": "this",
+      "file_path": "/main.tf",
+      "start_line": 1,
+      "end_line": 24
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_273",
+      "title": "Ensure access is controlled through SSO and not AWS IAM defined users",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_user.default",
+      "resource_type": "aws_iam_user",
+      "file_path": "/main.tf",
+      "start_line": 280,
+      "end_line": 284
+    }
+  ],
+  "target_count": 3,
+  "resolved_count": 1,
+  "introduced_count": 1,
+  "unchanged_count": 2,
+  "repair_success_rate": 0.3333333333333333,
+  "regression_rate": 0.3333333333333333,
+  "net_delta": 0,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 1,
+      "introduced": 1,
+      "unchanged": 1
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 1
+    }
+  },
+  "repair_cost_usd": 0.0049328,
+  "repair_tokens": 6166,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0418_llama-3-3-70b.repaired.tf",
+  "raw_response_path": "module_0418_llama-3-3-70b.raw.txt",
+  "repaired_code_sha256": "7232e7801655e4d4a6ffd57da21ecdefd9c31b5238578415c998addf1da85fc8"
+}

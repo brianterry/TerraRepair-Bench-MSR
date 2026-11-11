@@ -1,0 +1,280 @@
+data "aws_iam_policy_document" "access_log_policy" {
+  statement {
+    actions = ["s3:*"]
+    effect  = "Deny"
+    resources = [
+      aws_s3_bucket.access_log.arn,
+      "${aws_s3_bucket.access_log.arn}/*"
+    ]
+    condition {
+      test     = "Bool"
+      variable = "aws:SecureTransport"
+      values   = ["false"]
+    }
+    principals {
+      type        = "*"
+      identifiers = ["*"]
+    }
+  }
+}
+
+resource "aws_kms_key" "this" {
+  description             = "KMS key used to encrypt S3 buckets managed by this module."
+  deletion_window_in_days = 30
+  enable_key_rotation     = true
+  tags                    = var.tags
+}
+
+resource "aws_s3_bucket" "access_log" {
+  bucket        = var.log_bucket_name
+  force_destroy = var.force_destroy
+
+  tags = var.tags
+}
+
+resource "aws_s3_bucket_acl" "access_log" {
+  bucket = aws_s3_bucket.access_log.id
+  acl    = "log-delivery-write"
+}
+
+resource "aws_s3_bucket_versioning" "access_log" {
+  bucket = aws_s3_bucket.access_log.id
+
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "access_log" {
+  bucket = aws_s3_bucket.access_log.id
+
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm     = "aws:kms"
+      kms_master_key_id = aws_kms_key.this.arn
+    }
+  }
+}
+
+resource "aws_s3_bucket_lifecycle_configuration" "access_log" {
+  count = var.lifecycle_glacier_transition_days > 0 ? 1 : 0
+
+  bucket = aws_s3_bucket.access_log.id
+
+  rule {
+    id     = "auto-archive"
+    status = "Enabled"
+
+    filter {}
+
+    abort_incomplete_multipart_upload {
+      days_after_initiation = 7
+    }
+
+    transition {
+      days          = var.lifecycle_glacier_transition_days
+      storage_class = "GLACIER"
+    }
+  }
+}
+
+resource "aws_s3_bucket_notification" "access_log" {
+  bucket      = aws_s3_bucket.access_log.id
+  eventbridge = true
+}
+
+resource "aws_s3_bucket_policy" "access_log_policy" {
+  bucket = aws_s3_bucket.access_log.id
+  policy = data.aws_iam_policy_document.access_log_policy.json
+
+  depends_on = [
+    aws_s3_bucket_public_access_block.access_log,
+  ]
+}
+
+resource "aws_s3_bucket_public_access_block" "access_log" {
+  bucket                  = aws_s3_bucket.access_log.id
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
+resource "aws_s3_bucket" "content" {
+  bucket        = var.bucket_name
+  force_destroy = var.force_destroy
+
+  tags = var.tags
+
+  depends_on = [
+    aws_s3_bucket_public_access_block.access_log
+  ]
+}
+
+resource "aws_s3_bucket_acl" "content" {
+  bucket = aws_s3_bucket.content.id
+  acl    = "private"
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "content" {
+  bucket = aws_s3_bucket.content.id
+
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm     = "aws:kms"
+      kms_master_key_id = aws_kms_key.this.arn
+    }
+    bucket_key_enabled = var.bucket_key_enabled
+  }
+}
+
+resource "aws_s3_bucket_logging" "content" {
+  bucket = aws_s3_bucket.content.id
+
+  target_bucket = aws_s3_bucket.access_log.id
+  target_prefix = ""
+}
+
+resource "aws_s3_bucket_lifecycle_configuration" "content" {
+  count = var.lifecycle_glacier_transition_days > 0 ? 1 : 0
+
+  bucket = aws_s3_bucket.content.id
+
+  rule {
+    id     = "auto-archive"
+    status = "Enabled"
+
+    filter {}
+
+    abort_incomplete_multipart_upload {
+      days_after_initiation = 7
+    }
+
+    transition {
+      days          = var.lifecycle_glacier_transition_days
+      storage_class = "GLACIER"
+    }
+
+    noncurrent_version_transition {
+      noncurrent_days = var.lifecycle_glacier_transition_days
+      storage_class   = "GLACIER"
+    }
+  }
+}
+
+resource "aws_s3_bucket_versioning" "content" {
+  bucket = aws_s3_bucket.content.id
+
+  versioning_configuration {
+    status = "Enabled"
+    # Temporarily disabled due to Terraform issue.
+    # https://github.com/terraform-providers/terraform-provider-aws/issues/629
+    # mfa_delete = true
+  }
+}
+
+resource "aws_s3_bucket_public_access_block" "content" {
+  bucket                  = aws_s3_bucket.content.id
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
+resource "aws_s3_bucket_notification" "content" {
+  bucket      = aws_s3_bucket.content.id
+  eventbridge = true
+}
+
+
+
+# --------------------------------------------------------------------------------------------------
+# Migrations to 1.0.0
+# Replacing `enabled` argument in secure-bucket module with `count` meta-argument
+# --------------------------------------------------------------------------------------------------
+
+moved {
+  from = aws_s3_bucket.access_log[0]
+  to   = aws_s3_bucket.access_log
+}
+
+moved {
+  from = aws_s3_bucket_policy.access_log_policy[0]
+  to   = aws_s3_bucket_policy.access_log_policy
+}
+
+moved {
+  from = aws_s3_bucket_public_access_block.access_log[0]
+  to   = aws_s3_bucket_public_access_block.access_log
+}
+
+moved {
+  from = aws_s3_bucket.content[0]
+  to   = aws_s3_bucket.content
+}
+
+moved {
+  from = aws_s3_bucket_public_access_block.content[0]
+  to   = aws_s3_bucket_public_access_block.content
+}
+
+
+
+output "this_bucket" {
+  description = "This S3 bucket."
+  value       = aws_s3_bucket.content
+}
+
+output "log_bucket" {
+  description = "The S3 bucket used for storing access logs of this bucket."
+  value       = aws_s3_bucket.access_log
+}
+
+
+variable "bucket_name" {
+  description = "The name of the S3 bucket to create."
+  type        = string
+}
+
+variable "log_bucket_name" {
+  description = "The name of the S3 bucket to store access logs to the main bucket."
+  type        = string
+}
+
+variable "lifecycle_glacier_transition_days" {
+  description = "The number of days after object creation when the object is archived into Glacier.  Setting to zero disables the transition."
+  type        = number
+  default     = 0
+}
+
+variable "force_destroy" {
+  description = " A boolean that indicates all objects should be deleted from the bucket so that the bucket can be destroyed without error. These objects are not recoverable."
+  type        = bool
+  default     = false
+}
+
+variable "tags" {
+  description = "Specifies object tags key and value. This applies to all resources created by this module."
+  type        = map(string)
+  default = {
+    "Terraform" = "true"
+  }
+}
+
+variable "bucket_key_enabled" {
+  description = "Whether or not to use Amazon S3 Bucket Keys for this bucket."
+  type        = bool
+  default     = false
+}
+
+
+terraform {
+  required_version = ">= 0.13"
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 4.3"
+    }
+  }
+}

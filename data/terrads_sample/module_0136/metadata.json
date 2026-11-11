@@ -1,0 +1,65 @@
+{
+  "findings_count": 10,
+  "findings": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_24",
+      "title": "",
+      "resource_name": "aws_security_group_rule.ssh"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "",
+      "resource_name": "aws_security_group_rule.ssh"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "",
+      "resource_name": "aws_security_group_rule.egress_public"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_382",
+      "title": "",
+      "resource_name": "aws_security_group_rule.egress_public"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "",
+      "resource_name": "aws_security_group_rule.ingress_internal"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_130",
+      "title": "",
+      "resource_name": "aws_subnet.public[0]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_12",
+      "title": "",
+      "resource_name": "aws_vpc.main"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_11",
+      "title": "",
+      "resource_name": "aws_vpc.main"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_5",
+      "title": "",
+      "resource_name": "aws_security_group.egress_public"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_19",
+      "title": "",
+      "resource_name": "aws_eip.nat[0]"
+    }
+  ]
+}

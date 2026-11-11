@@ -1,0 +1,95 @@
+{
+  "findings_count": 15,
+  "findings": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "client_vpc"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "client_ec2_instance"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_2",
+      "title": "",
+      "resource_name": "client_ec2_instance"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "client_security_group"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "eks"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "vpc"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "vpc_endpoints"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "",
+      "resource_name": "aws_security_group.client_vpc_endpoint"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_382",
+      "title": "",
+      "resource_name": "aws_security_group.client_vpc_endpoint"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "nlb"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "create_eni_lambda"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "delete_eni_lambda"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "eventbridge"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_5",
+      "title": "",
+      "resource_name": "aws_security_group.client_vpc_endpoint"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_23",
+      "title": "",
+      "resource_name": "aws_route53_record.client"
+    }
+  ]
+}

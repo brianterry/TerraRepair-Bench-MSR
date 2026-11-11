@@ -1,0 +1,593 @@
+{
+  "module_id": "module_0111",
+  "model_id": "nova-lite",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0143",
+      "title": "IAM policies should not be granted directly to users.",
+      "severity": "LOW",
+      "resource_name": "aws_iam_user.manager",
+      "resource_type": "aws_iam_user",
+      "file_path": "10-add-manager-role.tf",
+      "start_line": 56,
+      "end_line": 58
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0342",
+      "title": "IAM Pass Role Filtering",
+      "severity": "MEDIUM",
+      "resource_name": "aws_iam_policy.eks_admin",
+      "resource_type": "aws_iam_policy",
+      "file_path": "10-add-manager-role.tf",
+      "start_line": 25,
+      "end_line": 48
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0178",
+      "title": "VPC Flow Logs is a feature that enables you to capture information about the IP traffic going to and from network interfaces in your VPC. After you've created a flow log, you can view and retrieve its data in Amazon CloudWatch Logs. It is recommended that VPC Flow Logs be enabled for packet \"Rejects\" for VPCs.",
+      "severity": "MEDIUM",
+      "resource_name": "aws_vpc.main",
+      "resource_type": "aws_vpc",
+      "file_path": "2-vpc.tf",
+      "start_line": 1,
+      "end_line": 10
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0164",
+      "title": "Instances in a subnet should not receive a public IP address by default.",
+      "severity": "HIGH",
+      "resource_name": "aws_subnet.public_zone1",
+      "resource_type": "aws_subnet",
+      "file_path": "4-subnets.tf",
+      "start_line": 29,
+      "end_line": 29
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0164",
+      "title": "Instances in a subnet should not receive a public IP address by default.",
+      "severity": "HIGH",
+      "resource_name": "aws_subnet.public_zone2",
+      "resource_type": "aws_subnet",
+      "file_path": "4-subnets.tf",
+      "start_line": 42,
+      "end_line": 42
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0038",
+      "title": "EKS Clusters should have cluster control plane logging turned on",
+      "severity": "MEDIUM",
+      "resource_name": "aws_eks_cluster.eks",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "7-eks.tf",
+      "start_line": 25,
+      "end_line": 46
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0039",
+      "title": "EKS should have the encryption of secrets enabled",
+      "severity": "HIGH",
+      "resource_name": "aws_eks_cluster.eks",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "7-eks.tf",
+      "start_line": 25,
+      "end_line": 46
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0040",
+      "title": "EKS Clusters should have the public access disabled",
+      "severity": "CRITICAL",
+      "resource_name": "aws_eks_cluster.eks",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "7-eks.tf",
+      "start_line": 32,
+      "end_line": 32
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0041",
+      "title": "EKS cluster should not have open CIDR range for public access",
+      "severity": "CRITICAL",
+      "resource_name": "aws_eks_cluster.eks",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "7-eks.tf",
+      "start_line": 30,
+      "end_line": 38
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0143",
+      "title": "IAM policies should not be granted directly to users.",
+      "severity": "LOW",
+      "resource_name": "aws_iam_user.developer",
+      "resource_type": "aws_iam_user",
+      "file_path": "9-add-developer-user.tf",
+      "start_line": 1,
+      "end_line": 3
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_290",
+      "title": "Ensure IAM policies does not allow write access without constraints",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy.eks_admin",
+      "resource_type": "aws_iam_policy",
+      "file_path": "/10-add-manager-role.tf",
+      "start_line": 22,
+      "end_line": 49
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_355",
+      "title": "Ensure no IAM policies documents allow \"*\" as a statement's resource for restrictable actions",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy.eks_admin",
+      "resource_type": "aws_iam_policy",
+      "file_path": "/10-add-manager-role.tf",
+      "start_line": 22,
+      "end_line": 49
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_273",
+      "title": "Ensure access is controlled through SSO and not AWS IAM defined users",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_user.manager",
+      "resource_type": "aws_iam_user",
+      "file_path": "/10-add-manager-role.tf",
+      "start_line": 56,
+      "end_line": 58
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_40",
+      "title": "Ensure IAM policies are attached only to groups or roles (Reducing access management complexity may in-turn reduce opportunity for a principal to inadvertently receive or retain excessive privileges.)",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_user_policy_attachment.manager",
+      "resource_type": "aws_iam_user_policy_attachment",
+      "file_path": "/10-add-manager-role.tf",
+      "start_line": 79,
+      "end_line": 82
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_290",
+      "title": "Ensure IAM policies does not allow write access without constraints",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy.cluster_autoscaler",
+      "resource_type": "aws_iam_policy",
+      "file_path": "/14-cluster-autoscaler.tf",
+      "start_line": 21,
+      "end_line": 53
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_355",
+      "title": "Ensure no IAM policies documents allow \"*\" as a statement's resource for restrictable actions",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy.cluster_autoscaler",
+      "resource_type": "aws_iam_policy",
+      "file_path": "/14-cluster-autoscaler.tf",
+      "start_line": 21,
+      "end_line": 53
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_290",
+      "title": "Ensure IAM policies does not allow write access without constraints",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy.ebs_csi_driver_encryption",
+      "resource_type": "aws_iam_policy",
+      "file_path": "/18-ebs-csi-driver.tf",
+      "start_line": 28,
+      "end_line": 45
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_289",
+      "title": "Ensure IAM policies does not allow permissions management / resource exposure without constraints",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy.ebs_csi_driver_encryption",
+      "resource_type": "aws_iam_policy",
+      "file_path": "/18-ebs-csi-driver.tf",
+      "start_line": 28,
+      "end_line": 45
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_355",
+      "title": "Ensure no IAM policies documents allow \"*\" as a statement's resource for restrictable actions",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy.ebs_csi_driver_encryption",
+      "resource_type": "aws_iam_policy",
+      "file_path": "/18-ebs-csi-driver.tf",
+      "start_line": 28,
+      "end_line": 45
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_184",
+      "title": "Ensure resource is encrypted by KMS using a customer managed Key (CMK)",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_efs_file_system.eks",
+      "resource_type": "aws_efs_file_system",
+      "file_path": "/20-efs.tf",
+      "start_line": 1,
+      "end_line": 11
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_288",
+      "title": "Ensure IAM policies does not allow data exfiltration",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy.myapp_secrets",
+      "resource_type": "aws_iam_policy",
+      "file_path": "/21-secrets-store-csi-driver.tf",
+      "start_line": 52,
+      "end_line": 68
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_355",
+      "title": "Ensure no IAM policies documents allow \"*\" as a statement's resource for restrictable actions",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy.myapp_secrets",
+      "resource_type": "aws_iam_policy",
+      "file_path": "/21-secrets-store-csi-driver.tf",
+      "start_line": 52,
+      "end_line": 68
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_130",
+      "title": "Ensure VPC subnets do not assign public IP by default",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_subnet.public_zone1",
+      "resource_type": "aws_subnet",
+      "file_path": "/4-subnets.tf",
+      "start_line": 25,
+      "end_line": 36
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_130",
+      "title": "Ensure VPC subnets do not assign public IP by default",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_subnet.public_zone2",
+      "resource_type": "aws_subnet",
+      "file_path": "/4-subnets.tf",
+      "start_line": 38,
+      "end_line": 49
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_37",
+      "title": "Ensure Amazon EKS control plane logging is enabled for all log types",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_eks_cluster.eks",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "/7-eks.tf",
+      "start_line": 25,
+      "end_line": 46
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_38",
+      "title": "Ensure Amazon EKS public endpoint not accessible to 0.0.0.0/0",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_eks_cluster.eks",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "/7-eks.tf",
+      "start_line": 25,
+      "end_line": 46
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_39",
+      "title": "Ensure Amazon EKS public endpoint disabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_eks_cluster.eks",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "/7-eks.tf",
+      "start_line": 25,
+      "end_line": 46
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_58",
+      "title": "Ensure EKS Cluster has Secrets Encryption Enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_eks_cluster.eks",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "/7-eks.tf",
+      "start_line": 25,
+      "end_line": 46
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_273",
+      "title": "Ensure access is controlled through SSO and not AWS IAM defined users",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_user.developer",
+      "resource_type": "aws_iam_user",
+      "file_path": "/9-add-developer-user.tf",
+      "start_line": 1,
+      "end_line": 3
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_355",
+      "title": "Ensure no IAM policies documents allow \"*\" as a statement's resource for restrictable actions",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy.developer_eks",
+      "resource_type": "aws_iam_policy",
+      "file_path": "/9-add-developer-user.tf",
+      "start_line": 5,
+      "end_line": 23
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_40",
+      "title": "Ensure IAM policies are attached only to groups or roles (Reducing access management complexity may in-turn reduce opportunity for a principal to inadvertently receive or retain excessive privileges.)",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_user_policy_attachment.developer_eks",
+      "resource_type": "aws_iam_user_policy_attachment",
+      "file_path": "/9-add-developer-user.tf",
+      "start_line": 25,
+      "end_line": 28
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_12",
+      "title": "Ensure the default security group of every VPC restricts all traffic",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_vpc.main",
+      "resource_type": "aws_vpc",
+      "file_path": "/2-vpc.tf",
+      "start_line": 1,
+      "end_line": 10
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_11",
+      "title": "Ensure VPC flow logging is enabled in all VPCs",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_vpc.main",
+      "resource_type": "aws_vpc",
+      "file_path": "/2-vpc.tf",
+      "start_line": 1,
+      "end_line": 10
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0038",
+      "title": "EKS Clusters should have cluster control plane logging turned on",
+      "severity": "MEDIUM",
+      "resource_name": "aws_eks_cluster.eks",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "main.tf",
+      "start_line": 797,
+      "end_line": 818
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0039",
+      "title": "EKS should have the encryption of secrets enabled",
+      "severity": "HIGH",
+      "resource_name": "aws_eks_cluster.eks",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "main.tf",
+      "start_line": 797,
+      "end_line": 818
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0178",
+      "title": "VPC Flow Logs is a feature that enables you to capture information about the IP traffic going to and from network interfaces in your VPC. After you've created a flow log, you can view and retrieve its data in Amazon CloudWatch Logs. It is recommended that VPC Flow Logs be enabled for packet \"Rejects\" for VPCs.",
+      "severity": "MEDIUM",
+      "resource_name": "aws_vpc.main",
+      "resource_type": "aws_vpc",
+      "file_path": "main.tf",
+      "start_line": 444,
+      "end_line": 453
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0342",
+      "title": "IAM Pass Role Filtering",
+      "severity": "MEDIUM",
+      "resource_name": "aws_iam_policy.eks_admin",
+      "resource_type": "aws_iam_policy",
+      "file_path": "main.tf",
+      "start_line": 51,
+      "end_line": 74
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_290",
+      "title": "Ensure IAM policies does not allow write access without constraints",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy.eks_admin",
+      "resource_type": "aws_iam_policy",
+      "file_path": "/main.tf",
+      "start_line": 48,
+      "end_line": 75
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_355",
+      "title": "Ensure no IAM policies documents allow \"*\" as a statement's resource for restrictable actions",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy.eks_admin",
+      "resource_type": "aws_iam_policy",
+      "file_path": "/main.tf",
+      "start_line": 48,
+      "end_line": 75
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_290",
+      "title": "Ensure IAM policies does not allow write access without constraints",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy.cluster_autoscaler",
+      "resource_type": "aws_iam_policy",
+      "file_path": "/main.tf",
+      "start_line": 195,
+      "end_line": 227
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_355",
+      "title": "Ensure no IAM policies documents allow \"*\" as a statement's resource for restrictable actions",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy.cluster_autoscaler",
+      "resource_type": "aws_iam_policy",
+      "file_path": "/main.tf",
+      "start_line": 195,
+      "end_line": 227
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_290",
+      "title": "Ensure IAM policies does not allow write access without constraints",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy.ebs_csi_driver_encryption",
+      "resource_type": "aws_iam_policy",
+      "file_path": "/main.tf",
+      "start_line": 393,
+      "end_line": 410
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_289",
+      "title": "Ensure IAM policies does not allow permissions management / resource exposure without constraints",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy.ebs_csi_driver_encryption",
+      "resource_type": "aws_iam_policy",
+      "file_path": "/main.tf",
+      "start_line": 393,
+      "end_line": 410
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_355",
+      "title": "Ensure no IAM policies documents allow \"*\" as a statement's resource for restrictable actions",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy.ebs_csi_driver_encryption",
+      "resource_type": "aws_iam_policy",
+      "file_path": "/main.tf",
+      "start_line": 393,
+      "end_line": 410
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_184",
+      "title": "Ensure resource is encrypted by KMS using a customer managed Key (CMK)",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_efs_file_system.eks",
+      "resource_type": "aws_efs_file_system",
+      "file_path": "/main.tf",
+      "start_line": 456,
+      "end_line": 466
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_37",
+      "title": "Ensure Amazon EKS control plane logging is enabled for all log types",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_eks_cluster.eks",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "/main.tf",
+      "start_line": 797,
+      "end_line": 818
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_58",
+      "title": "Ensure EKS Cluster has Secrets Encryption Enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_eks_cluster.eks",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "/main.tf",
+      "start_line": 797,
+      "end_line": 818
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_355",
+      "title": "Ensure no IAM policies documents allow \"*\" as a statement's resource for restrictable actions",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy.developer_eks",
+      "resource_type": "aws_iam_policy",
+      "file_path": "/main.tf",
+      "start_line": 916,
+      "end_line": 934
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_12",
+      "title": "Ensure the default security group of every VPC restricts all traffic",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_vpc.main",
+      "resource_type": "aws_vpc",
+      "file_path": "/main.tf",
+      "start_line": 444,
+      "end_line": 453
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_11",
+      "title": "Ensure VPC flow logging is enabled in all VPCs",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_vpc.main",
+      "resource_type": "aws_vpc",
+      "file_path": "/main.tf",
+      "start_line": 444,
+      "end_line": 453
+    }
+  ],
+  "target_count": 33,
+  "resolved_count": 16,
+  "introduced_count": 0,
+  "unchanged_count": 17,
+  "repair_success_rate": 0.48484848484848486,
+  "regression_rate": 0.0,
+  "net_delta": 16,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 16,
+      "introduced": 0,
+      "unchanged": 9
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 3
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 4
+    },
+    "other": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 1
+    }
+  },
+  "repair_cost_usd": 0.0024476000000000003,
+  "repair_tokens": 17008,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0111_nova-lite.repaired.tf",
+  "raw_response_path": "module_0111_nova-lite.raw.txt",
+  "repaired_code_sha256": "60b39f26550a640726a57e2072b2e87651792e1b3b1973dcab73f8ee250e4bf2"
+}

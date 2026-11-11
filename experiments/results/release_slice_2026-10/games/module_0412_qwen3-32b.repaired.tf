@@ -1,0 +1,867 @@
+module "this" {
+  source  = "cloudposse/label/null"
+  version = "0.25.0"
+
+  enabled             = var.enabled
+  namespace           = var.namespace
+  tenant              = var.tenant
+  environment         = var.environment
+  stage               = var.stage
+  name                = var.name
+  delimiter           = var.delimiter
+  attributes          = var.attributes
+  tags                = var.tags
+  additional_tag_map  = var.additional_tag_map
+  label_order         = var.label_order
+  regex_replace_chars = var.regex_replace_chars
+  id_length_limit     = var.id_length_limit
+  label_key_case      = var.label_key_case
+  label_value_case    = var.label_value_case
+  descriptor_formats  = var.descriptor_formats
+  labels_as_tags      = var.labels_as_tags
+
+  context = var.context
+}
+
+variable "context" {
+  type = any
+  default = {
+    enabled             = true
+    namespace           = null
+    tenant              = null
+    environment         = null
+    stage               = null
+    name                = null
+    delimiter           = null
+    attributes          = []
+    tags                = {}
+    additional_tag_map  = {}
+    regex_replace_chars = null
+    label_order         = []
+    id_length_limit     = null
+    label_key_case      = null
+    label_value_case    = null
+    descriptor_formats  = {}
+    labels_as_tags = ["unset"]
+  }
+
+  validation {
+    condition     = lookup(var.context, "label_key_case", null) == null ? true : contains(["lower", "title", "upper"], var.context["label_key_case"])
+    error_message = "Allowed values: `lower`, `title`, `upper`."
+  }
+
+  validation {
+    condition     = lookup(var.context, "label_value_case", null) == null ? true : contains(["lower", "title", "upper", "none"], var.context["label_value_case"])
+    error_message = "Allowed values: `lower`, `title`, `upper`, `none`."
+  }
+}
+
+variable "enabled" {
+  type        = bool
+  default     = null
+}
+
+variable "namespace" {
+  type        = string
+  default     = null
+}
+
+variable "tenant" {
+  type        = string
+  default     = null
+}
+
+variable "environment" {
+  type        = string
+  default     = null
+}
+
+variable "stage" {
+  type        = string
+  default     = null
+}
+
+variable "name" {
+  type        = string
+  default     = null
+}
+
+variable "delimiter" {
+  type        = string
+  default     = null
+}
+
+variable "attributes" {
+  type        = list(string)
+  default     = []
+}
+
+variable "labels_as_tags" {
+  type        = set(string)
+  default     = ["default"]
+}
+
+variable "tags" {
+  type        = map(string)
+  default     = {}
+}
+
+variable "additional_tag_map" {
+  type        = map(string)
+  default     = {}
+}
+
+variable "label_order" {
+  type        = list(string)
+  default     = null
+}
+
+variable "regex_replace_chars" {
+  type        = string
+  default     = null
+}
+
+variable "id_length_limit" {
+  type        = number
+  default     = null
+
+  validation {
+    condition     = var.id_length_limit == null ? true : var.id_length_limit >= 6 || var.id_length_limit == 0
+    error_message = "The id_length_limit must be >= 6 if supplied (not null), or 0 for unlimited length."
+  }
+}
+
+variable "label_key_case" {
+  type        = string
+  default     = null
+
+  validation {
+    condition     = var.label_key_case == null ? true : contains(["lower", "title", "upper"], var.label_key_case)
+    error_message = "Allowed values: `lower`, `title`, `upper`."
+  }
+}
+
+variable "label_value_case" {
+  type        = string
+  default     = null
+
+  validation {
+    condition     = var.label_value_case == null ? true : contains(["lower", "title", "upper", "none"], var.label_value_case)
+    error_message = "Allowed values: `lower`, `title`, `upper`, `none`."
+  }
+}
+
+variable "descriptor_formats" {
+  type        = any
+  default     = {}
+}
+
+locals {
+  eks_cluster_oidc_issuer_url = module.eks.outputs["eks_cluster_identity_oidc_issuer"]
+}
+
+module "eks_iam_policy" {
+  source  = "cloudposse/iam-policy/aws"
+  version = "0.2.2"
+
+  enabled = local.enabled_iam_role
+
+  iam_source_json_url   = var.iam_source_json_url
+  iam_policy_statements = var.iam_policy_statements
+
+  context = module.this.context
+}
+
+module "eks_iam_role" {
+  source  = "cloudposse/eks-iam-role/aws"
+  version = "0.10.3"
+
+  enabled = local.enabled_iam_role
+
+  aws_iam_policy_document     = local.enabled_iam_role ? join("", data.aws_iam_policy_document.github_action_runner.*.json) : "{}"
+  eks_cluster_oidc_issuer_url = local.eks_cluster_oidc_issuer_url
+  service_account_name        = var.service_account_name
+  service_account_namespace   = var.service_account_namespace
+
+  depends_on = [
+    data.aws_iam_policy_document.github_action_runner
+  ]
+
+  context = module.this.context
+}
+
+data "aws_iam_policy_document" "github_action_runner" {
+  count = local.enabled_iam_role ? 1 : 0
+
+  statement {
+    sid    = "EcrReadWriteDeleteAccess"
+    effect = "Allow"
+
+    actions = [
+      "ecr:GetAuthorizationToken",
+      "ecr:InitiateLayerUpload",
+      "ecr:UploadLayerPart",
+      "ecr:CompleteLayerUpload",
+      "ecr:PutImage",
+      "ecr:PutImageTagMutability",
+      "ecr:BatchCheckLayerAvailability",
+      "ecr:GetDownloadUrlForLayer",
+      "ecr:GetRepositoryPolicy",
+      "ecr:DescribeRepositories",
+      "ecr:ListImages",
+      "ecr:DescribeImages",
+      "ecr:BatchGetImage",
+      "ecr:DescribeImageScanFindings",
+      "ecr:StartImageScan",
+      "ecr:BatchDeleteImage",
+      "ecr:TagResource",
+      "ecr:UntagResource",
+      "ecr:GetLifecyclePolicy",
+      "ecr:PutLifecyclePolicy",
+      "ecr:StartLifecyclePolicyPreview",
+      "ecr:GetLifecyclePolicyPreview",
+      "ecr:DeleteLifecyclePolicy",
+      "ecr:PutImageScanningConfiguration",
+    ]
+    resources = ["*"]
+  }
+
+  statement {
+    sid = "AssumeRoles"
+
+    actions = [
+      "sts:AssumeRole",
+      "sts:TagSession",
+    ]
+
+    effect    = "Allow"
+    resources = [module.iam_primary_roles.outputs.role_name_role_arn_map["cicd"]]
+  }
+
+  statement {
+    sid = "AllowGithubActionRunnersSSMAccess"
+
+    actions = [
+      "ssm:DescribeParameters"
+    ]
+
+    effect    = "Allow"
+    resources = ["*"]
+  }
+
+  statement {
+    sid = "AllowGithubActionRunnersSSMReadAccess"
+
+    actions = [
+      "ssm:GetParameter",
+      "ssm:GetParameters",
+      "ssm:GetParametersByPath"
+    ]
+
+    effect = "Allow"
+
+    resources = [
+      format(
+        "arn:%s:ssm:%s:%s:parameter/github-action/secrets/*",
+        data.aws_partition.current.partition,
+        var.region,
+        data.aws_caller_identity.current.account_id
+      )
+    ]
+  }
+}
+
+data "aws_iam_policy_document" "github_action_runner_kms" {
+  count = local.enabled_iam_role ? 1 : 0
+
+  statement {
+    sid = "AllowGithubActionRunnersToDecrypt"
+
+    actions = [
+      "kms:Decrypt",
+      "kms:DescribeKey",
+      "kms:GenerateDataKey*"
+    ]
+
+    effect = "Allow"
+
+    resources = [
+      aws_kms_key.github_action_runner[0].arn
+    ]
+  }
+}
+
+resource "aws_iam_policy" "github_action_runner_kms" {
+  count = local.enabled_iam_role ? 1 : 0
+
+  name        = "github_action_runner_kms"
+  description = "Grants github-runners access to kms"
+
+  policy = data.aws_iam_policy_document.github_action_runner_kms[0].json
+
+  tags = module.this.tags
+}
+
+resource "aws_iam_role_policy_attachment" "github_action_runner_kms" {
+  count = local.enabled_iam_role ? 1 : 0
+
+  role       = module.eks_iam_role.service_account_role_name
+  policy_arn = aws_iam_policy.github_action_runner_kms[0].arn
+}
+
+resource "aws_kms_key" "github_action_runner" {
+  count = local.enabled ? 1 : 0
+
+  description             = "Github Action Runners key used for decryption - ${module.github_action_controller_label.id}"
+  enable_key_rotation     = true
+  deletion_window_in_days = 30
+  key_policy              = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "Allow access for Key Administrators",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
+        ]
+      },
+      "Action": [
+        "kms:Create*",
+        "kms:Describe*",
+        "kms:Enable*",
+        "kms:List*",
+        "kms:Put*",
+        "kms:Revoke*",
+        "kms:ScheduleKeyDeletion",
+        "kms:TagResource",
+        "kms:UntagResource",
+        "kms:Update*"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "Allow use of the key",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
+        ]
+      },
+      "Action": [
+        "kms:Decrypt",
+        "kms:DescribeKey",
+        "kms:GenerateDataKey*"
+      ],
+      "Resource": "*"
+    }
+  ]
+}
+EOF
+  tags                    = module.github_action_controller_label.tags
+}
+
+resource "aws_kms_alias" "github_action_runner" {
+  count = local.enabled ? 1 : 0
+
+  name          = format("alias/%v", module.github_action_controller_label.id)
+  target_key_id = aws_kms_key.github_action_runner[0].key_id
+}
+
+locals {
+  enabled                     = module.this.enabled
+  eks_cluster_oidc_issuer_url = module.eks.outputs["eks_cluster_identity_oidc_issuer"]
+  enabled_iam_role            = local.enabled && var.iam_role_enabled
+  runners = [for r in var.runner_configurations : merge(r, tomap({
+    "type"   = lower(coalesce(contains(keys(r), "repo") ? "repo" : "", contains(keys(r), "org") ? "org" : "")),
+    "target" = coalesce(lookup(r, "org", ""), lookup(r, "repo", ""))
+    }))
+  ]
+}
+
+data "aws_caller_identity" "current" {
+  count = local.enabled ? 1 : 0
+}
+data "aws_partition" "current" {
+  count = local.enabled ? 1 : 0
+}
+
+module "github_action_controller_label" {
+  source     = "cloudposse/label/null"
+  version    = "0.25.0"
+  context    = module.this.context
+  attributes = ["github-actions-controller"]
+}
+
+module "actions_runner_controller" {
+  source  = "cloudposse/helm-release/aws"
+  version = "0.3.1"
+
+  name    = var.controller_chart_release_name
+  enabled = local.enabled
+
+  repository    = var.controller_chart_repo
+  chart         = var.controller_chart_name
+  chart_version = var.controller_chart_version
+
+  create_namespace     = var.controller_chart_namespace_create
+  kubernetes_namespace = var.controller_chart_namespace
+
+  iam_role_enabled    = local.enabled_iam_role
+  iam_source_json_url = var.iam_source_json_url
+
+  eks_cluster_oidc_issuer_url                 = local.eks_cluster_oidc_issuer_url
+  service_account_name                        = var.service_account_name
+  service_account_namespace                   = var.service_account_namespace
+  service_account_role_arn_annotation_enabled = true
+
+  values = [
+    yamlencode(yamldecode(
+      file("${path.module}/runners/actions-runner-controller/values.yaml"))
+    ),
+    yamlencode(var.controller_chart_values),
+  ]
+
+  set = [
+    {
+      name  = "image.repository"
+      value = var.controller_chart_image
+      type  = "string"
+    },
+    {
+      name  = "image.tag"
+      value = var.controller_chart_image_tag
+      type  = "string"
+    },
+    {
+      name  = "serviceAccount.name"
+      value = "github-action-runner"
+      type  = "string"
+    },
+  ]
+
+  iam_policy_statements = flatten([var.iam_policy_statements, [
+    {
+      sid    = "EcrReadWriteDeleteAccess"
+      effect = "Allow"
+
+      actions = [
+        "ecr:GetAuthorizationToken",
+        "ecr:InitiateLayerUpload",
+        "ecr:UploadLayerPart",
+        "ecr:CompleteLayerUpload",
+        "ecr:PutImage",
+        "ecr:PutImageTagMutability",
+        "ecr:BatchCheckLayerAvailability",
+        "ecr:GetDownloadUrlForLayer",
+        "ecr:GetRepositoryPolicy",
+        "ecr:DescribeRepositories",
+        "ecr:ListImages",
+        "ecr:DescribeImages",
+        "ecr:BatchGetImage",
+        "ecr:DescribeImageScanFindings",
+        "ecr:StartImageScan",
+        "ecr:BatchDeleteImage",
+        "ecr:TagResource",
+        "ecr:UntagResource",
+        "ecr:GetLifecyclePolicy",
+        "ecr:PutLifecyclePolicy",
+        "ecr:StartLifecyclePolicyPreview",
+        "ecr:GetLifecyclePolicyPreview",
+        "ecr:DeleteLifecyclePolicy",
+        "ecr:PutImageScanningConfiguration",
+      ]
+      resources = ["*"]
+    },
+    {
+      sid = "AssumeRoles"
+
+      actions = [
+        "sts:AssumeRole",
+        "sts:TagSession",
+      ]
+
+      effect    = "Allow"
+      resources = [module.iam_primary_roles.outputs.role_name_role_arn_map["cicd"]]
+    },
+    {
+      sid = "AllowGithubActionRunnersSSMAccess"
+
+      actions = [
+        "ssm:DescribeParameters"
+      ]
+
+      effect    = "Allow"
+      resources = ["*"]
+    },
+    {
+      sid = "AllowGithubActionRunnersSSMReadAccess"
+
+      actions = [
+        "ssm:GetParameter",
+        "ssm:GetParameters",
+        "ssm:GetParametersByPath"
+      ]
+
+      effect = "Allow"
+
+      resources = [
+        format(
+          "arn:%s:ssm:%s:%s:parameter/github-action/secrets/*",
+          join("", data.aws_partition.current.*.partition),
+          var.region,
+          join("", data.aws_caller_identity.current.*.account_id)
+        )
+      ]
+    },
+    {
+      sid = "AllowGithubActionRunnersToDecrypt"
+
+      actions = [
+        "kms:Decrypt",
+        "kms:DescribeKey",
+        "kms:GenerateDataKey*"
+      ]
+
+      effect = "Allow"
+
+      resources = [
+        aws_kms_key.github_action_runner[0].arn
+      ]
+    }
+  ]])
+}
+
+module "github_action_helm_label" {
+  count = local.enabled ? length(local.runners) : 0
+
+  source  = "cloudposse/label/null"
+  version = "0.25.0"
+  context = module.this.context
+  attributes = [
+    local.runners[count.index]["type"],
+    replace(local.runners[count.index]["target"], "/", "-"),
+  ]
+}
+
+module "actions_runner" {
+  source  = "cloudposse/helm-release/aws"
+  version = "0.3.1"
+
+  depends_on = [
+    module.actions_runner_controller
+  ]
+
+  count = local.enabled ? length(local.runners) : 0
+
+  name       = module.github_action_helm_label[count.index].tags["Attributes"]
+  repository = var.controller_chart_repo
+  chart      = "${path.module}/runners/actions-runner/chart"
+
+  create_namespace     = true
+  kubernetes_namespace = "actions-runner-system"
+
+  values = [
+    yamlencode({
+      autoscale            = var.autoscale_types[var.autoscale_type]
+      release_name         = module.github_action_helm_label[count.index].tags["Attributes"]
+      role_arn             = module.actions_runner_controller.service_account_role_arn
+      runner_resources     = var.runner_types[coalesce(lookup(local.runners[count.index], "runner_type", ""), var.runner_type)]
+      runners_image        = var.runner_chart_image
+      service_account_name = "github-action-runner"
+      target               = local.runners[count.index]["target"]
+      type                 = local.runners[count.index]["type"]
+    }),
+    yamlencode(var.runner_chart_values),
+  ]
+}
+
+output "release_name" {
+  value       = var.controller_chart_release_name
+}
+
+output "release_namespace" {
+  value       = var.controller_chart_namespace
+}
+
+output "service_account_role_arn" {
+  value       = module.actions_runner_controller.service_account_role_arn
+}
+
+output "kms_key_arn" {
+  value       = join("", aws_kms_key.github_action_runner.*.arn)
+}
+
+output "kms_alias" {
+  value       = join("", aws_kms_alias.github_action_runner.*.name)
+}
+
+provider "aws" {
+  region = var.region
+
+  profile = module.iam_roles.profiles_enabled ? coalesce(var.import_profile_name, module.iam_roles.terraform_profile_name) : null
+  dynamic "assume_role" {
+    for_each = module.iam_roles.profiles_enabled ? [] : ["role"]
+    content {
+      role_arn = coalesce(var.import_role_arn, module.iam_roles.terraform_role_arn)
+    }
+  }
+}
+
+module "iam_roles" {
+  source  = "../account-map/modules/iam-roles"
+  context = module.this.context
+}
+
+variable "import_profile_name" {
+  type        = string
+  default     = null
+}
+
+variable "import_role_arn" {
+  type        = string
+  default     = null
+}
+
+data "aws_eks_cluster" "kubernetes" {
+  count = local.enabled ? 1 : 0
+
+  name = module.eks.outputs.eks_cluster_id
+}
+
+data "aws_eks_cluster_auth" "kubernetes" {
+  count = local.enabled ? 1 : 0
+
+  name = module.eks.outputs.eks_cluster_id
+}
+
+provider "helm" {
+  kubernetes {
+    host                   = local.enabled ? data.aws_eks_cluster.kubernetes[0].endpoint : null
+    token                  = local.enabled ? data.aws_eks_cluster_auth.kubernetes[0].token : null
+    cluster_ca_certificate = local.enabled ? base64decode(data.aws_eks_cluster.kubernetes[0].certificate_authority[0].data) : null
+  }
+}
+
+module "iam_primary_roles" {
+  source  = "cloudposse/stack-config/yaml//modules/remote-state"
+  version = "0.22.0"
+
+  component   = "iam-primary-roles"
+  environment = var.iam_primary_roles_environment_name
+  stage       = var.iam_primary_roles_stage_name
+
+  context = module.this.context
+}
+
+module "eks" {
+  source  = "cloudposse/stack-config/yaml//modules/remote-state"
+  version = "0.22.0"
+
+  component = "eks"
+
+  context = module.this.context
+}
+
+variable "region" {
+  type        = string
+}
+
+variable "iam_primary_roles_environment_name" {
+  type        = string
+  default     = "gbl"
+}
+
+variable "iam_primary_roles_stage_name" {
+  type        = string
+  default     = "identity"
+}
+
+variable "controller_chart_namespace" {
+  type        = string
+  default     = "actions-runner-system"
+}
+
+variable "controller_chart_namespace_create" {
+  type        = bool
+  default     = true
+}
+
+variable "controller_chart_release_name" {
+  type        = string
+  default     = "actions-runner-controller"
+}
+
+variable "controller_chart_name" {
+  type        = string
+  default     = "actions-runner-controller"
+}
+
+variable "controller_chart_repo" {
+  type        = string
+  default     = "https://actions-runner-controller.github.io/actions-runner-controller"
+}
+
+variable "controller_chart_version" {
+  type        = string
+  default     = "0.12.8"
+}
+
+variable "controller_chart_image" {
+  type        = string
+  default     = "summerwind/actions-runner-controller"
+}
+
+variable "controller_chart_image_tag" {
+  type        = string
+  default     = "v0.19.0"
+}
+
+variable "controller_chart_values" {
+  type        = any
+  default     = {}
+}
+
+variable "runner_chart_image" {
+  type        = string
+  default     = "actions-runner"
+}
+
+variable "runner_chart_values" {
+  type        = any
+  default     = {}
+}
+
+variable "runner_type" {
+  description = "Default choice if not defined in runner_configurations"
+  default     = "small"
+}
+
+variable "runner_types" {
+  description = "Map to define resources limits and requests"
+
+  type = map(object({
+    resources = object({
+      limits = object({
+        cpu    = string,
+        memory = string
+      }),
+      requests = object({
+        cpu    = string,
+        memory = string
+      })
+    })
+  }))
+
+  default = {
+    small = {
+      resources = {
+        limits = {
+          cpu    = "3"
+          memory = "12Gi"
+        }
+        requests = {
+          cpu    = "1"
+          memory = "1Gi"
+        }
+      }
+    }
+  }
+}
+
+variable "autoscale_type" {
+  description = "Default choice if not defined in autoscale_types"
+  default     = "low_concurrency"
+}
+
+variable "autoscale_types" {
+  description = "Map to define HRA CRD scaling configurations"
+
+  type = map(object({
+    minReplicas = number,
+    maxReplicas = number
+    metrics = object({
+      type                = string,
+      scaleUpThreshold    = number,
+      scaleDownThreshold  = number,
+      scaleUpAdjustment   = number,
+      scaleDownAdjustment = number
+    })
+  }))
+
+  default = {
+    low_concurrency = {
+      minReplicas = 1
+      maxReplicas = 8
+      metrics = {
+        type                = "PercentageRunnersBusy"
+        scaleUpThreshold    = 0.75
+        scaleDownThreshold  = 0.3
+        scaleUpAdjustment   = 1
+        scaleDownAdjustment = 1
+      }
+    }
+  }
+}
+
+variable "runner_configurations" {
+  description = "List of maps to create runners from"
+
+  type = list(map(string))
+
+  validation {
+    condition     = alltrue([for r in var.runner_configurations : lookup(r, "repo", "") != "" || lookup(r, "org", "") != ""])
+    error_message = "Variable runner_configurations must contain a target key of either `repo` or `org`."
+  }
+
+  validation {
+    condition     = alltrue([for r in var.runner_configurations : alltrue([for k in keys(r) : contains(["repo", "org", "runner_type", "autoscale_type"], k)])])
+    error_message = "Unknown map key, must be one of repo, org, runner_type or autoscale_type."
+  }
+
+  validation {
+    condition     = alltrue([for r in var.runner_configurations : lookup(r, "repo", "") != "" && lookup(r, "org", "") != "" ? false : true])
+    error_message = "Variable runner_configurations can contain only one target key of either `repo` or `org` not both."
+  }
+}
+
+variable "iam_role_enabled" {
+  type        = bool
+  default     = false
+}
+
+variable "iam_source_json_url" {
+  type        = string
+  default     = null
+}
+
+variable "iam_policy_statements" {
+  type        = any
+  default     = []
+}
+
+variable "service_account_name" {
+  type        = string
+  default     = null
+}
+
+variable "service_account_namespace" {
+  type        = string
+  default     = null
+}
+
+terraform {
+  required_version = ">= 1.0.0"
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 3.0"
+    }
+    helm = {
+      source  = "hashicorp/helm"
+      version = ">= 2.0"
+    }
+  }
+}

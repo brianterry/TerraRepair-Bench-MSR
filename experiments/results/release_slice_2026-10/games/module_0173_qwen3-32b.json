@@ -1,0 +1,186 @@
+{
+  "module_id": "module_0173",
+  "model_id": "qwen3-32b",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0178",
+      "title": "VPC Flow Logs is a feature that enables you to capture information about the IP traffic going to and from network interfaces in your VPC. After you've created a flow log, you can view and retrieve its data in Amazon CloudWatch Logs. It is recommended that VPC Flow Logs be enabled for packet \"Rejects\" for VPCs.",
+      "severity": "MEDIUM",
+      "resource_name": "aws_vpc.default",
+      "resource_type": "aws_vpc",
+      "file_path": "vpc.tf",
+      "start_line": 1,
+      "end_line": 7
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_130",
+      "title": "Ensure VPC subnets do not assign public IP by default",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_subnet.subnets_pub",
+      "resource_type": "aws_subnet",
+      "file_path": "/subnet.tf",
+      "start_line": 2,
+      "end_line": 16
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_12",
+      "title": "Ensure the default security group of every VPC restricts all traffic",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_vpc.default",
+      "resource_type": "aws_vpc",
+      "file_path": "/vpc.tf",
+      "start_line": 1,
+      "end_line": 7
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_11",
+      "title": "Ensure VPC flow logging is enabled in all VPCs",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_vpc.default",
+      "resource_type": "aws_vpc",
+      "file_path": "/vpc.tf",
+      "start_line": 1,
+      "end_line": 7
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0017",
+      "title": "CloudWatch log groups should be encrypted using CMK",
+      "severity": "LOW",
+      "resource_name": "aws_cloudwatch_log_group.default",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "main.tf",
+      "start_line": 189,
+      "end_line": 192
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0124",
+      "title": "Missing description for security group rule.",
+      "severity": "LOW",
+      "resource_name": "aws_security_group.default",
+      "resource_type": "aws_security_group",
+      "file_path": "main.tf",
+      "start_line": 203,
+      "end_line": 208
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0178",
+      "title": "VPC Flow Logs is a feature that enables you to capture information about the IP traffic going to and from network interfaces in your VPC. After you've created a flow log, you can view and retrieve its data in Amazon CloudWatch Logs. It is recommended that VPC Flow Logs be enabled for packet \"Rejects\" for VPCs.",
+      "severity": "MEDIUM",
+      "resource_name": "aws_vpc.default",
+      "resource_type": "aws_vpc",
+      "file_path": "main.tf",
+      "start_line": 174,
+      "end_line": 180
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_158",
+      "title": "Ensure that CloudWatch Log Group is encrypted by KMS",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.default",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/main.tf",
+      "start_line": 189,
+      "end_line": 192
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_338",
+      "title": "Ensure CloudWatch log groups retains logs for at least 1 year",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.default",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/main.tf",
+      "start_line": 189,
+      "end_line": 192
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "Ensure every security group and rule has a description",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group.default",
+      "resource_type": "aws_security_group",
+      "file_path": "/main.tf",
+      "start_line": 199,
+      "end_line": 216
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_12",
+      "title": "Ensure the default security group of every VPC restricts all traffic",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_vpc.default",
+      "resource_type": "aws_vpc",
+      "file_path": "/main.tf",
+      "start_line": 174,
+      "end_line": 180
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_11",
+      "title": "Ensure VPC flow logging is enabled in all VPCs",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_vpc.default",
+      "resource_type": "aws_vpc",
+      "file_path": "/main.tf",
+      "start_line": 174,
+      "end_line": 180
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_5",
+      "title": "Ensure that Security Groups are attached to another resource",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group.default",
+      "resource_type": "aws_security_group",
+      "file_path": "/main.tf",
+      "start_line": 199,
+      "end_line": 216
+    }
+  ],
+  "target_count": 4,
+  "resolved_count": 1,
+  "introduced_count": 6,
+  "unchanged_count": 3,
+  "repair_success_rate": 0.25,
+  "regression_rate": 1.5,
+  "net_delta": -5,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 1,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 2,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 1,
+      "unchanged": 2
+    },
+    "other": {
+      "resolved": 0,
+      "introduced": 3,
+      "unchanged": 1
+    }
+  },
+  "repair_cost_usd": 0.0012515999999999998,
+  "repair_tokens": 3129,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0173_qwen3-32b.repaired.tf",
+  "raw_response_path": "module_0173_qwen3-32b.raw.txt",
+  "repaired_code_sha256": "6bc59849cf8db32c6167f6b8a3ed88097a874390dea4fa90fd205df572df9523"
+}

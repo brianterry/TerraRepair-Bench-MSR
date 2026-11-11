@@ -1,0 +1,23 @@
+{
+  "findings_count": 3,
+  "findings": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "consul_iam_policies_servers"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "security_group_rules"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "consul_cluster"
+    }
+  ]
+}

@@ -1,0 +1,86 @@
+{
+  "module_id": "module_0180",
+  "model_id": "grok-4-6",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0124",
+      "title": "Missing description for security group rule.",
+      "severity": "LOW",
+      "resource_name": "aws_security_group_rule.alb_to_ecs",
+      "resource_type": "aws_security_group_rule",
+      "file_path": "alb.tf",
+      "start_line": 10,
+      "end_line": 17
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0034",
+      "title": "ECS clusters should have container insights enabled",
+      "severity": "LOW",
+      "resource_name": "aws_ecs_cluster.cluster",
+      "resource_type": "aws_ecs_cluster",
+      "file_path": "main.tf",
+      "start_line": 32,
+      "end_line": 34
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "Ensure every security group and rule has a description",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group_rule.alb_to_ecs",
+      "resource_type": "aws_security_group_rule",
+      "file_path": "/alb.tf",
+      "start_line": 10,
+      "end_line": 17
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_65",
+      "title": "Ensure container insights are enabled on ECS cluster",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_ecs_cluster.cluster",
+      "resource_type": "aws_ecs_cluster",
+      "file_path": "/main.tf",
+      "start_line": 32,
+      "end_line": 34
+    }
+  ],
+  "findings_after": [],
+  "target_count": 4,
+  "resolved_count": 4,
+  "introduced_count": 0,
+  "unchanged_count": 0,
+  "repair_success_rate": 1.0,
+  "regression_rate": 0.0,
+  "net_delta": 4,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 2,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 2,
+      "introduced": 0,
+      "unchanged": 0
+    }
+  },
+  "repair_cost_usd": 0.016874,
+  "repair_tokens": 4163,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0180_grok-4-6.repaired.tf",
+  "raw_response_path": "module_0180_grok-4-6.raw.txt",
+  "repaired_code_sha256": "675449155582eea99d98cc766556372072f29a4c1df38e75b9efea37d13c4f08"
+}

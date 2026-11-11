@@ -1,0 +1,285 @@
+{
+  "module_id": "module_0328",
+  "model_id": "llama-3-3-70b",
+  "findings_before": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_62",
+      "title": "Ensure S3 buckets should have event notifications enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.access_logging",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 1,
+      "end_line": 7
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_6",
+      "title": "Ensure that S3 bucket has a Public Access block",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.access_logging",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 1,
+      "end_line": 7
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_28",
+      "title": "Ensure public facing ALB are protected by WAF",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lb.main",
+      "resource_type": "aws_lb",
+      "file_path": "/main.tf",
+      "start_line": 9,
+      "end_line": 20
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_18",
+      "title": "Ensure the S3 bucket has access logging enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.access_logging",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 1,
+      "end_line": 7
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_145",
+      "title": "Ensure that S3 buckets are encrypted with KMS by default",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.access_logging",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 1,
+      "end_line": 7
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_61",
+      "title": "Ensure that an S3 bucket has a lifecycle configuration",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.access_logging",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 1,
+      "end_line": 7
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_21",
+      "title": "Ensure all data stored in the S3 bucket have versioning enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.access_logging",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 1,
+      "end_line": 7
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_144",
+      "title": "Ensure that S3 bucket has cross-region replication enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.access_logging",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 1,
+      "end_line": 7
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0065",
+      "title": "A KMS key is not configured to auto-rotate.",
+      "severity": "MEDIUM",
+      "resource_name": "aws_kms_key.s3",
+      "resource_type": "aws_kms_key",
+      "file_path": "main.tf",
+      "start_line": 95,
+      "end_line": 98
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_7",
+      "title": "Ensure rotation for customer created CMKs is enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_kms_key.s3",
+      "resource_type": "aws_kms_key",
+      "file_path": "/main.tf",
+      "start_line": 95,
+      "end_line": 98
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_192",
+      "title": "Ensure WAF prevents message lookup in Log4j2. See CVE-2021-44228 aka log4jshell",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_wafv2_web_acl.main",
+      "resource_type": "aws_wafv2_web_acl",
+      "file_path": "/main.tf",
+      "start_line": 149,
+      "end_line": 185
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_31",
+      "title": "Ensure WAF2 has a Logging Configuration",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_wafv2_web_acl.main",
+      "resource_type": "aws_wafv2_web_acl",
+      "file_path": "/main.tf",
+      "start_line": 149,
+      "end_line": 185
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_62",
+      "title": "Ensure S3 buckets should have event notifications enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.access_logging",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 1,
+      "end_line": 65
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_62",
+      "title": "Ensure S3 buckets should have event notifications enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.replication",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 67,
+      "end_line": 93
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_18",
+      "title": "Ensure the S3 bucket has access logging enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.replication",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 67,
+      "end_line": 93
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_6",
+      "title": "Ensure that S3 bucket has a Public Access block",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.access_logging",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 1,
+      "end_line": 65
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_6",
+      "title": "Ensure that S3 bucket has a Public Access block",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.replication",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 67,
+      "end_line": 93
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_64",
+      "title": "Ensure KMS key Policy is defined",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_kms_key.s3",
+      "resource_type": "aws_kms_key",
+      "file_path": "/main.tf",
+      "start_line": 95,
+      "end_line": 98
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_144",
+      "title": "Ensure that S3 bucket has cross-region replication enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.access_logging",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 1,
+      "end_line": 65
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_144",
+      "title": "Ensure that S3 bucket has cross-region replication enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.replication",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 67,
+      "end_line": 93
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_76",
+      "title": "Ensure AWS ALB attached WAFv2 WebACL is configured with AMR for Log4j Vulnerability",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lb.main",
+      "resource_type": "aws_lb",
+      "file_path": "/main.tf",
+      "start_line": 192,
+      "end_line": 204
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_61",
+      "title": "Ensure that an S3 bucket has a lifecycle configuration",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.replication",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 67,
+      "end_line": 93
+    }
+  ],
+  "target_count": 8,
+  "resolved_count": 5,
+  "introduced_count": 11,
+  "unchanged_count": 3,
+  "repair_success_rate": 0.625,
+  "regression_rate": 1.375,
+  "net_delta": -6,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 1,
+      "introduced": 3,
+      "unchanged": 1
+    },
+    "data_protection": {
+      "resolved": 2,
+      "introduced": 1,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 1,
+      "introduced": 4,
+      "unchanged": 1
+    },
+    "other": {
+      "resolved": 1,
+      "introduced": 3,
+      "unchanged": 1
+    }
+  },
+  "repair_cost_usd": 0.0023024,
+  "repair_tokens": 2878,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0328_llama-3-3-70b.repaired.tf",
+  "raw_response_path": "module_0328_llama-3-3-70b.raw.txt",
+  "repaired_code_sha256": "70367ecd035da709174ae6a732ee504bcb5a9205d91eea5975cb9a37ba987460"
+}

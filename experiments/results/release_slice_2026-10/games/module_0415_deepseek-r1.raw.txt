@@ -1,0 +1,52 @@
+
+
+module "this" {
+  source  = "git::https://github.com/cloudposse/terraform-null-label.git?ref=58c525e7d5cd2a9c7a05a11dc14d654e4b3f6b5d"
+
+  enabled             = var.enabled
+  namespace           = var.namespace
+  tenant              = var.tenant
+  environment         = var.environment
+  stage               = var.stage
+  name                = var.name
+  delimiter           = var.delimiter
+  attributes          = var.attributes
+  tags                = var.tags
+  additional_tag_map  = var.additional_tag_map
+  label_order         = var.label_order
+  regex_replace_chars = var.regex_replace_chars
+  id_length_limit     = var.id_length_limit
+  label_key_case      = var.label_key_case
+  label_value_case    = var.label_value_case
+  descriptor_formats  = var.descriptor_formats
+  labels_as_tags      = var.labels_as_tags
+
+  context = var.context
+}
+
+module "security_hub" {
+  count   = local.enabled && local.is_global_collector_account ? 1 : 0
+  source  = "git::https://github.com/cloudposse/terraform-aws-security-hub.git?ref=0a1b5c8d5e2c4f6a8b9c0d1e2f3a4b5c6d7e8f9"
+
+  create_sns_topic                = var.create_sns_topic
+  enabled_standards               = var.enabled_standards
+  finding_aggregator_enabled      = local.is_collector_region && var.finding_aggregator_enabled
+  finding_aggregator_linking_mode = var.finding_aggregator_linking_mode
+  finding_aggregator_regions      = var.finding_aggregator_regions
+  enable_default_standards        = var.enable_default_standards
+
+  context = module.this.context
+}
+
+module "account_map" {
+  source  = "git::https://github.com/cloudposse/terraform-aws-stack-config.git//modules/remote-state?ref=3a4b5c6d7e8f90a1b2c3d4e5f6a7b8c9d0e1f2"
+  version = "1.4.2"
+
+  component   = "account-map"
+  tenant      = (var.account_map_tenant != "") ? var.account_map_tenant : module.this.tenant
+  stage       = var.root_account_stage
+  environment = var.global_environment
+  privileged  = var.privileged
+
+  context = module.this.context
+}

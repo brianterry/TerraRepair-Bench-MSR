@@ -1,0 +1,77 @@
+{
+  "findings_count": 12,
+  "findings": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "vpc"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_27",
+      "title": "",
+      "resource_name": "aws_sqs_queue.this"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_27",
+      "title": "",
+      "resource_name": "aws_sqs_queue.failure"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_28",
+      "title": "",
+      "resource_name": "aws_dynamodb_table.this"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_119",
+      "title": "",
+      "resource_name": "aws_dynamodb_table.this"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_43",
+      "title": "",
+      "resource_name": "aws_kinesis_stream.this"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_185",
+      "title": "",
+      "resource_name": "aws_kinesis_stream.this"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_48",
+      "title": "",
+      "resource_name": "aws_mq_broker.this"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_209",
+      "title": "",
+      "resource_name": "aws_mq_broker.this"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_207",
+      "title": "",
+      "resource_name": "aws_mq_broker.this"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_149",
+      "title": "",
+      "resource_name": "aws_secretsmanager_secret.this"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_57",
+      "title": "",
+      "resource_name": "aws_secretsmanager_secret.this"
+    }
+  ]
+}

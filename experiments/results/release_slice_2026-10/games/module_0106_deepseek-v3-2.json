@@ -1,0 +1,362 @@
+{
+  "module_id": "module_0106",
+  "model_id": "deepseek-v3-2",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0024",
+      "title": "Point in time recovery should be enabled to protect DynamoDB table",
+      "severity": "MEDIUM",
+      "resource_name": "aws_dynamodb_table.terraform_state",
+      "resource_type": "aws_dynamodb_table",
+      "file_path": "main.tf",
+      "start_line": 39,
+      "end_line": 48
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0025",
+      "title": "DynamoDB tables should use at rest encryption with a Customer Managed Key",
+      "severity": "LOW",
+      "resource_name": "aws_dynamodb_table.terraform_state",
+      "resource_type": "aws_dynamodb_table",
+      "file_path": "main.tf",
+      "start_line": 39,
+      "end_line": 48
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "aws_s3_bucket.terraform_state",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 5,
+      "end_line": 11
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0132",
+      "title": "S3 encryption should use Customer Managed Keys",
+      "severity": "HIGH",
+      "resource_name": "aws_s3_bucket_server_side_encryption_configuration.terraform_state",
+      "resource_type": "aws_s3_bucket_server_side_encryption_configuration",
+      "file_path": "main.tf",
+      "start_line": 21,
+      "end_line": 29
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_28",
+      "title": "Ensure DynamoDB point in time recovery (backup) is enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_dynamodb_table.terraform_state",
+      "resource_type": "aws_dynamodb_table",
+      "file_path": "/main.tf",
+      "start_line": 39,
+      "end_line": 48
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_119",
+      "title": "Ensure DynamoDB Tables are encrypted using a KMS Customer Managed CMK",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_dynamodb_table.terraform_state",
+      "resource_type": "aws_dynamodb_table",
+      "file_path": "/main.tf",
+      "start_line": 39,
+      "end_line": 48
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_62",
+      "title": "Ensure S3 buckets should have event notifications enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.terraform_state",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 5,
+      "end_line": 11
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_61",
+      "title": "Ensure that an S3 bucket has a lifecycle configuration",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.terraform_state",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 5,
+      "end_line": 11
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_18",
+      "title": "Ensure the S3 bucket has access logging enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.terraform_state",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 5,
+      "end_line": 11
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_144",
+      "title": "Ensure that S3 bucket has cross-region replication enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.terraform_state",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 5,
+      "end_line": 11
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_145",
+      "title": "Ensure that S3 buckets are encrypted with KMS by default",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.terraform_state",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 5,
+      "end_line": 11
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0086",
+      "title": "S3 Access block should block public ACL",
+      "severity": "HIGH",
+      "resource_name": "aws_s3_bucket.terraform_state_replica",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 134,
+      "end_line": 136
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0087",
+      "title": "S3 Access block should block public policy",
+      "severity": "HIGH",
+      "resource_name": "aws_s3_bucket.terraform_state_replica",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 134,
+      "end_line": 136
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "aws_s3_bucket.terraform_state_replica",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 134,
+      "end_line": 136
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0090",
+      "title": "S3 Data should be versioned",
+      "severity": "MEDIUM",
+      "resource_name": "aws_s3_bucket.terraform_state_replica",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 134,
+      "end_line": 136
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0091",
+      "title": "S3 Access Block should Ignore Public ACL",
+      "severity": "HIGH",
+      "resource_name": "aws_s3_bucket.terraform_state_replica",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 134,
+      "end_line": 136
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0093",
+      "title": "S3 Access block should restrict public bucket to limit access",
+      "severity": "HIGH",
+      "resource_name": "aws_s3_bucket.terraform_state_replica",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 134,
+      "end_line": 136
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0094",
+      "title": "S3 buckets should each define an aws_s3_bucket_public_access_block",
+      "severity": "LOW",
+      "resource_name": "aws_s3_bucket.terraform_state_replica",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 134,
+      "end_line": 136
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0095",
+      "title": "Unencrypted SNS topic.",
+      "severity": "HIGH",
+      "resource_name": "aws_sns_topic.terraform_state",
+      "resource_type": "aws_sns_topic",
+      "file_path": "main.tf",
+      "start_line": 113,
+      "end_line": 115
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0132",
+      "title": "S3 encryption should use Customer Managed Keys",
+      "severity": "HIGH",
+      "resource_name": "aws_s3_bucket.terraform_state_replica",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 134,
+      "end_line": 136
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_300",
+      "title": "Ensure S3 lifecycle configuration sets period for aborting failed uploads",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket_lifecycle_configuration.terraform_state",
+      "resource_type": "aws_s3_bucket_lifecycle_configuration",
+      "file_path": "/main.tf",
+      "start_line": 47,
+      "end_line": 60
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_26",
+      "title": "Ensure all data stored in the SNS topic is encrypted",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_sns_topic.terraform_state",
+      "resource_type": "aws_sns_topic",
+      "file_path": "/main.tf",
+      "start_line": 113,
+      "end_line": 115
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_62",
+      "title": "Ensure S3 buckets should have event notifications enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.terraform_state_replica",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 134,
+      "end_line": 136
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_18",
+      "title": "Ensure the S3 bucket has access logging enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.terraform_state_replica",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 134,
+      "end_line": 136
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_64",
+      "title": "Ensure KMS key Policy is defined",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_kms_key.terraform_state",
+      "resource_type": "aws_kms_key",
+      "file_path": "/main.tf",
+      "start_line": 87,
+      "end_line": 91
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_21",
+      "title": "Ensure all data stored in the S3 bucket have versioning enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.terraform_state_replica",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 134,
+      "end_line": 136
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_6",
+      "title": "Ensure that S3 bucket has a Public Access block",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.terraform_state_replica",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 134,
+      "end_line": 136
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_61",
+      "title": "Ensure that an S3 bucket has a lifecycle configuration",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.terraform_state_replica",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 134,
+      "end_line": 136
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_145",
+      "title": "Ensure that S3 buckets are encrypted with KMS by default",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.terraform_state_replica",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 134,
+      "end_line": 136
+    }
+  ],
+  "target_count": 11,
+  "resolved_count": 11,
+  "introduced_count": 18,
+  "unchanged_count": 0,
+  "repair_success_rate": 1.0,
+  "regression_rate": 1.6363636363636365,
+  "net_delta": -7,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 0,
+      "introduced": 7,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 5,
+      "introduced": 5,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 3,
+      "introduced": 3,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 3,
+      "introduced": 3,
+      "unchanged": 0
+    }
+  },
+  "repair_cost_usd": 0.0029000600000000003,
+  "repair_tokens": 2039,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0106_deepseek-v3-2.repaired.tf",
+  "raw_response_path": "module_0106_deepseek-v3-2.raw.txt",
+  "repaired_code_sha256": "e25d64f303550fcb8fc7711d48da448540e7ca15350a1afd41d9062038b64ff5"
+}

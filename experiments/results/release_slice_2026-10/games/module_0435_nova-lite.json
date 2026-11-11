@@ -1,0 +1,314 @@
+{
+  "module_id": "module_0435",
+  "model_id": "nova-lite",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "aws_security_group_rule.egress[0]",
+      "resource_type": "aws_security_group_rule",
+      "file_path": "main.tf",
+      "start_line": 66,
+      "end_line": 66
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0124",
+      "title": "Missing description for security group rule.",
+      "severity": "LOW",
+      "resource_name": "aws_security_group_rule.egress[0]",
+      "resource_type": "aws_security_group_rule",
+      "file_path": "main.tf",
+      "start_line": 60,
+      "end_line": 68
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "this",
+      "resource_type": "this",
+      "file_path": "/context.tf",
+      "start_line": 23,
+      "end_line": 46
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "target_group_label",
+      "resource_type": "target_group_label",
+      "file_path": "/main.tf",
+      "start_line": 19,
+      "end_line": 31
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "cluster",
+      "resource_type": "cluster",
+      "file_path": "/main.tf",
+      "start_line": 70,
+      "end_line": 103
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "alb",
+      "resource_type": "alb",
+      "file_path": "/main.tf",
+      "start_line": 166,
+      "end_line": 229
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "Ensure every security group and rule has a description",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group_rule.ingress_cidr",
+      "resource_type": "aws_security_group_rule",
+      "file_path": "/main.tf",
+      "start_line": 40,
+      "end_line": 48
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "Ensure every security group and rule has a description",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group_rule.ingress_security_groups",
+      "resource_type": "aws_security_group_rule",
+      "file_path": "/main.tf",
+      "start_line": 50,
+      "end_line": 58
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "Ensure every security group and rule has a description",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group_rule.egress",
+      "resource_type": "aws_security_group_rule",
+      "file_path": "/main.tf",
+      "start_line": 60,
+      "end_line": 68
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "vpc",
+      "resource_type": "vpc",
+      "file_path": "/remote-state.tf",
+      "start_line": 1,
+      "end_line": 8
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "dns_delegated",
+      "resource_type": "dns_delegated",
+      "file_path": "/remote-state.tf",
+      "start_line": 10,
+      "end_line": 19
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_5",
+      "title": "Ensure that Security Groups are attached to another resource",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group.default",
+      "resource_type": "aws_security_group",
+      "file_path": "/main.tf",
+      "start_line": 33,
+      "end_line": 38
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "aws_security_group_rule.egress[0]",
+      "resource_type": "aws_security_group_rule",
+      "file_path": "main.tf",
+      "start_line": 66,
+      "end_line": 66
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0124",
+      "title": "Missing description for security group rule.",
+      "severity": "LOW",
+      "resource_name": "aws_security_group_rule.egress[0]",
+      "resource_type": "aws_security_group_rule",
+      "file_path": "main.tf",
+      "start_line": 60,
+      "end_line": 68
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "this",
+      "resource_type": "this",
+      "file_path": "/context.tf",
+      "start_line": 23,
+      "end_line": 46
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "target_group_label",
+      "resource_type": "target_group_label",
+      "file_path": "/main.tf",
+      "start_line": 19,
+      "end_line": 31
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "cluster",
+      "resource_type": "cluster",
+      "file_path": "/main.tf",
+      "start_line": 70,
+      "end_line": 103
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "alb",
+      "resource_type": "alb",
+      "file_path": "/main.tf",
+      "start_line": 166,
+      "end_line": 229
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "Ensure every security group and rule has a description",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group_rule.ingress_cidr",
+      "resource_type": "aws_security_group_rule",
+      "file_path": "/main.tf",
+      "start_line": 40,
+      "end_line": 48
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "Ensure every security group and rule has a description",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group_rule.ingress_security_groups",
+      "resource_type": "aws_security_group_rule",
+      "file_path": "/main.tf",
+      "start_line": 50,
+      "end_line": 58
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "Ensure every security group and rule has a description",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group_rule.egress",
+      "resource_type": "aws_security_group_rule",
+      "file_path": "/main.tf",
+      "start_line": 60,
+      "end_line": 68
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "vpc",
+      "resource_type": "vpc",
+      "file_path": "/remote-state.tf",
+      "start_line": 1,
+      "end_line": 8
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "dns_delegated",
+      "resource_type": "dns_delegated",
+      "file_path": "/remote-state.tf",
+      "start_line": 10,
+      "end_line": 19
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_5",
+      "title": "Ensure that Security Groups are attached to another resource",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group.default",
+      "resource_type": "aws_security_group",
+      "file_path": "/main.tf",
+      "start_line": 33,
+      "end_line": 38
+    }
+  ],
+  "target_count": 12,
+  "resolved_count": 0,
+  "introduced_count": 0,
+  "unchanged_count": 12,
+  "repair_success_rate": 0.0,
+  "regression_rate": 0.0,
+  "net_delta": 0,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 1
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 11
+    }
+  },
+  "repair_cost_usd": 0.0029372,
+  "repair_tokens": 19372,
+  "hcl_valid": false,
+  "failure_metadata": {
+    "source_chars": 30388,
+    "est_input_tokens": 7597,
+    "max_tokens": 40000,
+    "size_driven_failure": false,
+    "repair_error": "Repaired code failed HCL validation"
+  },
+  "repaired_code_path": "module_0435_nova-lite.repaired.tf",
+  "raw_response_path": "module_0435_nova-lite.raw.txt",
+  "repaired_code_sha256": "1e809f024494513e7d24c9e4d30069c267ee9ace3e2f12e0d6f07fa160ec5b4c"
+}

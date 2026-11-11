@@ -1,0 +1,125 @@
+{
+  "findings_count": 23,
+  "findings": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_149",
+      "title": "",
+      "resource_name": "aws_secretsmanager_secret.grafana"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "ebs_csi_driver_irsa"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "eks_blueprints_addons"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "eks_data_addons"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "fluentbit_s3_bucket"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_149",
+      "title": "",
+      "resource_name": "aws_secretsmanager_secret.postgres[0]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_149",
+      "title": "",
+      "resource_name": "aws_secretsmanager_secret.airflow_webserver[0]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_184",
+      "title": "",
+      "resource_name": "aws_efs_file_system.efs[0]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "db[0]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "security_group[0]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "airflow_irsa_scheduler[0]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "airflow_irsa_webserver[0]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "airflow_irsa_worker[0]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "airflow_s3_bucket[0]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "amp_ingest_irsa[0]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "spark_team_a_irsa"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "spark_logs_s3_bucket"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "eks"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "vpc"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_5",
+      "title": "",
+      "resource_name": "aws_security_group.efs[0]"
+    }
+  ]
+}

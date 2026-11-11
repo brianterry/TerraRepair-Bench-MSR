@@ -1,0 +1,270 @@
+{
+  "module_id": "module_0002",
+  "model_id": "qwen3-32b",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0038",
+      "title": "EKS Clusters should have cluster control plane logging turned on",
+      "severity": "MEDIUM",
+      "resource_name": "aws_eks_cluster.this[0]",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "main.tf",
+      "start_line": 36,
+      "end_line": 213
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "aws_security_group_rule.node[\"egress_all\"]",
+      "resource_type": "aws_security_group_rule",
+      "file_path": "node_groups.tf",
+      "start_line": 216,
+      "end_line": 216
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "kms",
+      "resource_type": "kms",
+      "file_path": "/main.tf",
+      "start_line": 338,
+      "end_line": 371
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_37",
+      "title": "Ensure Amazon EKS control plane logging is enabled for all log types",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_eks_cluster.this",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "/main.tf",
+      "start_line": 36,
+      "end_line": 213
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_58",
+      "title": "Ensure EKS Cluster has Secrets Encryption Enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_eks_cluster.this",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "/main.tf",
+      "start_line": 36,
+      "end_line": 213
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_338",
+      "title": "Ensure CloudWatch log groups retains logs for at least 1 year",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.this[0]",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/main.tf",
+      "start_line": 230,
+      "end_line": 245
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_111",
+      "title": "Ensure IAM policies does not allow write access without constraints",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.cni_ipv6_policy",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/node_groups.tf",
+      "start_line": 30,
+      "end_line": 50
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_356",
+      "title": "Ensure no IAM policies documents allow \"*\" as a statement's resource for restrictable actions",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.cni_ipv6_policy",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/node_groups.tf",
+      "start_line": 30,
+      "end_line": 50
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_5",
+      "title": "Ensure that Security Groups are attached to another resource",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group.cluster[0]",
+      "resource_type": "aws_security_group",
+      "file_path": "/main.tf",
+      "start_line": 397,
+      "end_line": 416
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_5",
+      "title": "Ensure that Security Groups are attached to another resource",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group.node",
+      "resource_type": "aws_security_group",
+      "file_path": "/node_groups.tf",
+      "start_line": 177,
+      "end_line": 199
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0038",
+      "title": "EKS Clusters should have cluster control plane logging turned on",
+      "severity": "MEDIUM",
+      "resource_name": "aws_eks_cluster.this[0]",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "main.tf",
+      "start_line": 36,
+      "end_line": 213
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "aws_security_group_rule.node[\"egress_all\"]",
+      "resource_type": "aws_security_group_rule",
+      "file_path": "node_groups.tf",
+      "start_line": 216,
+      "end_line": 216
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "kms",
+      "resource_type": "kms",
+      "file_path": "/main.tf",
+      "start_line": 338,
+      "end_line": 371
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_37",
+      "title": "Ensure Amazon EKS control plane logging is enabled for all log types",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_eks_cluster.this",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "/main.tf",
+      "start_line": 36,
+      "end_line": 213
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_58",
+      "title": "Ensure EKS Cluster has Secrets Encryption Enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_eks_cluster.this",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "/main.tf",
+      "start_line": 36,
+      "end_line": 213
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_338",
+      "title": "Ensure CloudWatch log groups retains logs for at least 1 year",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.this[0]",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/main.tf",
+      "start_line": 230,
+      "end_line": 245
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_111",
+      "title": "Ensure IAM policies does not allow write access without constraints",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.cni_ipv6_policy",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/node_groups.tf",
+      "start_line": 30,
+      "end_line": 50
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_356",
+      "title": "Ensure no IAM policies documents allow \"*\" as a statement's resource for restrictable actions",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.cni_ipv6_policy",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/node_groups.tf",
+      "start_line": 30,
+      "end_line": 50
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_5",
+      "title": "Ensure that Security Groups are attached to another resource",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group.cluster[0]",
+      "resource_type": "aws_security_group",
+      "file_path": "/main.tf",
+      "start_line": 397,
+      "end_line": 416
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_5",
+      "title": "Ensure that Security Groups are attached to another resource",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group.node",
+      "resource_type": "aws_security_group",
+      "file_path": "/node_groups.tf",
+      "start_line": 177,
+      "end_line": 199
+    }
+  ],
+  "target_count": 10,
+  "resolved_count": 0,
+  "introduced_count": 0,
+  "unchanged_count": 10,
+  "repair_success_rate": 0.0,
+  "regression_rate": 0.0,
+  "net_delta": 0,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 3
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 1
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 3
+    },
+    "other": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 3
+    }
+  },
+  "repair_cost_usd": 0.0,
+  "repair_tokens": 0,
+  "hcl_valid": false,
+  "failure_metadata": {
+    "source_chars": 126276,
+    "est_input_tokens": 31569,
+    "max_tokens": 40000,
+    "size_driven_failure": false,
+    "repair_error": "ValidationException: An error occurred (ValidationException) when calling the InvokeModel operation: ErrorEvent { error: APIError { type: \"BadRequestError\", code: Some(400), message: \"This model's maximum context length is 32768 tokens. However, you requested 16384 output tokens and your prompt contains at least 16385 input tokens, for a total of at least 32769 tokens. Please reduce the length of the input prompt or the number of requested output tokens. (parameter=input_tokens, value=16385)\", param: None } }"
+  },
+  "repaired_code_path": "module_0002_qwen3-32b.repaired.tf",
+  "raw_response_path": "module_0002_qwen3-32b.raw.txt",
+  "repaired_code_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

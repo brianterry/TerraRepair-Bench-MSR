@@ -1,0 +1,105 @@
+{
+  "experiment": "release_slice_2026-10",
+  "started": "2026-10-28T15:09:02.741952+00:00",
+  "region": "us-east-1",
+  "corpus_rule": {
+    "min_findings": 3,
+    "max_findings": 50
+  },
+  "candidates_scanned": 400,
+  "corpus_size": 262,
+  "models": [
+    "claude-sonnet-4-5",
+    "nova-pro",
+    "nova-lite",
+    "llama-3-3-70b",
+    "deepseek-r1",
+    "qwen3-32b",
+    "claude-sonnet-5",
+    "deepseek-v3-2",
+    "kimi-k2-5",
+    "grok-4-6"
+  ],
+  "model_details": {
+    "claude-sonnet-4-5": {
+      "bedrock_model_id": "us.anthropic.claude-sonnet-4-5-20250929-v1:0",
+      "effective_max_tokens": 40000,
+      "temperature_sent": true
+    },
+    "nova-pro": {
+      "bedrock_model_id": "us.amazon.nova-pro-v1:0",
+      "effective_max_tokens": 10000,
+      "temperature_sent": true
+    },
+    "nova-lite": {
+      "bedrock_model_id": "us.amazon.nova-lite-v1:0",
+      "effective_max_tokens": 10000,
+      "temperature_sent": true
+    },
+    "llama-3-3-70b": {
+      "bedrock_model_id": "us.meta.llama3-3-70b-instruct-v1:0",
+      "effective_max_tokens": 8192,
+      "temperature_sent": true
+    },
+    "deepseek-r1": {
+      "bedrock_model_id": "us.deepseek.r1-v1:0",
+      "effective_max_tokens": 32768,
+      "temperature_sent": true
+    },
+    "qwen3-32b": {
+      "bedrock_model_id": "qwen.qwen3-32b-v1:0",
+      "effective_max_tokens": 16384,
+      "temperature_sent": true
+    },
+    "claude-sonnet-5": {
+      "bedrock_model_id": "global.anthropic.claude-sonnet-5",
+      "effective_max_tokens": 40000,
+      "temperature_sent": false
+    },
+    "deepseek-v3-2": {
+      "bedrock_model_id": "deepseek.v3.2",
+      "effective_max_tokens": 16384,
+      "temperature_sent": true
+    },
+    "kimi-k2-5": {
+      "bedrock_model_id": "moonshotai.kimi-k2.5",
+      "effective_max_tokens": 16384,
+      "temperature_sent": true
+    },
+    "grok-4-6": {
+      "bedrock_model_id": "us.xai.grok-4.6",
+      "effective_max_tokens": 40000,
+      "temperature_sent": false
+    }
+  },
+  "git": {
+    "source": "image_build_arg",
+    "commit": "3a9ae7fe40d96f7a62c4b1003eabff8e702fa6ae",
+    "dirty": false,
+    "tracked_diff_sha256": null
+  },
+  "scanner_versions": {
+    "trivy": "Version: 0.74.0",
+    "checkov": "3.3.20"
+  },
+  "temperature": 0.0,
+  "concurrency": 4,
+  "max_tokens": 40000,
+  "bedrock_timeouts_s": {
+    "read_timeout": 900,
+    "invoke_timeout": 900.0
+  },
+  "completed": "2026-10-29T03:30:24.984718+00:00",
+  "cost_by_model": {
+    "claude-sonnet-4-5": 30.2352,
+    "nova-pro": 2.7472,
+    "nova-lite": 0.4137,
+    "llama-3-3-70b": 1.9596,
+    "deepseek-r1": 9.5837,
+    "qwen3-32b": 0.8234,
+    "claude-sonnet-5": 37.451,
+    "deepseek-v3-2": 3.9326,
+    "kimi-k2-5": 3.9633,
+    "grok-4-6": 35.3435
+  }
+}

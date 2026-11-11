@@ -1,0 +1,274 @@
+{
+  "module_id": "module_0017",
+  "model_id": "llama-3-3-70b",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0143",
+      "title": "IAM policies should not be granted directly to users.",
+      "severity": "LOW",
+      "resource_name": "aws_iam_user.example[0]",
+      "resource_type": "aws_iam_user",
+      "file_path": "main.tf",
+      "start_line": 16,
+      "end_line": 19
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_356",
+      "title": "Ensure no IAM policies documents allow \"*\" as a statement's resource for restrictable actions",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.cloudwatch_read_only",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/main.tf",
+      "start_line": 28,
+      "end_line": 38
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_111",
+      "title": "Ensure IAM policies does not allow write access without constraints",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.cloudwatch_full_access",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/main.tf",
+      "start_line": 47,
+      "end_line": 53
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_356",
+      "title": "Ensure no IAM policies documents allow \"*\" as a statement's resource for restrictable actions",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.cloudwatch_full_access",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/main.tf",
+      "start_line": 47,
+      "end_line": 53
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_273",
+      "title": "Ensure access is controlled through SSO and not AWS IAM defined users",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_user.example[0]",
+      "resource_type": "aws_iam_user",
+      "file_path": "/main.tf",
+      "start_line": 16,
+      "end_line": 19
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_40",
+      "title": "Ensure IAM policies are attached only to groups or roles (Reducing access management complexity may in-turn reduce opportunity for a principal to inadvertently receive or retain excessive privileges.)",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_user_policy_attachment.neo_cloudwatch_full_access",
+      "resource_type": "aws_iam_user_policy_attachment",
+      "file_path": "/main.tf",
+      "start_line": 55,
+      "end_line": 60
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_40",
+      "title": "Ensure IAM policies are attached only to groups or roles (Reducing access management complexity may in-turn reduce opportunity for a principal to inadvertently receive or retain excessive privileges.)",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_user_policy_attachment.neo_cloudwatch_read_only",
+      "resource_type": "aws_iam_user_policy_attachment",
+      "file_path": "/main.tf",
+      "start_line": 62,
+      "end_line": 67
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_273",
+      "title": "Ensure access is controlled through SSO and not AWS IAM defined users",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_user.example[1]",
+      "resource_type": "aws_iam_user",
+      "file_path": "/main.tf",
+      "start_line": 16,
+      "end_line": 19
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_273",
+      "title": "Ensure access is controlled through SSO and not AWS IAM defined users",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_user.example[2]",
+      "resource_type": "aws_iam_user",
+      "file_path": "/main.tf",
+      "start_line": 16,
+      "end_line": 19
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0123",
+      "title": "IAM groups should have MFA enforcement activated.",
+      "severity": "MEDIUM",
+      "resource_name": "aws_iam_group.example[0]",
+      "resource_type": "aws_iam_group",
+      "file_path": "main.tf",
+      "start_line": 16,
+      "end_line": 19
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0123",
+      "title": "IAM groups should have MFA enforcement activated.",
+      "severity": "MEDIUM",
+      "resource_name": "aws_iam_group.example[1]",
+      "resource_type": "aws_iam_group",
+      "file_path": "main.tf",
+      "start_line": 16,
+      "end_line": 19
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0123",
+      "title": "IAM groups should have MFA enforcement activated.",
+      "severity": "MEDIUM",
+      "resource_name": "aws_iam_group.example[2]",
+      "resource_type": "aws_iam_group",
+      "file_path": "main.tf",
+      "start_line": 16,
+      "end_line": 19
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_273",
+      "title": "Ensure access is controlled through SSO and not AWS IAM defined users",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_user.example[0]",
+      "resource_type": "aws_iam_user",
+      "file_path": "/main.tf",
+      "start_line": 21,
+      "end_line": 24
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_273",
+      "title": "Ensure access is controlled through SSO and not AWS IAM defined users",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_user.example[1]",
+      "resource_type": "aws_iam_user",
+      "file_path": "/main.tf",
+      "start_line": 21,
+      "end_line": 24
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_273",
+      "title": "Ensure access is controlled through SSO and not AWS IAM defined users",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_user.example[2]",
+      "resource_type": "aws_iam_user",
+      "file_path": "/main.tf",
+      "start_line": 21,
+      "end_line": 24
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_21",
+      "title": "Ensure that all IAM users are members of at least one IAM group.",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_group_membership.example[0]",
+      "resource_type": "aws_iam_group_membership",
+      "file_path": "/main.tf",
+      "start_line": 26,
+      "end_line": 31
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_21",
+      "title": "Ensure that all IAM users are members of at least one IAM group.",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_group_membership.example[1]",
+      "resource_type": "aws_iam_group_membership",
+      "file_path": "/main.tf",
+      "start_line": 26,
+      "end_line": 31
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_21",
+      "title": "Ensure that all IAM users are members of at least one IAM group.",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_group_membership.example[2]",
+      "resource_type": "aws_iam_group_membership",
+      "file_path": "/main.tf",
+      "start_line": 26,
+      "end_line": 31
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_14",
+      "title": "Ensure that IAM groups includes at least one IAM user",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_group_membership.example[0]",
+      "resource_type": "aws_iam_group_membership",
+      "file_path": "/main.tf",
+      "start_line": 26,
+      "end_line": 31
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_14",
+      "title": "Ensure that IAM groups includes at least one IAM user",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_group_membership.example[1]",
+      "resource_type": "aws_iam_group_membership",
+      "file_path": "/main.tf",
+      "start_line": 26,
+      "end_line": 31
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_14",
+      "title": "Ensure that IAM groups includes at least one IAM user",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_group_membership.example[2]",
+      "resource_type": "aws_iam_group_membership",
+      "file_path": "/main.tf",
+      "start_line": 26,
+      "end_line": 31
+    }
+  ],
+  "target_count": 9,
+  "resolved_count": 6,
+  "introduced_count": 9,
+  "unchanged_count": 3,
+  "repair_success_rate": 0.6666666666666666,
+  "regression_rate": 1.0,
+  "net_delta": -3,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 6,
+      "introduced": 9,
+      "unchanged": 3
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    }
+  },
+  "repair_cost_usd": 0.0018984000000000002,
+  "repair_tokens": 2373,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0017_llama-3-3-70b.repaired.tf",
+  "raw_response_path": "module_0017_llama-3-3-70b.raw.txt",
+  "repaired_code_sha256": "e3b7ace2700fb5be5fa50bb63d37fa171eda8e8349623cfb47fa22b4efa47baa"
+}

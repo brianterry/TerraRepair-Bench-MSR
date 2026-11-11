@@ -1,0 +1,472 @@
+{
+  "module_id": "module_0154",
+  "model_id": "qwen3-32b",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0017",
+      "title": "CloudWatch log groups should be encrypted using CMK",
+      "severity": "LOW",
+      "resource_name": "aws_cloudwatch_log_group.custom",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "main.tf",
+      "start_line": 485,
+      "end_line": 488
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0096",
+      "title": "Unencrypted SQS queue.",
+      "severity": "HIGH",
+      "resource_name": "aws_sqs_queue.dlq",
+      "resource_type": "aws_sqs_queue",
+      "file_path": "main.tf",
+      "start_line": 481,
+      "end_line": 483
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "module.s3_bucket",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/s3-bucket/aws/main.tf",
+      "start_line": 77,
+      "end_line": 89
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0132",
+      "title": "S3 encryption should use Customer Managed Keys",
+      "severity": "HIGH",
+      "resource_name": "module.s3_bucket",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/s3-bucket/aws/main.tf",
+      "start_line": 77,
+      "end_line": 89
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_27",
+      "title": "Ensure all data stored in the SQS queue is encrypted",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_sqs_queue.dlq",
+      "resource_type": "aws_sqs_queue",
+      "file_path": "/main.tf",
+      "start_line": 481,
+      "end_line": 483
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_158",
+      "title": "Ensure that CloudWatch Log Group is encrypted by KMS",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.custom",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/main.tf",
+      "start_line": 485,
+      "end_line": 488
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_338",
+      "title": "Ensure CloudWatch log groups retains logs for at least 1 year",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.custom",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/main.tf",
+      "start_line": 485,
+      "end_line": 488
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "s3_bucket",
+      "resource_type": "s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 463,
+      "end_line": 479
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0066",
+      "title": "Lambda functions should have X-Ray tracing enabled",
+      "severity": "LOW",
+      "resource_name": "module.lambda_at_edge",
+      "resource_type": "module",
+      "file_path": "git::https:/github.com/terraform-aws-modules/terraform-aws-lambda.git?ref=v5.0.0/main.tf",
+      "start_line": 24,
+      "end_line": 139
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0066",
+      "title": "Lambda functions should have X-Ray tracing enabled",
+      "severity": "LOW",
+      "resource_name": "module.lambda_function",
+      "resource_type": "module",
+      "file_path": "git::https:/github.com/terraform-aws-modules/terraform-aws-lambda.git?ref=v5.0.0/main.tf",
+      "start_line": 24,
+      "end_line": 139
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0066",
+      "title": "Lambda functions should have X-Ray tracing enabled",
+      "severity": "LOW",
+      "resource_name": "module.lambda_function_existing_package_local",
+      "resource_type": "module",
+      "file_path": "git::https:/github.com/terraform-aws-modules/terraform-aws-lambda.git?ref=v5.0.0/main.tf",
+      "start_line": 24,
+      "end_line": 139
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0066",
+      "title": "Lambda functions should have X-Ray tracing enabled",
+      "severity": "LOW",
+      "resource_name": "module.lambda_function_for_each[\"dev\"]",
+      "resource_type": "module",
+      "file_path": "git::https:/github.com/terraform-aws-modules/terraform-aws-lambda.git?ref=v5.0.0/main.tf",
+      "start_line": 24,
+      "end_line": 139
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0066",
+      "title": "Lambda functions should have X-Ray tracing enabled",
+      "severity": "LOW",
+      "resource_name": "module.lambda_function_for_each[\"prod\"]",
+      "resource_type": "module",
+      "file_path": "git::https:/github.com/terraform-aws-modules/terraform-aws-lambda.git?ref=v5.0.0/main.tf",
+      "start_line": 24,
+      "end_line": 139
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0066",
+      "title": "Lambda functions should have X-Ray tracing enabled",
+      "severity": "LOW",
+      "resource_name": "module.lambda_function_for_each[\"staging\"]",
+      "resource_type": "module",
+      "file_path": "git::https:/github.com/terraform-aws-modules/terraform-aws-lambda.git?ref=v5.0.0/main.tf",
+      "start_line": 24,
+      "end_line": 139
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0066",
+      "title": "Lambda functions should have X-Ray tracing enabled",
+      "severity": "LOW",
+      "resource_name": "module.lambda_function_no_create_log_group_permission",
+      "resource_type": "module",
+      "file_path": "git::https:/github.com/terraform-aws-modules/terraform-aws-lambda.git?ref=v5.0.0/main.tf",
+      "start_line": 24,
+      "end_line": 139
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0066",
+      "title": "Lambda functions should have X-Ray tracing enabled",
+      "severity": "LOW",
+      "resource_name": "module.lambda_function_with_custom_auto_log_group",
+      "resource_type": "module",
+      "file_path": "git::https:/github.com/terraform-aws-modules/terraform-aws-lambda.git?ref=v5.0.0/main.tf",
+      "start_line": 24,
+      "end_line": 139
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0066",
+      "title": "Lambda functions should have X-Ray tracing enabled",
+      "severity": "LOW",
+      "resource_name": "module.lambda_function_with_custom_log_group",
+      "resource_type": "module",
+      "file_path": "git::https:/github.com/terraform-aws-modules/terraform-aws-lambda.git?ref=v5.0.0/main.tf",
+      "start_line": 24,
+      "end_line": 139
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0066",
+      "title": "Lambda functions should have X-Ray tracing enabled",
+      "severity": "LOW",
+      "resource_name": "module.lambda_function_with_package_deploying_externally",
+      "resource_type": "module",
+      "file_path": "git::https:/github.com/terraform-aws-modules/terraform-aws-lambda.git?ref=v5.0.0/main.tf",
+      "start_line": 24,
+      "end_line": 139
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0066",
+      "title": "Lambda functions should have X-Ray tracing enabled",
+      "severity": "LOW",
+      "resource_name": "module.lambda_with_mixed_trusted_entities",
+      "resource_type": "module",
+      "file_path": "git::https:/github.com/terraform-aws-modules/terraform-aws-lambda.git?ref=v5.0.0/main.tf",
+      "start_line": 24,
+      "end_line": 139
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0066",
+      "title": "Lambda functions should have X-Ray tracing enabled",
+      "severity": "LOW",
+      "resource_name": "module.lambda_with_provisioned_concurrency",
+      "resource_type": "module",
+      "file_path": "git::https:/github.com/terraform-aws-modules/terraform-aws-lambda.git?ref=v5.0.0/main.tf",
+      "start_line": 24,
+      "end_line": 139
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0135",
+      "title": "SQS queue should be encrypted with a CMK.",
+      "severity": "HIGH",
+      "resource_name": "aws_sqs_queue.dlq",
+      "resource_type": "aws_sqs_queue",
+      "file_path": "main.tf",
+      "start_line": 497,
+      "end_line": 497
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "lambda_function",
+      "resource_type": "lambda_function",
+      "file_path": "/main.tf",
+      "start_line": 19,
+      "end_line": 190
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "lambda_function_existing_package_local",
+      "resource_type": "lambda_function_existing_package_local",
+      "file_path": "/main.tf",
+      "start_line": 196,
+      "end_line": 217
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "lambda_layer_local",
+      "resource_type": "lambda_layer_local",
+      "file_path": "/main.tf",
+      "start_line": 223,
+      "end_line": 234
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "lambda_layer_with_package_deploying_externally",
+      "resource_type": "lambda_layer_with_package_deploying_externally",
+      "file_path": "/main.tf",
+      "start_line": 241,
+      "end_line": 254
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "lambda_layer_s3",
+      "resource_type": "lambda_layer_s3",
+      "file_path": "/main.tf",
+      "start_line": 260,
+      "end_line": 273
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "lambda_at_edge",
+      "resource_type": "lambda_at_edge",
+      "file_path": "/main.tf",
+      "start_line": 279,
+      "end_line": 295
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "lambda_with_provisioned_concurrency",
+      "resource_type": "lambda_with_provisioned_concurrency",
+      "file_path": "/main.tf",
+      "start_line": 301,
+      "end_line": 314
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "lambda_with_mixed_trusted_entities",
+      "resource_type": "lambda_with_mixed_trusted_entities",
+      "file_path": "/main.tf",
+      "start_line": 320,
+      "end_line": 345
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "lambda_function_for_each[\"staging\"]",
+      "resource_type": "lambda_function_for_each[\"staging\"]",
+      "file_path": "/main.tf",
+      "start_line": 351,
+      "end_line": 366
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "lambda_function_with_package_deploying_externally",
+      "resource_type": "lambda_function_with_package_deploying_externally",
+      "file_path": "/main.tf",
+      "start_line": 373,
+      "end_line": 384
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "lambda_function_no_create_log_group_permission",
+      "resource_type": "lambda_function_no_create_log_group_permission",
+      "file_path": "/main.tf",
+      "start_line": 390,
+      "end_line": 401
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "lambda_function_with_custom_log_group",
+      "resource_type": "lambda_function_with_custom_log_group",
+      "file_path": "/main.tf",
+      "start_line": 407,
+      "end_line": 423
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "lambda_function_with_custom_auto_log_group",
+      "resource_type": "lambda_function_with_custom_auto_log_group",
+      "file_path": "/main.tf",
+      "start_line": 429,
+      "end_line": 443
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "disabled_lambda",
+      "resource_type": "disabled_lambda",
+      "file_path": "/main.tf",
+      "start_line": 449,
+      "end_line": 453
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "s3_bucket",
+      "resource_type": "s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 463,
+      "end_line": 493
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "lambda_function_for_each[\"prod\"]",
+      "resource_type": "lambda_function_for_each[\"prod\"]",
+      "file_path": "/main.tf",
+      "start_line": 351,
+      "end_line": 366
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "lambda_function_for_each[\"dev\"]",
+      "resource_type": "lambda_function_for_each[\"dev\"]",
+      "file_path": "/main.tf",
+      "start_line": 351,
+      "end_line": 366
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_73",
+      "title": "Ensure AWS SQS uses CMK not AWS default keys for encryption",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_sqs_queue.dlq",
+      "resource_type": "aws_sqs_queue",
+      "file_path": "/main.tf",
+      "start_line": 495,
+      "end_line": 498
+    }
+  ],
+  "target_count": 8,
+  "resolved_count": 7,
+  "introduced_count": 30,
+  "unchanged_count": 1,
+  "repair_success_rate": 0.875,
+  "regression_rate": 3.75,
+  "net_delta": -23,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 5,
+      "introduced": 2,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 2,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 0,
+      "introduced": 28,
+      "unchanged": 1
+    }
+  },
+  "repair_cost_usd": 0.0037188000000000004,
+  "repair_tokens": 9297,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0154_qwen3-32b.repaired.tf",
+  "raw_response_path": "module_0154_qwen3-32b.raw.txt",
+  "repaired_code_sha256": "d0d5546fe6841b34e710f60370dfa91336e4da071b812e887d22d9a40e198f45"
+}

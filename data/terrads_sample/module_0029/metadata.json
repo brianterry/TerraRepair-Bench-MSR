@@ -1,0 +1,35 @@
+{
+  "findings_count": 5,
+  "findings": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_79",
+      "title": "",
+      "resource_name": "aws_launch_configuration.example"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_8",
+      "title": "",
+      "resource_name": "aws_launch_configuration.example"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_315",
+      "title": "",
+      "resource_name": "aws_autoscaling_group.example"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "",
+      "resource_name": "aws_security_group.instance"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "",
+      "resource_name": "aws_security_group_rule.allow_server_http_inbound"
+    }
+  ]
+}

@@ -1,0 +1,87 @@
+{
+  "module_id": "module_0156",
+  "model_id": "claude-sonnet-4-5",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0066",
+      "title": "Lambda functions should have X-Ray tracing enabled",
+      "severity": "LOW",
+      "resource_name": "aws_lambda_function.this[0]",
+      "resource_type": "aws_lambda_function",
+      "file_path": "main.tf",
+      "start_line": 41,
+      "end_line": 202
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_50",
+      "title": "X-Ray tracing is enabled for Lambda",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.this[0]",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/main.tf",
+      "start_line": 41,
+      "end_line": 202
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_258",
+      "title": "Ensure that Lambda function URLs AuthType is not None",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function_url.this[0]",
+      "resource_type": "aws_lambda_function_url",
+      "file_path": "/main.tf",
+      "start_line": 480,
+      "end_line": 504
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_50",
+      "title": "X-Ray tracing is enabled for Lambda",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.this[0]",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/main.tf",
+      "start_line": 379,
+      "end_line": 540
+    }
+  ],
+  "target_count": 3,
+  "resolved_count": 2,
+  "introduced_count": 0,
+  "unchanged_count": 1,
+  "repair_success_rate": 0.6666666666666666,
+  "regression_rate": 0.0,
+  "net_delta": 2,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 2,
+      "introduced": 0,
+      "unchanged": 1
+    }
+  },
+  "repair_cost_usd": 0.362829,
+  "repair_tokens": 40519,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0156_claude-sonnet-4-5.repaired.tf",
+  "raw_response_path": "module_0156_claude-sonnet-4-5.raw.txt",
+  "repaired_code_sha256": "7679f466e17ecc89561e365894a435b5bc285a55cfb910a55cf053dd912f78b0"
+}

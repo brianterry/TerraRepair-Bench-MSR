@@ -1,0 +1,125 @@
+{
+  "findings_count": 32,
+  "findings": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_50",
+      "title": "",
+      "resource_name": "aws_lambda_function.hello"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_117",
+      "title": "",
+      "resource_name": "aws_lambda_function.hello"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_116",
+      "title": "",
+      "resource_name": "aws_lambda_function.hello"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_272",
+      "title": "",
+      "resource_name": "aws_lambda_function.hello"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_363",
+      "title": "",
+      "resource_name": "aws_lambda_function.hello"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_115",
+      "title": "",
+      "resource_name": "aws_lambda_function.hello"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_338",
+      "title": "",
+      "resource_name": "aws_cloudwatch_log_group.hello"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_158",
+      "title": "",
+      "resource_name": "aws_cloudwatch_log_group.hello"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_338",
+      "title": "",
+      "resource_name": "aws_cloudwatch_log_group.main_api_gw"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_158",
+      "title": "",
+      "resource_name": "aws_cloudwatch_log_group.main_api_gw"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_309",
+      "title": "",
+      "resource_name": "aws_apigatewayv2_route.get_hello"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_309",
+      "title": "",
+      "resource_name": "aws_apigatewayv2_route.post_hello"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_50",
+      "title": "",
+      "resource_name": "aws_lambda_function.s3"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_117",
+      "title": "",
+      "resource_name": "aws_lambda_function.s3"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_116",
+      "title": "",
+      "resource_name": "aws_lambda_function.s3"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_272",
+      "title": "",
+      "resource_name": "aws_lambda_function.s3"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_363",
+      "title": "",
+      "resource_name": "aws_lambda_function.s3"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_115",
+      "title": "",
+      "resource_name": "aws_lambda_function.s3"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_338",
+      "title": "",
+      "resource_name": "aws_cloudwatch_log_group.s3"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_158",
+      "title": "",
+      "resource_name": "aws_cloudwatch_log_group.s3"
+    }
+  ]
+}

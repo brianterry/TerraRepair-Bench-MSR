@@ -1,0 +1,395 @@
+{
+  "module_id": "module_0154",
+  "model_id": "llama-3-3-70b",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0017",
+      "title": "CloudWatch log groups should be encrypted using CMK",
+      "severity": "LOW",
+      "resource_name": "aws_cloudwatch_log_group.custom",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "main.tf",
+      "start_line": 485,
+      "end_line": 488
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0096",
+      "title": "Unencrypted SQS queue.",
+      "severity": "HIGH",
+      "resource_name": "aws_sqs_queue.dlq",
+      "resource_type": "aws_sqs_queue",
+      "file_path": "main.tf",
+      "start_line": 481,
+      "end_line": 483
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "module.s3_bucket",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/s3-bucket/aws/main.tf",
+      "start_line": 77,
+      "end_line": 89
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0132",
+      "title": "S3 encryption should use Customer Managed Keys",
+      "severity": "HIGH",
+      "resource_name": "module.s3_bucket",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/s3-bucket/aws/main.tf",
+      "start_line": 77,
+      "end_line": 89
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_27",
+      "title": "Ensure all data stored in the SQS queue is encrypted",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_sqs_queue.dlq",
+      "resource_type": "aws_sqs_queue",
+      "file_path": "/main.tf",
+      "start_line": 481,
+      "end_line": 483
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_158",
+      "title": "Ensure that CloudWatch Log Group is encrypted by KMS",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.custom",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/main.tf",
+      "start_line": 485,
+      "end_line": 488
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_338",
+      "title": "Ensure CloudWatch log groups retains logs for at least 1 year",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.custom",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/main.tf",
+      "start_line": 485,
+      "end_line": 488
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "s3_bucket",
+      "resource_type": "s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 463,
+      "end_line": 479
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0065",
+      "title": "A KMS key is not configured to auto-rotate.",
+      "severity": "MEDIUM",
+      "resource_name": "aws_kms_key.dlq",
+      "resource_type": "aws_kms_key",
+      "file_path": "main.tf",
+      "start_line": 519,
+      "end_line": 522
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0065",
+      "title": "A KMS key is not configured to auto-rotate.",
+      "severity": "MEDIUM",
+      "resource_name": "aws_kms_key.log_group",
+      "resource_type": "aws_kms_key",
+      "file_path": "main.tf",
+      "start_line": 530,
+      "end_line": 533
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0086",
+      "title": "S3 Access block should block public ACL",
+      "severity": "HIGH",
+      "resource_name": "aws_s3_bucket.logging",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 494,
+      "end_line": 509
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0087",
+      "title": "S3 Access block should block public policy",
+      "severity": "HIGH",
+      "resource_name": "aws_s3_bucket.logging",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 494,
+      "end_line": 509
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "aws_s3_bucket.logging",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 494,
+      "end_line": 509
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0090",
+      "title": "S3 Data should be versioned",
+      "severity": "MEDIUM",
+      "resource_name": "aws_s3_bucket.logging",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 494,
+      "end_line": 509
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0091",
+      "title": "S3 Access Block should Ignore Public ACL",
+      "severity": "HIGH",
+      "resource_name": "aws_s3_bucket.logging",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 494,
+      "end_line": 509
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0093",
+      "title": "S3 Access block should restrict public bucket to limit access",
+      "severity": "HIGH",
+      "resource_name": "aws_s3_bucket.logging",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 494,
+      "end_line": 509
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0094",
+      "title": "S3 buckets should each define an aws_s3_bucket_public_access_block",
+      "severity": "LOW",
+      "resource_name": "aws_s3_bucket.logging",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 494,
+      "end_line": 509
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0132",
+      "title": "S3 encryption should use Customer Managed Keys",
+      "severity": "HIGH",
+      "resource_name": "aws_s3_bucket.logging",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 494,
+      "end_line": 509
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "lambda_function_for_each[\"staging\"]",
+      "resource_type": "lambda_function_for_each[\"staging\"]",
+      "file_path": "/main.tf",
+      "start_line": 351,
+      "end_line": 366
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "s3_bucket",
+      "resource_type": "s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 463,
+      "end_line": 492
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "lambda_function_for_each[\"dev\"]",
+      "resource_type": "lambda_function_for_each[\"dev\"]",
+      "file_path": "/main.tf",
+      "start_line": 351,
+      "end_line": 366
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "lambda_function_for_each[\"prod\"]",
+      "resource_type": "lambda_function_for_each[\"prod\"]",
+      "file_path": "/main.tf",
+      "start_line": 351,
+      "end_line": 366
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_7",
+      "title": "Ensure rotation for customer created CMKs is enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_kms_key.dlq",
+      "resource_type": "aws_kms_key",
+      "file_path": "/main.tf",
+      "start_line": 519,
+      "end_line": 522
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_7",
+      "title": "Ensure rotation for customer created CMKs is enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_kms_key.log_group",
+      "resource_type": "aws_kms_key",
+      "file_path": "/main.tf",
+      "start_line": 530,
+      "end_line": 533
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_62",
+      "title": "Ensure S3 buckets should have event notifications enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.logging",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 494,
+      "end_line": 509
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_6",
+      "title": "Ensure that S3 bucket has a Public Access block",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.logging",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 494,
+      "end_line": 509
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_18",
+      "title": "Ensure the S3 bucket has access logging enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.logging",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 494,
+      "end_line": 509
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_64",
+      "title": "Ensure KMS key Policy is defined",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_kms_key.dlq",
+      "resource_type": "aws_kms_key",
+      "file_path": "/main.tf",
+      "start_line": 519,
+      "end_line": 522
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_64",
+      "title": "Ensure KMS key Policy is defined",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_kms_key.log_group",
+      "resource_type": "aws_kms_key",
+      "file_path": "/main.tf",
+      "start_line": 530,
+      "end_line": 533
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_61",
+      "title": "Ensure that an S3 bucket has a lifecycle configuration",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.logging",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 494,
+      "end_line": 509
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_144",
+      "title": "Ensure that S3 bucket has cross-region replication enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.logging",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 494,
+      "end_line": 509
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_145",
+      "title": "Ensure that S3 buckets are encrypted with KMS by default",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.logging",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 494,
+      "end_line": 509
+    }
+  ],
+  "target_count": 8,
+  "resolved_count": 7,
+  "introduced_count": 23,
+  "unchanged_count": 1,
+  "repair_success_rate": 0.875,
+  "regression_rate": 2.875,
+  "net_delta": -16,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 0,
+      "introduced": 8,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 5,
+      "introduced": 4,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 2,
+      "introduced": 3,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 0,
+      "introduced": 8,
+      "unchanged": 1
+    }
+  },
+  "repair_cost_usd": 0.0071488,
+  "repair_tokens": 8936,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0154_llama-3-3-70b.repaired.tf",
+  "raw_response_path": "module_0154_llama-3-3-70b.raw.txt",
+  "repaired_code_sha256": "15c263679024db77a4a2578fa769b4c85a6f75dbbf9a8e352eb3414d7c37598a"
+}

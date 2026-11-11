@@ -1,0 +1,97 @@
+{
+  "module_id": "module_0023",
+  "model_id": "grok-4-6",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0065",
+      "title": "A KMS key is not configured to auto-rotate.",
+      "severity": "MEDIUM",
+      "resource_name": "aws_kms_key.cmk",
+      "resource_type": "aws_kms_key",
+      "file_path": "main.tf",
+      "start_line": 17,
+      "end_line": 23
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_111",
+      "title": "Ensure IAM policies does not allow write access without constraints",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.cmk_admin_policy",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/main.tf",
+      "start_line": 27,
+      "end_line": 37
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_356",
+      "title": "Ensure no IAM policies documents allow \"*\" as a statement's resource for restrictable actions",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.cmk_admin_policy",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/main.tf",
+      "start_line": 27,
+      "end_line": 37
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_109",
+      "title": "Ensure IAM policies does not allow permissions management / resource exposure without constraints",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.cmk_admin_policy",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/main.tf",
+      "start_line": 27,
+      "end_line": 37
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_7",
+      "title": "Ensure rotation for customer created CMKs is enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_kms_key.cmk",
+      "resource_type": "aws_kms_key",
+      "file_path": "/main.tf",
+      "start_line": 17,
+      "end_line": 23
+    }
+  ],
+  "findings_after": [],
+  "target_count": 5,
+  "resolved_count": 5,
+  "introduced_count": 0,
+  "unchanged_count": 0,
+  "repair_success_rate": 1.0,
+  "regression_rate": 0.0,
+  "net_delta": 5,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 3,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 1,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 1,
+      "introduced": 0,
+      "unchanged": 0
+    }
+  },
+  "repair_cost_usd": 0.050984,
+  "repair_tokens": 9084,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0023_grok-4-6.repaired.tf",
+  "raw_response_path": "module_0023_grok-4-6.raw.txt",
+  "repaired_code_sha256": "7326953a1f404020f33167c1753e26cbd0c4cc7797b9b11cea4b3d1f74277aa9"
+}

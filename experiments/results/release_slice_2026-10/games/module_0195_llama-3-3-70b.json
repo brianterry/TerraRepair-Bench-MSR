@@ -1,0 +1,384 @@
+{
+  "module_id": "module_0195",
+  "model_id": "llama-3-3-70b",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0065",
+      "title": "A KMS key is not configured to auto-rotate.",
+      "severity": "MEDIUM",
+      "resource_name": "aws_kms_key.this",
+      "resource_type": "aws_kms_key",
+      "file_path": "main.tf",
+      "start_line": 395,
+      "end_line": 396
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0178",
+      "title": "VPC Flow Logs is a feature that enables you to capture information about the IP traffic going to and from network interfaces in your VPC. After you've created a flow log, you can view and retrieve its data in Amazon CloudWatch Logs. It is recommended that VPC Flow Logs be enabled for packet \"Rejects\" for VPCs.",
+      "severity": "MEDIUM",
+      "resource_name": "module.vpc",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/vpc/aws/main.tf",
+      "start_line": 28,
+      "end_line": 53
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_394",
+      "title": "Ensure aws_availability_zones data source pins zone identity so its result set does not silently expand when AWS adds an Availability Zone",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_availability_zones.available",
+      "resource_type": "aws_availability_zones",
+      "file_path": "/main.tf",
+      "start_line": 5,
+      "end_line": 5
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_7",
+      "title": "Ensure rotation for customer created CMKs is enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_kms_key.this",
+      "resource_type": "aws_kms_key",
+      "file_path": "/main.tf",
+      "start_line": 395,
+      "end_line": 396
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "vpc",
+      "resource_type": "vpc",
+      "file_path": "/main.tf",
+      "start_line": 356,
+      "end_line": 368
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "security_group",
+      "resource_type": "security_group",
+      "file_path": "/main.tf",
+      "start_line": 376,
+      "end_line": 388
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_64",
+      "title": "Ensure KMS key Policy is defined",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_kms_key.this",
+      "resource_type": "aws_kms_key",
+      "file_path": "/main.tf",
+      "start_line": 395,
+      "end_line": 396
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0028",
+      "title": "aws_instance should activate session tokens for Instance Metadata Service.",
+      "severity": "HIGH",
+      "resource_name": "module.ec2_computed_name",
+      "resource_type": "module",
+      "file_path": "github.com/terraform-aws-modules/terraform-aws-ec2-instance.git?ref=v5.0.0/main.tf",
+      "start_line": 271,
+      "end_line": 271
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0131",
+      "title": "Instance with unencrypted block device.",
+      "severity": "HIGH",
+      "resource_name": "module.ec2_computed_name",
+      "resource_type": "module",
+      "file_path": "github.com/terraform-aws-modules/terraform-aws-ec2-instance.git?ref=v5.0.0/main.tf",
+      "start_line": 177,
+      "end_line": 335
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0086",
+      "title": "S3 Access block should block public ACL",
+      "severity": "HIGH",
+      "resource_name": "aws_s3_bucket.flow_log",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 424,
+      "end_line": 439
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0087",
+      "title": "S3 Access block should block public policy",
+      "severity": "HIGH",
+      "resource_name": "aws_s3_bucket.flow_log",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 424,
+      "end_line": 439
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "aws_s3_bucket.flow_log",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 424,
+      "end_line": 439
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0091",
+      "title": "S3 Access Block should Ignore Public ACL",
+      "severity": "HIGH",
+      "resource_name": "aws_s3_bucket.flow_log",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 424,
+      "end_line": 439
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0093",
+      "title": "S3 Access block should restrict public bucket to limit access",
+      "severity": "HIGH",
+      "resource_name": "aws_s3_bucket.flow_log",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 424,
+      "end_line": 439
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0094",
+      "title": "S3 buckets should each define an aws_s3_bucket_public_access_block",
+      "severity": "LOW",
+      "resource_name": "aws_s3_bucket.flow_log",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 424,
+      "end_line": 439
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0132",
+      "title": "S3 encryption should use Customer Managed Keys",
+      "severity": "HIGH",
+      "resource_name": "aws_s3_bucket.flow_log",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 424,
+      "end_line": 439
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_394",
+      "title": "Ensure aws_availability_zones data source pins zone identity so its result set does not silently expand when AWS adds an Availability Zone",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_availability_zones.available",
+      "resource_type": "aws_availability_zones",
+      "file_path": "/main.tf",
+      "start_line": 5,
+      "end_line": 7
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "ec2_computed_name",
+      "resource_type": "ec2_computed_name",
+      "file_path": "/main.tf",
+      "start_line": 152,
+      "end_line": 165
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "ec2_ignore_ami_changes",
+      "resource_type": "ec2_ignore_ami_changes",
+      "file_path": "/main.tf",
+      "start_line": 177,
+      "end_line": 190
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "ec2_multiple",
+      "resource_type": "ec2_multiple",
+      "file_path": "/main.tf",
+      "start_line": 230,
+      "end_line": 245
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "ec2_spot_instance",
+      "resource_type": "ec2_spot_instance",
+      "file_path": "/main.tf",
+      "start_line": 251,
+      "end_line": 296
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "ec2_open_capacity_reservation",
+      "resource_type": "ec2_open_capacity_reservation",
+      "file_path": "/main.tf",
+      "start_line": 302,
+      "end_line": 318
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "ec2_targeted_capacity_reservation",
+      "resource_type": "ec2_targeted_capacity_reservation",
+      "file_path": "/main.tf",
+      "start_line": 320,
+      "end_line": 336
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "vpc",
+      "resource_type": "vpc",
+      "file_path": "/main.tf",
+      "start_line": 358,
+      "end_line": 380
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "security_group",
+      "resource_type": "security_group",
+      "file_path": "/main.tf",
+      "start_line": 388,
+      "end_line": 400
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_62",
+      "title": "Ensure S3 buckets should have event notifications enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.flow_log",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 424,
+      "end_line": 439
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_6",
+      "title": "Ensure that S3 bucket has a Public Access block",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.flow_log",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 424,
+      "end_line": 439
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_18",
+      "title": "Ensure the S3 bucket has access logging enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.flow_log",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 424,
+      "end_line": 439
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_145",
+      "title": "Ensure that S3 buckets are encrypted with KMS by default",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.flow_log",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 424,
+      "end_line": 439
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_61",
+      "title": "Ensure that an S3 bucket has a lifecycle configuration",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.flow_log",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 424,
+      "end_line": 439
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_144",
+      "title": "Ensure that S3 bucket has cross-region replication enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.flow_log",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 424,
+      "end_line": 439
+    }
+  ],
+  "target_count": 7,
+  "resolved_count": 4,
+  "introduced_count": 21,
+  "unchanged_count": 3,
+  "repair_success_rate": 0.5714285714285714,
+  "regression_rate": 3.0,
+  "net_delta": -17,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 1,
+      "introduced": 6,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 1,
+      "introduced": 4,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 1,
+      "introduced": 3,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 1,
+      "introduced": 8,
+      "unchanged": 3
+    }
+  },
+  "repair_cost_usd": 0.0090656,
+  "repair_tokens": 11332,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0195_llama-3-3-70b.repaired.tf",
+  "raw_response_path": "module_0195_llama-3-3-70b.raw.txt",
+  "repaired_code_sha256": "3ae04f55bd28a325dec80642d7d38aded787a2b4a3fdcf4f4d599cdd65f1a28b"
+}

@@ -1,0 +1,529 @@
+
+provider "aws" {
+  region = local.region
+}
+
+provider "kubernetes" {
+  host                   = module.eks.cluster_endpoint
+  cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
+
+  exec {
+    api_version = "client.authentication.k8s.io/v1beta1"
+    command     = "aws"
+    args = ["eks", "get-token", "--cluster-name", module.eks.cluster_name]
+  }
+}
+
+data "aws_availability_zones" "available" {
+  filter {
+    name   = "opt-in-status"
+    values = ["opt-in-not-required"]
+  }
+  filter {
+    name   = "zone-type"
+    values = ["availability-zone"]
+  }
+}
+
+locals {
+  name   = "sso-${basename(path.cwd)}"
+  region = "us-west-2"
+
+  vpc_cidr = "10.0.0.0/16"
+  azs      = slice(data.aws_availability_zones.available.names, 0, 3)
+
+  tags = {
+    Blueprint  = local.name
+    GithubRepo = "github.com/aws-ia/terraform-aws-eks-blueprints"
+  }
+}
+
+module "eks" {
+  source  = "github.com/terraform-aws-modules/terraform-aws-eks.git?ref=a1b2c3d4"
+  cluster_name                   = local.name
+  cluster_version                = "1.30"
+  cluster_endpoint_public_access = false
+  cluster_enabled_log_types      = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
+  node_security_group_egress_cidr_blocks = [local.vpc_cidr]
+
+  cluster_addons = {
+    coredns    = {}
+    kube-proxy = {}
+    vpc-cni    = {}
+  }
+
+  vpc_id     = module.vpc.vpc_id
+  subnet_ids = module.vpc.private_subnets
+
+  eks_managed_node_groups = {
+    initial = {
+      instance_types = ["m5.large"]
+      min_size     = 1
+      max_size     = 5
+      desired_size = 3
+    }
+  }
+
+  enable_cluster_creator_admin_permissions = true
+  authentication_mode = "API"
+
+  access_entries = {
+    operators = {
+      principal_arn = tolist(data.aws_iam_roles.admin.arns)[0]
+      policy_associations = {
+        operators = {
+          policy_arn = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+          access_scope = {
+            type = "cluster"
+          }
+        }
+      }
+    },
+    developers = {
+      kubernetes_groups = ["eks-developers"]
+      principal_arn     = tolist(data.aws_iam_roles.user.arns)[0]
+      policy_associations = {
+        developers = {
+          policy_arn = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSViewPolicy"
+          access_scope = {
+            namespaces = ["default"]
+            type       = "namespace"
+          }
+        }
+      }
+    }
+  }
+
+  tags = local.tags
+}
+
+module "vpc" {
+  source  = "github.com/terraform-aws-modules/terraform-aws-vpc.git?ref=e5f6g7h8"
+  manage_default_vpc = false
+  name = local.name
+  cidr = local.vpc_cidr
+  azs             = local.azs
+  private_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 4, k)]
+  public_subnets  = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 48)]
+  enable_nat_gateway = true
+  single_nat_gateway = true
+  enable_flow_log = true
+  create_flow_log_cloudwatch_log_group = true
+  create_flow_log_cloudwatch_iam_role  = true
+  flow_log_traffic_type = "REJECT"
+
+  private_subnet_tags = {
+    "kubernetes.io/role/internal-elb" = 1
+  }
+  public_subnet_tags = {
+    "kubernetes.io/role/elb" = 1
+  }
+
+  tags = local.tags
+}
+
+output "configure_kubectl" {
+  value       = "aws eks --region ${local.region} update-kubeconfig --name ${module.eks.cluster_name}"
+}
+
+output "configure_sso_admins" {
+  value       = <<EOT
+  # aws configure sso --profile ${aws_ssoadmin_permission_set.admin.name}-${data.aws_caller_identity.current.account_id}
+      SSO session name (Recommended): <SESSION_NAME>
+      SSO start URL [None]: https://${tolist(data.aws_ssoadmin_instances.this.identity_store_ids)[0]}.awsapps.com/start
+      SSO region [None]: ${local.region}
+      SSO registration scopes [sso:account:access]:
+      Attempting to automatically open the SSO authorization page in your default browser.
+      If the browser does not open or you wish to use a different device to authorize this request, open the following URL:
+
+      https://device.sso.${local.region}.amazonaws.com/
+
+      Then enter the code:
+
+      The only AWS account available to you is: ${data.aws_caller_identity.current.account_id}
+      Using the account ID ${data.aws_caller_identity.current.account_id}
+      The only role available to you is: ${aws_ssoadmin_permission_set.admin.name}
+      Using the role name ${aws_ssoadmin_permission_set.admin.name}
+      CLI default client Region [${local.region}]: ${local.region}
+      CLI default output format [json]: json
+      CLI profile name [${aws_ssoadmin_permission_set.admin.name}-${data.aws_caller_identity.current.account_id}]:
+
+      To use this profile, specify the profile name using --profile, as shown:
+
+  $ aws eks --region ${local.region} update-kubeconfig --name ${module.eks.cluster_name} --profile ${aws_ssoadmin_permission_set.admin.name}-${data.aws_caller_identity.current.account_id}
+EOT
+}
+
+output "configure_sso_users" {
+  value       = <<EOT
+  # aws configure sso --profile ${aws_ssoadmin_permission_set.user.name}-${data.aws_caller_identity.current.account_id}
+      SSO session name (Recommended): <SESSION_NAME>
+      SSO start URL [None]: https://${tolist(data.aws_ssoadmin_instances.this.identity_store_ids)[0]}.awsapps.com/start
+      SSO region [None]: ${local.region}
+      SSO registration scopes [sso:account:access]:
+      Attempting to automatically open the SSO authorization page in your default browser.
+      If the browser does not open or you wish to use a different device to authorize this request, open the following URL:
+
+      https://device.sso.${local.region}.amazonaws.com/
+
+      Then enter the code:
+
+      The only AWS account available to you is: ${data.aws_caller_identity.current.account_id}
+      Using the account ID ${data.aws_caller_identity.current.account_id}
+      The only role available to you is: ${aws_ssoadmin_permission_set.user.name}
+      Using the role name ${aws_ssoadmin_permission_set.user.name}
+      CLI default client Region [${local.region}]: ${local.region}
+      CLI default output format [json]: json
+      CLI profile name [${aws_ssoadmin_permission_set.user.name}-${data.aws_caller_identity.current.account_id}]:
+
+      To use this profile, specify the profile name using --profile, as shown:
+
+  # aws eks --region ${local.region} update-kubeconfig --name ${module.eks.cluster_name} --profile ${aws_ssoadmin_permission_set.user.name}-${data.aws_caller_identity.current.account_id}
+EOT
+}
+
+data "aws_caller_identity" "current" {}
+
+data "aws_ssoadmin_instances" "this" {}
+
+resource "aws_ssoadmin_permission_set" "admin" {
+  name             = "EKSClusterAdmin"
+  description      = "Amazon EKS Cluster Admins."
+  instance_arn     = tolist(data.aws_ssoadmin_instances.this.arns)[0]
+  relay_state      = "https://s3.console.aws.amazon.com/s3/home?region=${local.region}#"
+  session_duration = "PT1H"
+}
+
+resource "aws_ssoadmin_permission_set" "user" {
+  name             = "EKSClusterUser"
+  description      = "Amazon EKS Cluster Users."
+  instance_arn     = tolist(data.aws_ssoadmin_instances.this.arns)[0]
+  relay_state      = "https://s3.console.aws.amazon.com/s3/home?region=${local.region}#"
+  session_duration = "PT1H"
+}
+
+data "aws_iam_policy_document" "admin" {
+  statement {
+    sid = "EKSAdmin"
+    actions = [
+      "eks:*"
+    ]
+    resources = [
+      module.eks.cluster_arn
+    ]
+  }
+  statement {
+    sid = "AssumeRole"
+    actions = [
+      "sts:AssumeRole"
+    ]
+    resources = data.aws_iam_roles.admin.arns
+  }
+}
+
+data "aws_iam_policy_document" "user" {
+  statement {
+    sid = "EKSRead"
+    actions = [
+      "eks:List*",
+      "eks:Describe*",
+      "eks:AccessKubernetesApi"
+    ]
+    resources = [
+      module.eks.cluster_arn
+    ]
+  }
+
+  statement {
+    sid = "AssumeRole"
+    actions = [
+      "sts:AssumeRole"
+    ]
+    resources = data.aws_iam_roles.user.arns
+  }
+}
+
+resource "aws_ssoadmin_permission_set_inline_policy" "admin" {
+  inline_policy      = data.aws_iam_policy_document.admin.json
+  instance_arn       = tolist(data.aws_ssoadmin_instances.this.arns)[0]
+  permission_set_arn = aws_ssoadmin_permission_set.admin.arn
+}
+
+resource "aws_ssoadmin_permission_set_inline_policy" "user" {
+  inline_policy      = data.aws_iam_policy_document.user.json
+  instance_arn       = tolist(data.aws_ssoadmin_instances.this.arns)[0]
+  permission_set_arn = aws_ssoadmin_permission_set.user.arn
+}
+
+resource "aws_ssoadmin_managed_policy_attachment" "admin" {
+  instance_arn       = tolist(data.aws_ssoadmin_instances.this.arns)[0]
+  managed_policy_arn = "arn:aws:iam::aws:policy/PowerUserAccess"
+  permission_set_arn = aws_ssoadmin_permission_set.admin.arn
+}
+
+resource "aws_ssoadmin_managed_policy_attachment" "user" {
+  instance_arn       = tolist(data.aws_ssoadmin_instances.this.arns)[0]
+  managed_policy_arn = "arn:aws:iam::aws:policy/job-function/ViewOnlyAccess"
+  permission_set_arn = aws_ssoadmin_permission_set.user.arn
+}
+
+resource "aws_identitystore_user" "admin" {
+  for_each = { for admin in var.admin_user_config : admin.email => admin }
+
+  identity_store_id = tolist(data.aws_ssoadmin_instances.this.identity_store_ids)[0]
+  display_name      = "${each.value.given_name} ${each.value.family_name}"
+  user_name         = each.value.email
+
+  name {
+    family_name = each.value.family_name
+    given_name  = each.value.given_name
+  }
+}
+
+resource "aws_identitystore_user" "user" {
+  for_each = { for user in var.user_config : user.email => user }
+
+  identity_store_id = tolist(data.aws_ssoadmin_instances.this.identity_store_ids)[0]
+  display_name      = "${each.value.given_name} ${each.value.family_name}"
+  user_name         = each.value.email
+
+  name {
+    family_name = each.value.family_name
+    given_name  = each.value.given_name
+  }
+}
+
+resource "aws_identitystore_group" "operators" {
+  identity_store_id = tolist(data.aws_ssoadmin_instances.this.identity_store_ids)[0]
+  display_name      = "eks-operators"
+  description       = "EKS Operators Cluster Group"
+}
+
+resource "aws_identitystore_group" "developers" {
+  identity_store_id = tolist(data.aws_ssoadmin_instances.this.identity_store_ids)[0]
+  display_name      = "eks-developers"
+  description       = "EKS Developers Cluster Group"
+}
+
+resource "aws_identitystore_group_membership" "operators" {
+  for_each = { for admin in var.admin_user_config : admin.email => admin }
+
+  identity_store_id = tolist(data.aws_ssoadmin_instances.this.identity_store_ids)[0]
+  group_id          = aws_identitystore_group.operators.group_id
+  member_id         = aws_identitystore_user.admin[each.key].user_id
+}
+
+resource "aws_identitystore_group_membership" "developers" {
+  for_each = { for user in var.user_config : user.email => user }
+
+  identity_store_id = tolist(data.aws_ssoadmin_instances.this.identity_store_ids)[0]
+  group_id          = aws_identitystore_group.developers.group_id
+  member_id         = aws_identitystore_user.user[each.key].user_id
+}
+
+resource "aws_ssoadmin_account_assignment" "operators" {
+  instance_arn       = tolist(data.aws_ssoadmin_instances.this.arns)[0]
+  permission_set_arn = aws_ssoadmin_permission_set.admin.arn
+
+  principal_id   = aws_identitystore_group.operators.group_id
+  principal_type = "GROUP"
+
+  target_id   = data.aws_caller_identity.current.account_id
+  target_type = "AWS_ACCOUNT"
+}
+
+resource "aws_ssoadmin_account_assignment" "developer" {
+  instance_arn       = tolist(data.aws_ssoadmin_instances.this.arns)[0]
+  permission_set_arn = aws_ssoadmin_permission_set.user.arn
+
+  principal_id   = aws_identitystore_group.developers.group_id
+  principal_type = "GROUP"
+
+  target_id   = data.aws_caller_identity.current.account_id
+  target_type = "AWS_ACCOUNT"
+}
+
+data "aws_iam_roles" "admin" {
+  name_regex  = "AWSReservedSSO_EKSClusterAdmin_.*"
+  path_prefix = "/aws-reserved/sso.amazonaws.com/"
+
+  depends_on = [
+    aws_ssoadmin_account_assignment.operators,
+  ]
+}
+
+data "aws_iam_roles" "user" {
+  name_regex  = "AWSReservedSSO_EKSClusterUser_.*"
+  path_prefix = "/aws-reserved/sso.amazonaws.com/"
+
+  depends_on = [
+    aws_ssoadmin_account_assignment.developer
+  ]
+}
+
+module "developers_team" {
+  source  = "github.com/aws-ia/terraform-aws-eks-blueprints-teams.git?ref=i9j0k1l2"
+  name = "eks-developers"
+  cluster_arn       = module.eks.cluster_arn
+  oidc_provider_arn = module.eks.oidc_provider_arn
+  create_iam_role = false
+  principal_arns  = data.aws_iam_roles.user.arns
+
+  labels = {
+    team = "development"
+  }
+
+  annotations = {
+    team = "development"
+  }
+
+  namespaces = {
+    development = {
+      labels = {
+        projectName = "project-awesome",
+      }
+
+      resource_quota = {
+        hard = {
+          "requests.cpu"    = "1000m",
+          "requests.memory" = "4Gi",
+          "limits.cpu"      = "2000m",
+          "limits.memory"   = "8Gi",
+          "pods"            = "10",
+          "secrets"         = "10",
+          "services"        = "10"
+        }
+      }
+
+      limit_range = {
+        limit = [
+          {
+            type = "Pod"
+            max = {
+              cpu    = "200m"
+              memory = "1Gi"
+            }
+          },
+          {
+            type = "PersistentVolumeClaim"
+            min = {
+              storage = "24M"
+            }
+          },
+          {
+            type = "Container"
+            default = {
+              cpu    = "50m"
+              memory = "24Mi"
+            }
+          }
+        ]
+      }
+
+      network_policy = {
+        pod_selector = {
+          match_expressions = [{
+            key      = "name"
+            operator = "In"
+            values   = ["webfront", "api"]
+          }]
+        }
+
+        ingress = [{
+          ports = [
+            {
+              port     = "http"
+              protocol = "TCP"
+            },
+            {
+              port     = "53"
+              protocol = "TCP"
+            },
+            {
+              port     = "53"
+              protocol = "UDP"
+            }
+          ]
+
+          from = [
+            {
+              namespace_selector = {
+                match_labels = {
+                  name = "default"
+                }
+              }
+            },
+            {
+              ip_block = {
+                cidr = "10.0.0.0/8"
+                except = [
+                  "10.0.0.0/24",
+                  "10.0.1.0/24",
+                ]
+              }
+            }
+          ]
+        }]
+
+        egress = []
+        policy_types = ["Ingress", "Egress"]
+      }
+    }
+  }
+
+  tags = {
+    Environment = "dev"
+  }
+
+  depends_on = [
+    data.aws_iam_roles.admin,
+    data.aws_iam_roles.user
+  ]
+}
+
+variable "admin_user_config" {
+  type = list(object({
+    family_name = string
+    given_name  = string
+    email       = string
+  }))
+  default = [{
+    family_name = "Admin"
+    given_name  = "Platform"
+    email       = "admin@example.com"
+  }]
+}
+
+variable "user_config" {
+  type = list(object({
+    family_name = string
+    given_name  = string
+    email       = string
+  }))
+  default = [{
+    family_name = "User1"
+    given_name  = "Developer"
+    email       = "user1@example.com"
+    },
+    {
+      family_name = "User2"
+      given_name  = "Developer"
+      email       = "user2@example.com"
+    }
+  ]
+}
+
+terraform {
+  required_version = ">= 1.3"
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 5.34, < 6.0"
+    }
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = ">= 2.20"
+    }
+  }
+}

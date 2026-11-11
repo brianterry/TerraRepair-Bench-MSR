@@ -1,0 +1,131 @@
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 3.0"
+    }
+  }
+}
+
+provider "aws" {
+  region = "us-east-1"
+}
+
+resource "aws_vpc" "sagemaker" {
+  cidr_block = "10.0.0.0/16"
+}
+
+resource "aws_default_security_group" "sagemaker" {
+  vpc_id = aws_vpc.sagemaker.id
+
+  ingress = []
+  egress  = []
+}
+
+resource "aws_kms_key" "sagemaker" {
+  description             = "KMS key for SageMaker and VPC flow logs encryption"
+  enable_key_rotation     = true
+}
+
+resource "aws_cloudwatch_log_group" "sagemaker_flow_logs" {
+  name              = "/aws/vpc/sagemaker-flow-logs"
+  retention_in_days = 90
+  kms_key_id        = aws_kms_key.sagemaker.arn
+}
+
+data "aws_iam_policy_document" "flow_logs_assume_role_policy" {
+  statement {
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["vpc-flow-logs.amazonaws.com"]
+    }
+  }
+}
+
+resource "aws_iam_role" "sagemaker_flow_logs" {
+  name               = "sagemaker-vpc-flow-logs-role"
+  assume_role_policy = data.aws_iam_policy_document.flow_logs_assume_role_policy.json
+}
+
+data "aws_iam_policy_document" "flow_logs_policy" {
+  statement {
+    effect = "Allow"
+    actions = [
+      "logs:CreateLogGroup",
+      "logs:CreateLogStream",
+      "logs:PutLogEvents",
+      "logs:DescribeLogGroups",
+      "logs:DescribeLogStreams"
+    ]
+    resources = ["*"]
+  }
+}
+
+resource "aws_iam_role_policy" "sagemaker_flow_logs" {
+  name   = "sagemaker-vpc-flow-logs-policy"
+  role   = aws_iam_role.sagemaker_flow_logs.id
+  policy = data.aws_iam_policy_document.flow_logs_policy.json
+}
+
+resource "aws_flow_log" "sagemaker" {
+  vpc_id               = aws_vpc.sagemaker.id
+  traffic_type          = "REJECT"
+  log_destination_type  = "cloud-watch-logs"
+  log_destination       = aws_cloudwatch_log_group.sagemaker_flow_logs.arn
+  iam_role_arn          = aws_iam_role.sagemaker_flow_logs.arn
+}
+
+resource "aws_subnet" "sagemaker" {
+  vpc_id     = aws_vpc.sagemaker.id
+  cidr_block = "10.0.1.0/24"
+}
+
+resource "aws_security_group" "allow_tls" {
+  name        = "allow_tls"
+  description = "Allow TLS inbound traffic"
+  vpc_id      = aws_vpc.sagemaker.id
+
+  ingress {
+    description = "TLS from VPC"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = [aws_vpc.sagemaker.cidr_block]
+  }
+}
+
+data "aws_iam_policy_document" "instance-assume-role-policy" {
+  statement {
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["ec2.amazonaws.com"]
+    }
+  }
+}
+
+resource "aws_iam_role" "sagemaker" {
+  name               = "instance_role"
+  path               = "/system/"
+  assume_role_policy = data.aws_iam_policy_document.instance-assume-role-policy.json
+}
+
+resource "aws_sagemaker_notebook_instance" "ni" {
+  name          = "roger-notebook-instance"
+  role_arn      = aws_iam_role.sagemaker.arn
+  instance_type = "ml.t2.medium"
+
+  root_access             = "Disabled"
+  direct_internet_access  = "Disabled"
+  kms_key_id              = aws_kms_key.sagemaker.arn
+
+  subnet_id        = aws_subnet.sagemaker.id
+  security_groups  = [aws_security_group.allow_tls.id]
+
+  instance_metadata_service_configuration {
+    minimum_instance_metadata_service_version = "2"
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "findings_count": 11,
+  "findings": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "karpenter"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_290",
+      "title": "",
+      "resource_name": "aws_iam_policy.eks_console_access"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_355",
+      "title": "",
+      "resource_name": "aws_iam_policy.eks_console_access"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_130",
+      "title": "",
+      "resource_name": "aws_subnet.public_us_east_1a"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_130",
+      "title": "",
+      "resource_name": "aws_subnet.public_us_east_1b"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "vpc"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "eks_blueprints"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "kubernetes_addons"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_184",
+      "title": "",
+      "resource_name": "aws_efs_file_system.eks"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_12",
+      "title": "",
+      "resource_name": "aws_vpc.main"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_11",
+      "title": "",
+      "resource_name": "aws_vpc.main"
+    }
+  ]
+}

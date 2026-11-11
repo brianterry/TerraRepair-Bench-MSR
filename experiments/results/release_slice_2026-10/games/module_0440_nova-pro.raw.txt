@@ -1,0 +1,341 @@
+```hcl
+module "this" {
+  source  = "cloudposse/label/null"
+  version = "0.25.0"
+
+  enabled             = var.enabled
+  namespace           = var.namespace
+  tenant              = var.tenant
+  environment         = var.environment
+  stage               = var.stage
+  name                = var.name
+  delimiter           = var.delimiter
+  attributes          = var.attributes
+  tags                = var.tags
+  additional_tag_map  = var.additional_tag_map
+  label_order         = var.label_order
+  regex_replace_chars = var.regex_replace_chars
+  id_length_limit     = var.id_length_limit
+  label_key_case      = var.label_key_case
+  label_value_case    = var.label_value_case
+  descriptor_formats  = var.descriptor_formats
+  labels_as_tags      = var.labels_as_tags
+
+  context = var.context
+}
+
+module "eventbridge_label" {
+  source  = "cloudposse/label/null"
+  version = "0.25.0"
+
+  enabled = local.enabled
+
+  attributes = ["eventbridge"]
+
+  context = module.this.context
+}
+
+data "aws_iam_policy_document" "eventbridge_assume_role_policy" {
+  count = local.enabled? 1 : 0
+
+  statement {
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["events.amazonaws.com"]
+    }
+  }
+}
+
+data "aws_iam_policy_document" "eventbridge_policy" {
+  count = local.enabled? 1 : 0
+
+  statement {
+    actions = ["ssm:StartAutomationExecution"]
+    resources = [
+      local.automation_definition_arn
+    ]
+  }
+
+  statement {
+    actions = [
+      "iam:PassRole"
+    ]
+    resources = [
+      join("", aws_iam_role.ssm_document_role.*.arn)
+    ]
+    condition {
+      test     = "StringLike"
+      variable = "iam:PassedToService"
+      values   = ["ssm.amazonaws.com"]
+    }
+  }
+}
+
+resource "aws_iam_policy" "eventbridge_policy" {
+  count = local.enabled? 1 : 0
+
+  name   = module.eventbridge_label.id
+  tags   = module.eventbridge_label.tags
+  policy = join("", data.aws_iam_policy_document.eventbridge_policy.*.json)
+}
+
+resource "aws_iam_role" "eventbridge_role" {
+  count = local.enabled? 1 : 0
+
+  name                = module.eventbridge_label.id
+  tags                = module.eventbridge_label.tags
+  assume_role_policy  = join("", data.aws_iam_policy_document.eventbridge_assume_role_policy.*.json)
+  managed_policy_arns = [join("", aws_iam_policy.eventbridge_policy.*.arn)]
+}
+
+resource "aws_cloudwatch_event_rule" "default" {
+  count = local.enabled? 1 : 0
+
+  name        = module.eventbridge_label.id
+  tags        = module.eventbridge_label.tags
+  description = "Auto Scaling Group EC2 Instance Termination"
+
+  event_pattern = jsonencode({
+    source = [
+      "aws.autoscaling"
+    ]
+    detail-type : [
+      "EC2 Instance-terminate Lifecycle Action"
+    ]
+    detail : {
+      AutoScalingGroupName : [
+        var.autoscaling_group_name
+      ]
+    }
+  })
+}
+
+resource "aws_cloudwatch_event_target" "default" {
+  count = local.enabled? 1 : 0
+
+  rule      = join("", aws_cloudwatch_event_rule.default.*.name)
+  target_id = module.this.id
+  arn       = local.automation_definition_arn
+  role_arn  = join("", aws_iam_role.eventbridge_role.*.arn)
+  input_transformer {
+    input_paths = {
+      "asgname" : "$.detail.AutoScalingGroupName",
+      "instanceid" : "$.detail.EC2InstanceId",
+      "lchname" : "$.detail.LifecycleHookName"
+    }
+    input_template = <<-EOF
+    {
+      "InstanceId": [
+        <instanceid>
+      ],
+      "ASGName": [
+        <asgname>
+      ],
+      "LCHName": [
+        <lchname>
+      ],
+      "automationAssumeRole": [
+        "${join("", aws_iam_role.ssm_document_role.*.arn)}"
+      ]
+    }
+    EOF
+  }
+}
+
+locals {
+  enabled = module.this.enabled
+}
+
+data "aws_caller_identity" "current" {
+  count = local.enabled? 1 : 0
+}
+
+data "aws_partition" "current" {
+  count = local.enabled? 1 : 0
+}
+
+data "aws_region" "current" {
+  count = local.enabled? 1 : 0
+}
+
+data "aws_autoscaling_group" "default" {
+  count = local.enabled? 1 : 0
+
+  name = var.autoscaling_group_name
+}
+
+resource "aws_autoscaling_lifecycle_hook" "default" {
+  count = local.enabled? 1 : 0
+
+  name                   = module.this.id
+  autoscaling_group_name = var.autoscaling_group_name
+  heartbeat_timeout      = 500
+  default_result         = "CONTINUE"
+  lifecycle_transition   = "autoscaling:EC2_INSTANCE_TERMINATING"
+}
+
+resource "aws_ssm_document" "default" {
+  count = local.enabled? 1 : 0
+
+  name = module.this.id
+
+  document_type   = "Automation"
+  document_format = "YAML"
+  content         = <<-DOC
+  ---
+  schemaVersion: '0.3'
+  description: "Run Command on Shutdown"
+  assumeRole: "{{automationAssumeRole}}"
+  parameters:
+    automationAssumeRole:
+      type: "String"
+    ASGName:
+      type: "String"
+    LCHName:
+      type: "String"
+    InstanceId:
+      type: "String"
+  mainSteps:
+  - action: "aws:runCommand"
+    name: "runCommand"
+    inputs:
+      Parameters:
+        executionTimeout: "300"
+        commands:
+          - "${var.command}"
+      InstanceIds:
+        - "{{ InstanceId }}"
+      DocumentName: "AWS-RunShellScript"
+  - action: "aws:executeAwsApi"
+    name: "terminateInstance"
+    inputs:
+      LifecycleHookName: "{{ LCHName }}"
+      InstanceId: "{{ InstanceId }}"
+      AutoScalingGroupName: "{{ ASGName }}"
+      Service: "autoscaling"
+      Api: "CompleteLifecycleAction"
+      LifecycleActionResult: "CONTINUE"
+  DOC
+
+  tags = module.this.tags
+}
+
+output "eventbridge_rule_arn" {
+  description = "The ARN of the Eventbridge rule for the EC2 lifecycle transition."
+  value       = join("", aws_cloudwatch_event_rule.default.*.arn)
+}
+
+output "eventbridge_target_arn" {
+  description = "The ARN of the Eventbridge target corresponding to the Eventbridge rule for the EC2 lifecycle transition."
+  value       = join("", aws_cloudwatch_event_target.default.*.arn)
+}
+
+output "autoscaling_lifecycle_hook_name" {
+  description = "The name of the Lifecycle Hook for the Auto Scaling Group."
+  value       = join("", aws_autoscaling_lifecycle_hook.default.*.name)
+}
+
+output "ssm_document_arn" {
+  description = "The ARN of the SSM document."
+  value       = join("", aws_ssm_document.default.*.arn)
+}
+
+locals {
+  asg_wildcard_arn = "arn:${join("", data.aws_partition.current.*.partition)}:autoscaling:${join("", data.aws_region.current.*.name)}:${join("", data.aws_caller_identity.current.*.account_id)}:autoScalingGroup:*:autoScalingGroupName/${join("", data.aws_autoscaling_group.default.*.name)}"
+}
+
+module "ssm_document_label" {
+  source  = "cloudposse/label/null"
+  version = "0.25.0"
+
+  enabled = local.enabled
+
+  attributes = ["ssm", "doc"]
+
+  context = module.this.context
+}
+
+data "aws_iam_policy_document" "ssm_document_assume_role_policy" {
+  count = local.enabled? 1 : 0
+
+  statement {
+    sid     = "AllowSSMAssumeRole"
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["ssm.amazonaws.com"]
+    }
+  }
+}
+
+data "aws_iam_policy_document" "ssm_document_policy" {
+  count = local.enabled? 1 : 0
+
+  statement {
+    sid     = "AllowCompleteLifecycleAction"
+    actions = ["autoscaling:CompleteLifecycleAction"]
+    resources = [
+      local.asg_wildcard_arn
+    ]
+  }
+
+  statement {
+    sid = "AllowListSSMCommands"
+    actions = [
+      "ssm:DescribeInstanceInformation",
+      "ssm:ListCommands",
+      "ssm:ListCommandInvocations"
+    ]
+    resources = [
+      "*"
+    ]
+  }
+
+  statement {
+    sid     = "AllowSendSSMCommandShellScript"
+    actions = ["ssm:SendCommand"]
+    resources = [
+      "arn:${join("", data.aws_partition.current.*.partition)}:ssm:${join("", data.aws_region.current.*.name)}::document/AWS-RunShellScript"
+    ]
+  }
+
+  statement {
+    sid     = "AllowSendSSMCommandInstances"
+    actions = ["ssm:SendCommand"]
+    resources = [
+      "arn:${join("", data.aws_partition.current.*.partition)}:ec2:*:*:instance/*"
+    ]
+  }
+}
+
+resource "aws_iam_policy" "ssm_document_policy" {
+  count = local.enabled? 1 : 0
+
+  name   = module.ssm_document_label.id
+  policy = join("", data.aws_iam_policy_document.ssm_document_policy.*.json)
+
+  tags = module.ssm_document_label.tags
+}
+
+resource "aws_iam_role" "ssm_document_role" {
+  count = local.enabled? 1 : 0
+
+  name                = module.ssm_document_label.id
+  tags                = module.ssm_document_label.tags
+  assume_role_policy  = join("", data.aws_iam_policy_document.ssm_document_assume_role_policy.*.json)
+  managed_policy_arns = [join("", aws_iam_policy.ssm_document_policy.*.arn)]
+}
+
+variable "autoscaling_group_name" {
+  description = "The name of the Auto Scaling Group to create the lifecycle hook for."
+  type        = string
+}
+
+variable "command" {
+  description = "Command to run on EC2 instance shutdown."
+  type        = string
+}
+```

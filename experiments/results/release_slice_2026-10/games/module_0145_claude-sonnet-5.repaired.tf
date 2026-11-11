@@ -1,0 +1,484 @@
+# --------------------------------------------------------------------------------------------------
+# CloudWatch Logs group to accept CloudTrail event stream.
+# --------------------------------------------------------------------------------------------------
+resource "aws_cloudwatch_log_group" "cloudtrail_events" {
+  name              = var.cloudwatch_logs_group_name
+  retention_in_days = var.cloudwatch_logs_retention_in_days
+  kms_key_id        = aws_kms_key.cloudtrail.arn
+
+  tags = var.tags
+}
+
+# IAM Role to deliver CloudTrail events to CloudWatch Logs group.
+# The policy was derived from the default key policy descrived in AWS CloudTrail User Guide.
+# https://docs.aws.amazon.com/awscloudtrail/latest/userguide/send-cloudtrail-events-to-cloudwatch-logs.html
+data "aws_iam_policy_document" "cloudwatch_delivery_assume_policy" {
+  statement {
+    principals {
+      type        = "Service"
+      identifiers = ["cloudtrail.amazonaws.com"]
+    }
+    actions = ["sts:AssumeRole"]
+  }
+}
+
+resource "aws_iam_role" "cloudwatch_delivery" {
+  name               = var.iam_role_name
+  assume_role_policy = data.aws_iam_policy_document.cloudwatch_delivery_assume_policy.json
+
+  permissions_boundary = var.permissions_boundary_arn
+
+  tags = var.tags
+}
+
+data "aws_iam_policy_document" "cloudwatch_delivery_policy" {
+  statement {
+    sid       = "AWSCloudTrailCreateLogStream2014110"
+    actions   = ["logs:CreateLogStream"]
+    resources = ["arn:aws:logs:${var.region}:${var.aws_account_id}:log-group:${aws_cloudwatch_log_group.cloudtrail_events.name}:log-stream:*"]
+  }
+
+  statement {
+    sid       = "AWSCloudTrailPutLogEvents20141101"
+    actions   = ["logs:PutLogEvents"]
+    resources = ["arn:aws:logs:${var.region}:${var.aws_account_id}:log-group:${aws_cloudwatch_log_group.cloudtrail_events.name}:log-stream:*"]
+  }
+}
+
+resource "aws_iam_role_policy" "cloudwatch_delivery_policy" {
+  name   = var.iam_role_policy_name
+  role   = aws_iam_role.cloudwatch_delivery.id
+  policy = data.aws_iam_policy_document.cloudwatch_delivery_policy.json
+}
+
+# KMS Key to encrypt CloudTrail events.
+# The policy was derived from the default key policy described in AWS CloudTrail User Guide.
+# https://docs.aws.amazon.com/awscloudtrail/latest/userguide/default-cmk-policy.html
+data "aws_iam_policy_document" "cloudtrail_key_policy" {
+  policy_id = "Key policy created by CloudTrail"
+
+  statement {
+    sid = "Enable IAM User Permissions"
+
+    principals {
+      type = "AWS"
+      identifiers = [
+        "arn:aws:iam::${var.aws_account_id}:root"
+      ]
+    }
+    actions   = ["kms:*"]
+    resources = ["*"]
+
+    condition {
+      test     = "StringEquals"
+      variable = "kms:CallerAccount"
+      values   = [var.aws_account_id]
+    }
+  }
+
+  statement {
+    sid = "Allow CloudTrail to encrypt logs"
+    principals {
+      type        = "Service"
+      identifiers = ["cloudtrail.amazonaws.com"]
+    }
+    actions   = ["kms:GenerateDataKey*"]
+    resources = ["*"]
+    condition {
+      test     = "StringLike"
+      variable = "kms:EncryptionContext:aws:cloudtrail:arn"
+      values   = ["arn:aws:cloudtrail:*:${var.aws_account_id}:trail/*"]
+    }
+  }
+
+  statement {
+    sid = "Allow CloudTrail to describe key"
+    principals {
+      type        = "Service"
+      identifiers = ["cloudtrail.amazonaws.com"]
+    }
+    actions   = ["kms:DescribeKey"]
+    resources = ["*"]
+    condition {
+      test     = "StringEquals"
+      variable = "aws:SourceAccount"
+      values   = [var.aws_account_id]
+    }
+  }
+
+  statement {
+    sid = "Allow principals in the account to decrypt log files"
+    principals {
+      type        = "AWS"
+      identifiers = ["*"]
+    }
+    actions = [
+      "kms:Decrypt",
+      "kms:ReEncryptFrom"
+    ]
+    resources = ["*"]
+    condition {
+      test     = "StringEquals"
+      variable = "kms:CallerAccount"
+      values   = [var.aws_account_id]
+    }
+    condition {
+      test     = "StringLike"
+      variable = "kms:EncryptionContext:aws:cloudtrail:arn"
+      values   = ["arn:aws:cloudtrail:*:${var.aws_account_id}:trail/*"]
+    }
+  }
+
+  statement {
+    sid = "Allow alias creation during setup"
+    principals {
+      type        = "AWS"
+      identifiers = ["*"]
+    }
+    actions   = ["kms:CreateAlias"]
+    resources = ["*"]
+    condition {
+      test     = "StringEquals"
+      variable = "kms:ViaService"
+      values   = ["ec2.${var.region}.amazonaws.com"]
+    }
+    condition {
+      test     = "StringEquals"
+      variable = "kms:CallerAccount"
+      values   = [var.aws_account_id]
+    }
+  }
+
+  statement {
+    sid = "Enable cross account log decryption"
+    principals {
+      type        = "AWS"
+      identifiers = ["*"]
+    }
+    actions = [
+      "kms:Decrypt",
+      "kms:ReEncryptFrom"
+    ]
+    resources = ["*"]
+    condition {
+      test     = "StringEquals"
+      variable = "kms:CallerAccount"
+      values   = [var.aws_account_id]
+    }
+    condition {
+      test     = "StringLike"
+      variable = "kms:EncryptionContext:aws:cloudtrail:arn"
+      values   = ["arn:aws:cloudtrail:*:${var.aws_account_id}:trail/*"]
+    }
+  }
+
+  # https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-permissions-for-sns-notifications.html
+  statement {
+    sid = "Allow CloudTrail to send notifications to the encrypted SNS topic"
+    principals {
+      type        = "Service"
+      identifiers = ["cloudtrail.amazonaws.com"]
+    }
+    actions = [
+      "kms:GenerateDataKey*",
+      "kms:Decrypt"
+    ]
+    resources = ["*"]
+    condition {
+      test     = "StringEquals"
+      variable = "aws:SourceAccount"
+      values   = [var.aws_account_id]
+    }
+  }
+
+  statement {
+    sid = "Allow CloudWatch Logs to encrypt logs"
+    principals {
+      type        = "Service"
+      identifiers = ["logs.${var.region}.amazonaws.com"]
+    }
+    actions = [
+      "kms:Encrypt",
+      "kms:Decrypt",
+      "kms:ReEncrypt*",
+      "kms:GenerateDataKey*",
+      "kms:Describe*"
+    ]
+    resources = ["*"]
+    condition {
+      test     = "ArnLike"
+      variable = "kms:EncryptionContext:aws:logs:arn"
+      values   = ["arn:aws:logs:${var.region}:${var.aws_account_id}:log-group:${var.cloudwatch_logs_group_name}"]
+    }
+  }
+}
+
+resource "aws_kms_key" "cloudtrail" {
+  description             = "A KMS key to encrypt CloudTrail events."
+  deletion_window_in_days = var.key_deletion_window_in_days
+  enable_key_rotation     = "true"
+  policy                  = data.aws_iam_policy_document.cloudtrail_key_policy.json
+
+  tags = var.tags
+}
+
+# --------------------------------------------------------------------------------------------------
+# SNS Topic
+# Could be used as subscription target to get feed of audit trail messages
+# --------------------------------------------------------------------------------------------------
+
+resource "aws_sns_topic" "cloudtrail-sns-topic" {
+  count = var.cloudtrail_sns_topic_enabled ? 1 : 0
+
+  name              = var.cloudtrail_sns_topic_name
+  kms_master_key_id = aws_kms_key.cloudtrail.id
+}
+
+data "aws_iam_policy_document" "cloudtrail-sns-policy" {
+  count = var.cloudtrail_sns_topic_enabled ? 1 : 0
+
+  statement {
+    actions   = ["sns:Publish"]
+    resources = [aws_sns_topic.cloudtrail-sns-topic[0].arn]
+
+    principals {
+      type        = "Service"
+      identifiers = ["cloudtrail.amazonaws.com"]
+    }
+  }
+}
+
+resource "aws_sns_topic_policy" "local-account-cloudtrail" {
+  count = var.cloudtrail_sns_topic_enabled ? 1 : 0
+
+  arn    = aws_sns_topic.cloudtrail-sns-topic[0].arn
+  policy = data.aws_iam_policy_document.cloudtrail-sns-policy[0].json
+}
+
+# --------------------------------------------------------------------------------------------------
+# CloudTrail configuration.
+# --------------------------------------------------------------------------------------------------
+
+resource "aws_cloudtrail" "global" {
+  name                          = var.cloudtrail_name
+  cloud_watch_logs_group_arn    = "${aws_cloudwatch_log_group.cloudtrail_events.arn}:*"
+  cloud_watch_logs_role_arn     = aws_iam_role.cloudwatch_delivery.arn
+  enable_log_file_validation    = true
+  include_global_service_events = true
+  is_multi_region_trail         = true
+  is_organization_trail         = var.is_organization_trail
+  kms_key_id                    = aws_kms_key.cloudtrail.arn
+  s3_bucket_name                = var.s3_bucket_name
+  s3_key_prefix                 = var.s3_key_prefix
+  sns_topic_name                = var.cloudtrail_sns_topic_enabled ? aws_sns_topic.cloudtrail-sns-topic[0].arn : null
+
+  event_selector {
+    read_write_type           = "All"
+    include_management_events = true
+
+    data_resource {
+      type   = "AWS::S3::Object"
+      values = var.s3_object_level_logging_buckets
+    }
+  }
+
+  event_selector {
+    read_write_type           = "All"
+    include_management_events = true
+
+    data_resource {
+      type   = "AWS::DynamoDB::Table"
+      values = var.dynamodb_event_logging_tables
+    }
+
+    data_resource {
+      type   = "AWS::Lambda::Function"
+      values = var.lambda_invocation_logging_lambdas
+    }
+  }
+
+  insight_selector {
+    insight_type = "ApiCallRateInsight"
+  }
+
+  tags = var.tags
+
+  depends_on = [var.cloudtrail_depends_on]
+}
+
+
+# --------------------------------------------------------------------------------------------------
+# Migrations to 0.31.0
+# Removing `enabled` argument.
+# --------------------------------------------------------------------------------------------------
+
+moved {
+  from = aws_kms_key.cloudtrail[0]
+  to   = aws_kms_key.cloudtrail
+}
+
+moved {
+  from = aws_cloudtrail.global[0]
+  to   = aws_cloudtrail.global
+}
+
+
+output "cloudtrail" {
+  description = "The trail for recording events in all regions."
+  value       = aws_cloudtrail.global
+}
+
+output "cloudtrail_sns_topic" {
+  description = "The sns topic linked to the cloudtrail."
+  value       = var.cloudtrail_sns_topic_enabled ? aws_sns_topic.cloudtrail-sns-topic[0] : null
+}
+
+output "kms_key" {
+  description = "The  KMS key used for encrypting CloudTrail events."
+  value       = aws_kms_key.cloudtrail
+}
+
+output "log_delivery_iam_role" {
+  description = "The IAM role used for delivering CloudTrail events to CloudWatch Logs."
+  value       = aws_iam_role.cloudwatch_delivery
+}
+
+output "log_group" {
+  description = "The CloudWatch Logs log group which stores CloudTrail events."
+  value       = aws_cloudwatch_log_group.cloudtrail_events.name
+}
+
+
+variable "aws_account_id" {
+  description = "The AWS Account ID number of the account."
+  type        = string
+}
+
+variable "cloudtrail_name" {
+  description = "The name of the trail."
+  type        = string
+  default     = "cloudtrail-multi-region"
+}
+
+variable "cloudtrail_sns_topic_enabled" {
+  description = "Specifies whether the trail is delivered to a SNS topic."
+  type        = bool
+  default     = true
+}
+
+variable "cloudtrail_sns_topic_name" {
+  description = "The SNS topic linked to the CloudTrail"
+  type        = string
+  default     = "cloudtrail-multi-region-sns-topic"
+}
+
+variable "cloudwatch_logs_enabled" {
+  description = "Specifies whether the trail is delivered to CloudWatch Logs."
+  type        = bool
+  default     = true
+}
+
+variable "cloudwatch_logs_group_name" {
+  description = "The name of CloudWatch Logs group to which CloudTrail events are delivered."
+  type        = string
+  default     = "cloudtrail-multi-region"
+}
+
+variable "cloudwatch_logs_retention_in_days" {
+  description = "Number of days to retain logs for. CIS recommends 365 days.  Possible values are: 0, 1, 3, 5, 7, 14, 30, 60, 90, 120, 150, 180, 365, 400, 545, 731, 1827, and 3653. Set to 0 to keep logs indefinitely."
+  type        = number
+  default     = 365
+}
+
+variable "iam_role_name" {
+  description = "The name of the IAM Role to be used by CloudTrail to delivery logs to CloudWatch Logs group."
+  type        = string
+  default     = "CloudTrail-CloudWatch-Delivery-Role"
+}
+
+variable "iam_role_policy_name" {
+  description = "The name of the IAM Role Policy to be used by CloudTrail to delivery logs to CloudWatch Logs group."
+  type        = string
+  default     = "CloudTrail-CloudWatch-Delivery-Policy"
+}
+
+variable "permissions_boundary_arn" {
+  description = "The permissions boundary ARN for all IAM Roles, provisioned by this module"
+  type        = string
+  default     = ""
+}
+
+variable "key_deletion_window_in_days" {
+  description = "Duration in days after which the key is deleted after destruction of the resource, must be between 7 and 30 days. Defaults to 30 days."
+  type        = number
+  default     = 10
+}
+
+variable "region" {
+  description = "The AWS region in which CloudTrail is set up."
+  type        = string
+}
+
+variable "s3_bucket_name" {
+  description = "The name of the S3 bucket which will store configuration snapshots."
+  type        = string
+}
+
+variable "s3_key_prefix" {
+  description = "The prefix for the specified S3 bucket."
+  type        = string
+  default     = ""
+}
+
+variable "is_organization_trail" {
+  description = "Specifies whether the trail is an AWS Organizations trail. Organization trails log events for the master account and all member accounts. Can only be created in the organization master account."
+  type        = bool
+  default     = false
+}
+
+variable "s3_object_level_logging_buckets" {
+  description = "The list of S3 bucket ARNs on which to enable object-level logging."
+  type        = list(string)
+  default     = ["arn:aws:s3:::"] # All S3 buckets
+}
+
+variable "dynamodb_event_logging_tables" {
+  description = "The list of DynamoDB table ARNs on which to enable event logging."
+  type        = list(string)
+  default     = ["arn:aws:dynamodb"] # All DynamoDB tables
+}
+
+variable "lambda_invocation_logging_lambdas" {
+  description = "The list of lambda ARNs on which to enable invocation logging."
+  type        = list(string)
+  default     = ["arn:aws:lambda"] # All lambdas
+}
+
+variable "tags" {
+  description = "Specifies object tags key and value. This applies to all resources created by this module."
+  type        = map(string)
+  default = {
+    "Terraform" = "true"
+  }
+}
+
+# Use the hack to inject external dependencies from outsite the module.
+# See below for more detail.
+# https://stackoverflow.com/questions/58275233/terraform-depends-on-with-modules
+variable "cloudtrail_depends_on" {
+  description = "External resources which should be set up before CloudTrail."
+  type        = list(any)
+  default     = []
+}
+
+
+terraform {
+  required_version = ">= 1.1.4"
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 4.3"
+    }
+  }
+}

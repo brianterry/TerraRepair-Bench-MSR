@@ -1,0 +1,114 @@
+```hcl
+module "this" {
+  source  = "cloudposse/label/null"
+  version = "0.25.0"
+
+  enabled             = var.enabled
+  namespace           = var.namespace
+  tenant              = var.tenant
+  environment         = var.environment
+  stage               = var.stage
+  name                = var.name
+  delimiter           = var.delimiter
+  attributes          = var.attributes
+  tags                = var.tags
+  additional_tag_map  = var.additional_tag_map
+  label_order         = var.label_order
+  regex_replace_chars = var.regex_replace_chars
+  id_length_limit     = var.id_length_limit
+  label_key_case      = var.label_key_case
+  label_value_case    = var.label_value_case
+  descriptor_formats  = var.descriptor_formats
+  labels_as_tags      = var.labels_as_tags
+
+  context = var.context
+}
+
+locals {
+  enabled = module.this.enabled
+}
+
+resource "aws_iam_group" "default" {
+  count = local.enabled ? 1 : 0
+
+  name        = module.this.id
+  tags        = module.this.tags
+}
+
+resource "aws_iam_user" "default" {
+  count = local.enabled ? 1 : 0
+
+  name          = module.this.id
+  tags          = module.this.tags
+  force_destroy = true
+}
+
+data "aws_iam_policy_document" "default" {
+  statement {
+    sid = "AllowOktaUserToListIamRoles"
+    actions = [
+      "iam:ListRoles",
+      "iam:ListAccountAliases"
+    ]
+    resources = ["*"]
+  }
+}
+
+resource "aws_iam_policy" "default" {
+  name        = module.this.id
+  description = "Policy for Okta user"
+  policy      = data.aws_iam_policy_document.default.json
+  tags        = module.this.tags
+}
+
+resource "aws_iam_group_policy_attachment" "default" {
+  group      = aws_iam_group.default[0].name
+  policy_arn = aws_iam_policy.default.arn
+}
+
+resource "aws_iam_user_group_membership" "default" {
+  count = local.enabled? 1 : 0
+
+  user = aws_iam_user.default[0].name
+  group = aws_iam_group.default[0].name
+}
+
+resource "aws_iam_access_key" "default" {
+  user = aws_iam_user.default[0].name
+}
+
+resource "aws_ssm_parameter" "okta_user_access_key_id" {
+  name        = "/sso/${module.this.id}/access_key_id"
+  value       = aws_iam_access_key.default.id
+  description = "Access Key ID for Okta user"
+  type        = "SecureString"
+  key_id      = var.kms_alias_name
+  overwrite   = true
+  tags        = module.this.tags
+}
+
+resource "aws_ssm_parameter" "okta_user_secret_access_key" {
+  name        = "/sso/${module.this.id}/secret_access_key"
+  value       = aws_iam_access_key.default.secret
+  description = "Secret Access Key for Okta user"
+  type        = "SecureString"
+  key_id      = var.kms_alias_name
+  overwrite   = true
+  tags        = module.this.tags
+}
+
+output "user_name" {
+  value       = aws_iam_user.default[0].name
+  description = "User name"
+}
+
+output "user_arn" {
+  value       = aws_iam_user.default[0].arn
+  description = "User ARN"
+}
+
+output "ssm_prefix" {
+  value       = "AWS Key for ${aws_iam_user.default[0].name} is in Systems Manager Parameter Store under ${aws_ssm_parameter.okta_user_access_key_id.name} and ${aws_ssm_parameter.okta_user_secret_access_key.name}"
+  description = "Where to find the AWS API key information for the user"
+}
+```

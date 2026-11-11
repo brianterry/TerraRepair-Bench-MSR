@@ -1,0 +1,362 @@
+{
+  "module_id": "module_0410",
+  "model_id": "claude-sonnet-4-5",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0086",
+      "title": "S3 Access block should block public ACL",
+      "severity": "HIGH",
+      "resource_name": "module.teleport_backend",
+      "resource_type": "module",
+      "file_path": "git::https:/github.com/cloudposse/terraform-aws-teleport-storage.git?ref=tags/0.4.0/git::https:/github.com/cloudposse/terraform-aws-s3-log-storage.git?ref=tags/0.1.3/main.tf",
+      "start_line": 11,
+      "end_line": 52
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0087",
+      "title": "S3 Access block should block public policy",
+      "severity": "HIGH",
+      "resource_name": "module.teleport_backend",
+      "resource_type": "module",
+      "file_path": "git::https:/github.com/cloudposse/terraform-aws-teleport-storage.git?ref=tags/0.4.0/git::https:/github.com/cloudposse/terraform-aws-s3-log-storage.git?ref=tags/0.1.3/main.tf",
+      "start_line": 11,
+      "end_line": 52
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0090",
+      "title": "S3 Data should be versioned",
+      "severity": "MEDIUM",
+      "resource_name": "module.teleport_backend",
+      "resource_type": "module",
+      "file_path": "git::https:/github.com/cloudposse/terraform-aws-teleport-storage.git?ref=tags/0.4.0/git::https:/github.com/cloudposse/terraform-aws-s3-log-storage.git?ref=tags/0.1.3/main.tf",
+      "start_line": 19,
+      "end_line": 19
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0091",
+      "title": "S3 Access Block should Ignore Public ACL",
+      "severity": "HIGH",
+      "resource_name": "module.teleport_backend",
+      "resource_type": "module",
+      "file_path": "git::https:/github.com/cloudposse/terraform-aws-teleport-storage.git?ref=tags/0.4.0/git::https:/github.com/cloudposse/terraform-aws-s3-log-storage.git?ref=tags/0.1.3/main.tf",
+      "start_line": 11,
+      "end_line": 52
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0093",
+      "title": "S3 Access block should restrict public bucket to limit access",
+      "severity": "HIGH",
+      "resource_name": "module.teleport_backend",
+      "resource_type": "module",
+      "file_path": "git::https:/github.com/cloudposse/terraform-aws-teleport-storage.git?ref=tags/0.4.0/git::https:/github.com/cloudposse/terraform-aws-s3-log-storage.git?ref=tags/0.1.3/main.tf",
+      "start_line": 11,
+      "end_line": 52
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0094",
+      "title": "S3 buckets should each define an aws_s3_bucket_public_access_block",
+      "severity": "LOW",
+      "resource_name": "module.teleport_backend",
+      "resource_type": "module",
+      "file_path": "git::https:/github.com/cloudposse/terraform-aws-teleport-storage.git?ref=tags/0.4.0/git::https:/github.com/cloudposse/terraform-aws-s3-log-storage.git?ref=tags/0.1.3/main.tf",
+      "start_line": 11,
+      "end_line": 52
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "teleport_backend",
+      "resource_type": "teleport_backend",
+      "file_path": "/main.tf",
+      "start_line": 13,
+      "end_line": 36
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "teleport_role_name",
+      "resource_type": "teleport_role_name",
+      "file_path": "/main.tf",
+      "start_line": 38,
+      "end_line": 46
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "kops_metadata",
+      "resource_type": "kops_metadata",
+      "file_path": "/main.tf",
+      "start_line": 48,
+      "end_line": 51
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_34",
+      "title": "AWS SSM Parameter should be Encrypted",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_ssm_parameter.teleport_audit_sessions_uri",
+      "resource_type": "aws_ssm_parameter",
+      "file_path": "/main.tf",
+      "start_line": 144,
+      "end_line": 150
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_34",
+      "title": "AWS SSM Parameter should be Encrypted",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_ssm_parameter.teleport_audit_events_uri",
+      "resource_type": "aws_ssm_parameter",
+      "file_path": "/main.tf",
+      "start_line": 152,
+      "end_line": 158
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_34",
+      "title": "AWS SSM Parameter should be Encrypted",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_ssm_parameter.teleport_cluster_state_dynamodb_table",
+      "resource_type": "aws_ssm_parameter",
+      "file_path": "/main.tf",
+      "start_line": 160,
+      "end_line": 166
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_34",
+      "title": "AWS SSM Parameter should be Encrypted",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_ssm_parameter.teleport_auth_iam_role",
+      "resource_type": "aws_ssm_parameter",
+      "file_path": "/main.tf",
+      "start_line": 168,
+      "end_line": 174
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_34",
+      "title": "AWS SSM Parameter should be Encrypted",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_ssm_parameter.teleport_kubernetes_namespace",
+      "resource_type": "aws_ssm_parameter",
+      "file_path": "/main.tf",
+      "start_line": 176,
+      "end_line": 182
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_34",
+      "title": "AWS SSM Parameter should be Encrypted",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_ssm_parameter.teleport_tokens[0]",
+      "resource_type": "aws_ssm_parameter",
+      "file_path": "/main.tf",
+      "start_line": 198,
+      "end_line": 205
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_34",
+      "title": "AWS SSM Parameter should be Encrypted",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_ssm_parameter.teleport_proxy_domain_name",
+      "resource_type": "aws_ssm_parameter",
+      "file_path": "/main.tf",
+      "start_line": 207,
+      "end_line": 213
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_34",
+      "title": "AWS SSM Parameter should be Encrypted",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_ssm_parameter.teleport_version",
+      "resource_type": "aws_ssm_parameter",
+      "file_path": "/main.tf",
+      "start_line": 215,
+      "end_line": 221
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_34",
+      "title": "AWS SSM Parameter should be Encrypted",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_ssm_parameter.teleport_tokens[1]",
+      "resource_type": "aws_ssm_parameter",
+      "file_path": "/main.tf",
+      "start_line": 198,
+      "end_line": 205
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_34",
+      "title": "AWS SSM Parameter should be Encrypted",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_ssm_parameter.teleport_tokens[2]",
+      "resource_type": "aws_ssm_parameter",
+      "file_path": "/main.tf",
+      "start_line": 198,
+      "end_line": 205
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_337",
+      "title": "Ensure SSM parameters are using KMS CMK",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_ssm_parameter.teleport_audit_sessions_uri",
+      "resource_type": "aws_ssm_parameter",
+      "file_path": "/main.tf",
+      "start_line": 136,
+      "end_line": 142
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_337",
+      "title": "Ensure SSM parameters are using KMS CMK",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_ssm_parameter.teleport_audit_events_uri",
+      "resource_type": "aws_ssm_parameter",
+      "file_path": "/main.tf",
+      "start_line": 144,
+      "end_line": 150
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_337",
+      "title": "Ensure SSM parameters are using KMS CMK",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_ssm_parameter.teleport_cluster_state_dynamodb_table",
+      "resource_type": "aws_ssm_parameter",
+      "file_path": "/main.tf",
+      "start_line": 152,
+      "end_line": 158
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_337",
+      "title": "Ensure SSM parameters are using KMS CMK",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_ssm_parameter.teleport_auth_iam_role",
+      "resource_type": "aws_ssm_parameter",
+      "file_path": "/main.tf",
+      "start_line": 160,
+      "end_line": 166
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_337",
+      "title": "Ensure SSM parameters are using KMS CMK",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_ssm_parameter.teleport_kubernetes_namespace",
+      "resource_type": "aws_ssm_parameter",
+      "file_path": "/main.tf",
+      "start_line": 168,
+      "end_line": 174
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_337",
+      "title": "Ensure SSM parameters are using KMS CMK",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_ssm_parameter.teleport_tokens[0]",
+      "resource_type": "aws_ssm_parameter",
+      "file_path": "/main.tf",
+      "start_line": 190,
+      "end_line": 197
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_337",
+      "title": "Ensure SSM parameters are using KMS CMK",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_ssm_parameter.teleport_proxy_domain_name",
+      "resource_type": "aws_ssm_parameter",
+      "file_path": "/main.tf",
+      "start_line": 199,
+      "end_line": 205
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_337",
+      "title": "Ensure SSM parameters are using KMS CMK",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_ssm_parameter.teleport_version",
+      "resource_type": "aws_ssm_parameter",
+      "file_path": "/main.tf",
+      "start_line": 207,
+      "end_line": 213
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_337",
+      "title": "Ensure SSM parameters are using KMS CMK",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_ssm_parameter.teleport_tokens[1]",
+      "resource_type": "aws_ssm_parameter",
+      "file_path": "/main.tf",
+      "start_line": 190,
+      "end_line": 197
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_337",
+      "title": "Ensure SSM parameters are using KMS CMK",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_ssm_parameter.teleport_tokens[2]",
+      "resource_type": "aws_ssm_parameter",
+      "file_path": "/main.tf",
+      "start_line": 190,
+      "end_line": 197
+    }
+  ],
+  "target_count": 19,
+  "resolved_count": 19,
+  "introduced_count": 10,
+  "unchanged_count": 0,
+  "repair_success_rate": 1.0,
+  "regression_rate": 0.5263157894736842,
+  "net_delta": 9,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 5,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 10,
+      "introduced": 10,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 4,
+      "introduced": 0,
+      "unchanged": 0
+    }
+  },
+  "repair_cost_usd": 0.072411,
+  "repair_tokens": 9125,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0410_claude-sonnet-4-5.repaired.tf",
+  "raw_response_path": "module_0410_claude-sonnet-4-5.raw.txt",
+  "repaired_code_sha256": "b2f0fe99a7c6e6b7d9efab9bca0646495d7909587ea65e212c94d3bd7c394d0d"
+}

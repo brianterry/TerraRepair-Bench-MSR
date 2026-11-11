@@ -1,0 +1,175 @@
+{
+  "module_id": "module_0211",
+  "model_id": "deepseek-v3-2",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "module.cur_reports_integration_athena_s3_bucket",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/s3-bucket/aws/main.tf",
+      "start_line": 77,
+      "end_line": 89
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "module.cur_reports_s3_bucket",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/s3-bucket/aws/main.tf",
+      "start_line": 77,
+      "end_line": 89
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0132",
+      "title": "S3 encryption should use Customer Managed Keys",
+      "severity": "HIGH",
+      "resource_name": "module.cur_reports_integration_athena_s3_bucket",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/s3-bucket/aws/main.tf",
+      "start_line": 77,
+      "end_line": 89
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0132",
+      "title": "S3 encryption should use Customer Managed Keys",
+      "severity": "HIGH",
+      "resource_name": "module.cur_reports_s3_bucket",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/s3-bucket/aws/main.tf",
+      "start_line": 77,
+      "end_line": 89
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_274",
+      "title": "Disallow IAM roles, users, and groups from using the AWS AdministratorAccess policy",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_role_policy_attachment.atlantis",
+      "resource_type": "aws_iam_role_policy_attachment",
+      "file_path": "/iam.tf",
+      "start_line": 59,
+      "end_line": 62
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "cur_reports_s3_bucket",
+      "resource_type": "cur_reports_s3_bucket",
+      "file_path": "/s3.tf",
+      "start_line": 19,
+      "end_line": 43
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "cur_reports_integration_athena_s3_bucket",
+      "resource_type": "cur_reports_integration_athena_s3_bucket",
+      "file_path": "/s3.tf",
+      "start_line": 45,
+      "end_line": 69
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_274",
+      "title": "Disallow IAM roles, users, and groups from using the AWS AdministratorAccess policy",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_ssoadmin_managed_policy_attachment.this[\"AdministratorAccess\"]",
+      "resource_type": "aws_ssoadmin_managed_policy_attachment",
+      "file_path": "/sso.tf",
+      "start_line": 43,
+      "end_line": 48
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "cur_reports_s3_bucket",
+      "resource_type": "cur_reports_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 831,
+      "end_line": 866
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "cur_reports_integration_athena_s3_bucket",
+      "resource_type": "cur_reports_integration_athena_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 868,
+      "end_line": 903
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_64",
+      "title": "Ensure KMS key Policy is defined",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_kms_key.cur_reports_s3_bucket",
+      "resource_type": "aws_kms_key",
+      "file_path": "/main.tf",
+      "start_line": 905,
+      "end_line": 909
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_64",
+      "title": "Ensure KMS key Policy is defined",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_kms_key.cur_reports_integration_athena_s3_bucket",
+      "resource_type": "aws_kms_key",
+      "file_path": "/main.tf",
+      "start_line": 911,
+      "end_line": 915
+    }
+  ],
+  "target_count": 8,
+  "resolved_count": 6,
+  "introduced_count": 2,
+  "unchanged_count": 2,
+  "repair_success_rate": 0.75,
+  "regression_rate": 0.25,
+  "net_delta": 4,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 2,
+      "introduced": 2,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 2,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 2,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 2
+    }
+  },
+  "repair_cost_usd": 0.030131320000000003,
+  "repair_tokens": 21918,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0211_deepseek-v3-2.repaired.tf",
+  "raw_response_path": "module_0211_deepseek-v3-2.raw.txt",
+  "repaired_code_sha256": "7b5cb25a1d88fd1b9e348371c26479c5f57c18159bfd7aa07d5d7bcc98209ab9"
+}

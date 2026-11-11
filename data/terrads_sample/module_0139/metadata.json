@@ -1,0 +1,47 @@
+{
+  "findings_count": 7,
+  "findings": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_187",
+      "title": "",
+      "resource_name": "aws_sagemaker_notebook_instance.ni"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_371",
+      "title": "",
+      "resource_name": "aws_sagemaker_notebook_instance.ni"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_122",
+      "title": "",
+      "resource_name": "aws_sagemaker_notebook_instance.ni"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_307",
+      "title": "",
+      "resource_name": "aws_sagemaker_notebook_instance.ni"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_22",
+      "title": "",
+      "resource_name": "aws_sagemaker_notebook_instance.ni"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_12",
+      "title": "",
+      "resource_name": "aws_vpc.sagemaker"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_11",
+      "title": "",
+      "resource_name": "aws_vpc.sagemaker"
+    }
+  ]
+}

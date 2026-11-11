@@ -1,0 +1,362 @@
+{
+  "module_id": "module_0177",
+  "model_id": "qwen3-32b",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0028",
+      "title": "aws_instance should activate session tokens for Instance Metadata Service.",
+      "severity": "HIGH",
+      "resource_name": "aws_instance.ph-instance",
+      "resource_type": "aws_instance",
+      "file_path": "aws-instance.tf",
+      "start_line": 11,
+      "end_line": 43
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0028",
+      "title": "aws_instance should activate session tokens for Instance Metadata Service.",
+      "severity": "HIGH",
+      "resource_name": "aws_instance.ph-instance2",
+      "resource_type": "aws_instance",
+      "file_path": "aws-instance2.tf",
+      "start_line": 2,
+      "end_line": 34
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0178",
+      "title": "VPC Flow Logs is a feature that enables you to capture information about the IP traffic going to and from network interfaces in your VPC. After you've created a flow log, you can view and retrieve its data in Amazon CloudWatch Logs. It is recommended that VPC Flow Logs be enabled for packet \"Rejects\" for VPCs.",
+      "severity": "MEDIUM",
+      "resource_name": "aws_vpc.ph-vpc",
+      "resource_type": "aws_vpc",
+      "file_path": "aws-network.tf",
+      "start_line": 2,
+      "end_line": 9
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "aws_s3_bucket.ph-bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "aws-s3.tf",
+      "start_line": 2,
+      "end_line": 76
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "aws_security_group_rule.ph-pubsg-out-tcp",
+      "resource_type": "aws_security_group_rule",
+      "file_path": "aws-security.tf",
+      "start_line": 93,
+      "end_line": 93
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "aws_security_group_rule.ph-pubsg-out-udp",
+      "resource_type": "aws_security_group_rule",
+      "file_path": "aws-security.tf",
+      "start_line": 103,
+      "end_line": 103
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_394",
+      "title": "Ensure aws_availability_zones data source pins zone identity so its result set does not silently expand when AWS adds an Availability Zone",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_availability_zones.ph-azs",
+      "resource_type": "aws_availability_zones",
+      "file_path": "/aws-generic.tf",
+      "start_line": 92,
+      "end_line": 94
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_135",
+      "title": "Ensure that EC2 is EBS optimized",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_instance.ph-instance",
+      "resource_type": "aws_instance",
+      "file_path": "/aws-instance.tf",
+      "start_line": 11,
+      "end_line": 43
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_79",
+      "title": "Ensure Instance Metadata Service Version 1 is not enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_instance.ph-instance",
+      "resource_type": "aws_instance",
+      "file_path": "/aws-instance.tf",
+      "start_line": 11,
+      "end_line": 43
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_126",
+      "title": "Ensure that detailed monitoring is enabled for EC2 instances",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_instance.ph-instance",
+      "resource_type": "aws_instance",
+      "file_path": "/aws-instance.tf",
+      "start_line": 11,
+      "end_line": 43
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_135",
+      "title": "Ensure that EC2 is EBS optimized",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_instance.ph-instance2",
+      "resource_type": "aws_instance",
+      "file_path": "/aws-instance2.tf",
+      "start_line": 2,
+      "end_line": 34
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_79",
+      "title": "Ensure Instance Metadata Service Version 1 is not enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_instance.ph-instance2",
+      "resource_type": "aws_instance",
+      "file_path": "/aws-instance2.tf",
+      "start_line": 2,
+      "end_line": 34
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_126",
+      "title": "Ensure that detailed monitoring is enabled for EC2 instances",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_instance.ph-instance2",
+      "resource_type": "aws_instance",
+      "file_path": "/aws-instance2.tf",
+      "start_line": 2,
+      "end_line": 34
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_62",
+      "title": "Ensure S3 buckets should have event notifications enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.ph-bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/aws-s3.tf",
+      "start_line": 2,
+      "end_line": 76
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_12",
+      "title": "Ensure the default security group of every VPC restricts all traffic",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_vpc.ph-vpc",
+      "resource_type": "aws_vpc",
+      "file_path": "/aws-network.tf",
+      "start_line": 2,
+      "end_line": 9
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_11",
+      "title": "Ensure VPC flow logging is enabled in all VPCs",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_vpc.ph-vpc",
+      "resource_type": "aws_vpc",
+      "file_path": "/aws-network.tf",
+      "start_line": 2,
+      "end_line": 9
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_18",
+      "title": "Ensure the S3 bucket has access logging enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.ph-bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/aws-s3.tf",
+      "start_line": 2,
+      "end_line": 76
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_61",
+      "title": "Ensure that an S3 bucket has a lifecycle configuration",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.ph-bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/aws-s3.tf",
+      "start_line": 2,
+      "end_line": 76
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_144",
+      "title": "Ensure that S3 bucket has cross-region replication enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.ph-bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/aws-s3.tf",
+      "start_line": 2,
+      "end_line": 76
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0096",
+      "title": "Unencrypted SQS queue.",
+      "severity": "HIGH",
+      "resource_name": "aws_sqs_queue.ph-bucket-notification-queue",
+      "resource_type": "aws_sqs_queue",
+      "file_path": "main.tf",
+      "start_line": 833,
+      "end_line": 835
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "aws_security_group_rule.ph-pubsg-out-tcp",
+      "resource_type": "aws_security_group_rule",
+      "file_path": "main.tf",
+      "start_line": 929,
+      "end_line": 929
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "aws_security_group_rule.ph-pubsg-out-udp",
+      "resource_type": "aws_security_group_rule",
+      "file_path": "main.tf",
+      "start_line": 939,
+      "end_line": 939
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0178",
+      "title": "VPC Flow Logs is a feature that enables you to capture information about the IP traffic going to and from network interfaces in your VPC. After you've created a flow log, you can view and retrieve its data in Amazon CloudWatch Logs. It is recommended that VPC Flow Logs be enabled for packet \"Rejects\" for VPCs.",
+      "severity": "MEDIUM",
+      "resource_name": "aws_vpc.ph-vpc",
+      "resource_type": "aws_vpc",
+      "file_path": "main.tf",
+      "start_line": 630,
+      "end_line": 645
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_394",
+      "title": "Ensure aws_availability_zones data source pins zone identity so its result set does not silently expand when AWS adds an Availability Zone",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_availability_zones.ph-azs",
+      "resource_type": "aws_availability_zones",
+      "file_path": "/main.tf",
+      "start_line": 128,
+      "end_line": 131
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_27",
+      "title": "Ensure all data stored in the SQS queue is encrypted",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_sqs_queue.ph-bucket-notification-queue",
+      "resource_type": "aws_sqs_queue",
+      "file_path": "/main.tf",
+      "start_line": 833,
+      "end_line": 835
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_12",
+      "title": "Ensure the default security group of every VPC restricts all traffic",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_vpc.ph-vpc",
+      "resource_type": "aws_vpc",
+      "file_path": "/main.tf",
+      "start_line": 630,
+      "end_line": 645
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_11",
+      "title": "Ensure VPC flow logging is enabled in all VPCs",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_vpc.ph-vpc",
+      "resource_type": "aws_vpc",
+      "file_path": "/main.tf",
+      "start_line": 630,
+      "end_line": 645
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_144",
+      "title": "Ensure that S3 bucket has cross-region replication enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.ph-bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 717,
+      "end_line": 795
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_61",
+      "title": "Ensure that an S3 bucket has a lifecycle configuration",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.ph-bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 717,
+      "end_line": 795
+    }
+  ],
+  "target_count": 19,
+  "resolved_count": 11,
+  "introduced_count": 2,
+  "unchanged_count": 8,
+  "repair_success_rate": 0.5789473684210527,
+  "regression_rate": 0.10526315789473684,
+  "net_delta": 9,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 2
+    },
+    "data_protection": {
+      "resolved": 2,
+      "introduced": 2,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 5,
+      "introduced": 0,
+      "unchanged": 2
+    },
+    "other": {
+      "resolved": 4,
+      "introduced": 0,
+      "unchanged": 4
+    }
+  },
+  "repair_cost_usd": 0.0070644,
+  "repair_tokens": 17661,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0177_qwen3-32b.repaired.tf",
+  "raw_response_path": "module_0177_qwen3-32b.raw.txt",
+  "repaired_code_sha256": "e7f17aa221c5b1322605b47e1b54d439da3093249a853d80278e5ad1edb68375"
+}

@@ -1,0 +1,125 @@
+{
+  "findings_count": 25,
+  "findings": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_79",
+      "title": "",
+      "resource_name": "aws_instance.blue[0]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_126",
+      "title": "",
+      "resource_name": "aws_instance.blue[0]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_135",
+      "title": "",
+      "resource_name": "aws_instance.blue[0]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_8",
+      "title": "",
+      "resource_name": "aws_instance.blue[0]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_261",
+      "title": "",
+      "resource_name": "aws_lb_target_group.blue"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_79",
+      "title": "",
+      "resource_name": "aws_instance.blue[1]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_126",
+      "title": "",
+      "resource_name": "aws_instance.blue[1]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_135",
+      "title": "",
+      "resource_name": "aws_instance.blue[1]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_8",
+      "title": "",
+      "resource_name": "aws_instance.blue[1]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_261",
+      "title": "",
+      "resource_name": "aws_lb_target_group.green"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_260",
+      "title": "",
+      "resource_name": "aws_security_group.web"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "",
+      "resource_name": "aws_security_group.web"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_382",
+      "title": "",
+      "resource_name": "aws_security_group.web"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_150",
+      "title": "",
+      "resource_name": "aws_lb.app"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_91",
+      "title": "",
+      "resource_name": "aws_lb.app"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_131",
+      "title": "",
+      "resource_name": "aws_lb.app"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_2",
+      "title": "",
+      "resource_name": "aws_lb_listener.app"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_20",
+      "title": "",
+      "resource_name": "aws_lb.app"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_378",
+      "title": "",
+      "resource_name": "aws_lb_target_group.blue"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_378",
+      "title": "",
+      "resource_name": "aws_lb_target_group.green"
+    }
+  ]
+}

@@ -1,0 +1,340 @@
+{
+  "module_id": "module_0202",
+  "model_id": "nova-pro",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0086",
+      "title": "S3 Access block should block public ACL",
+      "severity": "HIGH",
+      "resource_name": "aws_s3_bucket.this[0]",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "s3.tf",
+      "start_line": 5,
+      "end_line": 25
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0087",
+      "title": "S3 Access block should block public policy",
+      "severity": "HIGH",
+      "resource_name": "aws_s3_bucket.this[0]",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "s3.tf",
+      "start_line": 5,
+      "end_line": 25
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "aws_s3_bucket.this[0]",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "s3.tf",
+      "start_line": 5,
+      "end_line": 25
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0090",
+      "title": "S3 Data should be versioned",
+      "severity": "MEDIUM",
+      "resource_name": "aws_s3_bucket.this[0]",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "s3.tf",
+      "start_line": 5,
+      "end_line": 25
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0091",
+      "title": "S3 Access Block should Ignore Public ACL",
+      "severity": "HIGH",
+      "resource_name": "aws_s3_bucket.this[0]",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "s3.tf",
+      "start_line": 5,
+      "end_line": 25
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0093",
+      "title": "S3 Access block should restrict public bucket to limit access",
+      "severity": "HIGH",
+      "resource_name": "aws_s3_bucket.this[0]",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "s3.tf",
+      "start_line": 5,
+      "end_line": 25
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0094",
+      "title": "S3 buckets should each define an aws_s3_bucket_public_access_block",
+      "severity": "LOW",
+      "resource_name": "aws_s3_bucket.this[0]",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "s3.tf",
+      "start_line": 5,
+      "end_line": 25
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0132",
+      "title": "S3 encryption should use Customer Managed Keys",
+      "severity": "HIGH",
+      "resource_name": "aws_s3_bucket.this[0]",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "s3.tf",
+      "start_line": 5,
+      "end_line": 25
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_reverse_proxy",
+      "resource_type": "aws_reverse_proxy",
+      "file_path": "/main.tf",
+      "start_line": 1,
+      "end_line": 30
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_70",
+      "title": "Ensure S3 bucket does not allow an action with any Principal",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket_policy.this",
+      "resource_type": "aws_s3_bucket_policy",
+      "file_path": "/s3.tf",
+      "start_line": 30,
+      "end_line": 54
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_21",
+      "title": "Ensure all data stored in the S3 bucket have versioning enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.this",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/s3.tf",
+      "start_line": 5,
+      "end_line": 25
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_62",
+      "title": "Ensure S3 buckets should have event notifications enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.this",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/s3.tf",
+      "start_line": 5,
+      "end_line": 25
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_6",
+      "title": "Ensure that S3 bucket has a Public Access block",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.this",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/s3.tf",
+      "start_line": 5,
+      "end_line": 25
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_18",
+      "title": "Ensure the S3 bucket has access logging enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.this",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/s3.tf",
+      "start_line": 5,
+      "end_line": 25
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_145",
+      "title": "Ensure that S3 buckets are encrypted with KMS by default",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.this",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/s3.tf",
+      "start_line": 5,
+      "end_line": 25
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_61",
+      "title": "Ensure that an S3 bucket has a lifecycle configuration",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.this",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/s3.tf",
+      "start_line": 5,
+      "end_line": 25
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_144",
+      "title": "Ensure that S3 bucket has cross-region replication enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.this",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/s3.tf",
+      "start_line": 5,
+      "end_line": 25
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0086",
+      "title": "S3 Access block should block public ACL",
+      "severity": "HIGH",
+      "resource_name": "aws_s3_bucket.this[0]",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 54,
+      "end_line": 88
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0087",
+      "title": "S3 Access block should block public policy",
+      "severity": "HIGH",
+      "resource_name": "aws_s3_bucket.this[0]",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 54,
+      "end_line": 88
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0091",
+      "title": "S3 Access Block should Ignore Public ACL",
+      "severity": "HIGH",
+      "resource_name": "aws_s3_bucket.this[0]",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 54,
+      "end_line": 88
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0093",
+      "title": "S3 Access block should restrict public bucket to limit access",
+      "severity": "HIGH",
+      "resource_name": "aws_s3_bucket.this[0]",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 54,
+      "end_line": 88
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0094",
+      "title": "S3 buckets should each define an aws_s3_bucket_public_access_block",
+      "severity": "LOW",
+      "resource_name": "aws_s3_bucket.this[0]",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 54,
+      "end_line": 88
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_70",
+      "title": "Ensure S3 bucket does not allow an action with any Principal",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket_policy.this",
+      "resource_type": "aws_s3_bucket_policy",
+      "file_path": "/main.tf",
+      "start_line": 99,
+      "end_line": 124
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_reverse_proxy",
+      "resource_type": "aws_reverse_proxy",
+      "file_path": "/main.tf",
+      "start_line": 10,
+      "end_line": 30
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_62",
+      "title": "Ensure S3 buckets should have event notifications enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.this",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 54,
+      "end_line": 88
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_61",
+      "title": "Ensure that an S3 bucket has a lifecycle configuration",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.this",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 54,
+      "end_line": 88
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_144",
+      "title": "Ensure that S3 bucket has cross-region replication enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.this",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 54,
+      "end_line": 88
+    }
+  ],
+  "target_count": 17,
+  "resolved_count": 7,
+  "introduced_count": 0,
+  "unchanged_count": 10,
+  "repair_success_rate": 0.4117647058823529,
+  "regression_rate": 0.0,
+  "net_delta": 7,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 1,
+      "introduced": 0,
+      "unchanged": 6
+    },
+    "data_protection": {
+      "resolved": 3,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 2,
+      "introduced": 0,
+      "unchanged": 1
+    },
+    "other": {
+      "resolved": 1,
+      "introduced": 0,
+      "unchanged": 3
+    }
+  },
+  "repair_cost_usd": 0.005124,
+  "repair_tokens": 5124,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0202_nova-pro.repaired.tf",
+  "raw_response_path": "module_0202_nova-pro.raw.txt",
+  "repaired_code_sha256": "570d185058a8a5129a64338423d02dc82b11311e2eeb3d4c47da3ae9f7b35a02"
+}

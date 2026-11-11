@@ -1,0 +1,560 @@
+{
+  "module_id": "module_0326",
+  "model_id": "llama-3-3-70b",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0014",
+      "title": "Cloudtrail should be enabled in all regions regardless of where your AWS resources are generally homed",
+      "severity": "MEDIUM",
+      "resource_name": "aws_cloudtrail.main[0]",
+      "resource_type": "aws_cloudtrail",
+      "file_path": "main.tf",
+      "start_line": 3,
+      "end_line": 27
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0015",
+      "title": "CloudTrail should use Customer managed keys to encrypt the logs",
+      "severity": "HIGH",
+      "resource_name": "aws_cloudtrail.main[0]",
+      "resource_type": "aws_cloudtrail",
+      "file_path": "main.tf",
+      "start_line": 3,
+      "end_line": 27
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0086",
+      "title": "S3 Access block should block public ACL",
+      "severity": "HIGH",
+      "resource_name": "aws_s3_bucket.logging[0]",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 29,
+      "end_line": 34
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0087",
+      "title": "S3 Access block should block public policy",
+      "severity": "HIGH",
+      "resource_name": "aws_s3_bucket.logging[0]",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 29,
+      "end_line": 34
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "aws_s3_bucket.logging[0]",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 29,
+      "end_line": 34
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0090",
+      "title": "S3 Data should be versioned",
+      "severity": "MEDIUM",
+      "resource_name": "aws_s3_bucket.logging[0]",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 29,
+      "end_line": 34
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0091",
+      "title": "S3 Access Block should Ignore Public ACL",
+      "severity": "HIGH",
+      "resource_name": "aws_s3_bucket.logging[0]",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 29,
+      "end_line": 34
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0093",
+      "title": "S3 Access block should restrict public bucket to limit access",
+      "severity": "HIGH",
+      "resource_name": "aws_s3_bucket.logging[0]",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 29,
+      "end_line": 34
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0094",
+      "title": "S3 buckets should each define an aws_s3_bucket_public_access_block",
+      "severity": "LOW",
+      "resource_name": "aws_s3_bucket.logging[0]",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 29,
+      "end_line": 34
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0132",
+      "title": "S3 encryption should use Customer Managed Keys",
+      "severity": "HIGH",
+      "resource_name": "aws_s3_bucket.logging[0]",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 29,
+      "end_line": 34
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0162",
+      "title": "CloudTrail logs should be stored in S3 and also sent to CloudWatch Logs",
+      "severity": "LOW",
+      "resource_name": "aws_cloudtrail.main[0]",
+      "resource_type": "aws_cloudtrail",
+      "file_path": "main.tf",
+      "start_line": 3,
+      "end_line": 27
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_252",
+      "title": "Ensure CloudTrail defines an SNS Topic",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudtrail.main[0]",
+      "resource_type": "aws_cloudtrail",
+      "file_path": "/main.tf",
+      "start_line": 3,
+      "end_line": 27
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_67",
+      "title": "Ensure CloudTrail is enabled in all Regions",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudtrail.main[0]",
+      "resource_type": "aws_cloudtrail",
+      "file_path": "/main.tf",
+      "start_line": 3,
+      "end_line": 27
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_36",
+      "title": "Ensure CloudTrail log file validation is enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudtrail.main[0]",
+      "resource_type": "aws_cloudtrail",
+      "file_path": "/main.tf",
+      "start_line": 3,
+      "end_line": 27
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_251",
+      "title": "Ensure CloudTrail logging is enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudtrail.main[0]",
+      "resource_type": "aws_cloudtrail",
+      "file_path": "/main.tf",
+      "start_line": 3,
+      "end_line": 27
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_35",
+      "title": "Ensure CloudTrail logs are encrypted at rest using KMS CMKs",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudtrail.main[0]",
+      "resource_type": "aws_cloudtrail",
+      "file_path": "/main.tf",
+      "start_line": 3,
+      "end_line": 27
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_21",
+      "title": "Ensure all data stored in the S3 bucket have versioning enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.logging[0]",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 29,
+      "end_line": 34
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_62",
+      "title": "Ensure S3 buckets should have event notifications enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.logging[0]",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 29,
+      "end_line": 34
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_6",
+      "title": "Ensure that S3 bucket has a Public Access block",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.logging[0]",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 29,
+      "end_line": 34
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_18",
+      "title": "Ensure the S3 bucket has access logging enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.logging[0]",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 29,
+      "end_line": 34
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_145",
+      "title": "Ensure that S3 buckets are encrypted with KMS by default",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.logging[0]",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 29,
+      "end_line": 34
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_61",
+      "title": "Ensure that an S3 bucket has a lifecycle configuration",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.logging[0]",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 29,
+      "end_line": 34
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_10",
+      "title": "Ensure CloudTrail trails are integrated with CloudWatch Logs",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudtrail.main[0]",
+      "resource_type": "aws_cloudtrail",
+      "file_path": "/main.tf",
+      "start_line": 3,
+      "end_line": 27
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_10",
+      "title": "Ensure CloudTrail trails are integrated with CloudWatch Logs",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudtrail.duplicate",
+      "resource_type": "aws_cloudtrail",
+      "file_path": "/main.tf",
+      "start_line": 65,
+      "end_line": 72
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_144",
+      "title": "Ensure that S3 bucket has cross-region replication enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.logging[0]",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 29,
+      "end_line": 34
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0017",
+      "title": "CloudWatch log groups should be encrypted using CMK",
+      "severity": "LOW",
+      "resource_name": "aws_cloudwatch_log_group.cloudtrail",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "main.tf",
+      "start_line": 32,
+      "end_line": 34
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0065",
+      "title": "A KMS key is not configured to auto-rotate.",
+      "severity": "MEDIUM",
+      "resource_name": "aws_kms_key.cloudtrail",
+      "resource_type": "aws_kms_key",
+      "file_path": "main.tf",
+      "start_line": 132,
+      "end_line": 133
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0065",
+      "title": "A KMS key is not configured to auto-rotate.",
+      "severity": "MEDIUM",
+      "resource_name": "aws_kms_key.s3",
+      "resource_type": "aws_kms_key",
+      "file_path": "main.tf",
+      "start_line": 135,
+      "end_line": 136
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "aws_s3_bucket.logging[0]",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 51,
+      "end_line": 67
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0162",
+      "title": "CloudTrail logs should be stored in S3 and also sent to CloudWatch Logs",
+      "severity": "LOW",
+      "resource_name": "aws_cloudtrail.main[0]",
+      "resource_type": "aws_cloudtrail",
+      "file_path": "main.tf",
+      "start_line": 3,
+      "end_line": 30
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_252",
+      "title": "Ensure CloudTrail defines an SNS Topic",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudtrail.main[0]",
+      "resource_type": "aws_cloudtrail",
+      "file_path": "/main.tf",
+      "start_line": 3,
+      "end_line": 30
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_36",
+      "title": "Ensure CloudTrail log file validation is enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudtrail.main[0]",
+      "resource_type": "aws_cloudtrail",
+      "file_path": "/main.tf",
+      "start_line": 3,
+      "end_line": 30
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_251",
+      "title": "Ensure CloudTrail logging is enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudtrail.main[0]",
+      "resource_type": "aws_cloudtrail",
+      "file_path": "/main.tf",
+      "start_line": 3,
+      "end_line": 30
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_66",
+      "title": "Ensure that CloudWatch Log Group specifies retention days",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.cloudtrail",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/main.tf",
+      "start_line": 32,
+      "end_line": 34
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_158",
+      "title": "Ensure that CloudWatch Log Group is encrypted by KMS",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.cloudtrail",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/main.tf",
+      "start_line": 32,
+      "end_line": 34
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_338",
+      "title": "Ensure CloudWatch log groups retains logs for at least 1 year",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.cloudtrail",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/main.tf",
+      "start_line": 32,
+      "end_line": 34
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_7",
+      "title": "Ensure rotation for customer created CMKs is enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_kms_key.cloudtrail",
+      "resource_type": "aws_kms_key",
+      "file_path": "/main.tf",
+      "start_line": 132,
+      "end_line": 133
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_7",
+      "title": "Ensure rotation for customer created CMKs is enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_kms_key.s3",
+      "resource_type": "aws_kms_key",
+      "file_path": "/main.tf",
+      "start_line": 135,
+      "end_line": 136
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_62",
+      "title": "Ensure S3 buckets should have event notifications enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.logging[0]",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 51,
+      "end_line": 67
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_61",
+      "title": "Ensure that an S3 bucket has a lifecycle configuration",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.logging[0]",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 51,
+      "end_line": 67
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_64",
+      "title": "Ensure KMS key Policy is defined",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_kms_key.cloudtrail",
+      "resource_type": "aws_kms_key",
+      "file_path": "/main.tf",
+      "start_line": 132,
+      "end_line": 133
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_64",
+      "title": "Ensure KMS key Policy is defined",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_kms_key.s3",
+      "resource_type": "aws_kms_key",
+      "file_path": "/main.tf",
+      "start_line": 135,
+      "end_line": 136
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_18",
+      "title": "Ensure the S3 bucket has access logging enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.logging[0]",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 51,
+      "end_line": 67
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_10",
+      "title": "Ensure CloudTrail trails are integrated with CloudWatch Logs",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudtrail.main[0]",
+      "resource_type": "aws_cloudtrail",
+      "file_path": "/main.tf",
+      "start_line": 3,
+      "end_line": 30
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_10",
+      "title": "Ensure CloudTrail trails are integrated with CloudWatch Logs",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudtrail.duplicate",
+      "resource_type": "aws_cloudtrail",
+      "file_path": "/main.tf",
+      "start_line": 41,
+      "end_line": 49
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_144",
+      "title": "Ensure that S3 bucket has cross-region replication enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.logging[0]",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 51,
+      "end_line": 67
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_6",
+      "title": "Ensure that S3 bucket has a Public Access block",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.logging[0]",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 51,
+      "end_line": 67
+    }
+  ],
+  "target_count": 25,
+  "resolved_count": 13,
+  "introduced_count": 10,
+  "unchanged_count": 12,
+  "repair_success_rate": 0.52,
+  "regression_rate": 0.4,
+  "net_delta": 3,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 5,
+      "introduced": 2,
+      "unchanged": 1
+    },
+    "data_protection": {
+      "resolved": 5,
+      "introduced": 4,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 2,
+      "introduced": 2,
+      "unchanged": 9
+    },
+    "other": {
+      "resolved": 1,
+      "introduced": 2,
+      "unchanged": 2
+    }
+  },
+  "repair_cost_usd": 0.0026424,
+  "repair_tokens": 3303,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0326_llama-3-3-70b.repaired.tf",
+  "raw_response_path": "module_0326_llama-3-3-70b.raw.txt",
+  "repaired_code_sha256": "e5d87b20c6fbd699d63e1c66b6b45685dfcbaaa74c3a3065d952d07e2243a6c6"
+}

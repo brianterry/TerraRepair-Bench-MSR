@@ -1,0 +1,29 @@
+{
+  "findings_count": 4,
+  "findings": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_37",
+      "title": "",
+      "resource_name": "aws_codecommit_repository.global_customizations"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_37",
+      "title": "",
+      "resource_name": "aws_codecommit_repository.account_customizations"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_37",
+      "title": "",
+      "resource_name": "aws_codecommit_repository.account_request"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_37",
+      "title": "",
+      "resource_name": "aws_codecommit_repository.account_provisioning_customizations"
+    }
+  ]
+}

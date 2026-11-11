@@ -1,0 +1,41 @@
+{
+  "findings_count": 6,
+  "findings": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_50",
+      "title": "",
+      "resource_name": "aws_lambda_function.ami_housekeeper"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_116",
+      "title": "",
+      "resource_name": "aws_lambda_function.ami_housekeeper"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_173",
+      "title": "",
+      "resource_name": "aws_lambda_function.ami_housekeeper"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_272",
+      "title": "",
+      "resource_name": "aws_lambda_function.ami_housekeeper"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_115",
+      "title": "",
+      "resource_name": "aws_lambda_function.ami_housekeeper"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_338",
+      "title": "",
+      "resource_name": "aws_cloudwatch_log_group.ami_housekeeper"
+    }
+  ]
+}

@@ -1,0 +1,314 @@
+{
+  "module_id": "module_0216",
+  "model_id": "nova-lite",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0010",
+      "title": "Cloudfront distribution should have Access Logging configured",
+      "severity": "MEDIUM",
+      "resource_name": "aws_cloudfront_distribution.cloudfront_distribution",
+      "resource_type": "aws_cloudfront_distribution",
+      "file_path": "cloudfront.tf",
+      "start_line": 43,
+      "end_line": 111
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0011",
+      "title": "CloudFront distribution does not have a WAF in front.",
+      "severity": "HIGH",
+      "resource_name": "aws_cloudfront_distribution.cloudfront_distribution",
+      "resource_type": "aws_cloudfront_distribution",
+      "file_path": "cloudfront.tf",
+      "start_line": 43,
+      "end_line": 111
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_374",
+      "title": "Ensure AWS CloudFront web distribution has geo restriction enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudfront_distribution.cloudfront_distribution",
+      "resource_type": "aws_cloudfront_distribution",
+      "file_path": "/cloudfront.tf",
+      "start_line": 43,
+      "end_line": 111
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_305",
+      "title": "Ensure CloudFront distribution has a default root object configured",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudfront_distribution.cloudfront_distribution",
+      "resource_type": "aws_cloudfront_distribution",
+      "file_path": "/cloudfront.tf",
+      "start_line": 43,
+      "end_line": 111
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_86",
+      "title": "Ensure CloudFront distribution has Access Logging enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudfront_distribution.cloudfront_distribution",
+      "resource_type": "aws_cloudfront_distribution",
+      "file_path": "/cloudfront.tf",
+      "start_line": 43,
+      "end_line": 111
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_68",
+      "title": "CloudFront Distribution should have WAF enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudfront_distribution.cloudfront_distribution",
+      "resource_type": "aws_cloudfront_distribution",
+      "file_path": "/cloudfront.tf",
+      "start_line": 43,
+      "end_line": 111
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_174",
+      "title": "Verify CloudFront Distribution Viewer Certificate is using TLS v1.2 or higher",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudfront_distribution.cloudfront_distribution",
+      "resource_type": "aws_cloudfront_distribution",
+      "file_path": "/cloudfront.tf",
+      "start_line": 43,
+      "end_line": 111
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_111",
+      "title": "Ensure IAM policies does not allow write access without constraints",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.replication",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/iam.tf",
+      "start_line": 35,
+      "end_line": 59
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_356",
+      "title": "Ensure no IAM policies documents allow \"*\" as a statement's resource for restrictable actions",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.replication",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/iam.tf",
+      "start_line": 35,
+      "end_line": 59
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_47",
+      "title": "Ensure AWS CloudFront attached WAFv2 WebACL is configured with AMR for Log4j Vulnerability",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudfront_distribution.cloudfront_distribution",
+      "resource_type": "aws_cloudfront_distribution",
+      "file_path": "/cloudfront.tf",
+      "start_line": 43,
+      "end_line": 111
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_32",
+      "title": "Ensure CloudFront distribution has a response headers policy attached",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudfront_distribution.cloudfront_distribution",
+      "resource_type": "aws_cloudfront_distribution",
+      "file_path": "/cloudfront.tf",
+      "start_line": 43,
+      "end_line": 111
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_42",
+      "title": "Ensure AWS CloudFront distribution uses custom SSL certificate",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudfront_distribution.cloudfront_distribution",
+      "resource_type": "aws_cloudfront_distribution",
+      "file_path": "/cloudfront.tf",
+      "start_line": 43,
+      "end_line": 111
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0010",
+      "title": "Cloudfront distribution should have Access Logging configured",
+      "severity": "MEDIUM",
+      "resource_name": "aws_cloudfront_distribution.cloudfront_distribution",
+      "resource_type": "aws_cloudfront_distribution",
+      "file_path": "cloudfront.tf",
+      "start_line": 43,
+      "end_line": 111
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0011",
+      "title": "CloudFront distribution does not have a WAF in front.",
+      "severity": "HIGH",
+      "resource_name": "aws_cloudfront_distribution.cloudfront_distribution",
+      "resource_type": "aws_cloudfront_distribution",
+      "file_path": "cloudfront.tf",
+      "start_line": 43,
+      "end_line": 111
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_374",
+      "title": "Ensure AWS CloudFront web distribution has geo restriction enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudfront_distribution.cloudfront_distribution",
+      "resource_type": "aws_cloudfront_distribution",
+      "file_path": "/cloudfront.tf",
+      "start_line": 43,
+      "end_line": 111
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_305",
+      "title": "Ensure CloudFront distribution has a default root object configured",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudfront_distribution.cloudfront_distribution",
+      "resource_type": "aws_cloudfront_distribution",
+      "file_path": "/cloudfront.tf",
+      "start_line": 43,
+      "end_line": 111
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_86",
+      "title": "Ensure CloudFront distribution has Access Logging enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudfront_distribution.cloudfront_distribution",
+      "resource_type": "aws_cloudfront_distribution",
+      "file_path": "/cloudfront.tf",
+      "start_line": 43,
+      "end_line": 111
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_68",
+      "title": "CloudFront Distribution should have WAF enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudfront_distribution.cloudfront_distribution",
+      "resource_type": "aws_cloudfront_distribution",
+      "file_path": "/cloudfront.tf",
+      "start_line": 43,
+      "end_line": 111
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_174",
+      "title": "Verify CloudFront Distribution Viewer Certificate is using TLS v1.2 or higher",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudfront_distribution.cloudfront_distribution",
+      "resource_type": "aws_cloudfront_distribution",
+      "file_path": "/cloudfront.tf",
+      "start_line": 43,
+      "end_line": 111
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_111",
+      "title": "Ensure IAM policies does not allow write access without constraints",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.replication",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/iam.tf",
+      "start_line": 35,
+      "end_line": 59
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_356",
+      "title": "Ensure no IAM policies documents allow \"*\" as a statement's resource for restrictable actions",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.replication",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/iam.tf",
+      "start_line": 35,
+      "end_line": 59
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_47",
+      "title": "Ensure AWS CloudFront attached WAFv2 WebACL is configured with AMR for Log4j Vulnerability",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudfront_distribution.cloudfront_distribution",
+      "resource_type": "aws_cloudfront_distribution",
+      "file_path": "/cloudfront.tf",
+      "start_line": 43,
+      "end_line": 111
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_32",
+      "title": "Ensure CloudFront distribution has a response headers policy attached",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudfront_distribution.cloudfront_distribution",
+      "resource_type": "aws_cloudfront_distribution",
+      "file_path": "/cloudfront.tf",
+      "start_line": 43,
+      "end_line": 111
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_42",
+      "title": "Ensure AWS CloudFront distribution uses custom SSL certificate",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudfront_distribution.cloudfront_distribution",
+      "resource_type": "aws_cloudfront_distribution",
+      "file_path": "/cloudfront.tf",
+      "start_line": 43,
+      "end_line": 111
+    }
+  ],
+  "target_count": 12,
+  "resolved_count": 0,
+  "introduced_count": 0,
+  "unchanged_count": 12,
+  "repair_success_rate": 0.0,
+  "regression_rate": 0.0,
+  "net_delta": 0,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 4
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 2
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 2
+    },
+    "other": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 4
+    }
+  },
+  "repair_cost_usd": 0.0024346000000000003,
+  "repair_tokens": 14346,
+  "hcl_valid": false,
+  "failure_metadata": {
+    "source_chars": 12143,
+    "est_input_tokens": 3035,
+    "max_tokens": 40000,
+    "size_driven_failure": false,
+    "repair_error": "Repaired code failed HCL validation"
+  },
+  "repaired_code_path": "module_0216_nova-lite.repaired.tf",
+  "raw_response_path": "module_0216_nova-lite.raw.txt",
+  "repaired_code_sha256": "0147ab54b249884e85e53b232ce58979bb6bdb8bda8d02a1f117e6ab2311261f"
+}

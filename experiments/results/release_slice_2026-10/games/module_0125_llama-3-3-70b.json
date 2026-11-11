@@ -1,0 +1,296 @@
+{
+  "module_id": "module_0125",
+  "model_id": "llama-3-3-70b",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0028",
+      "title": "aws_instance should activate session tokens for Instance Metadata Service.",
+      "severity": "HIGH",
+      "resource_name": "aws_instance.nat_instance[0]",
+      "resource_type": "aws_instance",
+      "file_path": "main.tf",
+      "start_line": 139,
+      "end_line": 172
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "aws_security_group.nat_instances[0]",
+      "resource_type": "aws_security_group",
+      "file_path": "main.tf",
+      "start_line": 133,
+      "end_line": 133
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0124",
+      "title": "Missing description for security group rule.",
+      "severity": "LOW",
+      "resource_name": "aws_security_group.nat_instances[0]",
+      "resource_type": "aws_security_group",
+      "file_path": "main.tf",
+      "start_line": 115,
+      "end_line": 120
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0131",
+      "title": "Instance with unencrypted block device.",
+      "severity": "HIGH",
+      "resource_name": "aws_instance.nat_instance[0]",
+      "resource_type": "aws_instance",
+      "file_path": "main.tf",
+      "start_line": 139,
+      "end_line": 172
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0164",
+      "title": "Instances in a subnet should not receive a public IP address by default.",
+      "severity": "HIGH",
+      "resource_name": "aws_subnet.external[0]",
+      "resource_type": "aws_subnet",
+      "file_path": "main.tf",
+      "start_line": 202,
+      "end_line": 202
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0178",
+      "title": "VPC Flow Logs is a feature that enables you to capture information about the IP traffic going to and from network interfaces in your VPC. After you've created a flow log, you can view and retrieve its data in Amazon CloudWatch Logs. It is recommended that VPC Flow Logs be enabled for packet \"Rejects\" for VPCs.",
+      "severity": "MEDIUM",
+      "resource_name": "aws_vpc.main",
+      "resource_type": "aws_vpc",
+      "file_path": "main.tf",
+      "start_line": 68,
+      "end_line": 77
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0344",
+      "title": "AWS AMI data source should specify owners",
+      "severity": "LOW",
+      "resource_name": "data.aws_ami.nat_ami",
+      "resource_type": "data",
+      "file_path": "main.tf",
+      "start_line": 45,
+      "end_line": 57
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_386",
+      "title": "Reduce potential for WhoAMI cloud image name confusion attack",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_ami.nat_ami",
+      "resource_type": "aws_ami",
+      "file_path": "/main.tf",
+      "start_line": 45,
+      "end_line": 57
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_12",
+      "title": "Ensure the default security group of every VPC restricts all traffic",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_vpc.main",
+      "resource_type": "aws_vpc",
+      "file_path": "/main.tf",
+      "start_line": 68,
+      "end_line": 77
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_11",
+      "title": "Ensure VPC flow logging is enabled in all VPCs",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_vpc.main",
+      "resource_type": "aws_vpc",
+      "file_path": "/main.tf",
+      "start_line": 68,
+      "end_line": 77
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_35",
+      "title": "AWS NAT Gateways should be utilized for the default route",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_route.internal_nat_instance",
+      "resource_type": "aws_route",
+      "file_path": "/main.tf",
+      "start_line": 247,
+      "end_line": 252
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_41",
+      "title": "Ensure an IAM role is attached to EC2 instance",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_instance.nat_instance",
+      "resource_type": "aws_instance",
+      "file_path": "/main.tf",
+      "start_line": 139,
+      "end_line": 172
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0017",
+      "title": "CloudWatch log groups should be encrypted using CMK",
+      "severity": "LOW",
+      "resource_name": "aws_cloudwatch_log_group.flow_log",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "main.tf",
+      "start_line": 200,
+      "end_line": 202
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "aws_security_group.nat_instances[0]",
+      "resource_type": "aws_security_group",
+      "file_path": "main.tf",
+      "start_line": 118,
+      "end_line": 118
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0131",
+      "title": "Instance with unencrypted block device.",
+      "severity": "HIGH",
+      "resource_name": "aws_instance.nat_instance[0]",
+      "resource_type": "aws_instance",
+      "file_path": "main.tf",
+      "start_line": 125,
+      "end_line": 160
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0131",
+      "title": "Instance with unencrypted block device.",
+      "severity": "HIGH",
+      "resource_name": "aws_instance.nat_instance_with_profile[0]",
+      "resource_type": "aws_instance",
+      "file_path": "main.tf",
+      "start_line": 353,
+      "end_line": 391
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_66",
+      "title": "Ensure that CloudWatch Log Group specifies retention days",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.flow_log",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/main.tf",
+      "start_line": 200,
+      "end_line": 202
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_158",
+      "title": "Ensure that CloudWatch Log Group is encrypted by KMS",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.flow_log",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/main.tf",
+      "start_line": 200,
+      "end_line": 202
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_338",
+      "title": "Ensure CloudWatch log groups retains logs for at least 1 year",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.flow_log",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/main.tf",
+      "start_line": 200,
+      "end_line": 202
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_355",
+      "title": "Ensure no IAM policies documents allow \"*\" as a statement's resource for restrictable actions",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy.nat_instance",
+      "resource_type": "aws_iam_policy",
+      "file_path": "/main.tf",
+      "start_line": 325,
+      "end_line": 341
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_12",
+      "title": "Ensure the default security group of every VPC restricts all traffic",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_vpc.main",
+      "resource_type": "aws_vpc",
+      "file_path": "/main.tf",
+      "start_line": 59,
+      "end_line": 69
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_35",
+      "title": "AWS NAT Gateways should be utilized for the default route",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_route.internal_nat_instance",
+      "resource_type": "aws_route",
+      "file_path": "/main.tf",
+      "start_line": 285,
+      "end_line": 290
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_41",
+      "title": "Ensure an IAM role is attached to EC2 instance",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_instance.nat_instance",
+      "resource_type": "aws_instance",
+      "file_path": "/main.tf",
+      "start_line": 125,
+      "end_line": 160
+    }
+  ],
+  "target_count": 12,
+  "resolved_count": 7,
+  "introduced_count": 6,
+  "unchanged_count": 5,
+  "repair_success_rate": 0.5833333333333334,
+  "regression_rate": 0.5,
+  "net_delta": 1,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 1,
+      "introduced": 1,
+      "unchanged": 2
+    },
+    "data_protection": {
+      "resolved": 1,
+      "introduced": 3,
+      "unchanged": 1
+    },
+    "observability": {
+      "resolved": 2,
+      "introduced": 2,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 3,
+      "introduced": 0,
+      "unchanged": 2
+    }
+  },
+  "repair_cost_usd": 0.0047888,
+  "repair_tokens": 5986,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0125_llama-3-3-70b.repaired.tf",
+  "raw_response_path": "module_0125_llama-3-3-70b.raw.txt",
+  "repaired_code_sha256": "7cb89fa83ed9ffdc4777579b0adaf45e5aefe9a8c6b435f186b2d2ab2d9dcbd2"
+}

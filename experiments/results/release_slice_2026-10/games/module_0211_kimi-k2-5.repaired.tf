@@ -1,0 +1,1627 @@
+/*
+Copyright 2023 The Kubernetes Authors.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+data "aws_caller_identity" "current" {}
+
+resource "aws_budgets_budget" "everything" {
+  name              = "k8s-infra-monthly"
+  account_id        = data.aws_caller_identity.current.account_id
+  budget_type       = "COST"
+  time_unit         = "MONTHLY"
+  time_period_start = "2021-06-01_00:00"
+  limit_amount      = "250000.0"
+  limit_unit        = "USD"
+
+  cost_types {
+    include_credit             = false
+    include_discount           = true
+    include_other_subscription = true
+    include_recurring          = true
+    include_refund             = true
+    include_subscription       = true
+    include_support            = true
+    include_tax                = true
+    include_upfront            = true
+    use_amortized              = false
+    use_blended                = false
+  }
+
+  notification {
+    comparison_operator        = "GREATER_THAN"
+    threshold                  = "90"
+    threshold_type             = "PERCENTAGE"
+    notification_type          = "ACTUAL"
+    subscriber_email_addresses = ["sig-k8s-infra-leads@kubernetes.io"]
+  }
+}
+
+
+/*
+Copyright 2023 The Kubernetes Authors.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+
+resource "aws_cur_report_definition" "no_integrations" {
+  report_name                = "k8s-infra-cur-definition"
+  time_unit                  = "HOURLY"
+  format                     = "textORcsv"
+  compression                = "ZIP"
+  additional_schema_elements = ["RESOURCES"]
+  additional_artifacts       = []
+  refresh_closed_reports     = true
+  report_versioning          = "CREATE_NEW_REPORT"
+
+  # S3 configuration
+  s3_bucket = module.cur_reports_s3_bucket.s3_bucket_id
+  s3_region = module.cur_reports_s3_bucket.s3_bucket_region
+  s3_prefix = "CUR"
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "aws_cur_report_definition" "athena_integration" {
+  report_name                = "k8s-infra-cur-athena-definition"
+  time_unit                  = "HOURLY"
+  format                     = "Parquet"
+  compression                = "Parquet"
+  additional_schema_elements = ["RESOURCES"]
+  additional_artifacts       = ["ATHENA"]
+  refresh_closed_reports     = true
+  report_versioning          = "OVERWRITE_REPORT"
+
+  # S3 configuration
+  s3_bucket = module.cur_reports_integration_athena_s3_bucket.s3_bucket_id
+  s3_region = module.cur_reports_integration_athena_s3_bucket.s3_bucket_region
+  s3_prefix = "CUR"
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+
+/*
+Copyright 2023 The Kubernetes Authors.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+# https://docs.aws.amazon.com/organizations/latest/userguide/orgs_integrate_services_list.html
+
+# Audit Account
+
+resource "aws_organizations_delegated_administrator" "access_analyzer" {
+  account_id        = module.security_audit.account_id
+  service_principal = "access-analyzer.amazonaws.com"
+}
+
+resource "aws_organizations_delegated_administrator" "storage_lens" {
+  account_id        = module.security_audit.account_id
+  service_principal = "storage-lens.s3.amazonaws.com"
+}
+
+# Security Engineering Account
+
+resource "aws_organizations_delegated_administrator" "config_multiaccount" {
+  account_id        = module.security_engineering.account_id
+  service_principal = "config-multiaccountsetup.amazonaws.com"
+}
+
+resource "aws_organizations_delegated_administrator" "config" {
+  account_id        = module.security_engineering.account_id
+  service_principal = "config.amazonaws.com"
+}
+
+resource "aws_organizations_delegated_administrator" "cloudtrail" {
+  account_id        = module.security_engineering.account_id
+  service_principal = "cloudtrail.amazonaws.com"
+}
+
+resource "aws_organizations_delegated_administrator" "guardduty" {
+  account_id        = module.security_engineering.account_id
+  service_principal = "guardduty.amazonaws.com"
+}
+
+resource "aws_organizations_delegated_administrator" "securityhub" {
+  account_id        = module.security_engineering.account_id
+  service_principal = "securityhub.amazonaws.com"
+}
+
+resource "aws_organizations_delegated_administrator" "fms" {
+  account_id        = module.security_audit.account_id
+  service_principal = "fms.amazonaws.com"
+}
+
+resource "aws_organizations_delegated_administrator" "detective" {
+  account_id        = module.security_engineering.account_id
+  service_principal = "detective.amazonaws.com"
+}
+
+# Infra-shared services
+
+resource "aws_organizations_delegated_administrator" "identity_center" {
+  account_id        = module.infra_shared_services.account_id
+  service_principal = "sso.amazonaws.com"
+}
+
+
+/*
+Copyright 2023 The Kubernetes Authors.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+// Service Linked Roles
+resource "aws_iam_service_linked_role" "access_analyzer" {
+  aws_service_name = "access-analyzer.amazonaws.com"
+}
+
+
+// Atlantis
+
+resource "aws_iam_openid_connect_provider" "utility_cluster" {
+  url             = "https://container.googleapis.com/v1/projects/k8s-infra-prow/locations/us-central1/clusters/utility"
+  client_id_list  = ["sts.amazonaws.com"]
+  thumbprint_list = ["08745487e891c19e3078c1f2a07e452950ef36f6"]
+}
+
+resource "aws_iam_role" "atlantis" {
+  name = "atlantis"
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        "Effect" : "Allow",
+        "Principal" : {
+          "Federated" : aws_iam_openid_connect_provider.utility_cluster.arn
+        },
+        "Action" : "sts:AssumeRoleWithWebIdentity",
+        "Condition" : {
+          "StringEquals" : {
+            "container.googleapis.com/v1/projects/k8s-infra-prow/locations/us-central1/clusters/utility:sub" : "system:serviceaccount:atlantis:atlantis"
+          }
+        }
+      }
+    ]
+  })
+
+  max_session_duration = 43200
+
+  tags = {
+    service = "atlantis"
+  }
+}
+
+
+resource "aws_iam_role_policy_attachment" "atlantis" {
+  role       = aws_iam_role.atlantis.name
+  policy_arn = "arn:aws:iam::aws:policy/PowerUserAccess"
+}
+
+
+/*
+Copyright 2023 The Kubernetes Authors.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+##############################################
+# Accounts used by boskos in the EKS cluster #
+##############################################
+
+module "k8s_infra_eks_e2e_boskos_001" {
+  source = "../modules/org-account"
+
+  account_name               = "k8s-infra-eks-e2e-boskos-001"
+  email                      = "k8s-infra-aws-admins+k8s-infra-eks-e2e-boskos-001@kubernetes.io"
+  iam_user_access_to_billing = "ALLOW"
+  parent_id                  = aws_organizations_organizational_unit.boskos.id
+  permissions_map = {
+    "boskos-admin" = [
+      "AdministratorAccess",
+    ]
+  }
+
+  tags = {
+    "production"  = "true",
+    "environment" = "prod",
+    "group"       = "sig-k8s-infra",
+    "service"     = "boskos"
+  }
+}
+
+module "k8s_infra_eks_e2e_boskos_002" {
+  source = "../modules/org-account"
+
+  account_name               = "k8s-infra-eks-e2e-boskos-002"
+  email                      = "k8s-infra-aws-admins+k8s-infra-eks-e2e-boskos-002@kubernetes.io"
+  iam_user_access_to_billing = "ALLOW"
+  parent_id                  = aws_organizations_organizational_unit.boskos.id
+  permissions_map = {
+    "boskos-admin" = [
+      "AdministratorAccess",
+    ]
+  }
+
+  tags = {
+    "production"  = "true",
+    "environment" = "prod",
+    "group"       = "sig-k8s-infra",
+    "service"     = "boskos"
+  }
+}
+
+module "k8s_infra_eks_e2e_boskos_003" {
+  source = "../modules/org-account"
+
+  account_name               = "k8s-infra-eks-e2e-boskos-003"
+  email                      = "k8s-infra-aws-admins+k8s-infra-eks-e2e-boskos-003@kubernetes.io"
+  iam_user_access_to_billing = "ALLOW"
+  parent_id                  = aws_organizations_organizational_unit.boskos.id
+  permissions_map = {
+    "boskos-admin" = [
+      "AdministratorAccess",
+    ]
+  }
+
+  tags = {
+    "production"  = "true",
+    "environment" = "prod",
+    "group"       = "sig-k8s-infra",
+    "service"     = "boskos"
+  }
+}
+
+module "k8s_infra_eks_e2e_boskos_004" {
+  source = "../modules/org-account"
+
+  account_name               = "k8s-infra-eks-e2e-boskos-004"
+  email                      = "k8s-infra-aws-admins+k8s-infra-eks-e2e-boskos-004@kubernetes.io"
+  iam_user_access_to_billing = "ALLOW"
+  parent_id                  = aws_organizations_organizational_unit.boskos.id
+  permissions_map = {
+    "boskos-admin" = [
+      "AdministratorAccess",
+    ]
+  }
+
+  tags = {
+    "production"  = "true",
+    "environment" = "prod",
+    "group"       = "sig-k8s-infra",
+    "service"     = "boskos"
+  }
+}
+
+module "k8s_infra_eks_e2e_boskos_005" {
+  source = "../modules/org-account"
+
+  account_name               = "k8s-infra-eks-e2e-boskos-005"
+  email                      = "k8s-infra-aws-admins+k8s-infra-eks-e2e-boskos-005@kubernetes.io"
+  iam_user_access_to_billing = "ALLOW"
+  parent_id                  = aws_organizations_organizational_unit.boskos.id
+  permissions_map = {
+    "boskos-admin" = [
+      "AdministratorAccess",
+    ]
+  }
+
+  tags = {
+    "production"  = "true",
+    "environment" = "prod",
+    "group"       = "sig-k8s-infra",
+    "service"     = "boskos"
+  }
+}
+
+module "k8s_infra_eks_e2e_boskos_006" {
+  source = "../modules/org-account"
+
+  account_name               = "k8s-infra-eks-e2e-boskos-006"
+  email                      = "k8s-infra-aws-admins+k8s-infra-eks-e2e-boskos-006@kubernetes.io"
+  iam_user_access_to_billing = "ALLOW"
+  parent_id                  = aws_organizations_organizational_unit.boskos.id
+  permissions_map = {
+    "boskos-admin" = [
+      "AdministratorAccess",
+    ]
+  }
+
+  tags = {
+    "production"  = "true",
+    "environment" = "prod",
+    "group"       = "sig-k8s-infra",
+    "service"     = "boskos"
+  }
+}
+
+module "k8s_infra_eks_e2e_boskos_007" {
+  source = "../modules/org-account"
+
+  account_name               = "k8s-infra-eks-e2e-boskos-007"
+  email                      = "k8s-infra-aws-admins+k8s-infra-eks-e2e-boskos-007@kubernetes.io"
+  iam_user_access_to_billing = "ALLOW"
+  parent_id                  = aws_organizations_organizational_unit.boskos.id
+  permissions_map = {
+    "boskos-admin" = [
+      "AdministratorAccess",
+    ]
+  }
+
+  tags = {
+    "production"  = "true",
+    "environment" = "prod",
+    "group"       = "sig-k8s-infra",
+    "service"     = "boskos"
+  }
+}
+
+module "k8s_infra_eks_e2e_boskos_008" {
+  source = "../modules/org-account"
+
+  account_name               = "k8s-infra-eks-e2e-boskos-008"
+  email                      = "k8s-infra-aws-admins+k8s-infra-eks-e2e-boskos-008@kubernetes.io"
+  iam_user_access_to_billing = "ALLOW"
+  parent_id                  = aws_organizations_organizational_unit.boskos.id
+  permissions_map = {
+    "boskos-admin" = [
+      "AdministratorAccess",
+    ]
+  }
+
+  tags = {
+    "production"  = "true",
+    "environment" = "prod",
+    "group"       = "sig-k8s-infra",
+    "service"     = "boskos"
+  }
+}
+
+module "k8s_infra_eks_e2e_boskos_009" {
+  source = "../modules/org-account"
+
+  account_name               = "k8s-infra-eks-e2e-boskos-009"
+  email                      = "k8s-infra-aws-admins+k8s-infra-eks-e2e-boskos-009@kubernetes.io"
+  iam_user_access_to_billing = "ALLOW"
+  parent_id                  = aws_organizations_organizational_unit.boskos.id
+  permissions_map = {
+    "boskos-admin" = [
+      "AdministratorAccess",
+    ]
+  }
+
+  tags = {
+    "production"  = "true",
+    "environment" = "prod",
+    "group"       = "sig-k8s-infra",
+    "service"     = "boskos"
+  }
+}
+
+module "k8s_infra_eks_e2e_boskos_010" {
+  source = "../modules/org-account"
+
+  account_name               = "k8s-infra-eks-e2e-boskos-010"
+  email                      = "k8s-infra-aws-admins+k8s-infra-eks-e2e-boskos-010@kubernetes.io"
+  iam_user_access_to_billing = "ALLOW"
+  parent_id                  = aws_organizations_organizational_unit.boskos.id
+  permissions_map = {
+    "boskos-admin" = [
+      "AdministratorAccess",
+    ]
+  }
+
+  tags = {
+    "production"  = "true",
+    "environment" = "prod",
+    "group"       = "sig-k8s-infra",
+    "service"     = "boskos"
+  }
+}
+
+
+module "k8s_infra_e2e_boskos_scale_001" {
+  source = "../modules/org-account"
+
+  account_name = "k8s-infra-e2e-boskos-scale-001"
+  email        = "k8s-infra-aws-boskos-accounts+scale-001@kubernetes.io"
+  parent_id    = aws_organizations_organizational_unit.boskos.id
+  permissions_map = {
+    "boskos-admin" = [
+      "AdministratorAccess",
+    ]
+  }
+
+  tags = {
+    "environment" = "prod",
+    "group"       = "sig-scalability",
+    "service"     = "boskos"
+  }
+}
+
+module "k8s_infra_e2e_boskos_scale_002" {
+  source = "../modules/org-account"
+
+  account_name = "k8s-infra-e2e-boskos-scale-002"
+  email        = "k8s-infra-aws-boskos-accounts+scale-002@kubernetes.io"
+  parent_id    = aws_organizations_organizational_unit.boskos.id
+  permissions_map = {
+    "boskos-admin" = [
+      "AdministratorAccess",
+    ]
+  }
+
+  tags = {
+    "environment" = "prod",
+    "group"       = "sig-scalability",
+    "service"     = "boskos"
+  }
+}
+
+
+/*
+Copyright 2023 The Kubernetes Authors.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+module "k8s-infra-sandbox-capa" {
+  source = "../modules/org-account"
+
+  account_name               = "k8s-infra-sandbox-capa"
+  email                      = "k8s-infra-sandbox-capa@kubernetes.io"
+  iam_user_access_to_billing = "ALLOW"
+  parent_id                  = aws_organizations_organizational_unit.production.id
+  permissions_map = {
+    "aws-capa-maintainers" = [
+      "AdministratorAccess",
+    ]
+  }
+}
+
+
+/*
+Copyright 2023 The Kubernetes Authors.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+
+module "infra_shared_services" {
+  source = "../modules/org-account"
+
+  account_name               = "k8s-infra-shared-services"
+  email                      = "k8s-infra-aws-admins+infra-shared-services@kubernetes.io"
+  iam_user_access_to_billing = "ALLOW"
+  parent_id                  = aws_organizations_organizational_unit.infrastructure.id
+}
+
+module "infra_network" {
+  source = "../modules/org-account"
+
+  account_name               = "k8s-infra-networking"
+  email                      = "k8s-infra-aws-admins+infra-networking@kubernetes.io"
+  iam_user_access_to_billing = "ALLOW"
+  parent_id                  = aws_organizations_organizational_unit.infrastructure.id
+}
+
+
+/*
+Copyright 2023 The Kubernetes Authors.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+/* This file contains:
+- AWS accounts used by kOps
+*/
+
+module "kops_infra_ci" {
+  source       = "../modules/org-account"
+  account_name = "kops-infra-ci"
+  email        = "k8s-infra-aws-admins+kops-infra-ci@kubernetes.io"
+  tags = {
+    environment = "prod",
+    group       = "sig-cluster-lifecycle"
+  }
+}
+
+module "kops_infra_services" {
+  source       = "../modules/org-account"
+  account_name = "kops-infra-services"
+  email        = "k8s-infra-aws-admins+kops-infra-services@kubernetes.io"
+  tags = {
+    environment = "prod"
+    group       = "sig-cluster-lifecycle"
+  }
+}
+
+
+/*
+Copyright 2023 The Kubernetes Authors.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+module "policy_staging_account_1" {
+  source = "../modules/org-account"
+
+  account_name               = "k8s-infra-policy-staging-account-1"
+  email                      = "k8s-infra-aws-admins+policy-staging-account-1@kubernetes.io"
+  iam_user_access_to_billing = "ALLOW"
+  parent_id                  = aws_organizations_organizational_unit.policy_staging.id
+}
+
+resource "aws_organizations_policy_attachment" "policy_staging_tag_policy_group" {
+  policy_id = module.organization_tag_policy_group.tag_policy_id
+  target_id = aws_organizations_organizational_unit.policy_staging.id
+}
+
+resource "aws_organizations_policy_attachment" "policy_staging_require_tag_group" {
+  policy_id = module.organization_tag_policy_group.scp_require_tag_id
+  target_id = aws_organizations_organizational_unit.policy_staging.id
+}
+
+resource "aws_organizations_policy_attachment" "policy_staging_deny_tag_deletion_group" {
+  policy_id = module.organization_tag_policy_group.scp_deny_tag_deletion_id
+  target_id = aws_organizations_organizational_unit.policy_staging.id
+}
+
+resource "aws_organizations_policy_attachment" "policy_staging_tag_policy_environment" {
+  policy_id = module.organization_tag_policy_environment.tag_policy_id
+  target_id = aws_organizations_organizational_unit.policy_staging.id
+}
+
+resource "aws_organizations_policy_attachment" "policy_staging_require_tag_environment" {
+  policy_id = module.organization_tag_policy_environment.scp_require_tag_id
+  target_id = aws_organizations_organizational_unit.policy_staging.id
+}
+
+resource "aws_organizations_policy_attachment" "policy_staging_deny_tag_deletion_environment" {
+  policy_id = module.organization_tag_policy_environment.scp_deny_tag_deletion_id
+  target_id = aws_organizations_organizational_unit.policy_staging.id
+}
+
+
+/*
+Copyright 2023 The Kubernetes Authors.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+module "security_audit" {
+  source = "../modules/org-account"
+
+  account_name               = "k8s-infra-security-audit"
+  email                      = "k8s-infra-aws-admins+security-audit@kubernetes.io"
+  iam_user_access_to_billing = "ALLOW"
+  parent_id                  = aws_organizations_organizational_unit.security.id
+}
+
+module "security_engineering" {
+  source = "../modules/org-account"
+
+  account_name               = "k8s-infra-security-engineering"
+  email                      = "k8s-infra-aws-admins+security-engineering@kubernetes.io"
+  iam_user_access_to_billing = "ALLOW"
+  parent_id                  = aws_organizations_organizational_unit.security.id
+}
+
+module "security_incident_response" {
+  source = "../modules/org-account"
+
+  account_name = "k8s-infra-security-incident-response"
+  email        = "k8s-infra-aws-admins+security-incident-response@kubernetes.io"
+  parent_id    = aws_organizations_organizational_unit.security.id
+}
+
+module "security_logs" {
+  source = "../modules/org-account"
+
+  account_name               = "k8s-infra-security-logs"
+  email                      = "k8s-infra-aws-admins+security-logs@kubernetes.io"
+  iam_user_access_to_billing = "ALLOW"
+  parent_id                  = aws_organizations_organizational_unit.security.id
+}
+
+
+/*
+Copyright 2023 The Kubernetes Authors.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+# playground account to experiment e2e tests on AWS
+module "aws-playground-01" {
+  source = "../modules/org-account"
+
+  account_name = "k8s-infra-e2e-aws-playground-01"
+  email        = "k8s-infra-aws-admins+aws-playground-01@kubernetes.io"
+  parent_id    = aws_organizations_organizational_unit.non_production.id
+  tags = {
+    "production" = "false",
+    "owners"     = "upodroid",
+    "group"      = "sig-k8s-infra"
+  }
+}
+
+#  account used to create and main a canary cluster as build cluster for prow
+module "prow_canary" {
+  source = "../modules/org-account"
+
+  account_name = "k8s-infra-prow-canary"
+  email        = "k8s-infra-aws-admins+prow_canary@kubernetes.io"
+  parent_id    = aws_organizations_organizational_unit.non_production.id
+  tags = {
+    "production"  = "false",
+    "environment" = "canary",
+    "owners"      = "xmudrii",
+    "group"       = "sig-k8s-infra",
+    "service"     = "eks"
+  }
+}
+
+# Shared AWS account used for kops/eks related repositories
+module "k8s_infra_eks_e2e_shared_001" {
+  source = "../modules/org-account"
+
+  account_name = "k8s_infra_eks_e2e_shared_001"
+  email        = "k8s-infra-aws-admins+eks_e2e_shared_001@kubernetes.io"
+  parent_id    = aws_organizations_organizational_unit.non_production.id
+  tags = {
+    "production" = "false",
+    "owners"     = "dims",
+    "group"      = "sig-k8s-infra"
+  }
+}
+
+
+/*
+Copyright 2023 The Kubernetes Authors.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+module "artifacts-k8s-io" {
+  source = "../modules/org-account"
+
+  account_name = "k8s-infra-artifacts-k8s-io-prod"
+  email        = "k8s-infra-aws-admins+artifacts-k8s-io-prod@kubernetes.io"
+  parent_id    = aws_organizations_organizational_unit.production.id
+}
+
+module "registry-k8s-io" {
+  source = "../modules/org-account"
+
+  account_name               = "k8s-infra-registry-k8s-io-prod"
+  email                      = "k8s-infra-aws-admins+registry-k8s-io-prod@kubernetes.io"
+  iam_user_access_to_billing = "ALLOW"
+  parent_id                  = aws_organizations_organizational_unit.production.id
+}
+
+
+module "prow_prod" {
+  source = "../modules/org-account"
+
+  account_name = "k8s-infra-prow"
+  email        = "k8s-infra-aws-admins+prow@kubernetes.io"
+  parent_id    = aws_organizations_organizational_unit.production.id
+  tags = {
+    "production"  = "true",
+    "environment" = "prod",
+    "group"       = "sig-k8s-infra",
+    "service"     = "eks"
+  }
+}
+
+module "obs-k8s-io" {
+  source = "../modules/org-account"
+
+  account_name = "k8s-infra-obs-k8s-io-prod"
+  email        = "k8s-infra-aws-admins+obs-k8s-io-prod@kubernetes.io"
+  parent_id    = aws_organizations_organizational_unit.production.id
+  tags = {
+    "production"  = "true",
+    "environment" = "prod",
+    "group"       = "sig-release",
+    "service"     = "obs"
+  }
+}
+
+
+module "capa-ami" {
+  source = "../modules/org-account"
+
+  account_name = "cncf-k8s-infra-aws-capa-ami"
+  email        = "cncf-k8s-infra-aws-capa-ami@lists.cncf.io"
+  parent_id    = aws_organizations_organizational_unit.production.id
+  tags = {
+    "production"  = "true",
+    "environment" = "prod",
+    "group"       = "sig-cluster-lifecycle",
+  }
+  permissions_map = {
+    "aws-capa-maintainers" = [
+      "AdministratorAccess",
+    ]
+  }
+  aws_account_regions = [
+    "ap-east-1",
+    "ap-southeast-3",
+    "eu-south-2",
+  ]
+}
+
+// This AWS accounts holds macOS Instances for kubernetes CI/CD
+module "macos" {
+  source = "../modules/org-account"
+
+  account_name = "k8s-infra-macos"
+  email        = "k8s-infra-aws-admins+macos@kubernetes.io"
+  parent_id    = aws_organizations_organizational_unit.production.id
+  tags = {
+    "production"  = "true",
+    "environment" = "prod",
+    "group"       = "sig-k8s-infra",
+  }
+  permissions_map = {
+    "aws-macos-maintainers" = [
+      "AdministratorAccess",
+    ]
+  }
+}
+
+
+/*
+Copyright 2023 The Kubernetes Authors.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+module "organization_tag_policy_group" {
+  source = "../modules/tag-policy"
+
+  tag_name = "group"
+  # Values from https://github.com/kubernetes/community/blob/master/sig-list.md
+  tag_values = [
+    "sig-api-machinery",
+    "sig-apps",
+    "sig-architecture",
+    "sig-auth",
+    "sig-autoscaling",
+    "sig-cli",
+    "sig-cloud-provider",
+    "sig-cluster-lifecycle",
+    "sig-contributor-experience",
+    "sig-docs",
+    "sig-instrumentation",
+    "sig-k8s-infra",
+    "sig-multicluster",
+    "sig-network",
+    "sig-node",
+    "sig-release",
+    "sig-scalability",
+    "sig-scheduling",
+    "sig-security",
+    "sig-storage",
+    "sig-testing",
+    "sig-ui",
+    "sig-usability",
+    "sig-windows",
+    "ug-vmware-users",
+    "wg-api-expression",
+    "wg-batch",
+    "wg-data-protection",
+    "wg-iot-edge",
+    "wg-multitenancy",
+    "wg-policy",
+    "wg-reliability",
+    "wg-structured-logging"
+  ]
+
+  enforce_services = [
+    "ec2",
+    "eks",
+    "ecr",
+    "s3"
+  ]
+
+  enable_cost_allocation = true
+
+}
+
+module "organization_tag_policy_environment" {
+  source = "../modules/tag-policy"
+
+  tag_name = "environment"
+  tag_values = [
+    "staging",
+    "prod"
+  ]
+
+  enforce_services = [
+    "ec2",
+    "eks",
+    "ecr",
+    "s3"
+  ]
+
+  enable_cost_allocation = true
+
+}
+
+
+/*
+Copyright 2023 The Kubernetes Authors.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+/* THis file contains
+- the configuration for the organization
+*/
+
+
+resource "aws_organizations_organization" "default" {
+  aws_service_access_principals = var.aws_service_access_principals
+
+  enabled_policy_types = [
+    "AISERVICES_OPT_OUT_POLICY",
+    "SERVICE_CONTROL_POLICY",
+    "TAG_POLICY",
+  ]
+
+  feature_set = "ALL"
+}
+
+
+/*
+Copyright 2023 The Kubernetes Authors.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+/*
+This file contains :
+  - Organizational Units of the AWS organization
+*/
+
+resource "aws_organizations_organizational_unit" "security" {
+  name      = "Security"
+  parent_id = aws_organizations_organization.default.roots[0].id
+
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
+resource "aws_organizations_organizational_unit" "infrastructure" {
+  name      = "Infrastructure"
+  parent_id = aws_organizations_organization.default.roots[0].id
+
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
+resource "aws_organizations_organizational_unit" "workloads" {
+  name      = "Workloads"
+  parent_id = aws_organizations_organization.default.roots[0].id
+
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
+resource "aws_organizations_organizational_unit" "production" {
+  name      = "Production"
+  parent_id = aws_organizations_organizational_unit.workloads.id
+
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
+resource "aws_organizations_organizational_unit" "non_production" {
+  name      = "Non-Production"
+  parent_id = aws_organizations_organizational_unit.workloads.id
+
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
+resource "aws_organizations_organizational_unit" "boskos" {
+  name      = "Boskos"
+  parent_id = aws_organizations_organizational_unit.workloads.id
+
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
+resource "aws_organizations_organizational_unit" "policy_staging" {
+  name      = "Policy Staging"
+  parent_id = aws_organizations_organization.default.roots[0].id
+
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
+
+/*
+Copyright 2023 The Kubernetes Authors.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+/*
+This file defines:
+- Required provider versions
+- Storage backend details
+*/
+
+terraform {
+  backend "s3" {
+    bucket = "k8s-aws-root-account-terraform-state"
+    region = "us-east-2"
+    key    = "management-account/terraform.state"
+  }
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 6.22.1"
+    }
+  }
+}
+
+provider "aws" {
+  region = "us-east-1"
+}
+
+
+/*
+Copyright 2023 The Kubernetes Authors.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+# Cost and Usage
+
+resource "aws_kms_key" "cur_reports_s3_bucket" {
+  description             = "KMS key for CUR reports S3 bucket encryption"
+  deletion_window_in_days = 30
+  enable_key_rotation     = true
+}
+
+resource "aws_kms_alias" "cur_reports_s3_bucket" {
+  name          = "alias/cur-reports-s3-bucket"
+  target_key_id = aws_kms_key.cur_reports_s3_bucket.key_id
+}
+
+resource "aws_s3_bucket" "cur_reports_s3_bucket_logging" {
+  bucket = "k8s-infra-cur-reports-bucket-logging"
+}
+
+resource "aws_s3_bucket_public_access_block" "cur_reports_s3_bucket_logging" {
+  bucket                  = aws_s3_bucket.cur_reports_s3_bucket_logging.id
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "cur_reports_s3_bucket_logging" {
+  bucket = aws_s3_bucket.cur_reports_s3_bucket_logging.id
+
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "aws:kms"
+      kms_master_key_id = aws_kms_key.cur_reports_s3_bucket.arn
+    }
+    bucket_key_enabled = true
+  }
+}
+
+module "cur_reports_s3_bucket" {
+  source  = "terraform-aws-modules/s3-bucket/aws"
+  version = "~> 5.8"
+
+  bucket = "k8s-infra-cur-reports-bucket"
+
+  # S3 bucket-level Public Access Block configuration
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+
+  attach_deny_insecure_transport_policy = true
+  attach_policy                         = true
+  policy                                = data.aws_iam_policy_document.cur_reports_s3_bucket.json
+
+  # Note: Object Lock configuration can be enabled only on new buckets
+  # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_object_lock_configuration
+  object_lock_enabled = true
+
+  versioning = {
+    enabled    = true
+    mfa_delete = false
+  }
+
+  logging = {
+    target_bucket = aws_s3_bucket.cur_reports_s3_bucket_logging.id
+    target_prefix = "log/"
+  }
+
+  server_side_encryption_configuration = {
+    rule = {
+      apply_server_side_encryption_by_default = {
+        sse_algorithm     = "aws:kms"
+        kms_master_key_id = aws_kms_key.cur_reports_s3_bucket.arn
+      }
+      bucket_key_enabled = true
+    }
+  }
+}
+
+resource "aws_kms_key" "cur_reports_integration_athena_s3_bucket" {
+  description             = "KMS key for CUR reports Athena S3 bucket encryption"
+  deletion_window_in_days = 30
+  enable_key_rotation     = true
+}
+
+resource "aws_kms_alias" "cur_reports_integration_athena_s3_bucket" {
+  name          = "alias/cur-reports-athena-s3-bucket"
+  target_key_id = aws_kms_key.cur_reports_integration_athena_s3_bucket.key_id
+}
+
+resource "aws_s3_bucket" "cur_reports_integration_athena_s3_bucket_logging" {
+  bucket = "k8s-infra-cur-reports-athena-bucket-logging"
+}
+
+resource "aws_s3_bucket_public_access_block" "cur_reports_integration_athena_s3_bucket_logging" {
+  bucket                  = aws_s3_bucket.cur_reports_integration_athena_s3_bucket_logging.id
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "cur_reports_integration_athena_s3_bucket_logging" {
+  bucket = aws_s3_bucket.cur_reports_integration_athena_s3_bucket_logging.id
+
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "aws:kms"
+      kms_master_key_id = aws_kms_key.cur_reports_integration_athena_s3_bucket.arn
+    }
+    bucket_key_enabled = true
+  }
+}
+
+module "cur_reports_integration_athena_s3_bucket" {
+  source  = "terraform-aws-modules/s3-bucket/aws"
+  version = "~> 5.8"
+
+  bucket = "k8s-infra-cur-reports-athena-bucket"
+
+  # S3 bucket-level Public Access Block configuration
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+
+  attach_deny_insecure_transport_policy = true
+  attach_policy                         = true
+  policy                                = data.aws_iam_policy_document.cur_reports_integration_athena_s3_bucket.json
+
+  # Note: Object Lock configuration can be enabled only on new buckets
+  # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_object_lock_configuration
+  object_lock_enabled = true
+
+  versioning = {
+    enabled    = true
+    mfa_delete = false
+  }
+
+  logging = {
+    target_bucket = aws_s3_bucket.cur_reports_integration_athena_s3_bucket_logging.id
+    target_prefix = "log/"
+  }
+
+  server_side_encryption_configuration = {
+    rule = {
+      apply_server_side_encryption_by_default = {
+        sse_algorithm     = "aws:kms"
+        kms_master_key_id = aws_kms_key.cur_reports_integration_athena_s3_bucket.arn
+      }
+      bucket_key_enabled = true
+    }
+  }
+}
+
+data "aws_iam_policy_document" "cur_reports_s3_bucket" {
+  version = "2008-10-17"
+
+  statement {
+    sid    = "AWSBillingDeliveryAclCheck"
+    effect = "Allow"
+    principals {
+      type = "Service"
+      identifiers = [
+        "billingreports.amazonaws.com"
+      ]
+    }
+    actions = [
+      "s3:GetBucketPolicy",
+      "s3:GetBucketAcl"
+    ]
+    resources = [module.cur_reports_s3_bucket.s3_bucket_arn]
+
+    condition {
+      test     = "StringEquals"
+      variable = "aws:SourceArn"
+      values   = ["arn:aws:cur:us-east-1:${data.aws_caller_identity.current.account_id}:definition/*"]
+    }
+
+    condition {
+      test     = "StringEquals"
+      variable = "aws:SourceAccount"
+      values   = [data.aws_caller_identity.current.account_id]
+    }
+  }
+
+  statement {
+    sid       = "AWSBillingDeliveryWrite"
+    effect    = "Allow"
+    actions   = ["s3:PutObject"]
+    resources = ["${module.cur_reports_s3_bucket.s3_bucket_arn}/*"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["billingreports.amazonaws.com"]
+    }
+
+    condition {
+      test     = "StringEquals"
+      variable = "aws:SourceArn"
+      values   = ["arn:aws:cur:us-east-1:${data.aws_caller_identity.current.account_id}:definition/*"]
+    }
+
+    condition {
+      test     = "StringEquals"
+      variable = "aws:SourceAccount"
+      values   = [data.aws_caller_identity.current.account_id]
+    }
+  }
+}
+
+data "aws_iam_policy_document" "cur_reports_integration_athena_s3_bucket" {
+  version = "2008-10-17"
+
+  statement {
+    sid    = "AWSBillingDeliveryAclCheck"
+    effect = "Allow"
+    principals {
+      type = "Service"
+      identifiers = [
+        "billingreports.amazonaws.com"
+      ]
+    }
+    actions = [
+      "s3:GetBucketPolicy",
+      "s3:GetBucketAcl"
+    ]
+    resources = [module.cur_reports_integration_athena_s3_bucket.s3_bucket_arn]
+
+    condition {
+      test     = "StringEquals"
+      variable = "aws:SourceArn"
+      values   = ["arn:aws:cur:us-east-1:${data.aws_caller_identity.current.account_id}:definition/*"]
+    }
+
+    condition {
+      test     = "StringEquals"
+      variable = "aws:SourceAccount"
+      values   = [data.aws_caller_identity.current.account_id]
+    }
+  }
+
+  statement {
+    sid       = "AWSBillingDeliveryWrite"
+    effect    = "Allow"
+    actions   = ["s3:PutObject"]
+    resources = ["${module.cur_reports_integration_athena_s3_bucket.s3_bucket_arn}/*"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["billingreports.amazonaws.com"]
+    }
+
+    condition {
+      test     = "StringEquals"
+      variable = "aws:SourceArn"
+      values   = ["arn:aws:cur:us-east-1:${data.aws_caller_identity.current.account_id}:definition/*"]
+    }
+
+    condition {
+      test     = "StringEquals"
+      variable = "aws:SourceAccount"
+      values   = [data.aws_caller_identity.current.account_id]
+    }
+  }
+}
+
+
+/*
+Copyright 2023 The Kubernetes Authors.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+data "aws_ssoadmin_instances" "default" {}
+
+locals {
+  sso_instance_arn      = tolist(data.aws_ssoadmin_instances.default.arns)[0]
+  sso_identity_store_id = tolist(data.aws_ssoadmin_instances.default.identity_store_ids)[0]
+  permissions = {
+    "AdministratorAccess" = {
+      arn = "arn:aws:iam::aws:policy/AdministratorAccess"
+    }
+    "ReadOnlyAccess" = {
+      arn = "arn:aws:iam::aws:policy/ReadOnlyAccess"
+    }
+    "AWSBillingReadOnlyAccess" = {
+      arn = "arn:aws:iam::aws:policy/AWSBillingReadOnlyAccess"
+    }
+  }
+}
+
+// PermissionSets
+resource "aws_ssoadmin_permission_set" "this" {
+  for_each         = local.permissions
+  name             = each.key
+  instance_arn     = local.sso_instance_arn
+  session_duration = "PT12H"
+}
+
+resource "aws_ssoadmin_managed_policy_attachment" "this" {
+  for_each           = { for k, v in local.permissions : k => v if k != "AdministratorAccess" }
+  instance_arn       = local.sso_instance_arn
+  managed_policy_arn = each.value.arn
+  permission_set_arn = aws_ssoadmin_permission_set.this[each.key].arn
+}
+
+resource "aws_ssoadmin_permission_set_inline_policy" "administrator_access" {
+  instance_arn       = local.sso_instance_arn
+  permission_set_arn = aws_ssoadmin_permission_set.this["AdministratorAccess"].arn
+  inline_policy      = data.aws_iam_policy_document.administrator_access.json
+}
+
+data "aws_iam_policy_document" "administrator_access" {
+  statement {
+    sid       = "AdministratorAccess"
+    effect    = "Allow"
+    actions   = ["*"]
+    resources = ["*"]
+  }
+}
+
+// Assignments on the Management account which isn't managed by Terraform
+locals {
+  permissions_map = {
+    "sig-k8s-infra-leads" = [
+      "AdministratorAccess",
+    ]
+    "aws-readonly" = [
+      "ReadOnlyAccess",
+    ]
+    "aws-billing-readonly" = [
+      "AWSBillingReadOnlyAccess",
+    ]
+  }
+  group_assignments = merge([
+    for group_name, permission_sets in local.permissions_map : {
+      for permission_set_name in permission_sets : "${group_name}.${permission_set_name}" => {
+        group_name          = group_name
+        permission_set_name = permission_set_name
+      }
+    }
+  ]...)
+  groups = toset(flatten([
+    for group, v in local.permissions_map : group
+  ]))
+  permission_sets = toset(flatten([
+    for group, v in local.permissions_map : [
+      for group_name in v : group_name
+    ]
+  ]))
+}
+
+data "aws_identitystore_group" "groups" {
+  for_each = local.groups
+
+  identity_store_id = local.sso_identity_store_id
+  alternate_identifier {
+    unique_attribute {
+      attribute_path  = "DisplayName"
+      attribute_value = each.value
+    }
+  }
+}
+
+data "aws_ssoadmin_permission_set" "permission_sets" {
+  for_each     = local.permission_sets
+  instance_arn = local.sso_instance_arn
+  name         = each.value
+}
+
+resource "aws_ssoadmin_account_assignment" "this" {
+  for_each           = local.group_assignments
+  instance_arn       = local.sso_instance_arn
+  permission_set_arn = data.aws_ssoadmin_permission_set.permission_sets[each.value.permission_set_name].arn
+
+  principal_id   = data.aws_identitystore_group.groups[each.value.group_name].id
+  principal_type = "GROUP"
+
+  target_id   = "348685125169"
+  target_type = "AWS_ACCOUNT"
+}
+
+
+/*
+Copyright 2023 The Kubernetes Authors.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+variable "aws_service_access_principals" {
+  type = list(any)
+  default = [
+    "access-analyzer.amazonaws.com",
+    "account.amazonaws.com",
+    "cloudtrail.amazonaws.com",
+    "compute-optimizer.amazonaws.com",
+    "config.amazonaws.com",
+    "config-multiaccountsetup.amazonaws.com",
+    "cost-optimization-hub.bcm.amazonaws.com",
+    "detective.amazonaws.com",
+    "fms.amazonaws.com",
+    "guardduty.amazonaws.com",
+    "health.amazonaws.com",
+    "member.org.stacksets.cloudformation.amazonaws.com",
+    "ram.amazonaws.com",
+    "reporting.trustedadvisor.amazonaws.com",
+    "securityhub.amazonaws.com",
+    "servicequotas.amazonaws.com",
+    "sso.amazonaws.com",
+    "storage-lens.s3.amazonaws.com",
+    "tagpolicies.tag.amazonaws.com"
+  ]
+  description = "List of service access principals for the organization"
+}
+
+
+/*
+Copyright 2023 The Kubernetes Authors.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+/*
+This file defines:
+- Required Terraform version
+*/
+
+terraform {
+  required_version = "~> 1.6"
+}

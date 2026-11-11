@@ -1,0 +1,41 @@
+{
+  "_comment": "Fargate task definition for the release-slice rescan (scripts/rescan_release.py). Image pinned BY DIGEST to the build of commit d9a1da7 (tag rescan-d9a1da7: Trivy fail-loud fix + rescan tool). Pulls the release results from S3 read-only, rescans every corpus input and every game with network access (as the run had), captures Trivy's module cache + checks bundle, and syncs the report to <results>_rescan/ (progress every SYNC_INTERVAL seconds). Never writes to the release results prefix.",
+  "family": "terrarepair-rescan",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "4096",
+  "memory": "8192",
+  "runtimePlatform": {
+    "cpuArchitecture": "X86_64",
+    "operatingSystemFamily": "LINUX"
+  },
+  "executionRoleArn": "arn:aws:iam::<ACCOUNT_ID>:role/terrarepair-bench-exec-role",
+  "taskRoleArn": "arn:aws:iam::<ACCOUNT_ID>:role/terrarepair-bench-task-role",
+  "containerDefinitions": [
+    {
+      "name": "rescan",
+      "image": "<ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com/terrarepair-bench@sha256:ffe51a095ad8c1209b34fe90c70d1d625d36a0f9cb74110f07388f5481dccc83",
+      "essential": true,
+      "entryPoint": ["/bin/bash", "-c"],
+      "command": [
+        "set -u; echo \"[rescan] start $(date -u +%FT%TZ) commit=$TERRAREPAIR_GIT_COMMIT src=$RESULTS_S3_URI out=$OUT_S3_URI\"; aws s3 sync \"$RESULTS_S3_URI\" /app/rel --exclude '_smoke/*' --only-show-errors || { echo '[rescan] FATAL: could not pull results'; exit 2; }; echo \"[rescan] pulled $(ls /app/rel/games/*.json | wc -l) game files\"; mkdir -p /app/rescan_out; ( while true; do sleep \"$SYNC_INTERVAL\"; aws s3 sync /app/rescan_out \"$OUT_S3_URI\" --exclude '*.tar.gz' --only-show-errors; done ) & SP=$!; python3 scripts/rescan_release.py --results /app/rel --out /app/rescan_out --capture; RC=$?; kill $SP 2>/dev/null; echo \"[rescan] rescan_release.py exit=$RC\"; aws s3 sync /app/rescan_out \"$OUT_S3_URI\" --only-show-errors; echo \"[rescan] end $(date -u +%FT%TZ)\"; exit $RC"
+      ],
+      "environment": [
+        { "name": "RESULTS_S3_URI", "value": "s3://terrarepair-bench-results-<ACCOUNT_ID>/terrarepair/release_slice_2026-10" },
+        { "name": "OUT_S3_URI", "value": "s3://terrarepair-bench-results-<ACCOUNT_ID>/terrarepair/release_slice_2026-10_rescan" },
+        { "name": "TERRAREPAIR_TRIVY_TIMEOUT", "value": "900" },
+        { "name": "SYNC_INTERVAL", "value": "120" },
+        { "name": "AWS_REGION", "value": "us-east-1" }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/terrarepair-bench",
+          "awslogs-region": "us-east-1",
+          "awslogs-stream-prefix": "rescan",
+          "awslogs-create-group": "true"
+        }
+      }
+    }
+  ]
+}

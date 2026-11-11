@@ -1,0 +1,100 @@
+terraform {
+  required_version = ">= 1.0.0, < 2.0.0"
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 4.0"
+    }
+  }
+}
+
+provider "aws" {
+  region = "us-east-2"
+}
+
+resource "aws_iam_openid_connect_provider" "github_actions" {
+  url             = "https://token.actions.githubusercontent.com"
+  client_id_list  = ["sts.amazonaws.com"]
+  thumbprint_list = [
+    data.tls_certificate.github.certificates[0].sha1_fingerprint
+  ]
+}
+
+data "tls_certificate" "github" {
+  url = "https://token.actions.githubusercontent.com"
+}
+
+resource "aws_iam_role" "instance" {
+  name_prefix        = var.name
+  assume_role_policy = data.aws_iam_policy_document.assume_role_policy.json
+}
+
+data "aws_iam_policy_document" "assume_role_policy" {
+  statement {
+    actions = ["sts:AssumeRoleWithWebIdentity"]
+    effect  = "Allow"
+
+    principals {
+      identifiers = [aws_iam_openid_connect_provider.github_actions.arn]
+      type        = "Federated"
+    }
+
+    condition {
+      test     = "StringEquals"
+      variable = "token.actions.githubusercontent.com:sub"
+      values = [
+        for a in var.allowed_repos_branches :
+        "repo:${a["org"]}/${a["repo"]}:ref:refs/heads/${a["branch"]}"
+      ]
+    }
+  }
+}
+
+resource "aws_iam_role_policy" "example" {
+  role   = aws_iam_role.instance.id
+  policy = data.aws_iam_policy_document.ec2_admin_permissions.json
+}
+
+data "aws_iam_policy_document" "ec2_admin_permissions" {
+  statement {
+    effect    = "Allow"
+    actions   = [
+      "ec2:Describe*",
+      "ec2:Get*",
+      "ec2:List*",
+      "ec2:Search*"
+    ]
+    resources = ["*"]
+  }
+}
+
+output "aws_iam_github_actions_oidc_arn" {
+  value       = aws_iam_openid_connect_provider.github_actions.arn
+  description = "The ARN of the IAM OIDC identity provider for GitHub Actions"
+}
+
+output "aws_iam_github_actions_oidc_url" {
+  value       = aws_iam_openid_connect_provider.github_actions.url
+  description = "The URL of the IAM OIDC identity provider for GitHub Actions"
+}
+
+output "iam_role_arn" {
+  value       = aws_iam_role.instance.arn
+  description = "The ARN of the IAM role"
+}
+
+variable "allowed_repos_branches" {
+  description = "GitHub repos/branches allowed to assume the IAM role."
+  type = list(object({
+    org    = string
+    repo   = string
+    branch = string
+  }))
+}
+
+variable "name" {
+  description = "The name used to namespace all the resources created by this module"
+  type        = string
+  default     = "github-actions-oidc-example"
+}

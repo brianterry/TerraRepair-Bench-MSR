@@ -1,0 +1,274 @@
+{
+  "module_id": "module_0143",
+  "model_id": "llama-3-3-70b",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0086",
+      "title": "S3 Access block should block public ACL",
+      "severity": "HIGH",
+      "resource_name": "aws_s3_bucket.logs",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "bucket.tf",
+      "start_line": 1,
+      "end_line": 4
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0087",
+      "title": "S3 Access block should block public policy",
+      "severity": "HIGH",
+      "resource_name": "aws_s3_bucket.logs",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "bucket.tf",
+      "start_line": 1,
+      "end_line": 4
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "aws_s3_bucket.logs",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "bucket.tf",
+      "start_line": 1,
+      "end_line": 4
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0090",
+      "title": "S3 Data should be versioned",
+      "severity": "MEDIUM",
+      "resource_name": "aws_s3_bucket.logs",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "bucket.tf",
+      "start_line": 1,
+      "end_line": 4
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0091",
+      "title": "S3 Access Block should Ignore Public ACL",
+      "severity": "HIGH",
+      "resource_name": "aws_s3_bucket.logs",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "bucket.tf",
+      "start_line": 1,
+      "end_line": 4
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0093",
+      "title": "S3 Access block should restrict public bucket to limit access",
+      "severity": "HIGH",
+      "resource_name": "aws_s3_bucket.logs",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "bucket.tf",
+      "start_line": 1,
+      "end_line": 4
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0094",
+      "title": "S3 buckets should each define an aws_s3_bucket_public_access_block",
+      "severity": "LOW",
+      "resource_name": "aws_s3_bucket.logs",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "bucket.tf",
+      "start_line": 1,
+      "end_line": 4
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0132",
+      "title": "S3 encryption should use Customer Managed Keys",
+      "severity": "HIGH",
+      "resource_name": "aws_s3_bucket.logs",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "bucket.tf",
+      "start_line": 1,
+      "end_line": 4
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_273",
+      "title": "Ensure access is controlled through SSO and not AWS IAM defined users",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_user.admin",
+      "resource_type": "aws_iam_user",
+      "file_path": "/main.tf",
+      "start_line": 19,
+      "end_line": 21
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_21",
+      "title": "Ensure all data stored in the S3 bucket have versioning enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.logs",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/bucket.tf",
+      "start_line": 1,
+      "end_line": 4
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_62",
+      "title": "Ensure S3 buckets should have event notifications enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.logs",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/bucket.tf",
+      "start_line": 1,
+      "end_line": 4
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_6",
+      "title": "Ensure that S3 bucket has a Public Access block",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.logs",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/bucket.tf",
+      "start_line": 1,
+      "end_line": 4
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_18",
+      "title": "Ensure the S3 bucket has access logging enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.logs",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/bucket.tf",
+      "start_line": 1,
+      "end_line": 4
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_145",
+      "title": "Ensure that S3 buckets are encrypted with KMS by default",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.logs",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/bucket.tf",
+      "start_line": 1,
+      "end_line": 4
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_61",
+      "title": "Ensure that an S3 bucket has a lifecycle configuration",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.logs",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/bucket.tf",
+      "start_line": 1,
+      "end_line": 4
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_144",
+      "title": "Ensure that S3 bucket has cross-region replication enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.logs",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/bucket.tf",
+      "start_line": 1,
+      "end_line": 4
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0132",
+      "title": "S3 encryption should use Customer Managed Keys",
+      "severity": "HIGH",
+      "resource_name": "aws_s3_bucket.logs",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 1,
+      "end_line": 14
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_300",
+      "title": "Ensure S3 lifecycle configuration sets period for aborting failed uploads",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket_lifecycle_configuration.logs",
+      "resource_type": "aws_s3_bucket_lifecycle_configuration",
+      "file_path": "/main.tf",
+      "start_line": 94,
+      "end_line": 106
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_273",
+      "title": "Ensure access is controlled through SSO and not AWS IAM defined users",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_user.admin",
+      "resource_type": "aws_iam_user",
+      "file_path": "/main.tf",
+      "start_line": 126,
+      "end_line": 128
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_62",
+      "title": "Ensure S3 buckets should have event notifications enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.logs",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 1,
+      "end_line": 14
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_144",
+      "title": "Ensure that S3 bucket has cross-region replication enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.logs",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 1,
+      "end_line": 14
+    }
+  ],
+  "target_count": 16,
+  "resolved_count": 12,
+  "introduced_count": 1,
+  "unchanged_count": 4,
+  "repair_success_rate": 0.75,
+  "regression_rate": 0.0625,
+  "net_delta": 11,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 6,
+      "introduced": 0,
+      "unchanged": 1
+    },
+    "data_protection": {
+      "resolved": 2,
+      "introduced": 0,
+      "unchanged": 1
+    },
+    "observability": {
+      "resolved": 2,
+      "introduced": 0,
+      "unchanged": 1
+    },
+    "other": {
+      "resolved": 2,
+      "introduced": 1,
+      "unchanged": 1
+    }
+  },
+  "repair_cost_usd": 0.003104,
+  "repair_tokens": 3880,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0143_llama-3-3-70b.repaired.tf",
+  "raw_response_path": "module_0143_llama-3-3-70b.raw.txt",
+  "repaired_code_sha256": "ce19f8ccd57ec8ec4e1ec8ca51dc8c087d91f0ef89dbd41fe00978749afaefe7"
+}

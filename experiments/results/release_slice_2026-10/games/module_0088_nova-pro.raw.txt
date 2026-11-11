@@ -1,0 +1,205 @@
+```hcl
+provider "aws" {
+  region = "us-east-1"
+}
+
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 4.51"
+    }
+  }
+}
+
+resource "aws_vpc" "main" {
+  cidr_block = "10.0.0.0/16"
+
+  enable_dns_support   = true
+  enable_dns_hostnames = true
+
+  tags = {
+    Name = "main"
+  }
+
+  flow_log {
+    iam_role_arn = aws_iam_role.vpc_flow_logs.arn
+    traffic_type = "REJECT"
+  }
+}
+
+resource "aws_iam_role" "vpc_flow_logs" {
+  name = "vpc_flow_logs_role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [{
+      Action = "sts:AssumeRole",
+      Effect = "Allow",
+      Principal = {
+        Service = "vpc-flow-logs.amazonaws.com"
+      }
+    }]
+  })
+}
+
+resource "aws_iam_role_policy" "vpc_flow_logs" {
+  role = aws_iam_role.vpc_flow_logs.name
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [{
+      Action = [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+      ],
+      Effect = "Allow",
+      Resource = "arn:aws:logs:*:*:*"
+    }]
+  })
+}
+
+resource "aws_security_group" "client" {
+  name   = "client"
+  vpc_id = aws_vpc.main.id
+
+  ingress {
+    description = "Allow SSH access from specific IP"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["192.168.0.0/16"]
+  }
+
+  egress {
+    description = "Allow specific outbound traffic"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_instance" "client" {
+  ami           = data.aws_ami.ubuntu_jammy.id
+  key_name      = "devops"
+  instance_type = "t3a.xlarge"
+  subnet_id     = aws_subnet.public_us_east_1a.id
+
+  vpc_security_group_ids = [
+    aws_security_group.client.id
+  ]
+
+  tags = {
+    Name          = "client.antonputra.pvt"
+    service       = "client"
+    node-exporter = "true"
+  }
+
+  block_device_mappings {
+    device_name = "/dev/sda1"
+
+    ebs {
+      encrypted = true
+    }
+  }
+
+  metadata_options {
+    http_tokens = "required"
+    http_endpoint = "enabled"
+    http_put_response_hop_limit = 1
+  }
+
+  iam_instance_profile = aws_iam_instance_profile.ec2_role.name
+}
+
+resource "aws_iam_role" "ec2_role" {
+  name = "ec2_role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [{
+      Action = "sts:AssumeRole",
+      Effect = "Allow",
+      Principal = {
+        Service = "ec2.amazonaws.com"
+      }
+    }]
+  })
+}
+
+resource "aws_iam_instance_profile" "ec2_role" {
+  name = "ec2_role"
+  role = aws_iam_role.ec2_role.name
+}
+
+resource "aws_subnet" "public_us_east_1a" {
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = "10.0.64.0/19"
+  availability_zone = "us-east-1a"
+  map_public_ip_on_launch = false
+
+  tags = {
+    "Name"                       = "public-us-east-1a"
+    "kubernetes.io/role/elb"     = "1"
+    "kubernetes.io/cluster/demo" = "owned"
+  }
+}
+
+resource "aws_subnet" "public_us_east_1b" {
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = "10.0.96.0/19"
+  availability_zone = "us-east-1b"
+  map_public_ip_on_launch = false
+
+  tags = {
+    "Name"                       = "public-us-east-1b"
+    "kubernetes.io/role/elb"     = "1"
+    "kubernetes.io/cluster/demo" = "owned"
+  }
+}
+
+resource "aws_eks_cluster" "demo" {
+  name     = "demo"
+  version  = "1.24"
+  role_arn = aws_iam_role.demo.arn
+
+  vpc_config {
+    subnet_ids = [
+      aws_subnet.private_us_east_1a.id,
+      aws_subnet.private_us_east_1b.id,
+      aws_subnet.public_us_east_1a.id,
+      aws_subnet.public_us_east_1b.id
+    ]
+  }
+
+  logging {
+    cluster_logging {
+      enabled_types {
+        type = "api"
+      }
+      enabled_types {
+        type = "audit"
+      }
+      enabled_types {
+        type = "authenticator"
+      }
+      enabled_types {
+        type = "controllerManager"
+      }
+      enabled_types {
+        type = "scheduler"
+      }
+    }
+  }
+
+  encryption_config {
+    resources = ["secrets"]
+  }
+
+  endpoint_public_access = false
+
+  depends_on = [aws_iam_role_policy_attachment.demo_amazon_eks_cluster_policy]
+}
+```

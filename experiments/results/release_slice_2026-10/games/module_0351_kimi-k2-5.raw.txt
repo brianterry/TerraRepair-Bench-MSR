@@ -1,0 +1,360 @@
+ data "ignition_config" "etcd" {
+  count = "${length(var.external_endpoints) == 0 ? var.instance_count : 0}"
+
+  systemd = [
+    "${data.ignition_systemd_unit.locksmithd.*.id[count.index]}",
+    "${var.ign_etcd_dropin_id_list[count.index]}",
+  ]
+
+  files = ["${compact(list(
+    var.ign_ntp_dropin_id,
+    var.ign_profile_env_id,
+    var.ign_systemd_default_env_id,
+    var.dns_server_ip != "" ? join("", data.ignition_file.node_resolv.*.id) : "",
+   ))}",
+    "${var.ign_etcd_crt_id_list}",
+  ]
+}
+
+data "ignition_systemd_unit" "locksmithd" {
+  count = "${length(var.external_endpoints) == 0 ? var.instance_count : 0}"
+
+  name    = "locksmithd.service"
+  enabled = true
+
+  dropin = [
+    {
+      name = "40-etcd-lock.conf"
+
+      content = <<EOF
+[Service]
+Environment=REBOOT_STRATEGY=etcd-lock
+${var.tls_enabled ? "Environment=\"LOCKSMITHD_ETCD_CAFILE=/etc/ssl/etcd/ca.crt\"" : ""}
+${var.tls_enabled ? "Environment=\"LOCKSMITHD_ETCD_KEYFILE=/etc/ssl/etcd/client.key\"" : ""}
+${var.tls_enabled ? "Environment=\"LOCKSMITHD_ETCD_CERTFILE=/etc/ssl/etcd/client.crt\"" : ""}
+Environment="LOCKSMITHD_ENDPOINT=${var.tls_enabled ? "https" : "http"}://${var.cluster_name}-etcd-${count.index}.${var.base_domain}:2379"
+EOF
+    },
+  ]
+}
+
+// DNS Server resolution
+data "template_file" "node_resolv" {
+  count    = "${var.dns_server_ip != "" ? 1 : 0}"
+  template = "search us-gov-west-1.compute.internal\nnameserver ${var.dns_server_ip}"
+}
+
+data "ignition_file" "node_resolv" {
+  count      = "${var.dns_server_ip != "" ? 1 : 0}"
+  path       = "/etc/resolv.conf"
+  mode       = 0644
+  filesystem = "root"
+
+  content {
+    content = "${data.template_file.node_resolv.rendered}"
+  }
+}
+
+
+resource "aws_s3_bucket_object" "ignition_etcd" {
+  count = "${length(var.external_endpoints) == 0 ? var.instance_count : 0}"
+
+  bucket  = "${var.s3_bucket}"
+  key     = "ignition_etcd_${count.index}.json"
+  content = "${data.ignition_config.etcd.*.rendered[count.index]}"
+  acl     = "private"
+
+  server_side_encryption = "aws:kms"
+  kms_key_id            = "${var.kms_key_id}"
+
+  tags = "${merge(map(
+      "Name", "${var.cluster_name}-ignition-etcd-${count.index}",
+      "KubernetesCluster", "${var.cluster_name}",
+      "tectonicClusterID", "${var.cluster_id}"
+    ), var.extra_tags)}"
+}
+
+data "ignition_config" "s3" {
+  count = "${length(var.external_endpoints) == 0 ? var.instance_count : 0}"
+
+  replace {
+    source       = "${format("s3://%s/%s", var.s3_bucket, aws_s3_bucket_object.ignition_etcd.*.key[count.index])}"
+    verification = "sha512-${sha512(data.ignition_config.etcd.*.rendered[count.index])}"
+  }
+}
+
+
+locals {
+  ami_owner = "190570271432"
+  arn       = "aws-us-gov"
+}
+
+data "aws_ami" "coreos_ami" {
+  owners = ["${local.ami_owner}"]
+
+  filter {
+    name   = "name"
+    values = ["CoreOS-${var.container_linux_channel}-${var.container_linux_version}-*"]
+  }
+
+  filter {
+    name   = "architecture"
+    values = ["x86_64"]
+  }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+
+  filter {
+    name   = "owner-id"
+    values = ["${local.ami_owner}"]
+  }
+
+  most_recent = true
+}
+
+resource "aws_iam_instance_profile" "etcd" {
+  count = "${length(var.external_endpoints) == 0 ? 1 : 0}"
+  name  = "${var.cluster_name}-etcd-profile"
+
+  role = "${var.etcd_iam_role == "" ?
+    join("|", aws_iam_role.etcd_role.*.name) :
+    join("|", data.aws_iam_role.etcd_role.*.name)
+  }"
+}
+
+data "aws_iam_role" "etcd_role" {
+  count = "${var.etcd_iam_role == "" ? 0 : 1}"
+  name  = "${var.etcd_iam_role}"
+}
+
+resource "aws_iam_role" "etcd_role" {
+  count = "${length(var.external_endpoints) == 0 && var.etcd_iam_role == "" ? 1 : 0}"
+  name  = "${var.cluster_name}-etcd-role"
+  path  = "/"
+
+  assume_role_policy = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Action": "sts:AssumeRole",
+            "Principal": {
+                "Service": "ec2.amazonaws.com"
+            },
+            "Effect": "Allow",
+            "Sid": ""
+        }
+    ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy" "etcd" {
+  count = "${var.etcd_iam_role == "" ? 1 : 0}"
+  name  = "${var.cluster_name}_etcd_policy"
+  role  = "${aws_iam_role.etcd_role.id}"
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": "ec2:Describe*",
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "ec2:AttachVolume",
+      "Resource": "arn:${local.arn}:ec2:*:*:volume/*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "ec2:DetachVolume",
+      "Resource": "arn:${local.arn}:ec2:*:*:volume/*"
+    },
+    {
+      "Action" : [
+        "s3:GetObject"
+      ],
+      "Resource": "arn:${local.arn}:s3:::${var.s3_bucket}/*",
+      "Effect": "Allow"
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_instance" "etcd_node" {
+  count = "${length(var.external_endpoints) == 0 ? var.instance_count : 0}"
+  ami   = "${data.aws_ami.coreos_ami.image_id}"
+
+  iam_instance_profile   = "${aws_iam_instance_profile.etcd.name}"
+  instance_type          = "${var.ec2_type}"
+  key_name               = "${var.ssh_key}"
+  subnet_id              = "${element(var.subnets, count.index)}"
+  user_data              = "${data.ignition_config.s3.*.rendered[count.index]}"
+  vpc_security_group_ids = ["${var.sg_ids}"]
+
+  ebs_optimized     = true
+  monitoring        = true
+
+  metadata_options {
+    http_endpoint               = "enabled"
+    http_tokens                 = "required"
+    http_put_response_hop_limit = 1
+  }
+
+  lifecycle {
+    # Ignore changes in the AMI which force recreation of the resource. This
+    # avoids accidental deletion of nodes whenever a new CoreOS Release comes
+    # out.
+    ignore_changes = ["ami"]
+  }
+
+  tags = "${merge(map(
+      "Name", "${var.cluster_name}-etcd-${count.index}",
+      "kubernetes.io/cluster/${var.cluster_name}", "owned",
+      "tectonicClusterID", "${var.cluster_id}"
+    ), var.extra_tags)}"
+
+  root_block_device {
+    volume_type           = "${var.root_volume_type}"
+    volume_size           = "${var.root_volume_size}"
+    iops                  = "${var.root_volume_type == "io1" ? var.root_volume_iops : var.root_volume_type == "gp2" ? min(10000, max(100, 3 * var.root_volume_size)) : 0}"
+    encrypted             = true
+    kms_key_id            = "${var.kms_key_id}"
+  }
+
+  volume_tags = "${merge(map(
+    "Name", "${var.cluster_name}-etcd-${count.index}-vol",
+    "kubernetes.io/cluster/${var.cluster_name}", "owned",
+    "tectonicClusterID", "${var.cluster_id}"
+  ), var.extra_tags)}"
+}
+
+
+output "ip_addresses" {
+  value = "${aws_instance.etcd_node.*.private_ip}"
+}
+
+
+variable "base_domain" {
+  type = "string"
+}
+
+variable "cluster_id" {
+  type = "string"
+}
+
+variable "cluster_name" {
+  type = "string"
+}
+
+variable "container_linux_channel" {
+  type = "string"
+}
+
+variable "container_linux_version" {
+  type = "string"
+}
+
+variable "instance_count" {
+  default = "3"
+}
+
+variable "ssh_key" {
+  type = "string"
+}
+
+variable "subnets" {
+  type = "list"
+}
+
+variable "external_endpoints" {
+  type = "list"
+}
+
+variable "container_image" {
+  type = "string"
+}
+
+variable "ec2_type" {
+  type = "string"
+}
+
+variable "extra_tags" {
+  description = "Extra AWS tags to be applied to created resources."
+  type        = "map"
+  default     = {}
+}
+
+variable "root_volume_type" {
+  type        = "string"
+  description = "The type of volume for the root block device."
+}
+
+variable "root_volume_size" {
+  type        = "string"
+  description = "The size of the volume in gigabytes for the root block device."
+}
+
+variable "root_volume_iops" {
+  type        = "string"
+  default     = "100"
+  description = "The amount of provisioned IOPS for the root block device."
+}
+
+variable "sg_ids" {
+  type        = "list"
+  description = "The security group IDs to be applied."
+}
+
+variable "tls_enabled" {
+  default = false
+}
+
+variable "ign_etcd_dropin_id_list" {
+  type = "list"
+}
+
+variable "s3_bucket" {
+  type = "string"
+}
+
+variable "ign_etcd_crt_id_list" {
+  type = "list"
+}
+
+variable "etcd_iam_role" {
+  type        = "string"
+  default     = ""
+  description = "IAM role to use for the instance profiles of etcd nodes."
+}
+
+variable "dns_server_ip" {
+  type    = "string"
+  default = ""
+}
+
+variable "ign_profile_env_id" {
+  type    = "string"
+  default = ""
+}
+
+variable "ign_systemd_default_env_id" {
+  type    = "string"
+  default = ""
+}
+
+variable "ign_ntp_dropin_id" {
+  type = "string"
+}
+
+variable "kms_key_id" {
+  type        = "string"
+  description = "KMS key ID for encryption"
+}

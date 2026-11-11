@@ -1,0 +1,29 @@
+{
+  "findings_count": 4,
+  "findings": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_27",
+      "title": "",
+      "resource_name": "aws_sqs_queue.dlq"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_338",
+      "title": "",
+      "resource_name": "aws_cloudwatch_log_group.custom"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_158",
+      "title": "",
+      "resource_name": "aws_cloudwatch_log_group.custom"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "s3_bucket"
+    }
+  ]
+}

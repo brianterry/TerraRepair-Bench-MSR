@@ -1,0 +1,131 @@
+{
+  "module_id": "module_0339",
+  "model_id": "nova-pro",
+  "findings_before": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_37",
+      "title": "Ensure CodeCommit associates an approval rule",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_codecommit_repository.global_customizations",
+      "resource_type": "aws_codecommit_repository",
+      "file_path": "/codecommit.tf",
+      "start_line": 4,
+      "end_line": 9
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_37",
+      "title": "Ensure CodeCommit associates an approval rule",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_codecommit_repository.account_customizations",
+      "resource_type": "aws_codecommit_repository",
+      "file_path": "/codecommit.tf",
+      "start_line": 11,
+      "end_line": 16
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_37",
+      "title": "Ensure CodeCommit associates an approval rule",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_codecommit_repository.account_request",
+      "resource_type": "aws_codecommit_repository",
+      "file_path": "/codecommit.tf",
+      "start_line": 18,
+      "end_line": 23
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_37",
+      "title": "Ensure CodeCommit associates an approval rule",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_codecommit_repository.account_provisioning_customizations",
+      "resource_type": "aws_codecommit_repository",
+      "file_path": "/codecommit.tf",
+      "start_line": 25,
+      "end_line": 30
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_37",
+      "title": "Ensure CodeCommit associates an approval rule",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_codecommit_repository.global_customizations",
+      "resource_type": "aws_codecommit_repository",
+      "file_path": "/main.tf",
+      "start_line": 131,
+      "end_line": 141
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_37",
+      "title": "Ensure CodeCommit associates an approval rule",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_codecommit_repository.account_customizations",
+      "resource_type": "aws_codecommit_repository",
+      "file_path": "/main.tf",
+      "start_line": 143,
+      "end_line": 153
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_37",
+      "title": "Ensure CodeCommit associates an approval rule",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_codecommit_repository.account_request",
+      "resource_type": "aws_codecommit_repository",
+      "file_path": "/main.tf",
+      "start_line": 155,
+      "end_line": 165
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_37",
+      "title": "Ensure CodeCommit associates an approval rule",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_codecommit_repository.account_provisioning_customizations",
+      "resource_type": "aws_codecommit_repository",
+      "file_path": "/main.tf",
+      "start_line": 167,
+      "end_line": 177
+    }
+  ],
+  "target_count": 4,
+  "resolved_count": 0,
+  "introduced_count": 0,
+  "unchanged_count": 4,
+  "repair_success_rate": 0.0,
+  "regression_rate": 0.0,
+  "net_delta": 0,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 4
+    }
+  },
+  "repair_cost_usd": 0.016738,
+  "repair_tokens": 16738,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0339_nova-pro.repaired.tf",
+  "raw_response_path": "module_0339_nova-pro.raw.txt",
+  "repaired_code_sha256": "3ab6e661935c20fbe9f630ffd53d252e7880d2ea13f1090bd27794139daba250"
+}

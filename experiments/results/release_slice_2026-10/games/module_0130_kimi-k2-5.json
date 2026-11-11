@@ -1,0 +1,197 @@
+{
+  "module_id": "module_0130",
+  "model_id": "kimi-k2-5",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0053",
+      "title": "Load balancer is exposed to the internet.",
+      "severity": "HIGH",
+      "resource_name": "aws_elb.blue",
+      "resource_type": "aws_elb",
+      "file_path": "nodejs.tf",
+      "start_line": 80,
+      "end_line": 112
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0053",
+      "title": "Load balancer is exposed to the internet.",
+      "severity": "HIGH",
+      "resource_name": "aws_elb.green",
+      "resource_type": "aws_elb",
+      "file_path": "nodejs.tf",
+      "start_line": 114,
+      "end_line": 146
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "aws_security_group.elb",
+      "resource_type": "aws_security_group",
+      "file_path": "nodejs.tf",
+      "start_line": 60,
+      "end_line": 60
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0124",
+      "title": "Missing description for security group rule.",
+      "severity": "LOW",
+      "resource_name": "aws_security_group.elb",
+      "resource_type": "aws_security_group",
+      "file_path": "nodejs.tf",
+      "start_line": 42,
+      "end_line": 47
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_260",
+      "title": "Ensure no security groups allow ingress from 0.0.0.0:0 to port 80",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group.elb",
+      "resource_type": "aws_security_group",
+      "file_path": "/nodejs.tf",
+      "start_line": 34,
+      "end_line": 62
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "Ensure every security group and rule has a description",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group.elb",
+      "resource_type": "aws_security_group",
+      "file_path": "/nodejs.tf",
+      "start_line": 34,
+      "end_line": 62
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_376",
+      "title": "Ensure AWS Elastic Load Balancer listener uses TLS/SSL",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_elb.blue",
+      "resource_type": "aws_elb",
+      "file_path": "/nodejs.tf",
+      "start_line": 80,
+      "end_line": 112
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_127",
+      "title": "Ensure that Elastic Load Balancer(s) uses SSL certificates provided by AWS Certificate Manager",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_elb.blue",
+      "resource_type": "aws_elb",
+      "file_path": "/nodejs.tf",
+      "start_line": 80,
+      "end_line": 112
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_92",
+      "title": "Ensure the ELB has access logging enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_elb.blue",
+      "resource_type": "aws_elb",
+      "file_path": "/nodejs.tf",
+      "start_line": 80,
+      "end_line": 112
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_376",
+      "title": "Ensure AWS Elastic Load Balancer listener uses TLS/SSL",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_elb.green",
+      "resource_type": "aws_elb",
+      "file_path": "/nodejs.tf",
+      "start_line": 114,
+      "end_line": 146
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_127",
+      "title": "Ensure that Elastic Load Balancer(s) uses SSL certificates provided by AWS Certificate Manager",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_elb.green",
+      "resource_type": "aws_elb",
+      "file_path": "/nodejs.tf",
+      "start_line": 114,
+      "end_line": 146
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_92",
+      "title": "Ensure the ELB has access logging enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_elb.green",
+      "resource_type": "aws_elb",
+      "file_path": "/nodejs.tf",
+      "start_line": 114,
+      "end_line": 146
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_376",
+      "title": "Ensure AWS Elastic Load Balancer listener uses TLS/SSL",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_elb.blue",
+      "resource_type": "aws_elb",
+      "file_path": "/main.tf",
+      "start_line": 78,
+      "end_line": 110
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_376",
+      "title": "Ensure AWS Elastic Load Balancer listener uses TLS/SSL",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_elb.green",
+      "resource_type": "aws_elb",
+      "file_path": "/main.tf",
+      "start_line": 112,
+      "end_line": 144
+    }
+  ],
+  "target_count": 12,
+  "resolved_count": 10,
+  "introduced_count": 0,
+  "unchanged_count": 2,
+  "repair_success_rate": 0.8333333333333334,
+  "regression_rate": 0.0,
+  "net_delta": 10,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 2,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 2,
+      "introduced": 0,
+      "unchanged": 2
+    },
+    "observability": {
+      "resolved": 2,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 4,
+      "introduced": 0,
+      "unchanged": 0
+    }
+  },
+  "repair_cost_usd": 0.006821099999999999,
+  "repair_tokens": 4804,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0130_kimi-k2-5.repaired.tf",
+  "raw_response_path": "module_0130_kimi-k2-5.raw.txt",
+  "repaired_code_sha256": "a097fe63adb705b446619b04996281023f545e4b87045b5fda17ab3e52af3144"
+}

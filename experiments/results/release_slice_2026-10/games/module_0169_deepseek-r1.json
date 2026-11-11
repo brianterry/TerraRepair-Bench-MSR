@@ -1,0 +1,186 @@
+{
+  "module_id": "module_0169",
+  "model_id": "deepseek-r1",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0028",
+      "title": "aws_instance should activate session tokens for Instance Metadata Service.",
+      "severity": "HIGH",
+      "resource_name": "aws_instance.phishing-server[0]",
+      "resource_type": "aws_instance",
+      "file_path": "main.tf",
+      "start_line": 24,
+      "end_line": 68
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0131",
+      "title": "Instance with unencrypted block device.",
+      "severity": "HIGH",
+      "resource_name": "aws_instance.phishing-server[0]",
+      "resource_type": "aws_instance",
+      "file_path": "main.tf",
+      "start_line": 24,
+      "end_line": 68
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "aws_security_group.phishing-server",
+      "resource_type": "aws_security_group",
+      "file_path": "security_group.tf",
+      "start_line": 55,
+      "end_line": 55
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0124",
+      "title": "Missing description for security group rule.",
+      "severity": "LOW",
+      "resource_name": "aws_security_group.phishing-server",
+      "resource_type": "aws_security_group",
+      "file_path": "security_group.tf",
+      "start_line": 14,
+      "end_line": 19
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_135",
+      "title": "Ensure that EC2 is EBS optimized",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_instance.phishing-server[0]",
+      "resource_type": "aws_instance",
+      "file_path": "/main.tf",
+      "start_line": 24,
+      "end_line": 68
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_88",
+      "title": "EC2 instance should not have public IP.",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_instance.phishing-server[0]",
+      "resource_type": "aws_instance",
+      "file_path": "/main.tf",
+      "start_line": 24,
+      "end_line": 68
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_79",
+      "title": "Ensure Instance Metadata Service Version 1 is not enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_instance.phishing-server[0]",
+      "resource_type": "aws_instance",
+      "file_path": "/main.tf",
+      "start_line": 24,
+      "end_line": 68
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_8",
+      "title": "Ensure all data stored in the Launch configuration or instance Elastic Blocks Store is securely encrypted",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_instance.phishing-server[0]",
+      "resource_type": "aws_instance",
+      "file_path": "/main.tf",
+      "start_line": 24,
+      "end_line": 68
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_126",
+      "title": "Ensure that detailed monitoring is enabled for EC2 instances",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_instance.phishing-server[0]",
+      "resource_type": "aws_instance",
+      "file_path": "/main.tf",
+      "start_line": 24,
+      "end_line": 68
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_260",
+      "title": "Ensure no security groups allow ingress from 0.0.0.0:0 to port 80",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group.phishing-server",
+      "resource_type": "aws_security_group",
+      "file_path": "/security_group.tf",
+      "start_line": 9,
+      "end_line": 69
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "Ensure every security group and rule has a description",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group.phishing-server",
+      "resource_type": "aws_security_group",
+      "file_path": "/security_group.tf",
+      "start_line": 9,
+      "end_line": 69
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_41",
+      "title": "Ensure an IAM role is attached to EC2 instance",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_instance.phishing-server[0]",
+      "resource_type": "aws_instance",
+      "file_path": "/main.tf",
+      "start_line": 24,
+      "end_line": 68
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "aws_security_group.phishing-server",
+      "resource_type": "aws_security_group",
+      "file_path": "main.tf",
+      "start_line": 184,
+      "end_line": 184
+    }
+  ],
+  "target_count": 12,
+  "resolved_count": 11,
+  "introduced_count": 0,
+  "unchanged_count": 1,
+  "repair_success_rate": 0.9166666666666666,
+  "regression_rate": 0.0,
+  "net_delta": 11,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 3,
+      "introduced": 0,
+      "unchanged": 1
+    },
+    "data_protection": {
+      "resolved": 3,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 1,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 4,
+      "introduced": 0,
+      "unchanged": 0
+    }
+  },
+  "repair_cost_usd": 0.031773,
+  "repair_tokens": 12782,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0169_deepseek-r1.repaired.tf",
+  "raw_response_path": "module_0169_deepseek-r1.raw.txt",
+  "repaired_code_sha256": "fa95f6737f2e4cedc4886b163e43c81fc9c6dd09b0c620355de8d43bfb14fa8f"
+}

@@ -1,0 +1,134 @@
+resource "aws_s3_bucket" "aft_codepipeline_customizations_bucket" {
+  bucket = "aft-customizations-pipeline-${data.aws_caller_identity.current.account_id}"
+  logging {
+    target_bucket = "aft-customizations-pipeline-logging-${data.aws_caller_identity.current.account_id}"
+    target_prefix = "logs/"
+  }
+}
+
+resource "aws_lambda_function" "aft_customizations_identify_targets" {
+  filename      = var.customizations_archive_path
+  function_name = "aft-customizations-identify-targets"
+  description   = "Identifies targets to be customized. Called from aft-trigger-customizations SFN."
+  role          = aws_iam_role.aft_customizations_identify_targets_lambda.arn
+  handler       = "aft_customizations_identify_targets.lambda_handler"
+  source_code_hash = var.customizations_archive_hash
+  memory_size      = 1024
+  runtime          = var.lambda_runtime_python_version
+  timeout          = "300"
+  layers           = [var.aft_common_layer_arn]
+  reserved_concurrent_executions = 100
+  tracing_config {
+    mode = "Active"
+  }
+  dynamic "vpc_config" {
+    for_each = var.aft_enable_vpc? [1] : []
+    content {
+      subnet_ids         = var.aft_vpc_private_subnets
+      security_group_ids = var.aft_vpc_default_sg
+    }
+  }
+  dynamic "dead_letter_config" {
+    for_each = [1]
+    content {
+      target_arn = var.aft_failure_sns_topic_arn
+    }
+  }
+}
+
+resource "aws_lambda_function" "aft_customizations_execute_pipeline" {
+  filename      = var.customizations_archive_path
+  function_name = "aft-customizations-execute-pipeline"
+  description   = "Executes the CodePipeline for account baselining. Called from aft-trigger-customizations SFN"
+  role          = aws_iam_role.aft_customizations_execute_pipeline_lambda.arn
+  handler       = "aft_customizations_execute_pipeline.lambda_handler"
+  source_code_hash = var.customizations_archive_hash
+  memory_size      = 1024
+  runtime          = var.lambda_runtime_python_version
+  timeout          = "300"
+  layers           = [var.aft_common_layer_arn]
+  reserved_concurrent_executions = 100
+  tracing_config {
+    mode = "Active"
+  }
+  dynamic "vpc_config" {
+    for_each = var.aft_enable_vpc? [1] : []
+    content {
+      subnet_ids         = var.aft_vpc_private_subnets
+      security_group_ids = var.aft_vpc_default_sg
+    }
+  }
+  dynamic "dead_letter_config" {
+    for_each = [1]
+    content {
+      target_arn = var.aft_failure_sns_topic_arn
+    }
+  }
+}
+
+resource "aws_lambda_function" "aft_customizations_get_pipeline_executions" {
+  filename      = var.customizations_archive_path
+  function_name = "aft-customizations-get-pipeline-executions"
+  description   = "Gets status of executing pipelines for baselining. Called from aft-trigger-customizations SFN"
+  role          = aws_iam_role.aft_customizations_get_pipeline_executions_lambda.arn
+  handler       = "aft_customizations_get_pipeline_executions.lambda_handler"
+  source_code_hash = var.customizations_archive_hash
+  memory_size      = 1024
+  runtime          = var.lambda_runtime_python_version
+  timeout          = "300"
+  layers           = [var.aft_common_layer_arn]
+  reserved_concurrent_executions = 100
+  tracing_config {
+    mode = "Active"
+  }
+  dynamic "vpc_config" {
+    for_each = var.aft_enable_vpc? [1] : []
+    content {
+      subnet_ids         = var.aft_vpc_private_subnets
+      security_group_ids = var.aft_vpc_default_sg
+    }
+  }
+  dynamic "dead_letter_config" {
+    for_each = [1]
+    content {
+      target_arn = var.aft_failure_sns_topic_arn
+    }
+  }
+}
+
+resource "aws_s3_bucket_lifecycle_configuration" "aft_codepipeline_customizations_bucket" {
+  bucket = aws_s3_bucket.aft_codepipeline_customizations_bucket.id
+  rule {
+    id      = "abort-incomplete-multipart-upload"
+    status  = "Enabled"
+    abort_incomplete_multipart_upload {
+      days_after_initiation = 7
+    }
+  }
+}
+
+resource "aws_sfn_state_machine" "aft_invoke_customizations_sfn" {
+  name     = "aft-invoke-customizations"
+  role_arn = aws_iam_role.aft_invoke_customizations_sfn.arn
+  definition = replace(
+    templatefile("${local.state_machine_source}", local.replacements_map),
+    "/\"(MaxConcurrency|NumericLessThan)\": \"(\\d+)\"/",
+    "\"$1\": $2"
+  )
+  tracing_configuration {
+    enabled = true
+  }
+  logging_configuration {
+    level = "ALL"
+    include_execution_data = true
+  }
+}
+
+resource "aws_s3_bucket_notification" "aft_codepipeline_customizations_bucket" {
+  bucket = aws_s3_bucket.aft_codepipeline_customizations_bucket.id
+
+  topic {
+    topic_arn = var.aft_sns_topic_arn
+    events    = ["s3:ObjectCreated:*"]
+  }
+}

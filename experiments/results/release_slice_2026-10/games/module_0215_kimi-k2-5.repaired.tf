@@ -1,0 +1,1142 @@
+/*
+Copyright 2023 The Kubernetes Authors.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+data "aws_caller_identity" "current" {}
+
+data "aws_availability_zones" "available" {
+  state = "available"
+}
+
+data "aws_iam_roles" "sso_admins" {
+  name_regex  = "AWSReservedSSO_AdministratorAccess_.*"
+  path_prefix = "/aws-reserved/sso.amazonaws.com/"
+}
+
+data "aws_iam_role" "eks_infra_admin" {
+  name = "EKSInfraAdmin"
+}
+
+data "aws_iam_role" "eks_infra_viewer" {
+  name = "EKSInfraViewer"
+}
+
+data "aws_iam_user" "eks_cluster_viewers" {
+  count     = length(var.eks_cluster_viewers)
+  user_name = var.eks_cluster_viewers[count.index]
+}
+
+data "aws_iam_user" "eks_cluster_admins" {
+  count     = length(var.eks_cluster_admins)
+  user_name = var.eks_cluster_admins[count.index]
+}
+
+data "aws_iam_policy" "eks_resources_permission_boundary" {
+  name        = "EKSResourcesPermissionBoundary"
+  path_prefix = "/boundary/"
+}
+
+
+/*
+Copyright 2023 The Kubernetes Authors.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+###############################################
+# EKS Cluster
+###############################################
+
+module "eks" {
+  source  = "terraform-aws-modules/eks/aws"
+  version = "20.20.0"
+
+  # General cluster properties.
+  cluster_name                   = var.cluster_name
+  cluster_version                = var.cluster_version
+  cluster_endpoint_public_access = false
+
+  cluster_enabled_log_types = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
+
+  # Enable EKS API and ConfigMap authentication (required for the EKS Pod identity)
+  authentication_mode = "API"
+  access_entries      = local.access_entries
+
+  iam_role_permissions_boundary = data.aws_iam_policy.eks_resources_permission_boundary.arn
+
+  # Allow access to the KMS key used for secrets encryption to the root account.
+  kms_key_administrators = [
+    local.root_account_arn
+  ]
+  # Allow service access to the KMS key to the EKSInfraAdmin role.
+  kms_key_service_users = [
+    data.aws_iam_role.eks_infra_admin.arn
+  ]
+
+  # We use IPv4 for the best compatibility with the existing setup.
+  # Additionally, Ubuntu EKS optimized AMI doesn't support IPv6 well.
+  cluster_ip_family = "ipv4"
+
+  vpc_id                   = module.vpc.vpc_id
+  subnet_ids               = module.vpc.private_subnets
+  control_plane_subnet_ids = module.vpc.intra_subnets
+
+  cluster_addons = {
+    coredns = {
+      most_recent = true
+      configuration_values = jsonencode({
+        "nodeSelector" : {
+          "node-group" : "stable"
+        },
+        "tolerations" : [
+          {
+            "key" : "CriticalAddonsOnly",
+            "operator" : "Exists"
+          },
+          {
+            "effect" : "NoSchedule",
+            "key" : "node-role.kubernetes.io/control-plane"
+          },
+          {
+            "effect" : "NoSchedule",
+            "key" : "node-group",
+            "operator" : "Equal",
+            "value" : "stable"
+          }
+        ]
+      })
+    }
+    kube-proxy = {
+      most_recent = true
+    }
+    vpc-cni = {
+      most_recent              = true
+      service_account_role_arn = module.vpc_cni_irsa.iam_role_arn
+    }
+    aws-ebs-csi-driver = {
+      most_recent              = true
+      service_account_role_arn = module.ebs_csi_irsa.iam_role_arn
+      configuration_values = jsonencode({
+        "controller" : {
+          "nodeSelector" : {
+            "node-group" : "stable"
+          },
+          "tolerations" : [
+            {
+              "effect" : "NoExecute",
+              "operator" : "Exists",
+              "tolerationSeconds" : 300
+            },
+            {
+              "effect" : "NoSchedule",
+              "key" : "node-group",
+              "operator" : "Equal",
+              "value" : "stable"
+            }
+          ]
+        }
+      })
+    }
+    eks-pod-identity-agent = {
+      most_recent = true
+    }
+  }
+
+  node_security_group_tags = local.node_security_group_tags
+
+  eks_managed_node_group_defaults = {
+    # TODO(xmudrii-ubuntu): Temporarily disabled because it's not supported by Bottlerocket Linux
+    # enable_bootstrap_user_data = true
+
+    # We are using the IRSA created below for permissions
+    # However, we have to deploy with the policy attached FIRST (when creating a fresh cluster)
+    # and then turn this off after the cluster/node group is created. Without this initial policy,
+    # the VPC CNI fails to assign IPs and nodes cannot join the cluster
+    # See https://github.com/aws/containers-roadmap/issues/1666 for more context
+    iam_role_attach_cni_policy = false
+  }
+
+  eks_managed_node_groups = {
+    stable = local.node_group_stable
+  }
+}
+
+
+/*
+Copyright 2023 The Kubernetes Authors.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+# We allow Prow Pods with specific service acccounts on the a particular cluster to assume this role.
+resource "aws_iam_role" "eks_prow_admin" {
+  count = local.configure_prow ? 1 : 0
+
+  name                 = "Prow-EKS-Admin"
+  max_session_duration = 43200
+  permissions_boundary = data.aws_iam_policy.eks_resources_permission_boundary.arn
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        "Effect" : "Allow",
+        "Principal" : {
+          "Federated" : aws_iam_openid_connect_provider.gke_utility_cluster.arn
+        },
+        "Action" : "sts:AssumeRoleWithWebIdentity",
+        "Condition" : {
+          "StringEquals" : {
+            "container.googleapis.com/v1/projects/k8s-infra-prow/locations/us-central1/clusters/utility:sub" : [
+              "system:serviceaccount:argocd:argocd-application-controller",
+              "system:serviceaccount:argocd:argocd-server",
+            ]
+          }
+        }
+      },
+      {
+        "Effect" : "Allow",
+        "Principal" : {
+          "Federated" : aws_iam_openid_connect_provider.k8s_infra_prow[0].arn
+        },
+        "Action" : "sts:AssumeRoleWithWebIdentity",
+        "Condition" : {
+          "StringEquals" : {
+            "container.googleapis.com/v1/projects/k8s-infra-prow/locations/us-central1/clusters/prow:sub" : [
+              // https://github.com/kubernetes/k8s.io/tree/main/kubernetes/gke-prow/prow
+              // all services that load kubeconfig should be listed here
+              "system:serviceaccount:default:deck",
+              "system:serviceaccount:default:config-bootstrapper",
+              "system:serviceaccount:default:crier",
+              "system:serviceaccount:default:sinker",
+              "system:serviceaccount:default:prow-controller-manager",
+              "system:serviceaccount:default:hook"
+            ]
+          }
+        }
+      }
+    ]
+  })
+}
+
+# Roles defined below MUST NOT have any policies attached to them.
+# Those are used in aws-auth config map and are dedicated to interact with EKS cluster via kubeconfig.
+resource "aws_iam_role" "eks_cluster_viewer" {
+  name                 = "EKSClusterViewer"
+  description          = "IAM role used to delegate access to ${var.cluster_name}"
+  permissions_boundary = data.aws_iam_policy.eks_resources_permission_boundary.arn
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        "Effect" : "Allow",
+        "Principal" : {
+          "AWS" : data.aws_iam_user.eks_cluster_viewers[*].arn
+        },
+        "Action" : "sts:AssumeRole",
+        "Condition" : {}
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role" "eks_cluster_admin" {
+  name                 = "EKSClusterAdmin"
+  description          = "IAM role used to delegate access to ${var.cluster_name}"
+  permissions_boundary = data.aws_iam_policy.eks_resources_permission_boundary.arn
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        "Effect" : "Allow",
+        "Principal" : {
+          "AWS" : data.aws_iam_user.eks_cluster_admins[*].arn
+        },
+        "Action" : "sts:AssumeRole",
+        "Condition" : {}
+      }
+    ]
+  })
+}
+
+
+/*
+Copyright 2023 The Kubernetes Authors.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+###############################################
+# IAM
+###############################################
+
+# IAM policy used for the AWS VPC CNI plugin.
+module "vpc_cni_irsa" {
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  version = "5.30.0"
+
+  role_name_prefix              = "VPC-CNI-IRSA"
+  attach_vpc_cni_policy         = true
+  vpc_cni_enable_ipv4           = true
+  vpc_cni_enable_ipv6           = true
+  role_permissions_boundary_arn = data.aws_iam_policy.eks_resources_permission_boundary.arn
+
+  oidc_providers = {
+    main = {
+      provider_arn               = module.eks.oidc_provider_arn
+      namespace_service_accounts = ["kube-system:aws-node"]
+    }
+  }
+
+  tags = local.tags
+}
+
+# IAM policy used for the AWS EBS CSI driver plugin.
+module "ebs_csi_irsa" {
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  version = "5.30.0"
+
+  role_name_prefix              = "EBS-CSI-IRSA"
+  attach_ebs_csi_policy         = true
+  role_permissions_boundary_arn = data.aws_iam_policy.eks_resources_permission_boundary.arn
+
+  oidc_providers = {
+    main = {
+      provider_arn               = module.eks.oidc_provider_arn
+      namespace_service_accounts = ["kube-system:ebs-csi-controller-sa"]
+    }
+  }
+
+  tags = local.tags
+}
+
+# IAM policy used for AWS Load Balancer Controller.
+module "aws_load_balancer_controller_irsa" {
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  version = "5.30.0"
+
+  role_name_prefix                       = "LBCONTROLLER-IRSA"
+  attach_load_balancer_controller_policy = true
+  role_permissions_boundary_arn          = data.aws_iam_policy.eks_resources_permission_boundary.arn
+
+  oidc_providers = {
+    main = {
+      provider_arn               = module.eks.oidc_provider_arn
+      namespace_service_accounts = ["kube-system:aws-load-balancer-controller"]
+    }
+  }
+
+  tags = local.tags
+}
+
+# IAM policy used for Secrets Manager and accessing secrets.
+# Example policy, uncomment and modify as needed.
+module "secrets_manager_irsa" {
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  version = "5.30.0"
+
+  role_name = "SECRETSMANAGER-IRSA"
+  role_policy_arns = {
+    secrets_manager = aws_iam_policy.secretsmanager_read.arn,
+  }
+
+  role_permissions_boundary_arn = data.aws_iam_policy.eks_resources_permission_boundary.arn
+
+  oidc_providers = {
+    main = {
+      provider_arn               = module.eks.oidc_provider_arn
+      namespace_service_accounts = ["external-secrets:external-secrets"]
+    }
+  }
+
+  tags = local.tags
+}
+
+
+/*
+Copyright 2024 The Kubernetes Authors.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+module "karpenter" {
+  source  = "terraform-aws-modules/eks/aws//modules/karpenter"
+  version = "20.20.0"
+
+  cluster_name = module.eks.cluster_name
+
+  create_access_entry             = true
+  create_pod_identity_association = true
+
+  node_iam_role_use_name_prefix = false
+  node_iam_role_name            = "karpenter-nodes"
+  enable_v1_permissions         = true
+  # Allows accessing instances via AWS System Manager (SSM)
+  node_iam_role_additional_policies = {
+    AmazonSSMManagedInstanceCore = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+  }
+
+  queue_name = "karpenter-queue"
+
+  tags = local.tags
+
+}
+
+
+/*
+Copyright 2023 The Kubernetes Authors.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+# AWS Load Balancer Controller (ALB/NLB integration).
+resource "helm_release" "aws_lb_controller" {
+  count = var.deploy_kubernetes_resources ? 1 : 0
+
+  name       = "aws-load-balancer-controller"
+  namespace  = "kube-system"
+  repository = "https://aws.github.io/eks-charts"
+  chart      = "aws-load-balancer-controller"
+  version    = "1.4.8"
+
+  set {
+    name  = "clusterName"
+    value = module.eks.cluster_name
+  }
+
+  set {
+    name  = "serviceAccount.create"
+    value = "true"
+  }
+
+  set {
+    name  = "serviceAccount.name"
+    value = "aws-load-balancer-controller"
+  }
+
+  set {
+    name  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
+    value = module.aws_load_balancer_controller_irsa.iam_role_arn
+  }
+
+  depends_on = [
+    module.eks
+  ]
+}
+
+# AWS Secrets Manager integration
+resource "helm_release" "secrets_store_csi_driver" {
+  count = var.deploy_kubernetes_resources ? 1 : 0
+
+  name       = "secrets-store-csi-driver"
+  namespace  = "kube-system"
+  repository = "https://kubernetes-sigs.github.io/secrets-store-csi-driver/charts"
+  chart      = "secrets-store-csi-driver"
+  version    = "1.3.1"
+
+  depends_on = [
+    module.eks
+  ]
+}
+
+resource "helm_release" "secrets_store_csi_driver_provider_aws" {
+  count = var.deploy_kubernetes_resources ? 1 : 0
+
+  name       = "aws-secrets-manager"
+  namespace  = "kube-system"
+  repository = "https://aws.github.io/secrets-store-csi-driver-provider-aws"
+  chart      = "secrets-store-csi-driver-provider-aws"
+  version    = "0.3.0"
+
+  depends_on = [
+    module.eks
+  ]
+}
+
+
+/*
+Copyright 2023 The Kubernetes Authors.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+locals {
+  account_id = data.aws_caller_identity.current.account_id
+
+  root_account_arn = "arn:aws:iam::${local.account_id}:root"
+
+  sso_admin_arn = one(data.aws_iam_roles.sso_admins.arns)
+
+  configure_prow = var.cluster_name == "prow-build-cluster"
+
+  aws_cli_args = [
+    "eks",
+    "get-token",
+    "--cluster-name",
+    module.eks.cluster_name,
+    "--role-arn",
+    data.aws_iam_role.eks_infra_admin.arn
+  ]
+
+  tags = {
+    Cluster = var.cluster_name
+  }
+
+  node_security_group_tags = {
+    "karpenter.sh/discovery" = var.cluster_name
+  }
+
+  azs = slice(data.aws_availability_zones.available.names, 0, 3)
+
+  default_access_entries = {
+    # Admin entries
+    eks-infra-admin = {
+      kubernetes_groups = [
+        "eks-cluster-admin"
+      ]
+      principal_arn = data.aws_iam_role.eks_infra_admin.arn
+    }
+    eks-cluster-admin = {
+      kubernetes_groups = [
+        "eks-cluster-admin"
+      ]
+      principal_arn = aws_iam_role.eks_cluster_admin.arn
+    }
+
+    # Viewer entries
+    eks-infra-viewer = {
+      kubernetes_groups = [
+        "eks-cluster-viewer"
+      ]
+      principal_arn = data.aws_iam_role.eks_infra_viewer.arn
+    }
+    eks-cluster-viewer = {
+      kubernetes_groups = [
+        "eks-cluster-viewer"
+      ]
+      principal_arn = aws_iam_role.eks_cluster_viewer.arn
+    }
+
+    # Assign the Administrator access to the AdministratorAccess users logging via SSO
+    sso-administrators = {
+      kubernetes_groups = [
+        "eks-cluster-admin"
+      ]
+      principal_arn = local.sso_admin_arn
+    }
+  }
+
+  access_entries = merge(
+    local.default_access_entries,
+    local.configure_prow ? {
+      prow = {
+        kubernetes_groups = [
+          "eks-prow-cluster-admin"
+        ]
+        principal_arn = aws_iam_role.eks_prow_admin[0].arn
+      }
+    } : {}
+  )
+}
+
+
+/*
+Copyright 2023 The Kubernetes Authors.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+resource "aws_acm_certificate" "monitoring_cert" {
+  count = local.configure_prow ? 1 : 0
+
+  domain_name       = "monitoring-eks.prow.k8s.io"
+  validation_method = "DNS"
+
+  tags = local.tags
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+
+/*
+Copyright 2024 The Kubernetes Authors.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+locals {
+  node_group_stable = {
+    name            = "managed-stable"
+    description     = "EKS managed node group called stable used for stateful components"
+    use_name_prefix = true
+
+    cluster_version = var.node_group_version_stable
+
+    taints = var.node_taints_stable
+    labels = var.node_labels_stable
+
+    subnet_ids = module.vpc.public_subnets
+
+    min_size     = var.node_desired_size_stable
+    max_size     = var.node_desired_size_stable
+    desired_size = var.node_desired_size_stable
+
+    iam_role_permissions_boundary = data.aws_iam_policy.eks_resources_permission_boundary.arn
+
+    ami_type                       = "BOTTLEROCKET_x86_64"
+    platform                       = "bottlerocket"
+    use_latest_ami_release_version = true
+
+    bootstrap_extra_args = <<-EOT
+      # Bottlerocket instances don't have SSH installed by default, but
+      # there's the admin container that can be enabled and that comes
+      # with SSH installed and enabled
+      [settings.host-containers.admin]
+      enabled = true
+
+      # Bootstrap the instance using our bootstrap script embeded in a Docker image
+      [settings.bootstrap-containers.bootstrap]
+      source = "public.ecr.aws/q4o2z4d8/k8s-prow-bottlerocket:v0.0.2"
+      mode = "always"
+      essential = true
+
+      [settings.kernel.sysctl]
+      "fs.inotify.max_user_watches" = "1048576"
+      "fs.inotify.max_user_instances" = "8192"
+      "vm.min_free_kbytes" = "540672"
+    EOT
+
+    force_update_version = false
+    update_config = {
+      max_unavailable = var.node_max_unavailable
+    }
+
+    capacity_type  = "ON_DEMAND"
+    instance_types = var.node_instance_types_stable
+
+    ebs_optimized     = true
+    enable_monitoring = true
+
+    enclave_options = {
+      enabled = true
+    }
+
+    timeouts = {
+      update = "180m"
+    }
+
+    tags = merge(
+      local.tags,
+      var.additional_node_group_tags_stable
+    )
+  }
+}
+
+
+/*
+Copyright 2023 The Kubernetes Authors.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+output "cluster_endpoint" {
+  description = "Endpoint for EKS control plane"
+  value       = module.eks.cluster_endpoint
+}
+
+output "eks_cluster_admin_role_arn" {
+  description = "ARN of EKSClusterAdmin role"
+  value       = aws_iam_role.eks_cluster_admin.arn
+}
+
+output "eks_cluster_viewer_role_arn" {
+  description = "ARN of EKSClusterViewer role"
+  value       = aws_iam_role.eks_cluster_viewer.arn
+}
+
+
+/*
+Copyright 2023 The Kubernetes Authors.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+terraform {
+  backend "s3" {}
+
+  required_version = "~> 1.6"
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.100"
+    }
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = "~> 2.31"
+    }
+    helm = {
+      source  = "hashicorp/helm"
+      version = "~> 2.14"
+    }
+  }
+}
+
+provider "aws" {
+  region = var.cluster_region
+
+  assume_role {
+    role_arn     = "arn:aws:iam::${var.aws_account_id}:role/EKSInfraAdmin"
+    session_name = "prow-build-cluster-terraform"
+  }
+}
+
+provider "kubernetes" {
+  host                   = module.eks.cluster_endpoint
+  cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
+  token                  = data.aws_eks_cluster_auth.eks.token
+}
+
+
+data "aws_eks_cluster_auth" "eks" {
+  name = module.eks.cluster_name
+}
+
+provider "helm" {
+  kubernetes {
+    host                   = module.eks.cluster_endpoint
+    cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
+    token                  = data.aws_eks_cluster_auth.eks.token
+  }
+}
+
+
+/*
+Copyright 2023 The Kubernetes Authors.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+# This IAM configuration allows Prow GKE Clusters to assume a role on AWS.
+# Provisioning those resources for canary installation is skipped.
+
+# Recognize federated identities from the prow trusted cluster
+
+resource "aws_iam_openid_connect_provider" "k8s_infra_prow" {
+  count = local.configure_prow ? 1 : 0
+
+  url             = "https://container.googleapis.com/v1/projects/k8s-infra-prow/locations/us-central1/clusters/prow"
+  client_id_list  = ["sts.amazonaws.com"]
+  thumbprint_list = ["08745487e891c19e3078c1f2a07e452950ef36f6"]
+}
+
+resource "aws_iam_openid_connect_provider" "gke_utility_cluster" {
+  url             = "https://container.googleapis.com/v1/projects/k8s-infra-prow/locations/us-central1/clusters/utility"
+  client_id_list  = ["sts.amazonaws.com"]
+  thumbprint_list = ["08745487e891c19e3078c1f2a07e452950ef36f6"]
+}
+
+
+/*
+Copyright 2023 The Kubernetes Authors.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+data "aws_iam_policy_document" "secretsmanager_read" {
+  statement {
+    sid       = "SecretsManagerRead"
+    effect    = "Allow"
+    resources = ["arn:aws:secretsmanager:*:*:secret:*"]
+
+    actions = [
+      "secretsmanager:GetSecretValue",
+      "secretsmanager:DescribeSecret",
+    ]
+  }
+}
+
+resource "aws_iam_policy" "secretsmanager_read" {
+  name   = "secretsmanager_read"
+  path   = "/"
+  policy = data.aws_iam_policy_document.secretsmanager_read.json
+}
+
+
+/*
+Copyright 2023 The Kubernetes Authors.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+variable "eks_cluster_admins" {
+  type        = list(string)
+  nullable    = false
+  description = "List of maintainers that have administrator access to the cluster."
+  default     = []
+}
+
+variable "eks_cluster_viewers" {
+  type        = list(string)
+  nullable    = false
+  description = "List of maintainers that have view access to the cluster."
+  default     = []
+}
+
+# This variable is required in the installation process as Terraform
+# cannot plan Kubernetes resources as a cluster is yet to be created.
+variable "deploy_kubernetes_resources" {
+  type        = bool
+  description = "Deploy Kubernetes resources defined by Terraform."
+  default     = true
+  nullable    = false
+}
+
+# We need this information to be able to assume the role. We can't automatically determine it with caller_identity
+# because that would cause a dependency cycle.
+variable "aws_account_id" {
+  type        = string
+  description = "AWS account ID"
+  default     = ""
+}
+
+variable "vpc_cidr" {
+  type        = string
+  description = "CIDR of the VPC"
+  nullable    = false
+}
+
+variable "vpc_secondary_cidr_blocks" {
+  type        = list(string)
+  description = "Additional CIDRs to attach to the VPC"
+}
+
+variable "vpc_public_subnet" {
+  type        = list(string)
+  description = "Public subnets (one per AZ)"
+}
+
+variable "vpc_private_subnet" {
+  type        = list(string)
+  description = "Private subnets (one per AZ)"
+}
+
+variable "vpc_intra_subnet" {
+  type        = list(string)
+  description = "Intra subnets (one per AZ, subnet without access to external services)"
+}
+
+variable "cluster_name" {
+  type        = string
+  description = "Name of the EKS cluster"
+  nullable    = false
+}
+
+variable "cluster_region" {
+  type        = string
+  description = "AWS region of the EKS cluster"
+  nullable    = false
+}
+
+variable "cluster_version" {
+  type        = string
+  description = "Kubernetes version of the EKS control plane"
+  nullable    = false
+}
+
+variable "node_group_version_stable" {
+  type        = string
+  description = "Kubernetes version of the EKS-managed node group (stable)"
+  nullable    = false
+}
+
+variable "node_instance_types_stable" {
+  type        = list(string)
+  description = "Instance sizes to use for stable EKS node group"
+  nullable    = false
+}
+
+variable "node_volume_size" {
+  type        = number
+  description = "Volume size per node to use for EKS node group"
+  nullable    = false
+}
+
+variable "node_desired_size_stable" {
+  type        = number
+  description = "Desired number of nodes in the stable EKS node group"
+  nullable    = false
+}
+
+variable "node_max_unavailable" {
+  type        = number
+  description = "Maximum unavailable nodes in a node group"
+}
+
+variable "node_taints_build" {
+  type     = list(map(string))
+  default  = []
+  nullable = false
+}
+
+variable "node_taints_stable" {
+  type     = list(map(string))
+  default  = []
+  nullable = false
+}
+
+variable "node_labels_build" {
+  type     = map(string)
+  default  = {}
+  nullable = false
+}
+
+variable "node_labels_stable" {
+  type     = map(string)
+  default  = {}
+  nullable = false
+}
+
+variable "additional_node_group_tags_build" {
+  type     = map(string)
+  default  = {}
+  nullable = false
+}
+
+variable "additional_node_group_tags_stable" {
+  type     = map(string)
+  default  = {}
+  nullable = false
+}
+
+
+/*
+Copyright 2023 The Kubernetes Authors.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+###############################################
+# VPC
+###############################################
+
+# VPC is IPv4/IPv6 Dual-Stack, but our cluster is IPv4 because EKS doesn't
+# support dual-stack yet.
+
+module "vpc" {
+  source  = "terraform-aws-modules/vpc/aws"
+  version = "5.1.0"
+
+  name = "${var.cluster_name}-vpc"
+
+  cidr                  = var.vpc_cidr
+  secondary_cidr_blocks = var.vpc_secondary_cidr_blocks
+
+  azs             = local.azs
+  private_subnets = var.vpc_private_subnet
+  public_subnets  = var.vpc_public_subnet
+
+  # intra_subnets are private subnets without the internet access 
+  # (https://registry.terraform.io/modules/terraform-aws-modules/vpc/aws/latest#private-versus-intra-subnets)
+  intra_subnets = var.vpc_intra_subnet
+
+  # Disable public IPv4 addresses
+  map_public_ip_on_launch = false
+
+  # Enable IPv6
+  enable_ipv6            = true
+  create_egress_only_igw = true
+
+  # Assign IPv6 address on creation to each instance
+  public_subnet_assign_ipv6_address_on_creation  = true
+  private_subnet_assign_ipv6_address_on_creation = true
+  intra_subnet_assign_ipv6_address_on_creation   = true
+
+  # Used for calculating IPv6 CIDR based on the following formula:
+  # cidrsubnet(aws_vpc.this[0].ipv6_cidr_block, 8, var.private_subnet_ipv6_prefixes[count.index])
+  private_subnet_ipv6_prefixes = [0, 1, 2]
+  public_subnet_ipv6_prefixes  = [3, 4, 5]
+  intra_subnet_ipv6_prefixes   = [6, 7, 8]
+
+  # NAT Gateway allows connection to external services (e.g. Internet).
+  enable_nat_gateway   = true
+  single_nat_gateway   = true
+  enable_dns_hostnames = true
+
+  # Enable VPC Flow Logs
+  enable_flow_log                      = true
+  create_flow_log_cloudwatch_iam_role  = true
+  create_flow_log_cloudwatch_log_group = true
+  flow_log_max_aggregation_interval    = 60
+  flow_log_traffic_type                = "REJECT"
+
+  # Tags to allow ELB (Elastic Load Balancing).
+  public_subnet_tags = {
+    "kubernetes.io/role/elb"                    = 1
+    "kubernetes.io/cluster/${var.cluster_name}" = "owned"
+    "karpenter.sh/discovery"                    = var.cluster_name
+  }
+
+  private_subnet_tags = {
+    "kubernetes.io/role/internal-elb"           = 1
+    "kubernetes.io/cluster/${var.cluster_name}" = "owned"
+  }
+
+  tags = local.tags
+}

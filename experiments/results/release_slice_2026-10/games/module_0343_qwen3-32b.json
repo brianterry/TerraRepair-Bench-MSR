@@ -1,0 +1,131 @@
+{
+  "module_id": "module_0343",
+  "model_id": "qwen3-32b",
+  "findings_before": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_116",
+      "title": "Ensure that AWS Lambda function is configured for a Dead Letter Queue(DLQ)",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.codebuild_trigger",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/lambda.tf",
+      "start_line": 6,
+      "end_line": 23
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_272",
+      "title": "Ensure AWS Lambda function is configured to validate code-signing",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.codebuild_trigger",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/lambda.tf",
+      "start_line": 6,
+      "end_line": 23
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_115",
+      "title": "Ensure that AWS Lambda function is configured for function-level concurrent execution limit",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.codebuild_trigger",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/lambda.tf",
+      "start_line": 6,
+      "end_line": 23
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_50",
+      "title": "X-Ray tracing is enabled for Lambda",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.codebuild_trigger",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/lambda.tf",
+      "start_line": 6,
+      "end_line": 23
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0096",
+      "title": "Unencrypted SQS queue.",
+      "severity": "HIGH",
+      "resource_name": "aws_sqs_queue.lambda_dlq",
+      "resource_type": "aws_sqs_queue",
+      "file_path": "main.tf",
+      "start_line": 167,
+      "end_line": 169
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_116",
+      "title": "Ensure that AWS Lambda function is configured for a Dead Letter Queue(DLQ)",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.codebuild_trigger",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/main.tf",
+      "start_line": 141,
+      "end_line": 165
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_272",
+      "title": "Ensure AWS Lambda function is configured to validate code-signing",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.codebuild_trigger",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/main.tf",
+      "start_line": 141,
+      "end_line": 165
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_27",
+      "title": "Ensure all data stored in the SQS queue is encrypted",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_sqs_queue.lambda_dlq",
+      "resource_type": "aws_sqs_queue",
+      "file_path": "/main.tf",
+      "start_line": 167,
+      "end_line": 169
+    }
+  ],
+  "target_count": 4,
+  "resolved_count": 2,
+  "introduced_count": 2,
+  "unchanged_count": 2,
+  "repair_success_rate": 0.5,
+  "regression_rate": 0.5,
+  "net_delta": 0,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 2,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 2,
+      "introduced": 0,
+      "unchanged": 2
+    }
+  },
+  "repair_cost_usd": 0.0019664,
+  "repair_tokens": 4916,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0343_qwen3-32b.repaired.tf",
+  "raw_response_path": "module_0343_qwen3-32b.raw.txt",
+  "repaired_code_sha256": "5f4460c8d925987c1b5005b271d9c5343960c3fcfaa4561781e31b36b681a1de"
+}

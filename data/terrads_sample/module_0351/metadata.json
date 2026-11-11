@@ -1,0 +1,95 @@
+{
+  "findings_count": 15,
+  "findings": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_186",
+      "title": "",
+      "resource_name": "aws_s3_bucket_object.ignition_etcd[0]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_186",
+      "title": "",
+      "resource_name": "aws_s3_bucket_object.ignition_etcd[1]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_186",
+      "title": "",
+      "resource_name": "aws_s3_bucket_object.ignition_etcd[2]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_290",
+      "title": "",
+      "resource_name": "aws_iam_role_policy.etcd"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_355",
+      "title": "",
+      "resource_name": "aws_iam_role_policy.etcd"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_79",
+      "title": "",
+      "resource_name": "aws_instance.etcd_node[0]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_126",
+      "title": "",
+      "resource_name": "aws_instance.etcd_node[0]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_135",
+      "title": "",
+      "resource_name": "aws_instance.etcd_node[0]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_79",
+      "title": "",
+      "resource_name": "aws_instance.etcd_node[1]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_126",
+      "title": "",
+      "resource_name": "aws_instance.etcd_node[1]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_135",
+      "title": "",
+      "resource_name": "aws_instance.etcd_node[1]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_79",
+      "title": "",
+      "resource_name": "aws_instance.etcd_node[2]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_126",
+      "title": "",
+      "resource_name": "aws_instance.etcd_node[2]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_135",
+      "title": "",
+      "resource_name": "aws_instance.etcd_node[2]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_386",
+      "title": "",
+      "resource_name": "aws_ami.coreos_ami"
+    }
+  ]
+}

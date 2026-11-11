@@ -1,0 +1,527 @@
+{
+  "module_id": "module_0130",
+  "model_id": "claude-sonnet-4-5",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0053",
+      "title": "Load balancer is exposed to the internet.",
+      "severity": "HIGH",
+      "resource_name": "aws_elb.blue",
+      "resource_type": "aws_elb",
+      "file_path": "nodejs.tf",
+      "start_line": 80,
+      "end_line": 112
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0053",
+      "title": "Load balancer is exposed to the internet.",
+      "severity": "HIGH",
+      "resource_name": "aws_elb.green",
+      "resource_type": "aws_elb",
+      "file_path": "nodejs.tf",
+      "start_line": 114,
+      "end_line": 146
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "aws_security_group.elb",
+      "resource_type": "aws_security_group",
+      "file_path": "nodejs.tf",
+      "start_line": 60,
+      "end_line": 60
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0124",
+      "title": "Missing description for security group rule.",
+      "severity": "LOW",
+      "resource_name": "aws_security_group.elb",
+      "resource_type": "aws_security_group",
+      "file_path": "nodejs.tf",
+      "start_line": 42,
+      "end_line": 47
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_260",
+      "title": "Ensure no security groups allow ingress from 0.0.0.0:0 to port 80",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group.elb",
+      "resource_type": "aws_security_group",
+      "file_path": "/nodejs.tf",
+      "start_line": 34,
+      "end_line": 62
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "Ensure every security group and rule has a description",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group.elb",
+      "resource_type": "aws_security_group",
+      "file_path": "/nodejs.tf",
+      "start_line": 34,
+      "end_line": 62
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_376",
+      "title": "Ensure AWS Elastic Load Balancer listener uses TLS/SSL",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_elb.blue",
+      "resource_type": "aws_elb",
+      "file_path": "/nodejs.tf",
+      "start_line": 80,
+      "end_line": 112
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_127",
+      "title": "Ensure that Elastic Load Balancer(s) uses SSL certificates provided by AWS Certificate Manager",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_elb.blue",
+      "resource_type": "aws_elb",
+      "file_path": "/nodejs.tf",
+      "start_line": 80,
+      "end_line": 112
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_92",
+      "title": "Ensure the ELB has access logging enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_elb.blue",
+      "resource_type": "aws_elb",
+      "file_path": "/nodejs.tf",
+      "start_line": 80,
+      "end_line": 112
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_376",
+      "title": "Ensure AWS Elastic Load Balancer listener uses TLS/SSL",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_elb.green",
+      "resource_type": "aws_elb",
+      "file_path": "/nodejs.tf",
+      "start_line": 114,
+      "end_line": 146
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_127",
+      "title": "Ensure that Elastic Load Balancer(s) uses SSL certificates provided by AWS Certificate Manager",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_elb.green",
+      "resource_type": "aws_elb",
+      "file_path": "/nodejs.tf",
+      "start_line": 114,
+      "end_line": 146
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_92",
+      "title": "Ensure the ELB has access logging enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_elb.green",
+      "resource_type": "aws_elb",
+      "file_path": "/nodejs.tf",
+      "start_line": 114,
+      "end_line": 146
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0086",
+      "title": "S3 Access block should block public ACL",
+      "severity": "HIGH",
+      "resource_name": "aws_s3_bucket.elb_logs_blue",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 75,
+      "end_line": 77
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0086",
+      "title": "S3 Access block should block public ACL",
+      "severity": "HIGH",
+      "resource_name": "aws_s3_bucket.elb_logs_green",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 79,
+      "end_line": 81
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0087",
+      "title": "S3 Access block should block public policy",
+      "severity": "HIGH",
+      "resource_name": "aws_s3_bucket.elb_logs_blue",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 75,
+      "end_line": 77
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0087",
+      "title": "S3 Access block should block public policy",
+      "severity": "HIGH",
+      "resource_name": "aws_s3_bucket.elb_logs_green",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 79,
+      "end_line": 81
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "aws_s3_bucket.elb_logs_blue",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 75,
+      "end_line": 77
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "aws_s3_bucket.elb_logs_green",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 79,
+      "end_line": 81
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0090",
+      "title": "S3 Data should be versioned",
+      "severity": "MEDIUM",
+      "resource_name": "aws_s3_bucket.elb_logs_blue",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 75,
+      "end_line": 77
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0090",
+      "title": "S3 Data should be versioned",
+      "severity": "MEDIUM",
+      "resource_name": "aws_s3_bucket.elb_logs_green",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 79,
+      "end_line": 81
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0091",
+      "title": "S3 Access Block should Ignore Public ACL",
+      "severity": "HIGH",
+      "resource_name": "aws_s3_bucket.elb_logs_blue",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 75,
+      "end_line": 77
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0091",
+      "title": "S3 Access Block should Ignore Public ACL",
+      "severity": "HIGH",
+      "resource_name": "aws_s3_bucket.elb_logs_green",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 79,
+      "end_line": 81
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0093",
+      "title": "S3 Access block should restrict public bucket to limit access",
+      "severity": "HIGH",
+      "resource_name": "aws_s3_bucket.elb_logs_blue",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 75,
+      "end_line": 77
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0093",
+      "title": "S3 Access block should restrict public bucket to limit access",
+      "severity": "HIGH",
+      "resource_name": "aws_s3_bucket.elb_logs_green",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 79,
+      "end_line": 81
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0094",
+      "title": "S3 buckets should each define an aws_s3_bucket_public_access_block",
+      "severity": "LOW",
+      "resource_name": "aws_s3_bucket.elb_logs_blue",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 75,
+      "end_line": 77
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0094",
+      "title": "S3 buckets should each define an aws_s3_bucket_public_access_block",
+      "severity": "LOW",
+      "resource_name": "aws_s3_bucket.elb_logs_green",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 79,
+      "end_line": 81
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0132",
+      "title": "S3 encryption should use Customer Managed Keys",
+      "severity": "HIGH",
+      "resource_name": "aws_s3_bucket.elb_logs_blue",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 75,
+      "end_line": 77
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0132",
+      "title": "S3 encryption should use Customer Managed Keys",
+      "severity": "HIGH",
+      "resource_name": "aws_s3_bucket.elb_logs_green",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 79,
+      "end_line": 81
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_376",
+      "title": "Ensure AWS Elastic Load Balancer listener uses TLS/SSL",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_elb.blue",
+      "resource_type": "aws_elb",
+      "file_path": "/main.tf",
+      "start_line": 83,
+      "end_line": 114
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_376",
+      "title": "Ensure AWS Elastic Load Balancer listener uses TLS/SSL",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_elb.green",
+      "resource_type": "aws_elb",
+      "file_path": "/main.tf",
+      "start_line": 116,
+      "end_line": 147
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_62",
+      "title": "Ensure S3 buckets should have event notifications enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.elb_logs_blue",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 75,
+      "end_line": 77
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_62",
+      "title": "Ensure S3 buckets should have event notifications enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.elb_logs_green",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 79,
+      "end_line": 81
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_6",
+      "title": "Ensure that S3 bucket has a Public Access block",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.elb_logs_blue",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 75,
+      "end_line": 77
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_6",
+      "title": "Ensure that S3 bucket has a Public Access block",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.elb_logs_green",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 79,
+      "end_line": 81
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_21",
+      "title": "Ensure all data stored in the S3 bucket have versioning enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.elb_logs_blue",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 75,
+      "end_line": 77
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_21",
+      "title": "Ensure all data stored in the S3 bucket have versioning enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.elb_logs_green",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 79,
+      "end_line": 81
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_145",
+      "title": "Ensure that S3 buckets are encrypted with KMS by default",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.elb_logs_blue",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 75,
+      "end_line": 77
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_145",
+      "title": "Ensure that S3 buckets are encrypted with KMS by default",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.elb_logs_green",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 79,
+      "end_line": 81
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_18",
+      "title": "Ensure the S3 bucket has access logging enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.elb_logs_blue",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 75,
+      "end_line": 77
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_18",
+      "title": "Ensure the S3 bucket has access logging enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.elb_logs_green",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 79,
+      "end_line": 81
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_61",
+      "title": "Ensure that an S3 bucket has a lifecycle configuration",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.elb_logs_blue",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 75,
+      "end_line": 77
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_61",
+      "title": "Ensure that an S3 bucket has a lifecycle configuration",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.elb_logs_green",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 79,
+      "end_line": 81
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_144",
+      "title": "Ensure that S3 bucket has cross-region replication enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.elb_logs_blue",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 75,
+      "end_line": 77
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_144",
+      "title": "Ensure that S3 bucket has cross-region replication enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.elb_logs_green",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 79,
+      "end_line": 81
+    }
+  ],
+  "target_count": 12,
+  "resolved_count": 10,
+  "introduced_count": 30,
+  "unchanged_count": 2,
+  "repair_success_rate": 0.8333333333333334,
+  "regression_rate": 2.5,
+  "net_delta": -20,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 2,
+      "introduced": 12,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 2,
+      "introduced": 6,
+      "unchanged": 2
+    },
+    "observability": {
+      "resolved": 2,
+      "introduced": 6,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 4,
+      "introduced": 6,
+      "unchanged": 0
+    }
+  },
+  "repair_cost_usd": 0.051492,
+  "repair_tokens": 6204,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0130_claude-sonnet-4-5.repaired.tf",
+  "raw_response_path": "module_0130_claude-sonnet-4-5.raw.txt",
+  "repaired_code_sha256": "884c675d771ba420f520b31e794d59ea1d8daee928d1610554485d5a7bfd8b88"
+}

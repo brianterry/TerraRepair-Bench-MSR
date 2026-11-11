@@ -1,0 +1,109 @@
+{
+  "module_id": "module_0150",
+  "model_id": "deepseek-v3-2",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0017",
+      "title": "CloudWatch log groups should be encrypted using CMK",
+      "severity": "LOW",
+      "resource_name": "aws_cloudwatch_log_group.default_vpc_flow_logs[0]",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "main.tf",
+      "start_line": 21,
+      "end_line": 28
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0101",
+      "title": "AWS best practice to not use the default VPC for workflows",
+      "severity": "HIGH",
+      "resource_name": "aws_default_vpc.default",
+      "resource_type": "aws_default_vpc",
+      "file_path": "main.tf",
+      "start_line": 46,
+      "end_line": 51
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_158",
+      "title": "Ensure that CloudWatch Log Group is encrypted by KMS",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.default_vpc_flow_logs[0]",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/main.tf",
+      "start_line": 21,
+      "end_line": 28
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_148",
+      "title": "Ensure no default VPC is planned to be provisioned",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_default_vpc.default",
+      "resource_type": "aws_default_vpc",
+      "file_path": "/main.tf",
+      "start_line": 46,
+      "end_line": 51
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0017",
+      "title": "CloudWatch log groups should be encrypted using CMK",
+      "severity": "LOW",
+      "resource_name": "aws_cloudwatch_log_group.default_vpc_flow_logs[0]",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "main.tf",
+      "start_line": 26,
+      "end_line": 26
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_158",
+      "title": "Ensure that CloudWatch Log Group is encrypted by KMS",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.default_vpc_flow_logs[0]",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/main.tf",
+      "start_line": 21,
+      "end_line": 29
+    }
+  ],
+  "target_count": 4,
+  "resolved_count": 2,
+  "introduced_count": 0,
+  "unchanged_count": 2,
+  "repair_success_rate": 0.5,
+  "regression_rate": 0.0,
+  "net_delta": 2,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 2
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 2,
+      "introduced": 0,
+      "unchanged": 0
+    }
+  },
+  "repair_cost_usd": 0.00521552,
+  "repair_tokens": 3680,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0150_deepseek-v3-2.repaired.tf",
+  "raw_response_path": "module_0150_deepseek-v3-2.raw.txt",
+  "repaired_code_sha256": "ff67ab5489e2853eed7b3c864342e92c983158cfa06a4d49362fb7a66b3c91aa"
+}

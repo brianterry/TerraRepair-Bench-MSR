@@ -1,0 +1,131 @@
+{
+  "module_id": "module_0403",
+  "model_id": "qwen3-32b",
+  "findings_before": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "label",
+      "resource_type": "label",
+      "file_path": "/main.tf",
+      "start_line": 1,
+      "end_line": 7
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "kops_metadata",
+      "resource_type": "kops_metadata",
+      "file_path": "/main.tf",
+      "start_line": 9,
+      "end_line": 12
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_34",
+      "title": "AWS SSM Parameter should be Encrypted",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_ssm_parameter.aws_metrics_iam_role",
+      "resource_type": "aws_ssm_parameter",
+      "file_path": "/main.tf",
+      "start_line": 117,
+      "end_line": 123
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_34",
+      "title": "AWS SSM Parameter should be Encrypted",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_ssm_parameter.aws_metrics_iam_namespace[0]",
+      "resource_type": "aws_ssm_parameter",
+      "file_path": "/main.tf",
+      "start_line": 125,
+      "end_line": 132
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "label",
+      "resource_type": "label",
+      "file_path": "/main.tf",
+      "start_line": 1,
+      "end_line": 7
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "kops_metadata",
+      "resource_type": "kops_metadata",
+      "file_path": "/main.tf",
+      "start_line": 9,
+      "end_line": 12
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_34",
+      "title": "AWS SSM Parameter should be Encrypted",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_ssm_parameter.aws_metrics_iam_role",
+      "resource_type": "aws_ssm_parameter",
+      "file_path": "/main.tf",
+      "start_line": 117,
+      "end_line": 124
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_34",
+      "title": "AWS SSM Parameter should be Encrypted",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_ssm_parameter.aws_metrics_iam_namespace[0]",
+      "resource_type": "aws_ssm_parameter",
+      "file_path": "/main.tf",
+      "start_line": 126,
+      "end_line": 134
+    }
+  ],
+  "target_count": 4,
+  "resolved_count": 0,
+  "introduced_count": 0,
+  "unchanged_count": 4,
+  "repair_success_rate": 0.0,
+  "regression_rate": 0.0,
+  "net_delta": 0,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 2
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 2
+    }
+  },
+  "repair_cost_usd": 0.0013492,
+  "repair_tokens": 3373,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0403_qwen3-32b.repaired.tf",
+  "raw_response_path": "module_0403_qwen3-32b.raw.txt",
+  "repaired_code_sha256": "71b04a683d02fda816cd81c87738f956ffa1f48ab742037045e56719f38c94b9"
+}

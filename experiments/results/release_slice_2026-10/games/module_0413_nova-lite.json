@@ -1,0 +1,98 @@
+{
+  "module_id": "module_0413",
+  "model_id": "nova-lite",
+  "findings_before": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "this",
+      "resource_type": "this",
+      "file_path": "/context.tf",
+      "start_line": 23,
+      "end_line": 46
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_356",
+      "title": "Ensure no IAM policies documents allow \"*\" as a statement's resource for restrictable actions",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.support_access_trusted_advisor",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/policy-support.tf",
+      "start_line": 16,
+      "end_line": 30
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "sso",
+      "resource_type": "sso",
+      "file_path": "/remote-state.tf",
+      "start_line": 1,
+      "end_line": 15
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "this",
+      "resource_type": "this",
+      "file_path": "/main.tf",
+      "start_line": 23,
+      "end_line": 46
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "sso",
+      "resource_type": "sso",
+      "file_path": "/main.tf",
+      "start_line": 537,
+      "end_line": 551
+    }
+  ],
+  "target_count": 3,
+  "resolved_count": 1,
+  "introduced_count": 0,
+  "unchanged_count": 2,
+  "repair_success_rate": 0.3333333333333333,
+  "regression_rate": 0.0,
+  "net_delta": 1,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 1,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 2
+    }
+  },
+  "repair_cost_usd": 0.0018437000000000002,
+  "repair_tokens": 12369,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0413_nova-lite.repaired.tf",
+  "raw_response_path": "module_0413_nova-lite.raw.txt",
+  "repaired_code_sha256": "e1774b988459b9e06165ef811fbac206ced1c9baa44ba8b2526eaf89607ff5fe"
+}

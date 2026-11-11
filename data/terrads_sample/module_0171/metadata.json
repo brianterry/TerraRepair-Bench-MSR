@@ -1,0 +1,53 @@
+{
+  "findings_count": 8,
+  "findings": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_290",
+      "title": "",
+      "resource_name": "aws_iam_policy.ClusterAutoScaler"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_355",
+      "title": "",
+      "resource_name": "aws_iam_policy.ClusterAutoScaler"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_158",
+      "title": "",
+      "resource_name": "aws_cloudwatch_log_group.eks"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "",
+      "resource_name": "aws_security_group.eks_master"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_39",
+      "title": "",
+      "resource_name": "aws_eks_cluster.eks-cluster"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_58",
+      "title": "",
+      "resource_name": "aws_eks_cluster.eks-cluster"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_38",
+      "title": "",
+      "resource_name": "aws_eks_cluster.eks-cluster"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_37",
+      "title": "",
+      "resource_name": "aws_eks_cluster.eks-cluster"
+    }
+  ]
+}

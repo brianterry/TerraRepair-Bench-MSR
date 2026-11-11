@@ -1,0 +1,186 @@
+{
+  "module_id": "module_0390",
+  "model_id": "deepseek-v3-2",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0028",
+      "title": "aws_instance should activate session tokens for Instance Metadata Service.",
+      "severity": "HIGH",
+      "resource_name": "aws_instance.huoxian_terraform_goat_instance",
+      "resource_type": "aws_instance",
+      "file_path": "main.tf",
+      "start_line": 5,
+      "end_line": 30
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "aws_security_group.huoxian_terraform_goat_security_group",
+      "resource_type": "aws_security_group",
+      "file_path": "main.tf",
+      "start_line": 47,
+      "end_line": 47
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0124",
+      "title": "Missing description for security group rule.",
+      "severity": "LOW",
+      "resource_name": "aws_security_group.huoxian_terraform_goat_security_group",
+      "resource_type": "aws_security_group",
+      "file_path": "main.tf",
+      "start_line": 43,
+      "end_line": 49
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0131",
+      "title": "Instance with unencrypted block device.",
+      "severity": "HIGH",
+      "resource_name": "aws_instance.huoxian_terraform_goat_instance",
+      "resource_type": "aws_instance",
+      "file_path": "main.tf",
+      "start_line": 5,
+      "end_line": 30
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_135",
+      "title": "Ensure that EC2 is EBS optimized",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_instance.huoxian_terraform_goat_instance",
+      "resource_type": "aws_instance",
+      "file_path": "/main.tf",
+      "start_line": 5,
+      "end_line": 30
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_88",
+      "title": "EC2 instance should not have public IP.",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_instance.huoxian_terraform_goat_instance",
+      "resource_type": "aws_instance",
+      "file_path": "/main.tf",
+      "start_line": 5,
+      "end_line": 30
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_79",
+      "title": "Ensure Instance Metadata Service Version 1 is not enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_instance.huoxian_terraform_goat_instance",
+      "resource_type": "aws_instance",
+      "file_path": "/main.tf",
+      "start_line": 5,
+      "end_line": 30
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_8",
+      "title": "Ensure all data stored in the Launch configuration or instance Elastic Blocks Store is securely encrypted",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_instance.huoxian_terraform_goat_instance",
+      "resource_type": "aws_instance",
+      "file_path": "/main.tf",
+      "start_line": 5,
+      "end_line": 30
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_126",
+      "title": "Ensure that detailed monitoring is enabled for EC2 instances",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_instance.huoxian_terraform_goat_instance",
+      "resource_type": "aws_instance",
+      "file_path": "/main.tf",
+      "start_line": 5,
+      "end_line": 30
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_382",
+      "title": "Ensure no security groups allow egress from 0.0.0.0:0 to port -1",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group.huoxian_terraform_goat_security_group",
+      "resource_type": "aws_security_group",
+      "file_path": "/main.tf",
+      "start_line": 32,
+      "end_line": 50
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "Ensure every security group and rule has a description",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group.huoxian_terraform_goat_security_group",
+      "resource_type": "aws_security_group",
+      "file_path": "/main.tf",
+      "start_line": 32,
+      "end_line": 50
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "aws_security_group.huoxian_terraform_goat_security_group",
+      "resource_type": "aws_security_group",
+      "file_path": "main.tf",
+      "start_line": 60,
+      "end_line": 60
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_382",
+      "title": "Ensure no security groups allow egress from 0.0.0.0:0 to port -1",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group.huoxian_terraform_goat_security_group",
+      "resource_type": "aws_security_group",
+      "file_path": "/main.tf",
+      "start_line": 44,
+      "end_line": 63
+    }
+  ],
+  "target_count": 11,
+  "resolved_count": 9,
+  "introduced_count": 0,
+  "unchanged_count": 2,
+  "repair_success_rate": 0.8181818181818182,
+  "regression_rate": 0.0,
+  "net_delta": 9,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 1,
+      "introduced": 0,
+      "unchanged": 2
+    },
+    "data_protection": {
+      "resolved": 3,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 1,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 4,
+      "introduced": 0,
+      "unchanged": 0
+    }
+  },
+  "repair_cost_usd": 0.0032241800000000005,
+  "repair_tokens": 2515,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0390_deepseek-v3-2.repaired.tf",
+  "raw_response_path": "module_0390_deepseek-v3-2.raw.txt",
+  "repaired_code_sha256": "2799dae105722243b8909a42089eaeec33d9119aa46f9ae213c927a9024cd093"
+}

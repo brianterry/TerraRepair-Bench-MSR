@@ -1,0 +1,219 @@
+{
+  "module_id": "module_0445",
+  "model_id": "llama-3-3-70b",
+  "findings_before": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "this",
+      "resource_type": "this",
+      "file_path": "/context.tf",
+      "start_line": 23,
+      "end_line": 46
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "iam_label",
+      "resource_type": "iam_label",
+      "file_path": "/iam.tf",
+      "start_line": 1,
+      "end_line": 8
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "security_group",
+      "resource_type": "security_group",
+      "file_path": "/main.tf",
+      "start_line": 77,
+      "end_line": 87
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "autoscale_group",
+      "resource_type": "autoscale_group",
+      "file_path": "/main.tf",
+      "start_line": 89,
+      "end_line": 127
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "account_map",
+      "resource_type": "account_map",
+      "file_path": "/remote-state.tf",
+      "start_line": 1,
+      "end_line": 11
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "ecr",
+      "resource_type": "ecr",
+      "file_path": "/remote-state.tf",
+      "start_line": 13,
+      "end_line": 23
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "vpc",
+      "resource_type": "vpc",
+      "file_path": "/remote-state.tf",
+      "start_line": 25,
+      "end_line": 32
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "spaces",
+      "resource_type": "spaces",
+      "file_path": "/remote-state.tf",
+      "start_line": 34,
+      "end_line": 44
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "this",
+      "resource_type": "this",
+      "file_path": "/main.tf",
+      "start_line": 1,
+      "end_line": 24
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "iam_label",
+      "resource_type": "iam_label",
+      "file_path": "/main.tf",
+      "start_line": 287,
+      "end_line": 294
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "security_group",
+      "resource_type": "security_group",
+      "file_path": "/main.tf",
+      "start_line": 454,
+      "end_line": 464
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "autoscale_group",
+      "resource_type": "autoscale_group",
+      "file_path": "/main.tf",
+      "start_line": 466,
+      "end_line": 501
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "account_map",
+      "resource_type": "account_map",
+      "file_path": "/main.tf",
+      "start_line": 617,
+      "end_line": 627
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "ecr",
+      "resource_type": "ecr",
+      "file_path": "/main.tf",
+      "start_line": 629,
+      "end_line": 639
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "vpc",
+      "resource_type": "vpc",
+      "file_path": "/main.tf",
+      "start_line": 641,
+      "end_line": 648
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "spaces",
+      "resource_type": "spaces",
+      "file_path": "/main.tf",
+      "start_line": 650,
+      "end_line": 660
+    }
+  ],
+  "target_count": 8,
+  "resolved_count": 0,
+  "introduced_count": 0,
+  "unchanged_count": 8,
+  "repair_success_rate": 0.0,
+  "regression_rate": 0.0,
+  "net_delta": 0,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 8
+    }
+  },
+  "repair_cost_usd": 0.0134752,
+  "repair_tokens": 16844,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0445_llama-3-3-70b.repaired.tf",
+  "raw_response_path": "module_0445_llama-3-3-70b.raw.txt",
+  "repaired_code_sha256": "5d82ba1ed99ddc4d174cc658be95f3f00bfa129a64955b55fa59ad17c35a3d7d"
+}

@@ -1,0 +1,109 @@
+{
+  "module_id": "module_0022",
+  "model_id": "claude-sonnet-4-5",
+  "findings_before": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_111",
+      "title": "Ensure IAM policies does not allow write access without constraints",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.ec2_admin_permissions",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/main.tf",
+      "start_line": 67,
+      "end_line": 73
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_356",
+      "title": "Ensure no IAM policies documents allow \"*\" as a statement's resource for restrictable actions",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.ec2_admin_permissions",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/main.tf",
+      "start_line": 67,
+      "end_line": 73
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_109",
+      "title": "Ensure IAM policies does not allow permissions management / resource exposure without constraints",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.ec2_admin_permissions",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/main.tf",
+      "start_line": 67,
+      "end_line": 73
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_107",
+      "title": "Ensure IAM policies does not allow credentials exposure",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.ec2_admin_permissions",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/main.tf",
+      "start_line": 67,
+      "end_line": 73
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_356",
+      "title": "Ensure no IAM policies documents allow \"*\" as a statement's resource for restrictable actions",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.ec2_admin_permissions",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/main.tf",
+      "start_line": 59,
+      "end_line": 70
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_107",
+      "title": "Ensure IAM policies does not allow credentials exposure",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.ec2_admin_permissions",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/main.tf",
+      "start_line": 59,
+      "end_line": 70
+    }
+  ],
+  "target_count": 4,
+  "resolved_count": 2,
+  "introduced_count": 0,
+  "unchanged_count": 2,
+  "repair_success_rate": 0.5,
+  "regression_rate": 0.0,
+  "net_delta": 2,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 2,
+      "introduced": 0,
+      "unchanged": 2
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    }
+  },
+  "repair_cost_usd": 0.017508,
+  "repair_tokens": 2348,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0022_claude-sonnet-4-5.repaired.tf",
+  "raw_response_path": "module_0022_claude-sonnet-4-5.raw.txt",
+  "repaired_code_sha256": "bd169740d2b7531ee249709b6efc37bcdd4f4538ee7dfd71001149e10ee5db0b"
+}

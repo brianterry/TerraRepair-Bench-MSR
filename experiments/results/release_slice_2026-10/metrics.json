@@ -1,0 +1,121 @@
+{
+  "ts": "2026-10-29T03:30:24.984369+00:00",
+  "done": 2620,
+  "total": 2620,
+  "pct": 100.0,
+  "elapsed_sec": 44479.3,
+  "games_per_min": 3.53,
+  "events": {
+    "scored": 2614,
+    "scored_hcl_valid": 2420,
+    "scored_hcl_invalid": 194,
+    "throttled": 4,
+    "timed_out": 2,
+    "scan_failed": 0,
+    "resumed": 0,
+    "size_driven": 8
+  },
+  "total_cost_usd": 126.4531,
+  "by_model": {
+    "claude-sonnet-4-5": {
+      "scored": 262,
+      "hcl_valid": 259,
+      "throttled": 0,
+      "timed_out": 0,
+      "scan_failed": 0,
+      "resumed": 0,
+      "size_driven": 1,
+      "cost_usd": 30.2352
+    },
+    "nova-pro": {
+      "scored": 262,
+      "hcl_valid": 236,
+      "throttled": 0,
+      "timed_out": 0,
+      "scan_failed": 0,
+      "resumed": 0,
+      "size_driven": 0,
+      "cost_usd": 2.7472
+    },
+    "nova-lite": {
+      "scored": 262,
+      "hcl_valid": 217,
+      "throttled": 0,
+      "timed_out": 0,
+      "scan_failed": 0,
+      "resumed": 0,
+      "size_driven": 1,
+      "cost_usd": 0.4137
+    },
+    "llama-3-3-70b": {
+      "scored": 262,
+      "hcl_valid": 235,
+      "throttled": 0,
+      "timed_out": 0,
+      "scan_failed": 0,
+      "resumed": 0,
+      "size_driven": 0,
+      "cost_usd": 1.9596
+    },
+    "deepseek-r1": {
+      "scored": 262,
+      "hcl_valid": 259,
+      "throttled": 0,
+      "timed_out": 0,
+      "scan_failed": 0,
+      "resumed": 0,
+      "size_driven": 1,
+      "cost_usd": 9.5837
+    },
+    "qwen3-32b": {
+      "scored": 262,
+      "hcl_valid": 242,
+      "throttled": 0,
+      "timed_out": 0,
+      "scan_failed": 0,
+      "resumed": 0,
+      "size_driven": 1,
+      "cost_usd": 0.8234
+    },
+    "claude-sonnet-5": {
+      "scored": 258,
+      "hcl_valid": 245,
+      "throttled": 4,
+      "timed_out": 0,
+      "scan_failed": 0,
+      "resumed": 0,
+      "size_driven": 1,
+      "cost_usd": 37.451
+    },
+    "deepseek-v3-2": {
+      "scored": 262,
+      "hcl_valid": 247,
+      "throttled": 0,
+      "timed_out": 0,
+      "scan_failed": 0,
+      "resumed": 0,
+      "size_driven": 1,
+      "cost_usd": 3.9326
+    },
+    "kimi-k2-5": {
+      "scored": 262,
+      "hcl_valid": 249,
+      "throttled": 0,
+      "timed_out": 0,
+      "scan_failed": 0,
+      "resumed": 0,
+      "size_driven": 1,
+      "cost_usd": 3.9633
+    },
+    "grok-4-6": {
+      "scored": 260,
+      "hcl_valid": 231,
+      "throttled": 0,
+      "timed_out": 2,
+      "scan_failed": 0,
+      "resumed": 0,
+      "size_driven": 1,
+      "cost_usd": 35.3435
+    }
+  }
+}

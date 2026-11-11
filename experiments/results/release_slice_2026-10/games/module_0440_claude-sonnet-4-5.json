@@ -1,0 +1,131 @@
+{
+  "module_id": "module_0440",
+  "model_id": "claude-sonnet-4-5",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0342",
+      "title": "IAM Pass Role Filtering",
+      "severity": "MEDIUM",
+      "resource_name": "data.aws_iam_policy_document.eventbridge_policy[0]",
+      "resource_type": "data",
+      "file_path": "eventbridge.tf",
+      "start_line": 29,
+      "end_line": 47
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "this",
+      "resource_type": "this",
+      "file_path": "/context.tf",
+      "start_line": 23,
+      "end_line": 46
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "eventbridge_label",
+      "resource_type": "eventbridge_label",
+      "file_path": "/eventbridge.tf",
+      "start_line": 5,
+      "end_line": 14
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "ssm_document_label",
+      "resource_type": "ssm_document_label",
+      "file_path": "/ssm.tf",
+      "start_line": 6,
+      "end_line": 15
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0342",
+      "title": "IAM Pass Role Filtering",
+      "severity": "MEDIUM",
+      "resource_name": "data.aws_iam_policy_document.eventbridge_policy[0]",
+      "resource_type": "data",
+      "file_path": "main.tf",
+      "start_line": 310,
+      "end_line": 333
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "this",
+      "resource_type": "this",
+      "file_path": "/main.tf",
+      "start_line": 23,
+      "end_line": 46
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "eventbridge_label",
+      "resource_type": "eventbridge_label",
+      "file_path": "/main.tf",
+      "start_line": 286,
+      "end_line": 295
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "ssm_document_label",
+      "resource_type": "ssm_document_label",
+      "file_path": "/main.tf",
+      "start_line": 512,
+      "end_line": 521
+    }
+  ],
+  "target_count": 4,
+  "resolved_count": 0,
+  "introduced_count": 0,
+  "unchanged_count": 4,
+  "repair_success_rate": 0.0,
+  "regression_rate": 0.0,
+  "net_delta": 0,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 1
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 3
+    }
+  },
+  "repair_cost_usd": 0.10605899999999999,
+  "repair_tokens": 12005,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0440_claude-sonnet-4-5.repaired.tf",
+  "raw_response_path": "module_0440_claude-sonnet-4-5.raw.txt",
+  "repaired_code_sha256": "ac3465402356911a9933115a7926d4dde9fdd4414f2479bf8e7348d1a3a3a3fd"
+}

@@ -1,0 +1,142 @@
+resource "aws_s3_bucket" "aft_codepipeline_customizations_bucket" {
+  bucket = "aft-customizations-pipeline-${data.aws_caller_identity.current.account_id}"
+
+  logging {
+    target_bucket = aws_s3_bucket.aft_codepipeline_customizations_bucket.id
+    target_prefix = "logs/"
+  }
+}
+
+resource "aws_s3_bucket_lifecycle_configuration" "aft_codepipeline_customizations_bucket" {
+  bucket = aws_s3_bucket.aft_codepipeline_customizations_bucket.id
+  rule {
+    id = "sfn-data"
+    filter {
+      prefix = "sfn/"
+    }
+    expiration {
+      days = var.sfn_s3_bucket_object_expiration_days
+    }
+    abort_incomplete_multipart_upload {
+      days_after_initiation = 7
+    }
+    status = "Enabled"
+  }
+}
+
+resource "aws_sfn_state_machine" "aft_invoke_customizations_sfn" {
+  name     = "aft-invoke-customizations"
+  role_arn = aws_iam_role.aft_invoke_customizations_sfn.arn
+  definition = replace(
+    templatefile("${local.state_machine_source}", local.replacements_map),
+    "/\"(MaxConcurrency|NumericLessThan)\": \"(\\d+)\"/",
+    "\"$1\": $2"
+  )
+  tracing_configuration {
+    enabled = true
+  }
+  logging_configuration {
+    log_destination        = "${aws_cloudwatch_log_group.aft_invoke_customizations_sfn.arn}:*"
+    include_execution_data = true
+    level                  = "ALL"
+  }
+}
+
+resource "aws_lambda_function" "aft_customizations_identify_targets" {
+  filename      = var.customizations_archive_path
+  function_name = "aft-customizations-identify-targets"
+  role          = aws_iam_role.aft_customizations_identify_targets_lambda.arn
+  handler       = "aft_customizations_identify_targets.lambda_handler"
+  source_code_hash = var.customizations_archive_hash
+  memory_size      = 1024
+  runtime          = var.lambda_runtime_python_version
+  timeout          = "300"
+  layers           = [var.aft_common_layer_arn]
+  reserved_concurrent_executions = 100
+  tracing_config {
+    mode = "Active"
+  }
+  dead_letter_config {
+    target_arn = var.aft_failure_sns_topic_arn
+  }
+
+  dynamic "vpc_config" {
+    for_each = var.aft_enable_vpc ? [1] : []
+    content {
+      subnet_ids         = var.aft_vpc_private_subnets
+      security_group_ids = var.aft_vpc_default_sg
+    }
+  }
+}
+
+resource "aws_lambda_function" "aft_customizations_execute_pipeline" {
+  filename      = var.customizations_archive_path
+  function_name = "aft-customizations-execute-pipeline"
+  role          = aws_iam_role.aft_customizations_execute_pipeline_lambda.arn
+  handler       = "aft_customizations_execute_pipeline.lambda_handler"
+  source_code_hash = var.customizations_archive_hash
+  memory_size      = 1024
+  runtime          = var.lambda_runtime_python_version
+  timeout          = "300"
+  layers           = [var.aft_common_layer_arn]
+  reserved_concurrent_executions = 100
+  tracing_config {
+    mode = "Active"
+  }
+  dead_letter_config {
+    target_arn = var.aft_failure_sns_topic_arn
+  }
+
+  dynamic "vpc_config" {
+    for_each = var.aft_enable_vpc ? [1] : []
+    content {
+      subnet_ids         = var.aft_vpc_private_subnets
+      security_group_ids = var.aft_vpc_default_sg
+    }
+  }
+}
+
+resource "aws_lambda_function" "aft_customizations_get_pipeline_executions" {
+  filename      = var.customizations_archive_path
+  function_name = "aft-customizations-get-pipeline-executions"
+  role          = aws_iam_role.aft_customizations_get_pipeline_executions_lambda.arn
+  handler       = "aft_customizations_get_pipeline_executions.lambda_handler"
+  source_code_hash = var.customizations_archive_hash
+  memory_size      = 1024
+  runtime          = var.lambda_runtime_python_version
+  timeout          = "300"
+  layers           = [var.aft_common_layer_arn]
+  reserved_concurrent_executions = 100
+  tracing_config {
+    mode = "Active"
+  }
+  dead_letter_config {
+    target_arn = var.aft_failure_sns_topic_arn
+  }
+
+  dynamic "vpc_config" {
+    for_each = var.aft_enable_vpc ? [1] : []
+    content {
+      subnet_ids         = var.aft_vpc_private_subnets
+      security_group_ids = var.aft_vpc_default_sg
+    }
+  }
+}
+
+resource "aws_s3_bucket_notification" "aft_codepipeline_customizations_bucket_notification" {
+  bucket = aws_s3_bucket.aft_codepipeline_customizations_bucket.id
+  eventbridge = true
+}
+
+resource "aws_s3_bucket_replication_configuration" "aft_codepipeline_customizations_bucket_replication" {
+  bucket = aws_s3_bucket.aft_codepipeline_customizations_bucket.id
+  role   = aws_iam_role.aft_invoke_customizations_sfn.arn
+
+  rule {
+    status = "Enabled"
+    destination {
+      bucket        = aws_s3_bucket.aft_codepipeline_customizations_bucket.arn
+      storage_class = "STANDARD"
+    }
+  }
+}

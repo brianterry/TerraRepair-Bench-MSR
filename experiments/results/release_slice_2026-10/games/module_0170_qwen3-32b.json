@@ -1,0 +1,75 @@
+{
+  "module_id": "module_0170",
+  "model_id": "qwen3-32b",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0143",
+      "title": "IAM policies should not be granted directly to users.",
+      "severity": "LOW",
+      "resource_name": "aws_iam_user.smtp_user",
+      "resource_type": "aws_iam_user",
+      "file_path": "main.tf",
+      "start_line": 13,
+      "end_line": 15
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_273",
+      "title": "Ensure access is controlled through SSO and not AWS IAM defined users",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_user.smtp_user",
+      "resource_type": "aws_iam_user",
+      "file_path": "/main.tf",
+      "start_line": 13,
+      "end_line": 15
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_40",
+      "title": "Ensure IAM policies are attached only to groups or roles (Reducing access management complexity may in-turn reduce opportunity for a principal to inadvertently receive or retain excessive privileges.)",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_user_policy.smtp_policy",
+      "resource_type": "aws_iam_user_policy",
+      "file_path": "/main.tf",
+      "start_line": 18,
+      "end_line": 42
+    }
+  ],
+  "findings_after": [],
+  "target_count": 3,
+  "resolved_count": 3,
+  "introduced_count": 0,
+  "unchanged_count": 0,
+  "repair_success_rate": 1.0,
+  "regression_rate": 0.0,
+  "net_delta": 3,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 3,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    }
+  },
+  "repair_cost_usd": 0.0008388,
+  "repair_tokens": 2097,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0170_qwen3-32b.repaired.tf",
+  "raw_response_path": "module_0170_qwen3-32b.raw.txt",
+  "repaired_code_sha256": "74debe123b6f1f1a76c1fce1d01901f60b9a174f8f52a506d07990d85394c60e"
+}

@@ -1,0 +1,53 @@
+{
+  "findings_count": 8,
+  "findings": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "kms"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_58",
+      "title": "",
+      "resource_name": "aws_eks_cluster.this"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_37",
+      "title": "",
+      "resource_name": "aws_eks_cluster.this"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_338",
+      "title": "",
+      "resource_name": "aws_cloudwatch_log_group.this[0]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_111",
+      "title": "",
+      "resource_name": "aws_iam_policy_document.cni_ipv6_policy"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_356",
+      "title": "",
+      "resource_name": "aws_iam_policy_document.cni_ipv6_policy"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_5",
+      "title": "",
+      "resource_name": "aws_security_group.cluster[0]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_5",
+      "title": "",
+      "resource_name": "aws_security_group.node"
+    }
+  ]
+}

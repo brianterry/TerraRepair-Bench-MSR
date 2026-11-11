@@ -1,0 +1,58 @@
+{
+  "title": "TerraRepair-Bench: A Judge-Free Harness and Dataset for LLM Repair of Terraform Security Misconfigurations",
+  "upload_type": "dataset",
+  "description": "TerraRepair-Bench is a harness and dataset for measuring LLM repair of Terraform security misconfigurations. The released slice covers 262 modules from TerraDS v1 and ten foundation models, for 2,614 scored repairs. Each repair stores the raw model response, the exact repaired code that was scanned with pinned Trivy 0.74.0 and Checkov 3.3.20, before-and-after findings, and a SHA-256 hash tying the code to its score. No language model is in the scoring loop.",
+  "creators": [
+    {
+      "name": "Terry, Brian",
+      "affiliation": "School of EECS, University of North Dakota; Amazon Web Services"
+    },
+    {
+      "name": "Shi, Qinxuan",
+      "affiliation": "School of EECS, University of North Dakota"
+    },
+    {
+      "name": "Yang, Zhanglong",
+      "affiliation": "School of EECS, University of North Dakota"
+    },
+    {
+      "name": "Haidar, Ali",
+      "affiliation": "School of EECS, University of North Dakota"
+    },
+    {
+      "name": "Choubey, Preeti",
+      "affiliation": "School of EECS, University of North Dakota"
+    },
+    {
+      "name": "Amadigwe, Desmond",
+      "affiliation": "School of EECS, University of North Dakota"
+    },
+    {
+      "name": "Shao, Sicong",
+      "affiliation": "School of EECS, University of North Dakota"
+    }
+  ],
+  "keywords": [
+    "infrastructure as code",
+    "Terraform",
+    "automated program repair",
+    "large language models",
+    "security misconfiguration",
+    "dataset"
+  ],
+  "license": "cc-by-4.0",
+  "version": "release_slice_2026-10",
+  "related_identifiers": [
+    {
+      "identifier": "10.5281/zenodo.14217386",
+      "relation": "isDerivedFrom",
+      "resource_type": "dataset"
+    },
+    {
+      "identifier": "https://github.com/brianterry/TerraRepair-Bench-MSR",
+      "relation": "isSupplementTo",
+      "resource_type": "software"
+    }
+  ],
+  "notes": "Harness code is MIT-licensed. Terraform source files and their LLM repairs keep their original repositories' licenses, listed in THIRD_PARTY_LICENSES.md."
+}

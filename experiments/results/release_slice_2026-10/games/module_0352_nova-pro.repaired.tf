@@ -1,0 +1,306 @@
+data "ignition_config" "main" {
+  files = [
+    "${compact(list(
+    data.ignition_file.detect_master.id,
+    data.ignition_file.init_assets.id,
+    data.ignition_file.rm_assets.id,
+    var.dns_server_ip!= ""? join("", data.ignition_file.node_resolv.*.id) : "",
+    var.ign_installer_kubelet_env_id,
+    var.ign_installer_runtime_mappings_id,
+    var.ign_max_user_watches_id,
+    var.ign_ntp_dropin_id,
+    var.ign_profile_env_id,
+    var.ign_s3_puller_id,
+    var.ign_systemd_default_env_id,
+   ))}",
+    "${var.ign_ca_cert_id_list}",
+  ]
+
+  systemd = [
+    "${compact(list(
+    var.ign_docker_dropin_id,
+    var.ign_locksmithd_service_id,
+    var.ign_kubelet_service_id,
+    var.ign_k8s_node_bootstrap_service_id,
+    var.ign_init_assets_service_id,
+    var.ign_rm_assets_service_id,
+    var.ign_bootkube_service_id,
+    var.ign_tectonic_service_id,
+    var.ign_bootkube_path_unit_id,
+    var.ign_tectonic_path_unit_id,
+    var.ign_rm_assets_path_unit_id,
+    var.ign_update_ca_certificates_dropin_id,
+    var.ign_iscsi_service_id,
+   ))}",
+  ]
+}
+
+data "template_file" "detect_master" {
+  template = "${file("${path.module}/resources/detect-master.sh")}"
+
+  vars {
+    load_balancer_name = "${format("%s-%s", var.cluster_name, var.private_endpoints ? "int" : "ext")}"
+  }
+}
+
+data "ignition_file" "detect_master" {
+  filesystem = "root"
+  path       = "/opt/detect-master.sh"
+  mode       = 0755
+
+  content {
+    content = "${data.template_file.detect_master.rendered}"
+  }
+}
+
+data "template_file" "init_assets" {
+  template = "${file("${path.module}/resources/init-assets.sh")}"
+
+  vars {
+    cluster_name       = "${var.cluster_name}"
+    awscli_image       = "${var.container_images["awscli"]}"
+    assets_s3_location = "${var.assets_s3_location}"
+  }
+}
+
+data "ignition_file" "init_assets" {
+  filesystem = "root"
+  path       = "/opt/init-assets.sh"
+  mode       = 0755
+
+  content {
+    content = "${data.template_file.init_assets.rendered}"
+  }
+}
+
+data "template_file" "rm_assets" {
+  template = "${file("${path.module}/resources/rm-assets.sh")}"
+
+  vars {
+    cluster_name       = "${var.cluster_name}"
+    awscli_image       = "${var.container_images["awscli"]}"
+    assets_s3_location = "${var.assets_s3_location}"
+  }
+}
+
+data "ignition_file" "rm_assets" {
+  filesystem = "root"
+  path       = "/opt/rm-assets.sh"
+  mode       = 0755
+
+  content {
+    content = "${data.template_file.rm_assets.rendered}"
+  }
+}
+
+// DNS Server resolution
+data "template_file" "node_resolv" {
+  count    = "${var.dns_server_ip!= ""? 1 : 0}"
+  template = "search us-gov-west-1.compute.internal\nnameserver ${var.dns_server_ip}"
+}
+
+data "ignition_file" "node_resolv" {
+  count      = "${var.dns_server_ip!= "" ? 1 : 0}"
+  path       = "/etc/resolv.conf"
+  mode       = 0644
+  filesystem = "root"
+
+  content {
+    content = "${data.template_file.node_resolv.rendered}"
+  }
+}
+
+resource "aws_s3_bucket_object" "ignition_master" {
+  bucket  = "${var.s3_bucket}"
+  key     = "ignition_master.json"
+  content = "${data.ignition_config.main.rendered}"
+  acl     = "private"
+
+  server_side_encryption = "aws:kms"
+  kms_master_key_id      = "alias/aws/s3"
+
+  tags = "${merge(map(
+      "Name", "${var.cluster_name}-ignition-etcd-${count.index}",
+      "KubernetesCluster", "${var.cluster_name}",
+      "tectonicClusterID", "${var.cluster_id}"
+    ), var.extra_tags)}"
+}
+
+data "ignition_config" "s3" {
+  replace {
+    source       = "${format("s3://%s/%s", var.s3_bucket, aws_s3_bucket_object.ignition_master.key)}"
+    verification = "sha512-${sha512(data.ignition_config.main.rendered)}"
+  }
+}
+
+locals {
+  ami_owner = "190570271432"
+  arn       = "aws-us-gov"
+}
+
+data "aws_ami" "coreos_ami" {
+  filter {
+    name   = "name"
+    values = ["CoreOS-${var.container_linux_channel}-${var.container_linux_version}-*"]
+  }
+
+  filter {
+    name   = "architecture"
+    values = ["x86_64"]
+  }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+
+  filter {
+    name   = "owner-id"
+    values = ["${local.ami_owner}"]
+  }
+
+  most_recent = true
+}
+
+resource "aws_autoscaling_group" "masters" {
+  name                 = "${var.cluster_name}-masters"
+  desired_capacity     = "${var.instance_count}"
+  max_size             = "${var.instance_count * 3}"
+  min_size             = "${var.instance_count}"
+  launch_template {
+    id      = aws_launch_template.master_conf.id
+    version = "$Latest"
+  }
+  vpc_zone_identifier  = ["${var.subnet_ids}"]
+
+  load_balancers = ["${var.aws_lbs}"]
+
+  tags = [
+    {
+      key                 = "Name"
+      value               = "${var.cluster_name}-master"
+      propagate_at_launch = true
+    },
+    {
+      key                 = "kubernetes.io/cluster/${var.cluster_name}"
+      value               = "owned"
+      propagate_at_launch = true
+    },
+    {
+      key                 = "tectonicClusterID"
+      value               = "${var.cluster_id}"
+      propagate_at_launch = true
+    },
+    "${var.autoscaling_group_extra_tags}",
+  ]
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "aws_launch_template" "master_conf" {
+  name_prefix = "${var.cluster_name}-master-"
+
+  image_id        = "${data.aws_ami.coreos_ami.image_id}"
+  instance_type   = "${var.ec2_type}"
+  key_name        = "${var.ssh_key}"
+  security_groups = ["${var.master_sg_ids}"]
+  iam_instance_profile {
+    name = "${var.cluster_name}-master-profile"
+  }
+  user_data = "${data.ignition_config.s3.rendered}"
+
+  network_interfaces {
+    device_index             = 0
+    associate_public_ip_address = false
+  }
+
+  block_device_mappings {
+    device_name = "/dev/xvda"
+
+    ebs {
+      volume_size           = "${var.root_volume_size}"
+      volume_type           = "${var.root_volume_type}"
+      encrypted              = true
+      delete_on_termination = true
+    }
+  }
+
+  metadata_options {
+    http_tokens = "required"
+    http_endpoint = "enabled"
+    http_put_response_hop_limit = 1
+  }
+}
+
+resource "aws_iam_instance_profile" "master_profile" {
+  name = "${var.cluster_name}-master-profile"
+
+  role = "${var.master_iam_role == ""?
+    join("|", aws_iam_role.master_role.*.name) :
+    join("|", data.aws_iam_role.master_role.*.name)
+  }"
+}
+
+data "aws_iam_role" "master_role" {
+  count = "${var.master_iam_role == "" ? 0 : 1}"
+  name  = "${var.master_iam_role}"
+}
+
+resource "aws_iam_role" "master_role" {
+  count = "${var.master_iam_role == ""? 1 : 0}"
+  name  = "${var.cluster_name}-master-role"
+  path  = "/"
+
+  assume_role_policy = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Action": "sts:AssumeRole",
+            "Principal": {
+                "Service": "ec2.amazonaws.com"
+            },
+            "Effect": "Allow",
+            "Sid": ""
+        }
+    ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy" "master_policy" {
+  count = "${var.master_iam_role == ""? 1 : 0}"
+  name  = "${var.cluster_name}_master_policy"
+  role  = "${aws_iam_role.master_role.id}"
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "ec2:Describe*",
+        "ec2:Get*",
+        "elasticloadbalancing:Describe*",
+        "s3:GetObject",
+        "s3:HeadObject",
+        "s3:ListBucket",
+        "autoscaling:DescribeAutoScalingGroups",
+        "autoscaling:DescribeAutoScalingInstances"
+      ],
+      "Resource": "*",
+      "Effect": "Allow"
+    },
+    {
+      "Action": [
+        "s3:PutObject"
+      ],
+      "Resource": "arn:${local.arn}:s3:::${var.s3_bucket}/*",
+      "Effect": "Allow"
+    }
+  ]
+}
+EOF
+}

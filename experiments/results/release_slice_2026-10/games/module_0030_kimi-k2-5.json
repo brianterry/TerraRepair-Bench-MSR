@@ -1,0 +1,263 @@
+{
+  "module_id": "module_0030",
+  "model_id": "kimi-k2-5",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0052",
+      "title": "Load balancers should drop invalid headers",
+      "severity": "HIGH",
+      "resource_name": "aws_lb.example",
+      "resource_type": "aws_lb",
+      "file_path": "main.tf",
+      "start_line": 12,
+      "end_line": 17
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0053",
+      "title": "Load balancer is exposed to the internet.",
+      "severity": "HIGH",
+      "resource_name": "aws_lb.example",
+      "resource_type": "aws_lb",
+      "file_path": "main.tf",
+      "start_line": 12,
+      "end_line": 17
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0054",
+      "title": "Use of plain HTTP.",
+      "severity": "CRITICAL",
+      "resource_name": "aws_lb_listener.http",
+      "resource_type": "aws_lb_listener",
+      "file_path": "main.tf",
+      "start_line": 19,
+      "end_line": 34
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0099",
+      "title": "Missing description for security group.",
+      "severity": "LOW",
+      "resource_name": "aws_security_group.alb",
+      "resource_type": "aws_security_group",
+      "file_path": "main.tf",
+      "start_line": 36,
+      "end_line": 38
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "aws_security_group_rule.allow_all_outbound",
+      "resource_type": "aws_security_group_rule",
+      "file_path": "main.tf",
+      "start_line": 57,
+      "end_line": 57
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0124",
+      "title": "Missing description for security group rule.",
+      "severity": "LOW",
+      "resource_name": "aws_security_group_rule.allow_all_outbound",
+      "resource_type": "aws_security_group_rule",
+      "file_path": "main.tf",
+      "start_line": 50,
+      "end_line": 58
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0124",
+      "title": "Missing description for security group rule.",
+      "severity": "LOW",
+      "resource_name": "aws_security_group_rule.allow_http_inbound",
+      "resource_type": "aws_security_group_rule",
+      "file_path": "main.tf",
+      "start_line": 40,
+      "end_line": 48
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_150",
+      "title": "Ensure that Load Balancer has deletion protection enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lb.example",
+      "resource_type": "aws_lb",
+      "file_path": "/main.tf",
+      "start_line": 12,
+      "end_line": 17
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_91",
+      "title": "Ensure the ELBv2 (Application/Network) has access logging enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lb.example",
+      "resource_type": "aws_lb",
+      "file_path": "/main.tf",
+      "start_line": 12,
+      "end_line": 17
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_131",
+      "title": "Ensure that ALB drops HTTP headers",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lb.example",
+      "resource_type": "aws_lb",
+      "file_path": "/main.tf",
+      "start_line": 12,
+      "end_line": 17
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_2",
+      "title": "Ensure ALB protocol is HTTPS",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lb_listener.http",
+      "resource_type": "aws_lb_listener",
+      "file_path": "/main.tf",
+      "start_line": 19,
+      "end_line": 34
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "Ensure every security group and rule has a description",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group.alb",
+      "resource_type": "aws_security_group",
+      "file_path": "/main.tf",
+      "start_line": 36,
+      "end_line": 38
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_260",
+      "title": "Ensure no security groups allow ingress from 0.0.0.0:0 to port 80",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group_rule.allow_http_inbound",
+      "resource_type": "aws_security_group_rule",
+      "file_path": "/main.tf",
+      "start_line": 40,
+      "end_line": 48
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "Ensure every security group and rule has a description",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group_rule.allow_http_inbound",
+      "resource_type": "aws_security_group_rule",
+      "file_path": "/main.tf",
+      "start_line": 40,
+      "end_line": 48
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_382",
+      "title": "Ensure no security groups allow egress from 0.0.0.0:0 to port -1",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group_rule.allow_all_outbound",
+      "resource_type": "aws_security_group_rule",
+      "file_path": "/main.tf",
+      "start_line": 50,
+      "end_line": 58
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "Ensure every security group and rule has a description",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group_rule.allow_all_outbound",
+      "resource_type": "aws_security_group_rule",
+      "file_path": "/main.tf",
+      "start_line": 50,
+      "end_line": 58
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_20",
+      "title": "Ensure that ALB redirects HTTP requests into HTTPS ones",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lb.example",
+      "resource_type": "aws_lb",
+      "file_path": "/main.tf",
+      "start_line": 12,
+      "end_line": 17
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_28",
+      "title": "Ensure public facing ALB are protected by WAF",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lb.example",
+      "resource_type": "aws_lb",
+      "file_path": "/main.tf",
+      "start_line": 12,
+      "end_line": 17
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_103",
+      "title": "Ensure that load balancer is using at least TLS 1.2",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lb_listener.http",
+      "resource_type": "aws_lb_listener",
+      "file_path": "/main.tf",
+      "start_line": 19,
+      "end_line": 34
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_20",
+      "title": "Ensure that ALB redirects HTTP requests into HTTPS ones",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lb.example",
+      "resource_type": "aws_lb",
+      "file_path": "/main.tf",
+      "start_line": 12,
+      "end_line": 24
+    }
+  ],
+  "target_count": 19,
+  "resolved_count": 18,
+  "introduced_count": 0,
+  "unchanged_count": 1,
+  "repair_success_rate": 0.9473684210526315,
+  "regression_rate": 0.0,
+  "net_delta": 18,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 4,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 2,
+      "introduced": 0,
+      "unchanged": 1
+    },
+    "observability": {
+      "resolved": 1,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 11,
+      "introduced": 0,
+      "unchanged": 0
+    }
+  },
+  "repair_cost_usd": 0.0029612999999999996,
+  "repair_tokens": 2342,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0030_kimi-k2-5.repaired.tf",
+  "raw_response_path": "module_0030_kimi-k2-5.raw.txt",
+  "repaired_code_sha256": "903f8b1220bb55f7e5470b8134d2fae59f0f81d2c5233294f7cde49e60e47b8a"
+}

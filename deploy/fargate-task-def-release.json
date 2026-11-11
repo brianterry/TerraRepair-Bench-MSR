@@ -1,0 +1,42 @@
+{
+  "_comment": "Fargate task definition for the MSR 2027 release slice (release_slice_2026-10). Image pinned BY DIGEST to the build of commit 3a9ae7f (tag release-3a9ae7f, built from a clean worktree with GIT_COMMIT/GIT_DIRTY build args). Defaults are the full-run settings; the smoke overrides CONFIG / MODELS / MAX_MODULES / RESULTS_S3_URI at launch.",
+  "family": "terrarepair-bench",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "4096",
+  "memory": "8192",
+  "runtimePlatform": {
+    "cpuArchitecture": "X86_64",
+    "operatingSystemFamily": "LINUX"
+  },
+  "executionRoleArn": "arn:aws:iam::<ACCOUNT_ID>:role/terrarepair-bench-exec-role",
+  "taskRoleArn": "arn:aws:iam::<ACCOUNT_ID>:role/terrarepair-bench-task-role",
+  "containerDefinitions": [
+    {
+      "name": "runner",
+      "image": "<ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com/terrarepair-bench@sha256:7381672d0b6bd1beb57783277b92ab63075e3480cdc0a059df05f958d1c8f8f1",
+      "essential": true,
+      "environment": [
+        { "name": "RESULTS_S3_URI", "value": "s3://terrarepair-bench-results-<ACCOUNT_ID>/terrarepair/release_slice_2026-10" },
+        { "name": "CONFIG", "value": "experiments/configs/release_slice_2026-10.yaml" },
+        { "name": "REGION", "value": "us-east-1" },
+        { "name": "AWS_REGION", "value": "us-east-1" },
+        { "name": "CONCURRENCY", "value": "4" },
+        { "name": "MAX_TOKENS", "value": "40000" },
+        { "name": "BEDROCK_INVOKE_TIMEOUT", "value": "900" },
+        { "name": "BEDROCK_READ_TIMEOUT", "value": "900" },
+        { "name": "SYNC_INTERVAL", "value": "120" },
+        { "name": "HEARTBEAT_SECS", "value": "300" }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/terrarepair-bench",
+          "awslogs-region": "us-east-1",
+          "awslogs-stream-prefix": "runner",
+          "awslogs-create-group": "true"
+        }
+      }
+    }
+  ]
+}

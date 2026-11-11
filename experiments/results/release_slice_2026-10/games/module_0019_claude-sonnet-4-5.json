@@ -1,0 +1,483 @@
+{
+  "module_id": "module_0019",
+  "model_id": "claude-sonnet-4-5",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0008",
+      "title": "Launch configuration with unencrypted block device.",
+      "severity": "HIGH",
+      "resource_name": "aws_launch_configuration.example",
+      "resource_type": "aws_launch_configuration",
+      "file_path": "main.tf",
+      "start_line": 12,
+      "end_line": 28
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0052",
+      "title": "Load balancers should drop invalid headers",
+      "severity": "HIGH",
+      "resource_name": "aws_lb.example",
+      "resource_type": "aws_lb",
+      "file_path": "main.tf",
+      "start_line": 121,
+      "end_line": 126
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0053",
+      "title": "Load balancer is exposed to the internet.",
+      "severity": "HIGH",
+      "resource_name": "aws_lb.example",
+      "resource_type": "aws_lb",
+      "file_path": "main.tf",
+      "start_line": 121,
+      "end_line": 126
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0054",
+      "title": "Use of plain HTTP.",
+      "severity": "CRITICAL",
+      "resource_name": "aws_lb_listener.http",
+      "resource_type": "aws_lb_listener",
+      "file_path": "main.tf",
+      "start_line": 128,
+      "end_line": 143
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0099",
+      "title": "Missing description for security group.",
+      "severity": "LOW",
+      "resource_name": "aws_security_group.alb",
+      "resource_type": "aws_security_group",
+      "file_path": "main.tf",
+      "start_line": 178,
+      "end_line": 180
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0099",
+      "title": "Missing description for security group.",
+      "severity": "LOW",
+      "resource_name": "aws_security_group.instance",
+      "resource_type": "aws_security_group",
+      "file_path": "main.tf",
+      "start_line": 96,
+      "end_line": 98
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "aws_security_group_rule.allow_all_outbound",
+      "resource_type": "aws_security_group_rule",
+      "file_path": "main.tf",
+      "start_line": 199,
+      "end_line": 199
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0124",
+      "title": "Missing description for security group rule.",
+      "severity": "LOW",
+      "resource_name": "aws_security_group_rule.allow_all_outbound",
+      "resource_type": "aws_security_group_rule",
+      "file_path": "main.tf",
+      "start_line": 192,
+      "end_line": 200
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0124",
+      "title": "Missing description for security group rule.",
+      "severity": "LOW",
+      "resource_name": "aws_security_group_rule.allow_http_inbound",
+      "resource_type": "aws_security_group_rule",
+      "file_path": "main.tf",
+      "start_line": 182,
+      "end_line": 190
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0124",
+      "title": "Missing description for security group rule.",
+      "severity": "LOW",
+      "resource_name": "aws_security_group_rule.allow_server_http_inbound",
+      "resource_type": "aws_security_group_rule",
+      "file_path": "main.tf",
+      "start_line": 100,
+      "end_line": 108
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0130",
+      "title": "aws_instance should activate session tokens for Instance Metadata Service.",
+      "severity": "HIGH",
+      "resource_name": "aws_launch_configuration.example",
+      "resource_type": "aws_launch_configuration",
+      "file_path": "main.tf",
+      "start_line": 12,
+      "end_line": 28
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_79",
+      "title": "Ensure Instance Metadata Service Version 1 is not enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_launch_configuration.example",
+      "resource_type": "aws_launch_configuration",
+      "file_path": "/main.tf",
+      "start_line": 12,
+      "end_line": 28
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_8",
+      "title": "Ensure all data stored in the Launch configuration or instance Elastic Blocks Store is securely encrypted",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_launch_configuration.example",
+      "resource_type": "aws_launch_configuration",
+      "file_path": "/main.tf",
+      "start_line": 12,
+      "end_line": 28
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_315",
+      "title": "Ensure EC2 Auto Scaling groups use EC2 launch templates",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_autoscaling_group.example",
+      "resource_type": "aws_autoscaling_group",
+      "file_path": "/main.tf",
+      "start_line": 30,
+      "end_line": 72
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "Ensure every security group and rule has a description",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group.instance",
+      "resource_type": "aws_security_group",
+      "file_path": "/main.tf",
+      "start_line": 96,
+      "end_line": 98
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "Ensure every security group and rule has a description",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group_rule.allow_server_http_inbound",
+      "resource_type": "aws_security_group_rule",
+      "file_path": "/main.tf",
+      "start_line": 100,
+      "end_line": 108
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_150",
+      "title": "Ensure that Load Balancer has deletion protection enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lb.example",
+      "resource_type": "aws_lb",
+      "file_path": "/main.tf",
+      "start_line": 121,
+      "end_line": 126
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_91",
+      "title": "Ensure the ELBv2 (Application/Network) has access logging enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lb.example",
+      "resource_type": "aws_lb",
+      "file_path": "/main.tf",
+      "start_line": 121,
+      "end_line": 126
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_131",
+      "title": "Ensure that ALB drops HTTP headers",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lb.example",
+      "resource_type": "aws_lb",
+      "file_path": "/main.tf",
+      "start_line": 121,
+      "end_line": 126
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_2",
+      "title": "Ensure ALB protocol is HTTPS",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lb_listener.http",
+      "resource_type": "aws_lb_listener",
+      "file_path": "/main.tf",
+      "start_line": 128,
+      "end_line": 143
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "Ensure every security group and rule has a description",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group.alb",
+      "resource_type": "aws_security_group",
+      "file_path": "/main.tf",
+      "start_line": 178,
+      "end_line": 180
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_260",
+      "title": "Ensure no security groups allow ingress from 0.0.0.0:0 to port 80",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group_rule.allow_http_inbound",
+      "resource_type": "aws_security_group_rule",
+      "file_path": "/main.tf",
+      "start_line": 182,
+      "end_line": 190
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "Ensure every security group and rule has a description",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group_rule.allow_http_inbound",
+      "resource_type": "aws_security_group_rule",
+      "file_path": "/main.tf",
+      "start_line": 182,
+      "end_line": 190
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_382",
+      "title": "Ensure no security groups allow egress from 0.0.0.0:0 to port -1",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group_rule.allow_all_outbound",
+      "resource_type": "aws_security_group_rule",
+      "file_path": "/main.tf",
+      "start_line": 192,
+      "end_line": 200
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "Ensure every security group and rule has a description",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group_rule.allow_all_outbound",
+      "resource_type": "aws_security_group_rule",
+      "file_path": "/main.tf",
+      "start_line": 192,
+      "end_line": 200
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_20",
+      "title": "Ensure that ALB redirects HTTP requests into HTTPS ones",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lb.example",
+      "resource_type": "aws_lb",
+      "file_path": "/main.tf",
+      "start_line": 121,
+      "end_line": 126
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_103",
+      "title": "Ensure that load balancer is using at least TLS 1.2",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lb_listener.http",
+      "resource_type": "aws_lb_listener",
+      "file_path": "/main.tf",
+      "start_line": 128,
+      "end_line": 143
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_378",
+      "title": "Ensure AWS Load Balancer doesn't use HTTP protocol",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lb_target_group.asg",
+      "resource_type": "aws_lb_target_group",
+      "file_path": "/main.tf",
+      "start_line": 145,
+      "end_line": 160
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_28",
+      "title": "Ensure public facing ALB are protected by WAF",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lb.example",
+      "resource_type": "aws_lb",
+      "file_path": "/main.tf",
+      "start_line": 121,
+      "end_line": 126
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "aws_s3_bucket.alb_logs",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 137,
+      "end_line": 139
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0090",
+      "title": "S3 Data should be versioned",
+      "severity": "MEDIUM",
+      "resource_name": "aws_s3_bucket.alb_logs",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 137,
+      "end_line": 139
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0132",
+      "title": "S3 encryption should use Customer Managed Keys",
+      "severity": "HIGH",
+      "resource_name": "aws_s3_bucket.alb_logs",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 137,
+      "end_line": 139
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_192",
+      "title": "Ensure WAF prevents message lookup in Log4j2. See CVE-2021-44228 aka log4jshell",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_wafv2_web_acl.example",
+      "resource_type": "aws_wafv2_web_acl",
+      "file_path": "/main.tf",
+      "start_line": 172,
+      "end_line": 207
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_21",
+      "title": "Ensure all data stored in the S3 bucket have versioning enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.alb_logs",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 137,
+      "end_line": 139
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_31",
+      "title": "Ensure WAF2 has a Logging Configuration",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_wafv2_web_acl.example",
+      "resource_type": "aws_wafv2_web_acl",
+      "file_path": "/main.tf",
+      "start_line": 172,
+      "end_line": 207
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_62",
+      "title": "Ensure S3 buckets should have event notifications enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.alb_logs",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 137,
+      "end_line": 139
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_18",
+      "title": "Ensure the S3 bucket has access logging enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.alb_logs",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 137,
+      "end_line": 139
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_145",
+      "title": "Ensure that S3 buckets are encrypted with KMS by default",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.alb_logs",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 137,
+      "end_line": 139
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_61",
+      "title": "Ensure that an S3 bucket has a lifecycle configuration",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.alb_logs",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 137,
+      "end_line": 139
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_144",
+      "title": "Ensure that S3 bucket has cross-region replication enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.alb_logs",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 137,
+      "end_line": 139
+    }
+  ],
+  "target_count": 29,
+  "resolved_count": 29,
+  "introduced_count": 11,
+  "unchanged_count": 0,
+  "repair_success_rate": 1.0,
+  "regression_rate": 0.3793103448275862,
+  "net_delta": 18,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 4,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 6,
+      "introduced": 3,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 1,
+      "introduced": 5,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 18,
+      "introduced": 3,
+      "unchanged": 0
+    }
+  },
+  "repair_cost_usd": 0.067341,
+  "repair_tokens": 7983,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0019_claude-sonnet-4-5.repaired.tf",
+  "raw_response_path": "module_0019_claude-sonnet-4-5.raw.txt",
+  "repaired_code_sha256": "1f452f2add5d54ef04dfbbd1364e70c895c849117b22f5dbd62b8b2a810a9619"
+}

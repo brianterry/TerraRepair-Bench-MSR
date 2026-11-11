@@ -1,0 +1,83 @@
+{
+  "findings_count": 13,
+  "findings": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "",
+      "resource_name": "aws_security_group.main"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_353",
+      "title": "",
+      "resource_name": "aws_rds_cluster_instance.cluster_instances[0]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_226",
+      "title": "",
+      "resource_name": "aws_rds_cluster_instance.cluster_instances[0]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_118",
+      "title": "",
+      "resource_name": "aws_rds_cluster_instance.cluster_instances[0]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_313",
+      "title": "",
+      "resource_name": "aws_rds_cluster.main"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_96",
+      "title": "",
+      "resource_name": "aws_rds_cluster.main"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_162",
+      "title": "",
+      "resource_name": "aws_rds_cluster.main"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_326",
+      "title": "",
+      "resource_name": "aws_rds_cluster.main"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_327",
+      "title": "",
+      "resource_name": "aws_rds_cluster.main"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_325",
+      "title": "",
+      "resource_name": "aws_rds_cluster.main"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_139",
+      "title": "",
+      "resource_name": "aws_rds_cluster.main"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_324",
+      "title": "",
+      "resource_name": "aws_rds_cluster.main"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_8",
+      "title": "",
+      "resource_name": "aws_rds_cluster.main"
+    }
+  ]
+}

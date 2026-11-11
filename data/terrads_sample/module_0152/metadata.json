@@ -1,0 +1,125 @@
+{
+  "findings_count": 35,
+  "findings": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_50",
+      "title": "",
+      "resource_name": "aws_lambda_function.alternat_autoscaling_hook"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_117",
+      "title": "",
+      "resource_name": "aws_lambda_function.alternat_autoscaling_hook"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_116",
+      "title": "",
+      "resource_name": "aws_lambda_function.alternat_autoscaling_hook"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_173",
+      "title": "",
+      "resource_name": "aws_lambda_function.alternat_autoscaling_hook"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_272",
+      "title": "",
+      "resource_name": "aws_lambda_function.alternat_autoscaling_hook"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_115",
+      "title": "",
+      "resource_name": "aws_lambda_function.alternat_autoscaling_hook"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_50",
+      "title": "",
+      "resource_name": "aws_lambda_function.alternat_connectivity_tester"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_116",
+      "title": "",
+      "resource_name": "aws_lambda_function.alternat_connectivity_tester"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_173",
+      "title": "",
+      "resource_name": "aws_lambda_function.alternat_connectivity_tester"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_272",
+      "title": "",
+      "resource_name": "aws_lambda_function.alternat_connectivity_tester"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_115",
+      "title": "",
+      "resource_name": "aws_lambda_function.alternat_connectivity_tester"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "",
+      "resource_name": "aws_security_group.nat_lambda"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "",
+      "resource_name": "aws_security_group_rule.nat_lambda_egress"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_382",
+      "title": "",
+      "resource_name": "aws_security_group_rule.nat_lambda_egress"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_88",
+      "title": "",
+      "resource_name": "aws_launch_template.nat_instance_template"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "",
+      "resource_name": "aws_security_group.nat_instance"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "",
+      "resource_name": "aws_security_group_rule.nat_instance_egress"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_382",
+      "title": "",
+      "resource_name": "aws_security_group_rule.nat_instance_egress"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "",
+      "resource_name": "aws_security_group_rule.nat_instance_ingress"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_260",
+      "title": "",
+      "resource_name": "aws_security_group_rule.nat_instance_ip_range_ingress[0]"
+    }
+  ]
+}

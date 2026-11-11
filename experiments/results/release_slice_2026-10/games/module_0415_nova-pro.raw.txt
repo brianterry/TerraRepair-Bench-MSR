@@ -1,0 +1,54 @@
+```hcl
+module "this" {
+  source  = "cloudposse/label/null//commit/83838383838383838383838383838383"
+  version = "0.25.0"
+
+  enabled             = var.enabled
+  namespace           = var.namespace
+  tenant              = var.tenant
+  environment         = var.environment
+  stage               = var.stage
+  name                = var.name
+  delimiter           = var.delimiter
+  attributes          = var.attributes
+  tags                = var.tags
+  additional_tag_map  = var.additional_tag_map
+  label_order         = var.label_order
+  regex_replace_chars = var.regex_replace_chars
+  id_length_limit     = var.id_length_limit
+  label_key_case      = var.label_key_case
+  label_value_case    = var.label_value_case
+  descriptor_formats  = var.descriptor_formats
+  labels_as_tags      = var.labels_as_tags
+
+  context = var.context
+}
+
+module "security_hub" {
+  count   = local.enabled && local.is_global_collector_account? 1 : 0
+  source  = "cloudposse/security-hub/aws//commit/83838383838383838383838383838383"
+  version = "0.10.0"
+
+  create_sns_topic                = var.create_sns_topic
+  enabled_standards               = var.enabled_standards
+  finding_aggregator_enabled      = local.is_collector_region && var.finding_aggregator_enabled
+  finding_aggregator_linking_mode = var.finding_aggregator_linking_mode
+  finding_aggregator_regions      = var.finding_aggregator_regions
+  enable_default_standards        = var.enable_default_standards
+
+  context = module.this.context
+}
+
+module "account_map" {
+  source  = "cloudposse/stack-config/yaml//modules/remote-state//commit/83838383838383838383838383838383"
+  version = "1.4.2"
+
+  component   = "account-map"
+  tenant      = (var.account_map_tenant!= "")? var.account_map_tenant : module.this.tenant
+  stage       = var.root_account_stage
+  environment = var.global_environment
+  privileged  = var.privileged
+
+  context = module.this.context
+}
+```

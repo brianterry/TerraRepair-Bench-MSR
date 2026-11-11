@@ -1,0 +1,109 @@
+{
+  "module_id": "module_0428",
+  "model_id": "qwen3-32b",
+  "findings_before": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "this",
+      "resource_type": "this",
+      "file_path": "/context.tf",
+      "start_line": 23,
+      "end_line": 46
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_saml",
+      "resource_type": "aws_saml",
+      "file_path": "/remote-state.tf",
+      "start_line": 1,
+      "end_line": 15
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "account_map",
+      "resource_type": "account_map",
+      "file_path": "/remote-state.tf",
+      "start_line": 17,
+      "end_line": 28
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "this",
+      "resource_type": "this",
+      "file_path": "/main.tf",
+      "start_line": 18,
+      "end_line": 41
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_saml",
+      "resource_type": "aws_saml",
+      "file_path": "/main.tf",
+      "start_line": 449,
+      "end_line": 466
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "account_map",
+      "resource_type": "account_map",
+      "file_path": "/main.tf",
+      "start_line": 468,
+      "end_line": 482
+    }
+  ],
+  "target_count": 3,
+  "resolved_count": 0,
+  "introduced_count": 0,
+  "unchanged_count": 3,
+  "repair_success_rate": 0.0,
+  "regression_rate": 0.0,
+  "net_delta": 0,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 3
+    }
+  },
+  "repair_cost_usd": 0.003978000000000001,
+  "repair_tokens": 9945,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0428_qwen3-32b.repaired.tf",
+  "raw_response_path": "module_0428_qwen3-32b.raw.txt",
+  "repaired_code_sha256": "4c3f3ae37ec00b5ca84ff6d960a9e6a2bf3d6326316b3e2c903c8bd10e6dbe5f"
+}

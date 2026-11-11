@@ -1,0 +1,120 @@
+{
+  "module_id": "module_0145",
+  "model_id": "kimi-k2-5",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0017",
+      "title": "CloudWatch log groups should be encrypted using CMK",
+      "severity": "LOW",
+      "resource_name": "aws_cloudwatch_log_group.cloudtrail_events[0]",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "main.tf",
+      "start_line": 4,
+      "end_line": 11
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_111",
+      "title": "Ensure IAM policies does not allow write access without constraints",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.cloudtrail_key_policy",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/main.tf",
+      "start_line": 64,
+      "end_line": 184
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_356",
+      "title": "Ensure no IAM policies documents allow \"*\" as a statement's resource for restrictable actions",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.cloudtrail_key_policy",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/main.tf",
+      "start_line": 64,
+      "end_line": 184
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_109",
+      "title": "Ensure IAM policies does not allow permissions management / resource exposure without constraints",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.cloudtrail_key_policy",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/main.tf",
+      "start_line": 64,
+      "end_line": 184
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_158",
+      "title": "Ensure that CloudWatch Log Group is encrypted by KMS",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.cloudtrail_events[0]",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/main.tf",
+      "start_line": 4,
+      "end_line": 11
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_10",
+      "title": "Ensure CloudTrail trails are integrated with CloudWatch Logs",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudtrail.global",
+      "resource_type": "aws_cloudtrail",
+      "file_path": "/main.tf",
+      "start_line": 232,
+      "end_line": 277
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_10",
+      "title": "Ensure CloudTrail trails are integrated with CloudWatch Logs",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudtrail.global",
+      "resource_type": "aws_cloudtrail",
+      "file_path": "/main.tf",
+      "start_line": 233,
+      "end_line": 278
+    }
+  ],
+  "target_count": 6,
+  "resolved_count": 5,
+  "introduced_count": 0,
+  "unchanged_count": 1,
+  "repair_success_rate": 0.8333333333333334,
+  "regression_rate": 0.0,
+  "net_delta": 5,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 3,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 2,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 1
+    },
+    "other": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    }
+  },
+  "repair_cost_usd": 0.010860100000000001,
+  "repair_tokens": 7191,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0145_kimi-k2-5.repaired.tf",
+  "raw_response_path": "module_0145_kimi-k2-5.raw.txt",
+  "repaired_code_sha256": "e2f223ce7944f188cf0f389022430a794592a246e7c9330880b16a3cc073e673"
+}

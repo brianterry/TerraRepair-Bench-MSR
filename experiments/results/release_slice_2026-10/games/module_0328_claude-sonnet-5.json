@@ -1,0 +1,263 @@
+{
+  "module_id": "module_0328",
+  "model_id": "claude-sonnet-5",
+  "findings_before": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_62",
+      "title": "Ensure S3 buckets should have event notifications enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.access_logging",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 1,
+      "end_line": 7
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_6",
+      "title": "Ensure that S3 bucket has a Public Access block",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.access_logging",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 1,
+      "end_line": 7
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_28",
+      "title": "Ensure public facing ALB are protected by WAF",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lb.main",
+      "resource_type": "aws_lb",
+      "file_path": "/main.tf",
+      "start_line": 9,
+      "end_line": 20
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_18",
+      "title": "Ensure the S3 bucket has access logging enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.access_logging",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 1,
+      "end_line": 7
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_145",
+      "title": "Ensure that S3 buckets are encrypted with KMS by default",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.access_logging",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 1,
+      "end_line": 7
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_61",
+      "title": "Ensure that an S3 bucket has a lifecycle configuration",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.access_logging",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 1,
+      "end_line": 7
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_21",
+      "title": "Ensure all data stored in the S3 bucket have versioning enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.access_logging",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 1,
+      "end_line": 7
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_144",
+      "title": "Ensure that S3 bucket has cross-region replication enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.access_logging",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 1,
+      "end_line": 7
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_7",
+      "title": "Ensure rotation for customer created CMKs is enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_kms_key.access_logging",
+      "resource_type": "aws_kms_key",
+      "file_path": "/main.tf",
+      "start_line": 18,
+      "end_line": 22
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_300",
+      "title": "Ensure S3 lifecycle configuration sets period for aborting failed uploads",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket_lifecycle_configuration.access_logging",
+      "resource_type": "aws_s3_bucket_lifecycle_configuration",
+      "file_path": "/main.tf",
+      "start_line": 36,
+      "end_line": 48
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_175",
+      "title": "Ensure WAF has associated rules",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_wafv2_web_acl.main",
+      "resource_type": "aws_wafv2_web_acl",
+      "file_path": "/main.tf",
+      "start_line": 136,
+      "end_line": 150
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_192",
+      "title": "Ensure WAF prevents message lookup in Log4j2. See CVE-2021-44228 aka log4jshell",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_wafv2_web_acl.main",
+      "resource_type": "aws_wafv2_web_acl",
+      "file_path": "/main.tf",
+      "start_line": 136,
+      "end_line": 150
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_31",
+      "title": "Ensure WAF2 has a Logging Configuration",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_wafv2_web_acl.main",
+      "resource_type": "aws_wafv2_web_acl",
+      "file_path": "/main.tf",
+      "start_line": 136,
+      "end_line": 150
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_62",
+      "title": "Ensure S3 buckets should have event notifications enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.access_logging_replica",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 91,
+      "end_line": 95
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_64",
+      "title": "Ensure KMS key Policy is defined",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_kms_key.access_logging",
+      "resource_type": "aws_kms_key",
+      "file_path": "/main.tf",
+      "start_line": 18,
+      "end_line": 22
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_18",
+      "title": "Ensure the S3 bucket has access logging enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.access_logging_replica",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 91,
+      "end_line": 95
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_6",
+      "title": "Ensure that S3 bucket has a Public Access block",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.access_logging_replica",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 91,
+      "end_line": 95
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_61",
+      "title": "Ensure that an S3 bucket has a lifecycle configuration",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.access_logging_replica",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 91,
+      "end_line": 95
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_145",
+      "title": "Ensure that S3 buckets are encrypted with KMS by default",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.access_logging_replica",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 91,
+      "end_line": 95
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_76",
+      "title": "Ensure AWS ALB attached WAFv2 WebACL is configured with AMR for Log4j Vulnerability",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lb.main",
+      "resource_type": "aws_lb",
+      "file_path": "/main.tf",
+      "start_line": 123,
+      "end_line": 134
+    }
+  ],
+  "target_count": 8,
+  "resolved_count": 8,
+  "introduced_count": 12,
+  "unchanged_count": 0,
+  "repair_success_rate": 1.0,
+  "regression_rate": 1.5,
+  "net_delta": -4,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 2,
+      "introduced": 3,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 2,
+      "introduced": 1,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 2,
+      "introduced": 4,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 2,
+      "introduced": 4,
+      "unchanged": 0
+    }
+  },
+  "repair_cost_usd": 0.067114,
+  "repair_tokens": 8237,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0328_claude-sonnet-5.repaired.tf",
+  "raw_response_path": "module_0328_claude-sonnet-5.raw.txt",
+  "repaired_code_sha256": "d4fb9ad31c959596d994a0a3d99d3ed5c5c50eba758cd9a624821e1c1a0e11a5"
+}

@@ -1,0 +1,210 @@
+module "alb" {
+  source = "../alb"
+
+  environment       = var.environment
+  alb_name          = "${var.environment}-${var.cluster}"
+  vpc_id            = module.network.vpc_id
+  public_subnet_ids = module.network.public_subnet_ids
+}
+
+resource "aws_security_group_rule" "alb_to_ecs" {
+  type                     = "ingress"
+  from_port                = 32768
+  to_port                  = 61000
+  protocol                 = "TCP"
+  source_security_group_id = module.alb.alb_security_group_id
+  security_group_id        = module.ecs_instances.ecs_instance_security_group_id
+  description              = "Allow traffic from ALB to ECS instances"
+}
+
+
+# Why we need ECS instance policies http://docs.aws.amazon.com/AmazonECS/latest/developerguide/instance_IAM_role.html
+# ECS roles explained here http://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs_managed_policies.html
+# Some other ECS policy examples http://docs.aws.amazon.com/AmazonECS/latest/developerguide/IAMPolicyExamples.html 
+
+resource "aws_iam_role" "ecs_instance_role" {
+  name = "${var.environment}_ecs_instance_role"
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2008-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": ["ec2.amazonaws.com"]
+      },
+      "Effect": "Allow"
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_instance_profile" "ecs" {
+  name = "${var.environment}_ecs_instance_profile"
+  path = "/"
+  role = aws_iam_role.ecs_instance_role.name
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_ec2_role" {
+  role       = aws_iam_role.ecs_instance_role.id
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_ec2_cloudwatch_role" {
+  role       = aws_iam_role.ecs_instance_role.id
+  policy_arn = "arn:aws:iam::aws:policy/CloudWatchLogsFullAccess"
+}
+
+
+resource "aws_iam_role" "ecs_lb_role" {
+  name = "${var.environment}_ecs_lb_role"
+  path = "/ecs/"
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2008-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": ["ecs.amazonaws.com"]
+      },
+      "Effect": "Allow"
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_lb" {
+  role       = aws_iam_role.ecs_lb_role.id
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceRole"
+}
+
+
+module "network" {
+  source               = "../network"
+  environment          = var.environment
+  vpc_cidr             = var.vpc_cidr
+  public_subnet_cidrs  = var.public_subnet_cidrs
+  private_subnet_cidrs = var.private_subnet_cidrs
+  availability_zones   = var.availability_zones
+  depends_id           = ""
+}
+
+module "ecs_instances" {
+  source = "../ecs_instances"
+
+  environment             = var.environment
+  cluster                 = var.cluster
+  instance_group          = var.instance_group
+  private_subnet_ids      = module.network.private_subnet_ids
+  aws_ami                 = var.ecs_aws_ami
+  instance_type           = var.instance_type
+  max_size                = var.max_size
+  min_size                = var.min_size
+  desired_capacity        = var.desired_capacity
+  vpc_id                  = module.network.vpc_id
+  iam_instance_profile_id = aws_iam_instance_profile.ecs.id
+  key_name                = var.key_name
+  load_balancers          = var.load_balancers
+  depends_id              = module.network.depends_id
+  custom_userdata         = var.custom_userdata
+  cloudwatch_prefix       = var.cloudwatch_prefix
+}
+
+resource "aws_ecs_cluster" "cluster" {
+  name                 = var.cluster
+  container_insights   = true
+}
+
+
+output "default_alb_target_group" {
+  value = module.alb.default_alb_target_group
+}
+
+
+variable "environment" {
+  description = "The name of the environment"
+}
+
+variable "cluster" {
+  default     = "default"
+  description = "The name of the ECS cluster"
+}
+
+variable "instance_group" {
+  default     = "default"
+  description = "The name of the instances that you consider as a group"
+}
+
+variable "vpc_cidr" {
+  description = "VPC cidr block. Example: 10.0.0.0/16"
+}
+
+variable "private_subnet_cidrs" {
+  type        = list
+  description = "List of private cidrs, for every availability zone you want you need one. Example: 10.0.0.0/24 and 10.0.1.0/24"
+}
+
+variable "public_subnet_cidrs" {
+  type        = list
+  description = "List of public cidrs, for every availability zone you want you need one. Example: 10.0.0.0/24 and 10.0.1.0/24"
+}
+
+variable "load_balancers" {
+  type        = list
+  default     = []
+  description = "The load balancers to couple to the instances"
+}
+
+variable "availability_zones" {
+  type        = list
+  description = "List of availability zones you want. Example: eu-west-1a and eu-west-1b"
+}
+
+variable "max_size" {
+  description = "Maximum size of the nodes in the cluster"
+}
+
+variable "min_size" {
+  description = "Minimum size of the nodes in the cluster"
+}
+
+variable "desired_capacity" {
+  description = "The desired capacity of the cluster"
+}
+
+variable "key_name" {
+  description = "SSH key name to be used"
+}
+
+variable "instance_type" {
+  description = "AWS instance type to use"
+}
+
+variable "ecs_aws_ami" {
+  description = "The AWS ami id to use for ECS"
+}
+
+variable "custom_userdata" {
+  default     = ""
+  description = "Inject extra command in the instance template to be run on boot"
+}
+
+variable "ecs_config" {
+  default     = "echo '' > /etc/ecs/ecs.config"
+  description = "Specify ecs configuration or get it from S3. Example: aws s3 cp s3://some-bucket/ecs.config /etc/ecs/ecs.config"
+}
+
+variable "ecs_logging" {
+  default     = "[\"json-file\",\"awslogs\"]"
+  description = "Adding logging option to ECS that the Docker containers can use. It is possible to add fluentd as well"
+}
+
+variable "cloudwatch_prefix" {
+  default     = ""
+  description = "If you want to avoid cloudwatch collision or you don't want to merge all logs to one log group specify a prefix"
+}

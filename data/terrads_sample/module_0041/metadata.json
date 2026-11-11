@@ -1,0 +1,125 @@
+{
+  "findings_count": 22,
+  "findings": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "eks"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "eks_blueprints_addons"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "ebs_csi_driver_irsa"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "kubecost_irsa"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "eks_blueprints_addon"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "vpc"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_111",
+      "title": "",
+      "resource_name": "aws_iam_policy_document.athena"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_356",
+      "title": "",
+      "resource_name": "aws_iam_policy_document.athena"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_300",
+      "title": "",
+      "resource_name": "aws_s3_bucket_lifecycle_configuration.cur"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_300",
+      "title": "",
+      "resource_name": "aws_s3_bucket_lifecycle_configuration.athena_results"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_62",
+      "title": "",
+      "resource_name": "aws_s3_bucket.cur"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_62",
+      "title": "",
+      "resource_name": "aws_s3_bucket.athena_results"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_65",
+      "title": "",
+      "resource_name": "aws_s3_bucket_ownership_controls.athena_results"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_18",
+      "title": "",
+      "resource_name": "aws_s3_bucket.cur"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_18",
+      "title": "",
+      "resource_name": "aws_s3_bucket.athena_results"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_6",
+      "title": "",
+      "resource_name": "aws_s3_bucket.athena_results"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_145",
+      "title": "",
+      "resource_name": "aws_s3_bucket.cur"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_145",
+      "title": "",
+      "resource_name": "aws_s3_bucket.athena_results"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_144",
+      "title": "",
+      "resource_name": "aws_s3_bucket.cur"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_144",
+      "title": "",
+      "resource_name": "aws_s3_bucket.athena_results"
+    }
+  ]
+}

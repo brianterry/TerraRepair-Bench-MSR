@@ -1,0 +1,83 @@
+{
+  "findings_count": 13,
+  "findings": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_130",
+      "title": "",
+      "resource_name": "aws_subnet.public-us-east-1a"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_130",
+      "title": "",
+      "resource_name": "aws_subnet.public-us-east-1b"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_39",
+      "title": "",
+      "resource_name": "aws_eks_cluster.cluster"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_58",
+      "title": "",
+      "resource_name": "aws_eks_cluster.cluster"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_339",
+      "title": "",
+      "resource_name": "aws_eks_cluster.cluster"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_38",
+      "title": "",
+      "resource_name": "aws_eks_cluster.cluster"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_37",
+      "title": "",
+      "resource_name": "aws_eks_cluster.cluster"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_76",
+      "title": "",
+      "resource_name": "aws_apigatewayv2_stage.dev"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "",
+      "resource_name": "aws_security_group.vpc_link"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_382",
+      "title": "",
+      "resource_name": "aws_security_group.vpc_link"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_309",
+      "title": "",
+      "resource_name": "aws_apigatewayv2_route.get_echo"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_12",
+      "title": "",
+      "resource_name": "aws_vpc.main"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_11",
+      "title": "",
+      "resource_name": "aws_vpc.main"
+    }
+  ]
+}

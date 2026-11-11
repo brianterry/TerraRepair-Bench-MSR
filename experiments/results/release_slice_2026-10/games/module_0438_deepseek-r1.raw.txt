@@ -1,0 +1,137 @@
+
+
+module "this" {
+  source  = "git::https://github.com/cloudposse/terraform-null-label.git?ref=488ab39e98359e1a7c18d4a8ad61f7e6866e134c"
+  version = "0.25.0"
+
+  enabled             = var.enabled
+  namespace           = var.namespace
+  tenant              = var.tenant
+  environment         = var.environment
+  stage               = var.stage
+  name                = var.name
+  delimiter           = var.delimiter
+  attributes          = var.attributes
+  tags                = var.tags
+  additional_tag_map  = var.additional_tag_map
+  label_order         = var.label_order
+  regex_replace_chars = var.regex_replace_chars
+  id_length_limit     = var.id_length_limit
+  label_key_case      = var.label_key_case
+  label_value_case    = var.label_value_case
+  descriptor_formats  = var.descriptor_formats
+  labels_as_tags      = var.labels_as_tags
+
+  context = var.context
+}
+
+module "karpenter_crd" {
+  enabled = local.enabled && var.crd_chart_enabled
+
+  source  = "git::https://github.com/cloudposse/terraform-helm-release.git?ref=3f6d1cbfe5a0a1a0a0a0a0a0a0a0a0a0a0a0a0a0"
+  version = "0.10.1"
+
+  name            = var.crd_chart
+  chart           = var.crd_chart
+  repository      = var.chart_repository
+  description     = var.chart_description
+  chart_version   = var.chart_version
+  wait            = var.wait
+  atomic          = var.atomic
+  cleanup_on_fail = var.cleanup_on_fail
+  timeout         = var.timeout
+
+  create_namespace_with_kubernetes = false
+  kubernetes_namespace             = local.kubernetes_namespace
+
+  eks_cluster_oidc_issuer_url = coalesce(replace(local.eks_cluster_identity_oidc_issuer, "https://", ""), "deleted")
+
+  context = module.this.context
+}
+
+module "karpenter" {
+  source  = "git::https://github.com/cloudposse/terraform-helm-release.git?ref=3f6d1cbfe5a0a1a0a0a0a0a0a0a0a0a0a0a0a0"
+  version = "0.10.1"
+
+  chart           = var.chart
+  repository      = var.chart_repository
+  description     = var.chart_description
+  chart_version   = var.chart_version
+  wait            = var.wait
+  atomic          = var.atomic
+  cleanup_on_fail = var.cleanup_on_fail
+  timeout         = var.timeout
+
+  create_namespace_with_kubernetes = false
+  kubernetes_namespace             = local.kubernetes_namespace
+
+  eks_cluster_oidc_issuer_url = coalesce(replace(local.eks_cluster_identity_oidc_issuer, "https://", ""), "deleted")
+
+  service_account_name      = module.this.name
+  service_account_namespace = local.kubernetes_namespace
+
+  service_account_role_arn_annotation_enabled = true
+
+  iam_role_enabled            = true
+  iam_source_policy_documents = [local.controller_policy_json]
+
+  values = compact([
+    yamlencode({
+      fullnameOverride = module.this.name
+      serviceAccount = {
+        name = module.this.name
+      }
+      controller = {
+        resources = var.resources
+      }
+      replicas = var.replicas
+    }),
+    yamlencode({
+      logConfig = {
+        enabled = var.logging.enabled
+        logLevel = {
+          controller = var.logging.level.controller
+          global     = var.logging.level.global
+          webhook    = var.logging.level.webhook
+        }
+      }
+      settings = merge({
+        batchIdleDuration = var.settings.batch_idle_duration
+        batchMaxDuration  = var.settings.batch_max_duration
+        clusterName       = local.eks_cluster_id
+        },
+        local.interruption_handler_enabled ? {
+          interruptionQueue = local.interruption_handler_queue_name
+        } : {}
+      )
+      }
+    ),
+    yamlencode(var.chart_values)
+  ])
+
+  context = module.this.context
+
+  depends_on = [
+    module.karpenter_crd,
+    aws_cloudwatch_event_rule.interruption_handler,
+    aws_cloudwatch_event_target.interruption_handler,
+    aws_sqs_queue.interruption_handler,
+    aws_sqs_queue_policy.interruption_handler,
+  ]
+}
+
+module "eks" {
+  source  = "git::https://github.com/cloudposse/terraform-stack-config.git//modules/remote-state?ref=3f6d1cbfe5a0a1a0a0a0a0a0a0a0a0a0a0a0a0"
+  version = "1.5.0"
+
+  component = var.eks_component_name
+
+  context = module.this.context
+
+  defaults = {
+    eks_cluster_id                   = "deleted"
+    eks_cluster_arn                  = "deleted"
+    eks_cluster_identity_oidc_issuer = "deleted"
+    karpenter_node_role_arn          = "deleted"
+  }
+}

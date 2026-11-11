@@ -1,0 +1,65 @@
+{
+  "findings_count": 10,
+  "findings": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_86",
+      "title": "",
+      "resource_name": "aws_cloudfront_distribution.cloudfront_distribution"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_174",
+      "title": "",
+      "resource_name": "aws_cloudfront_distribution.cloudfront_distribution"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_68",
+      "title": "",
+      "resource_name": "aws_cloudfront_distribution.cloudfront_distribution"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_305",
+      "title": "",
+      "resource_name": "aws_cloudfront_distribution.cloudfront_distribution"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_374",
+      "title": "",
+      "resource_name": "aws_cloudfront_distribution.cloudfront_distribution"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_111",
+      "title": "",
+      "resource_name": "aws_iam_policy_document.replication"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_356",
+      "title": "",
+      "resource_name": "aws_iam_policy_document.replication"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_42",
+      "title": "",
+      "resource_name": "aws_cloudfront_distribution.cloudfront_distribution"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_32",
+      "title": "",
+      "resource_name": "aws_cloudfront_distribution.cloudfront_distribution"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_47",
+      "title": "",
+      "resource_name": "aws_cloudfront_distribution.cloudfront_distribution"
+    }
+  ]
+}

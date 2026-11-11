@@ -1,0 +1,75 @@
+{
+  "started": "2026-10-30T16:41:43.708131+00:00",
+  "results": "/app/rel",
+  "only_remote": true,
+  "trivy_timeout_env": "900",
+  "network_env": {
+    "HTTPS_PROXY": "http://127.0.0.1:9",
+    "HTTP_PROXY": "http://127.0.0.1:9",
+    "TRIVY_SKIP_CHECK_UPDATE": "true"
+  },
+  "scanner_versions": {
+    "trivy": "Version: 0.74.0",
+    "checkov": "3.3.20"
+  },
+  "git_commit": "30e4c442026d80400cad510af8c0d8960494c5a1",
+  "n_games": 2614,
+  "n_games_checked": 892,
+  "finished": "2026-10-30T18:19:14.194378+00:00",
+  "inputs": {
+    "match": 93
+  },
+  "inputs_with_remote_modules": {
+    "match": 93
+  },
+  "games": {
+    "match": 785,
+    "skipped_hcl_invalid": 107
+  },
+  "games_with_remote_modules": {
+    "match": 785,
+    "skipped_hcl_invalid": 107
+  },
+  "games_by_model": {
+    "claude-sonnet-4-5": {
+      "match": 90,
+      "skipped_hcl_invalid": 3
+    },
+    "claude-sonnet-5": {
+      "skipped_hcl_invalid": 9,
+      "match": 82
+    },
+    "deepseek-r1": {
+      "match": 89,
+      "skipped_hcl_invalid": 3
+    },
+    "deepseek-v3-2": {
+      "skipped_hcl_invalid": 8,
+      "match": 83
+    },
+    "grok-4-6": {
+      "skipped_hcl_invalid": 22,
+      "match": 63
+    },
+    "kimi-k2-5": {
+      "skipped_hcl_invalid": 8,
+      "match": 84
+    },
+    "llama-3-3-70b": {
+      "skipped_hcl_invalid": 13,
+      "match": 76
+    },
+    "nova-lite": {
+      "skipped_hcl_invalid": 23,
+      "match": 62
+    },
+    "nova-pro": {
+      "skipped_hcl_invalid": 16,
+      "match": 75
+    },
+    "qwen3-32b": {
+      "match": 81,
+      "skipped_hcl_invalid": 2
+    }
+  }
+}

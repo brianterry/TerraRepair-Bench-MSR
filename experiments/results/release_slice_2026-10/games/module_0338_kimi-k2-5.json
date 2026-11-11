@@ -1,0 +1,208 @@
+{
+  "module_id": "module_0338",
+  "model_id": "kimi-k2-5",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "aws_s3_bucket.aft_access_logs_primary_backend_bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 283,
+      "end_line": 286
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "aws_s3_bucket.secondary-backend-bucket[0]",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 38,
+      "end_line": 45
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_300",
+      "title": "Ensure S3 lifecycle configuration sets period for aborting failed uploads",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket_lifecycle_configuration.aft_access_logs_primary_backend_bucket",
+      "resource_type": "aws_s3_bucket_lifecycle_configuration",
+      "file_path": "/main.tf",
+      "start_line": 354,
+      "end_line": 369
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_28",
+      "title": "Ensure DynamoDB point in time recovery (backup) is enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_dynamodb_table.lock-table",
+      "resource_type": "aws_dynamodb_table",
+      "file_path": "/main.tf",
+      "start_line": 384,
+      "end_line": 415
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_62",
+      "title": "Ensure S3 buckets should have event notifications enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.primary-backend-bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 12,
+      "end_line": 20
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_62",
+      "title": "Ensure S3 buckets should have event notifications enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.secondary-backend-bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 38,
+      "end_line": 45
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_62",
+      "title": "Ensure S3 buckets should have event notifications enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.aft_access_logs_primary_backend_bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 283,
+      "end_line": 286
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_61",
+      "title": "Ensure that an S3 bucket has a lifecycle configuration",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.primary-backend-bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 12,
+      "end_line": 20
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_61",
+      "title": "Ensure that an S3 bucket has a lifecycle configuration",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.secondary-backend-bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 38,
+      "end_line": 45
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_64",
+      "title": "Ensure KMS key Policy is defined",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_kms_key.encrypt-primary-region",
+      "resource_type": "aws_kms_key",
+      "file_path": "/main.tf",
+      "start_line": 420,
+      "end_line": 429
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_64",
+      "title": "Ensure KMS key Policy is defined",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_kms_key.encrypt-secondary-region",
+      "resource_type": "aws_kms_key",
+      "file_path": "/main.tf",
+      "start_line": 438,
+      "end_line": 448
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_144",
+      "title": "Ensure that S3 bucket has cross-region replication enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.aft_access_logs_primary_backend_bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 283,
+      "end_line": 286
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_18",
+      "title": "Ensure the S3 bucket has access logging enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.secondary-backend-bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 38,
+      "end_line": 45
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "aws_s3_bucket.aft_access_logs_primary_backend_bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 336,
+      "end_line": 339
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_300",
+      "title": "Ensure S3 lifecycle configuration sets period for aborting failed uploads",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket_lifecycle_configuration.aft_access_logs_primary_backend_bucket",
+      "resource_type": "aws_s3_bucket_lifecycle_configuration",
+      "file_path": "/main.tf",
+      "start_line": 407,
+      "end_line": 426
+    }
+  ],
+  "target_count": 13,
+  "resolved_count": 11,
+  "introduced_count": 0,
+  "unchanged_count": 2,
+  "repair_success_rate": 0.8461538461538461,
+  "regression_rate": 0.0,
+  "net_delta": 11,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 2,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 1,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 5,
+      "introduced": 0,
+      "unchanged": 1
+    },
+    "other": {
+      "resolved": 3,
+      "introduced": 0,
+      "unchanged": 1
+    }
+  },
+  "repair_cost_usd": 0.0143769,
+  "repair_tokens": 9303,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0338_kimi-k2-5.repaired.tf",
+  "raw_response_path": "module_0338_kimi-k2-5.raw.txt",
+  "repaired_code_sha256": "d3e8a56bc4090721af060ad616faca830f90226937fe2b2c541cb81ce3fdf92f"
+}

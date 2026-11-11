@@ -1,0 +1,141 @@
+```hcl
+terraform {
+  required_version = ">= 0.12.0"
+}
+
+provider "aws" {
+  region = "us-west-2"
+}
+
+variable "vpc_name" {
+  description = "name of the VPC"
+  default = "tf-0.12-fce-example"
+}
+
+resource "aws_vpc" "my_vpc" {
+  cidr_block = "172.16.0.0/16"
+
+  tags = {
+    Name = var.vpc_name
+  }
+
+  enable_dns_support   = true
+  enable_dns_hostnames = true
+}
+
+resource "aws_subnet" "my_subnet" {
+  vpc_id            = aws_vpc.my_vpc.id
+  cidr_block        = "172.16.10.0/24"
+  map_public_ip_on_launch = false
+
+  tags = {
+    Name = "tf-0.12-fce-example"
+  }
+}
+
+resource "aws_network_interface" "foo" {
+  subnet_id = aws_subnet.my_subnet.id
+  private_ips = ["172.16.10.100"]
+  
+  tags = {
+    Name = "tf-0.12-fce-primary_network_interface"
+  }
+}
+
+data "aws_ami" "ubuntu_14_04" {
+  most_recent      = true
+
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm/ubuntu-trusty-14.04-amd64-server-*"]
+  }
+
+  owners     = ["099720109477"]
+}
+
+resource "aws_iam_instance_profile" "foo_profile" {
+  name = "foo_profile"
+}
+
+resource "aws_iam_role" "foo_role" {
+  name = "foo_role"
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "ec2.amazonaws.com"
+      },
+      "Effect": "Allow"
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy_attachment" "foo_attachment" {
+  role       = aws_iam_role.foo_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2FullAccess"
+}
+
+resource "aws_instance" "foo" {
+  ami                    = data.aws_ami.ubuntu_14_04.image_id
+  instance_type          = "t2.micro"
+  root_block_device      = {
+    encrypted = true
+  }
+  network_interface {
+    network_interface_id = aws_network_interface.foo.id
+    device_index         = 0
+  }
+  monitoring {
+    enabled = true
+  }
+  iam_instance_profile = aws_iam_instance_profile.foo_profile.name
+  tags = {
+    Name = "tf-0.12-fce-ec2-instance"
+  }
+
+  disable_api_termination = true
+  credit_specification {
+    cpu_credits = "unlimited"
+  }
+}
+
+resource "aws_vpc_flow_log" "my_flow_log" {
+  vpc_id     = aws_vpc.my_vpc.id
+  traffic_type = "REJECT"
+
+  log_destination_type = "cloud-watch-logs"
+  log_group_name       = "my-flow-logs"
+}
+
+resource "aws_security_group" "default_vpc" {
+  vpc_id = aws_vpc.my_vpc.id
+
+  ingress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "default"
+  }
+}
+
+output "private_dns" {
+  value = aws_instance.foo.private_dns
+}
+```

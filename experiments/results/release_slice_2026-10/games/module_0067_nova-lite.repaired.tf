@@ -1,0 +1,445 @@
+provider "aws" {
+  region = "us-east-1"
+}
+
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 4.27.0"
+    }
+  }
+
+  required_version = "~> 1.0"
+}
+
+resource "aws_vpc" "main" {
+  cidr_block = "10.0.0.0/16"
+
+  enable_dns_support   = true
+  enable_dns_hostnames = true
+
+  flow_logs {
+    traffic_type = "REJECT"
+
+    log_destination_type = "cloud-watch-logs"
+    log_destination_arn  = aws_cloudwatch_log_group.vpc_flow_logs.arn
+  }
+
+  tags = {
+    Name = "main"
+  }
+}
+
+resource "aws_cloudwatch_log_group" "vpc_flow_logs" {
+  name          = "/aws/vpc/flow-logs"
+  retention_in_days = 14
+}
+
+resource "aws_cloudwatch_metric_alarm" "high_cpu" {
+  alarm_name  = "EC2 High CPU (${aws_instance.my_server.id})"
+  namespace   = "AWS/EC2"
+  metric_name = "CPUUtilization"
+  dimensions = {
+    InstanceId = aws_instance.my_server.id
+  }
+  comparison_operator       = "GreaterThanOrEqualToThreshold"
+  evaluation_periods        = "1"
+  period                    = "300"
+  statistic                 = "Average"
+  threshold                 = "80"
+  alarm_description         = "This metric monitors CPU utilization for the following instance: ${aws_instance.my_server.id}. If the CPU usage exceeds 80%, you'll get an alert."
+  insufficient_data_actions = []
+
+  ok_actions    = [aws_sns_topic.alarms.arn]
+  alarm_actions = [aws_sns_topic.alarms.arn]
+}
+
+resource "aws_internet_gateway" "igw" {
+  vpc_id = aws_vpc.main.id
+
+  tags = {
+    Name = "igw"
+  }
+}
+
+resource "aws_subnet" "private_us_east_1a" {
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = "10.0.0.0/19"
+  availability_zone = "us-east-1a"
+
+  tags = {
+    "Name" = "private-us-east-1a"
+  }
+}
+
+resource "aws_subnet" "private_us_east_1b" {
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = "10.0.32.0/19"
+  availability_zone = "us-east-1b"
+
+  tags = {
+    "Name" = "private-us-east-1b"
+  }
+}
+
+resource "aws_subnet" "public_us_east_1a" {
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = "10.0.64.0/19"
+  availability_zone       = "us-east-1a"
+
+  tags = {
+    "Name" = "public-us-east-1a"
+  }
+}
+
+resource "aws_subnet" "public_us_east_1b" {
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = "10.0.96.0/19"
+  availability_zone       = "us-east-1b"
+
+  tags = {
+    "Name" = "public-us-east-1b"
+  }
+}
+
+resource "aws_eip" "nat" {
+  vpc = true
+
+  tags = {
+    Name = "nat"
+  }
+}
+
+resource "aws_nat_gateway" "nat" {
+  allocation_id = aws_eip.nat.id
+  subnet_id     = aws_subnet.public_us_east_1a.id
+
+  tags = {
+    Name = "nat"
+  }
+
+  depends_on = [aws_internet_gateway.igw]
+}
+
+resource "aws_route_table" "private" {
+  vpc_id = aws_vpc.main.id
+
+  route {
+    cidr_block     = "0.0.0.0/0"
+    nat_gateway_id = aws_nat_gateway.nat.id
+  }
+
+  tags = {
+    Name = "private"
+  }
+}
+
+resource "aws_route_table" "public" {
+  vpc_id = aws_vpc.main.id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.igw.id
+  }
+
+  tags = {
+    Name = "public"
+  }
+}
+
+resource "aws_route_table_association" "private_us_east_1a" {
+  subnet_id      = aws_subnet.private_us_east_1a.id
+  route_table_id = aws_route_table.private.id
+}
+
+resource "aws_route_table_association" "private_us_east_1b" {
+  subnet_id      = aws_subnet.private_us_east_1b.id
+  route_table_id = aws_route_table.private.id
+}
+
+resource "aws_route_table_association" "public_us_east_1a" {
+  subnet_id      = aws_subnet.public_us_east_1a.id
+  route_table_id = aws_route_table.public.id
+}
+
+resource "aws_route_table_association" "public_us_east_1b" {
+  subnet_id      = aws_subnet.public_us_east_1b.id
+  route_table_id = aws_route_table.public.id
+}
+
+resource "aws_security_group" "my_server_ssh_access" {
+  name        = "my-server-ssh-access"
+  description = "Allow My Server SSH Access"
+  vpc_id      = aws_vpc.main.id
+
+  ingress {
+    description = "Allow SSH from specific IP"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["123.456.789.000/32"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+data "aws_ami" "ubuntu" {
+  most_recent = true
+
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"]
+  }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+
+  owners = ["099720109477"]
+}
+
+resource "aws_instance" "my_server" {
+  ami           = data.aws_ami.ubuntu.id
+  instance_type = "t3.micro"
+
+  key_name = "devops"
+
+  subnet_id              = aws_subnet.private_us_east_1a.id
+  vpc_security_group_ids = [aws_security_group.my_server_ssh_access.id]
+
+  associate_public_ip_address = false
+
+  block_device {
+    device_name = "/dev/sda1"
+    encrypted   = true
+  }
+
+  tags = {
+    Name = "my-server"
+  }
+
+  metadata_options {
+    http_tokens = "optional"
+    http_endpoint = "enabled"
+  }
+}
+
+resource "aws_iam_role" "sns_logs" {
+  name = "sns-logs"
+
+  assume_role_policy = <<POLICY
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "sns.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+POLICY
+}
+
+resource "aws_iam_role_policy_attachment" "sns_logs" {
+  role       = aws_iam_role.sns_logs.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonSNSRole"
+}
+
+resource "aws_sns_topic" "alarms" {
+  name = "alarms"
+
+  # Important! Only for testing, set to log every single message 
+  # For production, set it to 0 or close
+  lambda_success_feedback_sample_rate = 100
+
+  lambda_failure_feedback_role_arn = aws_iam_role.sns_logs.arn
+  lambda_success_feedback_role_arn = aws_iam_role.sns_logs.arn
+
+  kms_master_key_id = aws_kms_key.sns_key.arn
+}
+
+resource "aws_kms_key" "sns_key" {
+  description = "KMS key for SNS topic encryption"
+  deletion_window_in_days = 7
+}
+
+resource "random_pet" "lambda_bucket_name" {
+  prefix = "lambda"
+  length = 2
+}
+
+resource "aws_s3_bucket" "lambda_bucket" {
+  bucket        = random_pet.lambda_bucket_name.id
+  force_destroy = true
+
+  versioning {
+    enabled = true
+  }
+
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm = "aws:kms"
+        kms_master_key_id = aws_kms_key.s3_key.arn
+      }
+    }
+  }
+
+  server_side_encryption_by_default {
+    sse_algorithm = "aws:kms"
+    kms_master_key_id = aws_kms_key.s3_key.arn
+  }
+
+  lifecycle_rule {
+    id      = "log-rotation"
+    enabled = true
+
+    expiration {
+      days = 365
+    }
+  }
+
+  public_access_block_configuration {
+    block_public_acls       = true
+    block_public_policy     = true
+    ignore_public_acls      = true
+    restrict_public_buckets = true
+  }
+}
+
+resource "aws_kms_key" "s3_key" {
+  description = "KMS key for S3 bucket encryption"
+  deletion_window_in_days = 7
+}
+
+resource "aws_iam_role" "send_cloudwatch_alarms_to_slack" {
+  name = "send-cloudwatch-alarms-to-slack"
+
+  assume_role_policy = <<POLICY
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "lambda.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+POLICY
+}
+
+resource "aws_iam_role_policy_attachment" "send_cloudwatch_alarms_to_slack_basic" {
+  role       = aws_iam_role.send_cloudwatch_alarms_to_slack.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+}
+
+resource "aws_iam_role_policy_attachment" "send_cloudwatch_alarms_to_slack_xray" {
+  role       = aws_iam_role.send_cloudwatch_alarms_to_slack.name
+  policy_arn = "arn:aws:iam::aws:policy/AWSXRayDaemonWriteAccess"
+}
+
+data "archive_file" "send_cloudwatch_alarms_to_slack" {
+  type = "zip"
+
+  source_dir  = "../${path.module}/functions/send-cloudwatch-alarms-to-slack"
+  output_path = "../${path.module}/functions/send-cloudwatch-alarms-to-slack.zip"
+}
+
+resource "aws_s3_object" "send_cloudwatch_alarms_to_slack" {
+  bucket = aws_s3_bucket.lambda_bucket.id
+
+  key    = "send-cloudwatch-alarms-to-slack.zip"
+  source = data.archive_file.send_cloudwatch_alarms_to_slack.output_path
+
+  etag = filemd5(data.archive_file.send_cloudwatch_alarms_to_slack.output_path)
+}
+
+resource "aws_lambda_function" "send_cloudwatch_alarms_to_slack" {
+  function_name = "send-cloudwatch-alarms-to-slack"
+
+  s3_bucket = aws_s3_bucket.lambda_bucket.id
+  s3_key    = aws_s3_object.send_cloudwatch_alarms_to_slack.key
+
+  runtime = "python3.9"
+  handler = "function.lambda_handler"
+
+  source_code_hash = data.archive_file.send_cloudwatch_alarms_to_slack.output_base64sha256
+
+  role = aws_iam_role.send_cloudwatch_alarms_to_slack.arn
+
+  environment {
+    variables = {
+      "SNS_TOPIC_ARN" = aws_sns_topic.alarms.arn
+    }
+  }
+
+  vpc_config {
+    subnet_ids         = [aws_subnet.private_us_east_1a.id, aws_subnet.private_us_east_1b.id]
+    security_group_ids = [aws_security_group.my_server_ssh_access.id]
+  }
+
+  tracing_config {
+    mode = "Active"
+  }
+
+  concurrency_limits {
+    concurrent_executions = 100
+  }
+
+  dead_letter_config {
+    target_arn = aws_sqs_queue.dlq.arn
+  }
+
+  code_signing_config {
+    allowed_publishers {
+      signer_profile_name = "lambda-signing-profile"
+    }
+  }
+}
+
+resource "aws_cloudwatch_log_group" "send_cloudwatch_alarms_to_slack" {
+  name                = "/aws/lambda/${aws_lambda_function.send_cloudwatch_alarms_to_slack.function_name}"
+  retention_in_days    = 14
+  encryption_kms_key_id = aws_kms_key.logs_key.arn
+}
+
+resource "aws_kms_key" "logs_key" {
+  description = "KMS key for CloudWatch log group encryption"
+  deletion_window_in_days = 7
+}
+
+resource "aws_lambda_permission" "sns_alarms" {
+  statement_id  = "AllowExecutionFromSNSAlarms"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.send_cloudwatch_alarms_to_slack.function_name
+  principal     = "sns.amazonaws.com"
+  source_arn    = aws_sns_topic.alarms.arn
+}
+
+resource "aws_sns_topic_subscription" "alarms" {
+  topic_arn = aws_sns_topic.alarms.arn
+  protocol  = "lambda"
+  endpoint  = aws_lambda_function.send_cloudwatch_alarms_to_slack.arn
+}
+
+resource "aws_sqs_queue" "dlq" {
+  name = "dlq"
+}
+
+resource "aws_iam_role_policy_attachment" "dlq_access" {
+  role       = aws_iam_role.send_cloudwatch_alarms_to_slack.name
+  policy_arn = "arn:aws:iam::aws:policy/AWSLambdaBasicExecutionRole"
+}

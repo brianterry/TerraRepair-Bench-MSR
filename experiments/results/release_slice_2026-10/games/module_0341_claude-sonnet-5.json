@@ -1,0 +1,373 @@
+{
+  "module_id": "module_0341",
+  "model_id": "claude-sonnet-5",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "aws_s3_bucket.aft_access_logs",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "s3.tf",
+      "start_line": 77,
+      "end_line": 80
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_116",
+      "title": "Ensure that AWS Lambda function is configured for a Dead Letter Queue(DLQ)",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.aft_delete_default_vpc",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/lambda.tf",
+      "start_line": 6,
+      "end_line": 28
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_272",
+      "title": "Ensure AWS Lambda function is configured to validate code-signing",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.aft_delete_default_vpc",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/lambda.tf",
+      "start_line": 6,
+      "end_line": 28
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_115",
+      "title": "Ensure that AWS Lambda function is configured for function-level concurrent execution limit",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.aft_delete_default_vpc",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/lambda.tf",
+      "start_line": 6,
+      "end_line": 28
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_50",
+      "title": "X-Ray tracing is enabled for Lambda",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.aft_delete_default_vpc",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/lambda.tf",
+      "start_line": 6,
+      "end_line": 28
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_116",
+      "title": "Ensure that AWS Lambda function is configured for a Dead Letter Queue(DLQ)",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.aft_enroll_support",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/lambda.tf",
+      "start_line": 40,
+      "end_line": 62
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_272",
+      "title": "Ensure AWS Lambda function is configured to validate code-signing",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.aft_enroll_support",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/lambda.tf",
+      "start_line": 40,
+      "end_line": 62
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_115",
+      "title": "Ensure that AWS Lambda function is configured for function-level concurrent execution limit",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.aft_enroll_support",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/lambda.tf",
+      "start_line": 40,
+      "end_line": 62
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_50",
+      "title": "X-Ray tracing is enabled for Lambda",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.aft_enroll_support",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/lambda.tf",
+      "start_line": 40,
+      "end_line": 62
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_116",
+      "title": "Ensure that AWS Lambda function is configured for a Dead Letter Queue(DLQ)",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.aft_enable_cloudtrail",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/lambda.tf",
+      "start_line": 73,
+      "end_line": 95
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_272",
+      "title": "Ensure AWS Lambda function is configured to validate code-signing",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.aft_enable_cloudtrail",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/lambda.tf",
+      "start_line": 73,
+      "end_line": 95
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_115",
+      "title": "Ensure that AWS Lambda function is configured for function-level concurrent execution limit",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.aft_enable_cloudtrail",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/lambda.tf",
+      "start_line": 73,
+      "end_line": 95
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_50",
+      "title": "X-Ray tracing is enabled for Lambda",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.aft_enable_cloudtrail",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/lambda.tf",
+      "start_line": 73,
+      "end_line": 95
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_300",
+      "title": "Ensure S3 lifecycle configuration sets period for aborting failed uploads",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket_lifecycle_configuration.aft_logging_bucket_lifecycle_configuration",
+      "resource_type": "aws_s3_bucket_lifecycle_configuration",
+      "file_path": "/s3.tf",
+      "start_line": 40,
+      "end_line": 56
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_300",
+      "title": "Ensure S3 lifecycle configuration sets period for aborting failed uploads",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket_lifecycle_configuration.aft_access_logs_lifecycle_configuration",
+      "resource_type": "aws_s3_bucket_lifecycle_configuration",
+      "file_path": "/s3.tf",
+      "start_line": 112,
+      "end_line": 127
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_284",
+      "title": "Ensure State Machine has X-Ray tracing enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_sfn_state_machine.aft_features",
+      "resource_type": "aws_sfn_state_machine",
+      "file_path": "/states.tf",
+      "start_line": 16,
+      "end_line": 21
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_285",
+      "title": "Ensure State Machine has execution history logging enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_sfn_state_machine.aft_features",
+      "resource_type": "aws_sfn_state_machine",
+      "file_path": "/states.tf",
+      "start_line": 16,
+      "end_line": 21
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_62",
+      "title": "Ensure S3 buckets should have event notifications enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.aft_logging_bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/s3.tf",
+      "start_line": 8,
+      "end_line": 11
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_62",
+      "title": "Ensure S3 buckets should have event notifications enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.aft_access_logs",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/s3.tf",
+      "start_line": 77,
+      "end_line": 80
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_144",
+      "title": "Ensure that S3 bucket has cross-region replication enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.aft_logging_bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/s3.tf",
+      "start_line": 8,
+      "end_line": 11
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_144",
+      "title": "Ensure that S3 bucket has cross-region replication enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.aft_access_logs",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/s3.tf",
+      "start_line": 77,
+      "end_line": 80
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_145",
+      "title": "Ensure that S3 buckets are encrypted with KMS by default",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.aft_access_logs",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/s3.tf",
+      "start_line": 77,
+      "end_line": 80
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_272",
+      "title": "Ensure AWS Lambda function is configured to validate code-signing",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.aft_delete_default_vpc",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/main.tf",
+      "start_line": 195,
+      "end_line": 226
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_272",
+      "title": "Ensure AWS Lambda function is configured to validate code-signing",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.aft_enroll_support",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/main.tf",
+      "start_line": 237,
+      "end_line": 268
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_272",
+      "title": "Ensure AWS Lambda function is configured to validate code-signing",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.aft_enable_cloudtrail",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/main.tf",
+      "start_line": 278,
+      "end_line": 309
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_300",
+      "title": "Ensure S3 lifecycle configuration sets period for aborting failed uploads",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket_lifecycle_configuration.aft_access_logs_lifecycle_configuration",
+      "resource_type": "aws_s3_bucket_lifecycle_configuration",
+      "file_path": "/main.tf",
+      "start_line": 492,
+      "end_line": 511
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_62",
+      "title": "Ensure S3 buckets should have event notifications enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.aft_logging_bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 378,
+      "end_line": 381
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_62",
+      "title": "Ensure S3 buckets should have event notifications enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.aft_access_logs",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 450,
+      "end_line": 453
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_144",
+      "title": "Ensure that S3 bucket has cross-region replication enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.aft_logging_bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 378,
+      "end_line": 381
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_144",
+      "title": "Ensure that S3 bucket has cross-region replication enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.aft_access_logs",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 450,
+      "end_line": 453
+    }
+  ],
+  "target_count": 22,
+  "resolved_count": 14,
+  "introduced_count": 0,
+  "unchanged_count": 8,
+  "repair_success_rate": 0.6363636363636364,
+  "regression_rate": 0.0,
+  "net_delta": 14,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 1,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 2,
+      "introduced": 0,
+      "unchanged": 2
+    },
+    "other": {
+      "resolved": 11,
+      "introduced": 0,
+      "unchanged": 6
+    }
+  },
+  "repair_cost_usd": 0.144794,
+  "repair_tokens": 22997,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0341_claude-sonnet-5.repaired.tf",
+  "raw_response_path": "module_0341_claude-sonnet-5.raw.txt",
+  "repaired_code_sha256": "49060c49a6f7adabc4750888072c75c1299fca17c4bd1f2f57aee828504c680b"
+}

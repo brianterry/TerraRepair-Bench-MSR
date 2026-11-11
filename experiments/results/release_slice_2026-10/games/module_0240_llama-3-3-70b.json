@@ -1,0 +1,175 @@
+{
+  "module_id": "module_0240",
+  "model_id": "llama-3-3-70b",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "module.imagebuilder_log_bucket",
+      "resource_type": "module",
+      "file_path": "github.com/ministryofjustice/modernisation-platform-terraform-s3-bucket?ref=9facf9fc8f8b8e3f93ffbda822028534b9a75399/main.tf",
+      "start_line": 30,
+      "end_line": 41
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "module.laa-shared-bucket",
+      "resource_type": "module",
+      "file_path": "github.com/ministryofjustice/modernisation-platform-terraform-s3-bucket?ref=9facf9fc8f8b8e3f93ffbda822028534b9a75399/main.tf",
+      "start_line": 30,
+      "end_line": 41
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "module.s3-bucket",
+      "resource_type": "module",
+      "file_path": "github.com/ministryofjustice/modernisation-platform-terraform-s3-bucket?ref=9facf9fc8f8b8e3f93ffbda822028534b9a75399/main.tf",
+      "start_line": 30,
+      "end_line": 41
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "module.s3-software-bucket",
+      "resource_type": "module",
+      "file_path": "github.com/ministryofjustice/modernisation-platform-terraform-s3-bucket?ref=9facf9fc8f8b8e3f93ffbda822028534b9a75399/main.tf",
+      "start_line": 30,
+      "end_line": 41
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0342",
+      "title": "IAM Pass Role Filtering",
+      "severity": "MEDIUM",
+      "resource_name": "data.aws_iam_policy_document.oidc_assume_role_core",
+      "resource_type": "data",
+      "file_path": "iam.tf",
+      "start_line": 248,
+      "end_line": 306
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_126",
+      "title": "Ensure that detailed monitoring is enabled for EC2 instances",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_instance.ad_fixngo",
+      "resource_type": "aws_instance",
+      "file_path": "/ad-fixngo.tf",
+      "start_line": 1086,
+      "end_line": 1139
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_394",
+      "title": "Ensure aws_availability_zones data source pins zone identity so its result set does not silently expand when AWS adds an Availability Zone",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_availability_zones.available",
+      "resource_type": "aws_availability_zones",
+      "file_path": "/vpc_additional_cidr.tf",
+      "start_line": 2,
+      "end_line": 2
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "module.imagebuilder_log_bucket",
+      "resource_type": "module",
+      "file_path": "github.com/ministryofjustice/modernisation-platform-terraform-s3-bucket?ref=9facf9fc8f8b8e3f93ffbda822028534b9a75399/main.tf",
+      "start_line": 30,
+      "end_line": 41
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "module.laa-shared-bucket",
+      "resource_type": "module",
+      "file_path": "github.com/ministryofjustice/modernisation-platform-terraform-s3-bucket?ref=9facf9fc8f8b8e3f93ffbda822028534b9a75399/main.tf",
+      "start_line": 30,
+      "end_line": 41
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "module.s3-bucket",
+      "resource_type": "module",
+      "file_path": "github.com/ministryofjustice/modernisation-platform-terraform-s3-bucket?ref=9facf9fc8f8b8e3f93ffbda822028534b9a75399/main.tf",
+      "start_line": 30,
+      "end_line": 41
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "module.s3-software-bucket",
+      "resource_type": "module",
+      "file_path": "github.com/ministryofjustice/modernisation-platform-terraform-s3-bucket?ref=9facf9fc8f8b8e3f93ffbda822028534b9a75399/main.tf",
+      "start_line": 30,
+      "end_line": 41
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_394",
+      "title": "Ensure aws_availability_zones data source pins zone identity so its result set does not silently expand when AWS adds an Availability Zone",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_availability_zones.available",
+      "resource_type": "aws_availability_zones",
+      "file_path": "/main.tf",
+      "start_line": 302,
+      "end_line": 304
+    }
+  ],
+  "target_count": 7,
+  "resolved_count": 2,
+  "introduced_count": 0,
+  "unchanged_count": 5,
+  "repair_success_rate": 0.2857142857142857,
+  "regression_rate": 0.0,
+  "net_delta": 2,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 1,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 1,
+      "introduced": 0,
+      "unchanged": 4
+    },
+    "other": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 1
+    }
+  },
+  "repair_cost_usd": 0.0393824,
+  "repair_tokens": 49228,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0240_llama-3-3-70b.repaired.tf",
+  "raw_response_path": "module_0240_llama-3-3-70b.raw.txt",
+  "repaired_code_sha256": "47df2814875a7df2810e210a3a4319183eb83b8859a578d16287724bdac992bc"
+}

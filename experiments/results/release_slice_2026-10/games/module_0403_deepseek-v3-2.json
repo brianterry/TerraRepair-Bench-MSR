@@ -1,0 +1,86 @@
+{
+  "module_id": "module_0403",
+  "model_id": "deepseek-v3-2",
+  "findings_before": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "label",
+      "resource_type": "label",
+      "file_path": "/main.tf",
+      "start_line": 1,
+      "end_line": 7
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "kops_metadata",
+      "resource_type": "kops_metadata",
+      "file_path": "/main.tf",
+      "start_line": 9,
+      "end_line": 12
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_34",
+      "title": "AWS SSM Parameter should be Encrypted",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_ssm_parameter.aws_metrics_iam_role",
+      "resource_type": "aws_ssm_parameter",
+      "file_path": "/main.tf",
+      "start_line": 117,
+      "end_line": 123
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_34",
+      "title": "AWS SSM Parameter should be Encrypted",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_ssm_parameter.aws_metrics_iam_namespace[0]",
+      "resource_type": "aws_ssm_parameter",
+      "file_path": "/main.tf",
+      "start_line": 125,
+      "end_line": 132
+    }
+  ],
+  "findings_after": [],
+  "target_count": 4,
+  "resolved_count": 4,
+  "introduced_count": 0,
+  "unchanged_count": 0,
+  "repair_success_rate": 1.0,
+  "regression_rate": 0.0,
+  "net_delta": 4,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 2,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 2,
+      "introduced": 0,
+      "unchanged": 0
+    }
+  },
+  "repair_cost_usd": 0.005167420000000001,
+  "repair_tokens": 3627,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0403_deepseek-v3-2.repaired.tf",
+  "raw_response_path": "module_0403_deepseek-v3-2.raw.txt",
+  "repaired_code_sha256": "7c8c8e131d71ab5118677b5edc046b49795aa531584423df9bc8eaaca967ff00"
+}

@@ -1,0 +1,285 @@
+{
+  "module_id": "module_0143",
+  "model_id": "deepseek-v3-2",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0086",
+      "title": "S3 Access block should block public ACL",
+      "severity": "HIGH",
+      "resource_name": "aws_s3_bucket.logs",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "bucket.tf",
+      "start_line": 1,
+      "end_line": 4
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0087",
+      "title": "S3 Access block should block public policy",
+      "severity": "HIGH",
+      "resource_name": "aws_s3_bucket.logs",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "bucket.tf",
+      "start_line": 1,
+      "end_line": 4
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "aws_s3_bucket.logs",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "bucket.tf",
+      "start_line": 1,
+      "end_line": 4
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0090",
+      "title": "S3 Data should be versioned",
+      "severity": "MEDIUM",
+      "resource_name": "aws_s3_bucket.logs",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "bucket.tf",
+      "start_line": 1,
+      "end_line": 4
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0091",
+      "title": "S3 Access Block should Ignore Public ACL",
+      "severity": "HIGH",
+      "resource_name": "aws_s3_bucket.logs",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "bucket.tf",
+      "start_line": 1,
+      "end_line": 4
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0093",
+      "title": "S3 Access block should restrict public bucket to limit access",
+      "severity": "HIGH",
+      "resource_name": "aws_s3_bucket.logs",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "bucket.tf",
+      "start_line": 1,
+      "end_line": 4
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0094",
+      "title": "S3 buckets should each define an aws_s3_bucket_public_access_block",
+      "severity": "LOW",
+      "resource_name": "aws_s3_bucket.logs",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "bucket.tf",
+      "start_line": 1,
+      "end_line": 4
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0132",
+      "title": "S3 encryption should use Customer Managed Keys",
+      "severity": "HIGH",
+      "resource_name": "aws_s3_bucket.logs",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "bucket.tf",
+      "start_line": 1,
+      "end_line": 4
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_273",
+      "title": "Ensure access is controlled through SSO and not AWS IAM defined users",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_user.admin",
+      "resource_type": "aws_iam_user",
+      "file_path": "/main.tf",
+      "start_line": 19,
+      "end_line": 21
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_21",
+      "title": "Ensure all data stored in the S3 bucket have versioning enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.logs",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/bucket.tf",
+      "start_line": 1,
+      "end_line": 4
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_62",
+      "title": "Ensure S3 buckets should have event notifications enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.logs",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/bucket.tf",
+      "start_line": 1,
+      "end_line": 4
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_6",
+      "title": "Ensure that S3 bucket has a Public Access block",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.logs",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/bucket.tf",
+      "start_line": 1,
+      "end_line": 4
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_18",
+      "title": "Ensure the S3 bucket has access logging enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.logs",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/bucket.tf",
+      "start_line": 1,
+      "end_line": 4
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_145",
+      "title": "Ensure that S3 buckets are encrypted with KMS by default",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.logs",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/bucket.tf",
+      "start_line": 1,
+      "end_line": 4
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_61",
+      "title": "Ensure that an S3 bucket has a lifecycle configuration",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.logs",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/bucket.tf",
+      "start_line": 1,
+      "end_line": 4
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_144",
+      "title": "Ensure that S3 bucket has cross-region replication enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.logs",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/bucket.tf",
+      "start_line": 1,
+      "end_line": 4
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "aws_s3_bucket.logs_replica",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 91,
+      "end_line": 106
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_273",
+      "title": "Ensure access is controlled through SSO and not AWS IAM defined users",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_user.admin",
+      "resource_type": "aws_iam_user",
+      "file_path": "/main.tf",
+      "start_line": 267,
+      "end_line": 269
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_62",
+      "title": "Ensure S3 buckets should have event notifications enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.logs_replica",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 91,
+      "end_line": 106
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_18",
+      "title": "Ensure the S3 bucket has access logging enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.logs_replica",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 91,
+      "end_line": 106
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_64",
+      "title": "Ensure KMS key Policy is defined",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_kms_key.logs",
+      "resource_type": "aws_kms_key",
+      "file_path": "/main.tf",
+      "start_line": 85,
+      "end_line": 89
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_61",
+      "title": "Ensure that an S3 bucket has a lifecycle configuration",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.logs_replica",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 91,
+      "end_line": 106
+    }
+  ],
+  "target_count": 16,
+  "resolved_count": 15,
+  "introduced_count": 5,
+  "unchanged_count": 1,
+  "repair_success_rate": 0.9375,
+  "regression_rate": 0.3125,
+  "net_delta": 10,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 6,
+      "introduced": 1,
+      "unchanged": 1
+    },
+    "data_protection": {
+      "resolved": 3,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 3,
+      "introduced": 3,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 3,
+      "introduced": 1,
+      "unchanged": 0
+    }
+  },
+  "repair_cost_usd": 0.007653080000000001,
+  "repair_tokens": 5078,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0143_deepseek-v3-2.repaired.tf",
+  "raw_response_path": "module_0143_deepseek-v3-2.raw.txt",
+  "repaired_code_sha256": "20a6ffbaaf83744639420b24f265762a786ce8512cbb61fa97cdec75f23a995f"
+}

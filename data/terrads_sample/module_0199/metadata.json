@@ -1,0 +1,125 @@
+{
+  "findings_count": 29,
+  "findings": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_237",
+      "title": "",
+      "resource_name": "aws_api_gateway_rest_api.this"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_217",
+      "title": "",
+      "resource_name": "aws_api_gateway_deployment.this"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_120",
+      "title": "",
+      "resource_name": "aws_api_gateway_stage.this"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_73",
+      "title": "",
+      "resource_name": "aws_api_gateway_stage.this"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_76",
+      "title": "",
+      "resource_name": "aws_api_gateway_stage.this"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_225",
+      "title": "",
+      "resource_name": "aws_api_gateway_method_settings.this"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_206",
+      "title": "",
+      "resource_name": "aws_api_gateway_domain_name.this"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_59",
+      "title": "",
+      "resource_name": "aws_api_gateway_method.proxy_root"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_59",
+      "title": "",
+      "resource_name": "aws_api_gateway_method.proxy_other"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_233",
+      "title": "",
+      "resource_name": "aws_acm_certificate.this"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_50",
+      "title": "",
+      "resource_name": "aws_lambda_function.local_zipfile"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_117",
+      "title": "",
+      "resource_name": "aws_lambda_function.local_zipfile"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_116",
+      "title": "",
+      "resource_name": "aws_lambda_function.local_zipfile"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_173",
+      "title": "",
+      "resource_name": "aws_lambda_function.local_zipfile"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_272",
+      "title": "",
+      "resource_name": "aws_lambda_function.local_zipfile"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_363",
+      "title": "",
+      "resource_name": "aws_lambda_function.local_zipfile"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_115",
+      "title": "",
+      "resource_name": "aws_lambda_function.local_zipfile"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_50",
+      "title": "",
+      "resource_name": "aws_lambda_function.s3_zipfile"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_117",
+      "title": "",
+      "resource_name": "aws_lambda_function.s3_zipfile"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_116",
+      "title": "",
+      "resource_name": "aws_lambda_function.s3_zipfile"
+    }
+  ]
+}

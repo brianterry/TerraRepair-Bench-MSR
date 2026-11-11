@@ -1,0 +1,252 @@
+{
+  "module_id": "module_0338",
+  "model_id": "nova-lite",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "aws_s3_bucket.aft_access_logs_primary_backend_bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 283,
+      "end_line": 286
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "aws_s3_bucket.secondary-backend-bucket[0]",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 38,
+      "end_line": 45
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_300",
+      "title": "Ensure S3 lifecycle configuration sets period for aborting failed uploads",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket_lifecycle_configuration.aft_access_logs_primary_backend_bucket",
+      "resource_type": "aws_s3_bucket_lifecycle_configuration",
+      "file_path": "/main.tf",
+      "start_line": 354,
+      "end_line": 369
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_28",
+      "title": "Ensure DynamoDB point in time recovery (backup) is enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_dynamodb_table.lock-table",
+      "resource_type": "aws_dynamodb_table",
+      "file_path": "/main.tf",
+      "start_line": 384,
+      "end_line": 415
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_62",
+      "title": "Ensure S3 buckets should have event notifications enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.primary-backend-bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 12,
+      "end_line": 20
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_62",
+      "title": "Ensure S3 buckets should have event notifications enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.secondary-backend-bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 38,
+      "end_line": 45
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_62",
+      "title": "Ensure S3 buckets should have event notifications enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.aft_access_logs_primary_backend_bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 283,
+      "end_line": 286
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_61",
+      "title": "Ensure that an S3 bucket has a lifecycle configuration",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.primary-backend-bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 12,
+      "end_line": 20
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_61",
+      "title": "Ensure that an S3 bucket has a lifecycle configuration",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.secondary-backend-bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 38,
+      "end_line": 45
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_64",
+      "title": "Ensure KMS key Policy is defined",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_kms_key.encrypt-primary-region",
+      "resource_type": "aws_kms_key",
+      "file_path": "/main.tf",
+      "start_line": 420,
+      "end_line": 429
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_64",
+      "title": "Ensure KMS key Policy is defined",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_kms_key.encrypt-secondary-region",
+      "resource_type": "aws_kms_key",
+      "file_path": "/main.tf",
+      "start_line": 438,
+      "end_line": 448
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_144",
+      "title": "Ensure that S3 bucket has cross-region replication enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.aft_access_logs_primary_backend_bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 283,
+      "end_line": 286
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_18",
+      "title": "Ensure the S3 bucket has access logging enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.secondary-backend-bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 38,
+      "end_line": 45
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0024",
+      "title": "Point in time recovery should be enabled to protect DynamoDB table",
+      "severity": "MEDIUM",
+      "resource_name": "aws_dynamodb_table.lock-table",
+      "resource_type": "aws_dynamodb_table",
+      "file_path": "main.tf",
+      "start_line": 423,
+      "end_line": 455
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_300",
+      "title": "Ensure S3 lifecycle configuration sets period for aborting failed uploads",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket_lifecycle_configuration.aft_access_logs_primary_backend_bucket",
+      "resource_type": "aws_s3_bucket_lifecycle_configuration",
+      "file_path": "/main.tf",
+      "start_line": 393,
+      "end_line": 411
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_28",
+      "title": "Ensure DynamoDB point in time recovery (backup) is enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_dynamodb_table.lock-table",
+      "resource_type": "aws_dynamodb_table",
+      "file_path": "/main.tf",
+      "start_line": 423,
+      "end_line": 455
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_61",
+      "title": "Ensure that an S3 bucket has a lifecycle configuration",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.primary-backend-bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 11,
+      "end_line": 19
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_61",
+      "title": "Ensure that an S3 bucket has a lifecycle configuration",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.secondary-backend-bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 45,
+      "end_line": 52
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_144",
+      "title": "Ensure that S3 bucket has cross-region replication enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.aft_access_logs_primary_backend_bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 306,
+      "end_line": 309
+    }
+  ],
+  "target_count": 13,
+  "resolved_count": 8,
+  "introduced_count": 1,
+  "unchanged_count": 5,
+  "repair_success_rate": 0.6153846153846154,
+  "regression_rate": 0.07692307692307693,
+  "net_delta": 7,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 2,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 1
+    },
+    "observability": {
+      "resolved": 6,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 0,
+      "introduced": 1,
+      "unchanged": 4
+    }
+  },
+  "repair_cost_usd": 0.0018445000000000002,
+  "repair_tokens": 12212,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0338_nova-lite.repaired.tf",
+  "raw_response_path": "module_0338_nova-lite.raw.txt",
+  "repaired_code_sha256": "2e701291a2e2e8e9c66fecffe176a282b9a1d43fb98ddb2a93a5526a3c9723a7"
+}

@@ -1,0 +1,109 @@
+{
+  "module_id": "module_0224",
+  "model_id": "deepseek-r1",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0342",
+      "title": "IAM Pass Role Filtering",
+      "severity": "MEDIUM",
+      "resource_name": "module.github_oidc_role[0]",
+      "resource_type": "module",
+      "file_path": "github.com/ministryofjustice/modernisation-platform-github-oidc-role?ref=b40748ec162b446f8f8d282f767a85b6501fd192/github.com/ministryofjustice/modernisation-platform-github-oidc-role?ref=b40748ec162b446f8f8d282f767a85b6501fd192/main.tf",
+      "start_line": 42,
+      "end_line": 45
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0345",
+      "title": "Disallow unrestricted S3 IAM Policies",
+      "severity": "HIGH",
+      "resource_name": "data.aws_iam_policy_document.member-access-data",
+      "resource_type": "data",
+      "file_path": "iam.tf",
+      "start_line": 261,
+      "end_line": 302
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0342",
+      "title": "IAM Pass Role Filtering",
+      "severity": "MEDIUM",
+      "resource_name": "data.aws_iam_policy_document.execution-combined-policy-doc",
+      "resource_type": "data",
+      "file_path": "ssm.tf",
+      "start_line": 108,
+      "end_line": 110
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0342",
+      "title": "IAM Pass Role Filtering",
+      "severity": "MEDIUM",
+      "resource_name": "module.github_oidc_role[0]",
+      "resource_type": "module",
+      "file_path": "github.com/ministryofjustice/modernisation-platform-github-oidc-role?ref=b40748ec162b446f8f8d282f767a85b6501fd192/github.com/ministryofjustice/modernisation-platform-github-oidc-role?ref=b40748ec162b446f8f8d282f767a85b6501fd192/main.tf",
+      "start_line": 42,
+      "end_line": 45
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0342",
+      "title": "IAM Pass Role Filtering",
+      "severity": "MEDIUM",
+      "resource_name": "data.aws_iam_policy_document.execution-combined-policy-doc",
+      "resource_type": "data",
+      "file_path": "main.tf",
+      "start_line": 2557,
+      "end_line": 2559
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_356",
+      "title": "Ensure no IAM policies documents allow \"*\" as a statement's resource for restrictable actions",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.member-access-us-east",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/main.tf",
+      "start_line": 1342,
+      "end_line": 1423
+    }
+  ],
+  "target_count": 3,
+  "resolved_count": 1,
+  "introduced_count": 1,
+  "unchanged_count": 2,
+  "repair_success_rate": 0.3333333333333333,
+  "regression_rate": 0.3333333333333333,
+  "net_delta": 0,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 1,
+      "introduced": 1,
+      "unchanged": 2
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    }
+  },
+  "repair_cost_usd": 0.1275638,
+  "repair_tokens": 58939,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0224_deepseek-r1.repaired.tf",
+  "raw_response_path": "module_0224_deepseek-r1.raw.txt",
+  "repaired_code_sha256": "fbb829c82f57717f4e409627ca3d9e093c9738b0c94f2b1bdd3809f0f4da6cea"
+}

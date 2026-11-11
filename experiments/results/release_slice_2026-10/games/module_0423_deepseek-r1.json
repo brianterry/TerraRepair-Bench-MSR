@@ -1,0 +1,109 @@
+{
+  "module_id": "module_0423",
+  "model_id": "deepseek-r1",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0143",
+      "title": "IAM policies should not be granted directly to users.",
+      "severity": "LOW",
+      "resource_name": "aws_iam_user.default[0]",
+      "resource_type": "aws_iam_user",
+      "file_path": "main.tf",
+      "start_line": 5,
+      "end_line": 11
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "this",
+      "resource_type": "this",
+      "file_path": "/context.tf",
+      "start_line": 23,
+      "end_line": 46
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_273",
+      "title": "Ensure access is controlled through SSO and not AWS IAM defined users",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_user.default",
+      "resource_type": "aws_iam_user",
+      "file_path": "/main.tf",
+      "start_line": 5,
+      "end_line": 11
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_40",
+      "title": "Ensure IAM policies are attached only to groups or roles (Reducing access management complexity may in-turn reduce opportunity for a principal to inadvertently receive or retain excessive privileges.)",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_user_policy_attachment.default",
+      "resource_type": "aws_iam_user_policy_attachment",
+      "file_path": "/main.tf",
+      "start_line": 32,
+      "end_line": 35
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0123",
+      "title": "IAM groups should have MFA enforcement activated.",
+      "severity": "MEDIUM",
+      "resource_name": "aws_iam_group.default",
+      "resource_type": "aws_iam_group",
+      "file_path": "main.tf",
+      "start_line": 277,
+      "end_line": 279
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_273",
+      "title": "Ensure access is controlled through SSO and not AWS IAM defined users",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_user.default",
+      "resource_type": "aws_iam_user",
+      "file_path": "/main.tf",
+      "start_line": 251,
+      "end_line": 257
+    }
+  ],
+  "target_count": 4,
+  "resolved_count": 3,
+  "introduced_count": 1,
+  "unchanged_count": 1,
+  "repair_success_rate": 0.75,
+  "regression_rate": 0.25,
+  "net_delta": 2,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 2,
+      "introduced": 1,
+      "unchanged": 1
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 1,
+      "introduced": 0,
+      "unchanged": 0
+    }
+  },
+  "repair_cost_usd": 0.0283472,
+  "repair_tokens": 11948,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0423_deepseek-r1.repaired.tf",
+  "raw_response_path": "module_0423_deepseek-r1.raw.txt",
+  "repaired_code_sha256": "05bebaec217d9a30c17943ca9517ab02f9a91df79b4611acbb5c7e217c54a2a1"
+}

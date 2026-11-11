@@ -1,0 +1,59 @@
+{
+  "findings_count": 9,
+  "findings": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "aws_reverse_proxy"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_70",
+      "title": "",
+      "resource_name": "aws_s3_bucket_policy.this"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_62",
+      "title": "",
+      "resource_name": "aws_s3_bucket.this"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_6",
+      "title": "",
+      "resource_name": "aws_s3_bucket.this"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_18",
+      "title": "",
+      "resource_name": "aws_s3_bucket.this"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_144",
+      "title": "",
+      "resource_name": "aws_s3_bucket.this"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_21",
+      "title": "",
+      "resource_name": "aws_s3_bucket.this"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_61",
+      "title": "",
+      "resource_name": "aws_s3_bucket.this"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_145",
+      "title": "",
+      "resource_name": "aws_s3_bucket.this"
+    }
+  ]
+}

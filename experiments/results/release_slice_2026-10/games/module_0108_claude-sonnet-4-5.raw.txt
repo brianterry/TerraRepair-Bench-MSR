@@ -1,0 +1,488 @@
+```hcl
+variable "region" {
+  default = "us-east-2"
+}
+
+variable "eks_cluster_name" {
+  default = "demo"
+}
+
+
+provider "aws" {
+  region = var.region
+}
+
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 5.0"
+    }
+  }
+}
+
+
+resource "helm_release" "external_nginx" {
+  name = "external"
+
+  repository       = "https://kubernetes.github.io/ingress-nginx"
+  chart            = "ingress-nginx"
+  namespace        = "ingress"
+  create_namespace = true
+  version          = "4.7.0"
+
+  set {
+    name  = "controller.ingressClassResource.name"
+    value = "external-nginx"
+  }
+
+  set {
+    name  = "controller.service.annotations.service\\.beta\\.kubernetes\\.io/aws-load-balancer-type"
+    value = "external"
+  }
+
+  set {
+    name  = "controller.service.annotations.service\\.beta\\.kubernetes\\.io/aws-load-balancer-nlb-target-type"
+    value = "ip"
+  }
+
+  set {
+    name  = "controller.service.annotations.service\\.beta\\.kubernetes\\.io/aws-load-balancer-scheme"
+    value = "internet-facing"
+  }
+
+  depends_on = [helm_release.aws_load_balancer_controller]
+}
+
+
+resource "aws_cloudwatch_log_group" "api_gateway" {
+  name              = "/aws/apigateway/main"
+  retention_in_days = 7
+}
+
+resource "aws_apigatewayv2_api" "main" {
+  name          = "main"
+  protocol_type = "HTTP"
+}
+
+resource "aws_apigatewayv2_stage" "dev" {
+  api_id = aws_apigatewayv2_api.main.id
+
+  name        = "dev"
+  auto_deploy = true
+
+  access_log_settings {
+    destination_arn = aws_cloudwatch_log_group.api_gateway.arn
+    format          = "$context.requestId"
+  }
+}
+
+
+resource "aws_security_group" "vpc_link" {
+  name        = "vpc-link"
+  description = "Security group for VPC link"
+  vpc_id      = module.vpc.vpc_id
+
+  egress {
+    description = "Allow egress to VPC CIDR"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["10.0.0.0/16"]
+  }
+}
+
+resource "aws_apigatewayv2_vpc_link" "eks" {
+  name               = "eks"
+  security_group_ids = [aws_security_group.vpc_link.id]
+  subnet_ids         = module.vpc.private_subnets
+}
+
+resource "aws_apigatewayv2_integration" "eks" {
+  api_id = aws_apigatewayv2_api.main.id
+
+  integration_uri    = "arn:aws:elasticloadbalancing:us-east-2:424432388155:listener/net/k8s-9example-echoserv-9728d63a5a/4579eaa224406351/013f8e76f634f856"
+  integration_type   = "HTTP_PROXY"
+  integration_method = "ANY"
+  connection_type    = "VPC_LINK"
+  connection_id      = aws_apigatewayv2_vpc_link.eks.id
+}
+
+resource "aws_apigatewayv2_route" "get_echo" {
+  api_id = aws_apigatewayv2_api.main.id
+
+  route_key          = "GET /echo"
+  target             = "integrations/${aws_apigatewayv2_integration.eks.id}"
+  authorization_type = "NONE"
+}
+
+output "hello_base_url" {
+  value = "${aws_apigatewayv2_stage.dev.invoke_url}/echo"
+}
+
+
+output "eks_init" {
+  value       = "aws eks update-kubeconfig --name ${var.eks_cluster_name} --region ${var.region}"
+  description = "Run the following command to connect to the EKS cluster."
+}
+
+
+resource "aws_flow_log" "vpc" {
+  iam_role_arn    = aws_iam_role.vpc_flow_log.arn
+  log_destination = aws_cloudwatch_log_group.vpc_flow_log.arn
+  traffic_type    = "REJECT"
+  vpc_id          = module.vpc.vpc_id
+}
+
+resource "aws_cloudwatch_log_group" "vpc_flow_log" {
+  name              = "/aws/vpc/flow-logs"
+  retention_in_days = 7
+}
+
+resource "aws_iam_role" "vpc_flow_log" {
+  name = "vpc-flow-log-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "vpc-flow-logs.amazonaws.com"
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy" "vpc_flow_log" {
+  name = "vpc-flow-log-policy"
+  role = aws_iam_role.vpc_flow_log.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents",
+          "logs:DescribeLogGroups",
+          "logs:DescribeLogStreams"
+        ]
+        Effect   = "Allow"
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+module "vpc" {
+  source  = "terraform-aws-modules/vpc/aws"
+  version = "5.0.0"
+
+  name = "main"
+  cidr = "10.0.0.0/16"
+
+  azs             = ["us-east-2a", "us-east-2b"]
+  private_subnets = ["10.0.0.0/19", "10.0.32.0/19"]
+  public_subnets  = ["10.0.64.0/19", "10.0.96.0/19"]
+
+  enable_dns_hostnames = true
+  enable_dns_support   = true
+
+  enable_nat_gateway     = true
+  single_nat_gateway     = true
+  one_nat_gateway_per_az = false
+
+  map_public_ip_on_launch = false
+
+  private_subnet_tags = {
+    "kubernetes.io/role/internal-elb"               = 1
+    "kubernetes.io/cluster/${var.eks_cluster_name}" = "owned"
+  }
+
+  public_subnet_tags = {
+    "kubernetes.io/role/elb"                        = 1
+    "kubernetes.io/cluster/${var.eks_cluster_name}" = "owned"
+  }
+}
+
+
+resource "aws_kms_key" "eks" {
+  description             = "EKS Secret Encryption Key"
+  deletion_window_in_days = 10
+}
+
+resource "aws_iam_role" "eks" {
+  name = "eks-cluster-${var.eks_cluster_name}"
+
+  assume_role_policy = <<POLICY
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "eks.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+POLICY
+}
+
+resource "aws_iam_role_policy_attachment" "eks_amazon_eks_cluster_policy" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
+  role       = aws_iam_role.eks.name
+}
+
+resource "aws_eks_cluster" "this" {
+  name     = var.eks_cluster_name
+  version  = "1.28"
+  role_arn = aws_iam_role.eks.arn
+
+  vpc_config {
+    subnet_ids = concat(
+      module.vpc.private_subnets,
+      module.vpc.public_subnets
+    )
+    endpoint_public_access  = false
+    endpoint_private_access = true
+    public_access_cidrs     = []
+  }
+
+  encryption_config {
+    provider {
+      key_arn = aws_kms_key.eks.arn
+    }
+    resources = ["secrets"]
+  }
+
+  enabled_cluster_log_types = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
+
+  depends_on = [aws_iam_role_policy_attachment.eks_amazon_eks_cluster_policy]
+}
+
+
+resource "aws_iam_role" "nodes" {
+  name = "eks-node-group-nodes"
+
+  assume_role_policy = jsonencode({
+    Statement = [{
+      Action = "sts:AssumeRole"
+      Effect = "Allow"
+      Principal = {
+        Service = "ec2.amazonaws.com"
+      }
+    }]
+    Version = "2012-10-17"
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "nodes_amazon_eks_worker_node_policy" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
+  role       = aws_iam_role.nodes.name
+}
+
+resource "aws_iam_role_policy_attachment" "nodes_amazon_eks_cni_policy" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
+  role       = aws_iam_role.nodes.name
+}
+
+resource "aws_iam_role_policy_attachment" "nodes_amazon_ec2_container_registry_read_only" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+  role       = aws_iam_role.nodes.name
+}
+
+resource "aws_iam_role_policy_attachment" "amazon_ssm_managed_instance_core" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+  role       = aws_iam_role.nodes.name
+}
+
+resource "aws_eks_node_group" "private_nodes" {
+  cluster_name    = aws_eks_cluster.this.name
+  node_group_name = "private-nodes"
+  node_role_arn   = aws_iam_role.nodes.arn
+
+  subnet_ids = module.vpc.private_subnets
+
+  capacity_type  = "ON_DEMAND"
+  instance_types = ["t3a.medium"]
+
+  scaling_config {
+    desired_size = 1
+    max_size     = 2
+    min_size     = 0
+  }
+
+  update_config {
+    max_unavailable = 1
+  }
+
+  labels = {
+    role = "private-nodes"
+  }
+
+  depends_on = [
+    aws_iam_role_policy_attachment.nodes_amazon_eks_worker_node_policy,
+    aws_iam_role_policy_attachment.nodes_amazon_eks_cni_policy,
+    aws_iam_role_policy_attachment.nodes_amazon_ec2_container_registry_read_only,
+  ]
+}
+
+resource "aws_eks_node_group" "public_nodes" {
+  cluster_name    = aws_eks_cluster.this.name
+  node_group_name = "public-nodes"
+  node_role_arn   = aws_iam_role.nodes.arn
+
+  subnet_ids = module.vpc.public_subnets
+
+  capacity_type  = "ON_DEMAND"
+  instance_types = ["t3a.medium"]
+
+  scaling_config {
+    desired_size = 1
+    max_size     = 2
+    min_size     = 0
+  }
+
+  update_config {
+    max_unavailable = 1
+  }
+
+  labels = {
+    role = "public-nodes"
+  }
+
+  depends_on = [
+    aws_iam_role_policy_attachment.nodes_amazon_eks_worker_node_policy,
+    aws_iam_role_policy_attachment.nodes_amazon_eks_cni_policy,
+    aws_iam_role_policy_attachment.nodes_amazon_ec2_container_registry_read_only,
+  ]
+}
+
+
+resource "aws_security_group_rule" "allow_web" {
+  description       = "Allow HTTP traffic from VPC"
+  type              = "ingress"
+  from_port         = 80
+  to_port           = 80
+  protocol          = "tcp"
+  cidr_blocks       = ["10.0.0.0/16"]
+  security_group_id = aws_eks_cluster.this.vpc_config[0].cluster_security_group_id
+}
+
+resource "aws_security_group_rule" "allow_web_node_port" {
+  description       = "Allow node port traffic from VPC"
+  type              = "ingress"
+  from_port         = 30010
+  to_port           = 30010
+  protocol          = "tcp"
+  cidr_blocks       = ["10.0.0.0/16"]
+  security_group_id = aws_eks_cluster.this.vpc_config[0].cluster_security_group_id
+}
+
+
+data "aws_route53_zone" "public" {
+  name         = "antonputra.com"
+  private_zone = false
+}
+
+resource "aws_route53_record" "web" {
+  zone_id = data.aws_route53_zone.public.zone_id
+  name    = "service-a"
+  type    = "CNAME"
+  ttl     = 300
+  records = ["k8s-ingress-external-0278203c2c-b04fe31f0de98ebe.elb.us-east-2.amazonaws.com"]
+}
+
+
+data "tls_certificate" "eks" {
+  url = aws_eks_cluster.this.identity[0].oidc[0].issuer
+}
+
+resource "aws_iam_openid_connect_provider" "eks" {
+  client_id_list  = ["sts.amazonaws.com"]
+  thumbprint_list = [data.tls_certificate.eks.certificates[0].sha1_fingerprint]
+  url             = aws_eks_cluster.this.identity[0].oidc[0].issuer
+}
+
+
+data "aws_iam_policy_document" "aws_load_balancer_controller_assume_role_policy" {
+  statement {
+    actions = ["sts:AssumeRoleWithWebIdentity"]
+    effect  = "Allow"
+
+    condition {
+      test     = "StringEquals"
+      variable = "${replace(aws_iam_openid_connect_provider.eks.url, "https://", "")}:sub"
+      values   = ["system:serviceaccount:kube-system:aws-load-balancer-controller"]
+    }
+
+    principals {
+      identifiers = [aws_iam_openid_connect_provider.eks.arn]
+      type        = "Federated"
+    }
+  }
+}
+
+resource "aws_iam_role" "aws_load_balancer_controller" {
+  assume_role_policy = data.aws_iam_policy_document.aws_load_balancer_controller_assume_role_policy.json
+  name               = "aws-load-balancer-controller"
+}
+
+resource "aws_iam_policy" "aws_load_balancer_controller" {
+  policy = file("./AWSLoadBalancerController.json")
+  name   = "AWSLoadBalancerController"
+}
+
+resource "aws_iam_role_policy_attachment" "aws_load_balancer_controller_attach" {
+  role       = aws_iam_role.aws_load_balancer_controller.name
+  policy_arn = aws_iam_policy.aws_load_balancer_controller.arn
+}
+
+
+provider "helm" {
+  kubernetes {
+    host                   = aws_eks_cluster.this.endpoint
+    cluster_ca_certificate = base64decode(aws_eks_cluster.this.certificate_authority[0].data)
+    exec {
+      api_version = "client.authentication.k8s.io/v1beta1"
+      args        = ["eks", "get-token", "--cluster-name", aws_eks_cluster.this.id]
+      command     = "aws"
+    }
+  }
+}
+
+resource "helm_release" "aws_load_balancer_controller" {
+  name = "aws-load-balancer-controller"
+
+  repository = "https://aws.github.io/eks-charts"
+  chart      = "aws-load-balancer-controller"
+  namespace  = "kube-system"
+  version    = "1.5.3"
+
+  set {
+    name  = "clusterName"
+    value = aws_eks_cluster.this.id
+  }
+
+  set {
+    name  = "serviceAccount.name"
+    value = "aws-load-balancer-controller"
+  }
+
+  set {
+    name  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
+    value = aws_iam_role.aws_load_balancer_controller.arn
+  }
+
+  depends_on = [
+    aws_eks_node_group.private_nodes,
+    aws_iam_role_policy_attachment.aws_load_balancer_controller_attach
+  ]
+}
+```

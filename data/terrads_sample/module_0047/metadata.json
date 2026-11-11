@@ -1,0 +1,29 @@
+{
+  "findings_count": 4,
+  "findings": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_234",
+      "title": "",
+      "resource_name": "aws_acm_certificate.private_domain_cert"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_233",
+      "title": "",
+      "resource_name": "aws_acm_certificate.private_domain_cert"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_12",
+      "title": "",
+      "resource_name": "aws_vpc.example"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_11",
+      "title": "",
+      "resource_name": "aws_vpc.example"
+    }
+  ]
+}

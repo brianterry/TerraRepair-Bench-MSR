@@ -1,0 +1,175 @@
+{
+  "module_id": "module_0021",
+  "model_id": "nova-lite",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0028",
+      "title": "aws_instance should activate session tokens for Instance Metadata Service.",
+      "severity": "HIGH",
+      "resource_name": "aws_instance.example",
+      "resource_type": "aws_instance",
+      "file_path": "main.tf",
+      "start_line": 16,
+      "end_line": 22
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0131",
+      "title": "Instance with unencrypted block device.",
+      "severity": "HIGH",
+      "resource_name": "aws_instance.example",
+      "resource_type": "aws_instance",
+      "file_path": "main.tf",
+      "start_line": 16,
+      "end_line": 22
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_111",
+      "title": "Ensure IAM policies does not allow write access without constraints",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.ec2_admin_permissions",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/main.tf",
+      "start_line": 50,
+      "end_line": 56
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_356",
+      "title": "Ensure no IAM policies documents allow \"*\" as a statement's resource for restrictable actions",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.ec2_admin_permissions",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/main.tf",
+      "start_line": 50,
+      "end_line": 56
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_109",
+      "title": "Ensure IAM policies does not allow permissions management / resource exposure without constraints",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.ec2_admin_permissions",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/main.tf",
+      "start_line": 50,
+      "end_line": 56
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_107",
+      "title": "Ensure IAM policies does not allow credentials exposure",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.ec2_admin_permissions",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/main.tf",
+      "start_line": 50,
+      "end_line": 56
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_135",
+      "title": "Ensure that EC2 is EBS optimized",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_instance.example",
+      "resource_type": "aws_instance",
+      "file_path": "/main.tf",
+      "start_line": 16,
+      "end_line": 22
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_79",
+      "title": "Ensure Instance Metadata Service Version 1 is not enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_instance.example",
+      "resource_type": "aws_instance",
+      "file_path": "/main.tf",
+      "start_line": 16,
+      "end_line": 22
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_8",
+      "title": "Ensure all data stored in the Launch configuration or instance Elastic Blocks Store is securely encrypted",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_instance.example",
+      "resource_type": "aws_instance",
+      "file_path": "/main.tf",
+      "start_line": 16,
+      "end_line": 22
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_126",
+      "title": "Ensure that detailed monitoring is enabled for EC2 instances",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_instance.example",
+      "resource_type": "aws_instance",
+      "file_path": "/main.tf",
+      "start_line": 16,
+      "end_line": 22
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_135",
+      "title": "Ensure that EC2 is EBS optimized",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_instance.example",
+      "resource_type": "aws_instance",
+      "file_path": "/main.tf",
+      "start_line": 16,
+      "end_line": 38
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_126",
+      "title": "Ensure that detailed monitoring is enabled for EC2 instances",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_instance.example",
+      "resource_type": "aws_instance",
+      "file_path": "/main.tf",
+      "start_line": 16,
+      "end_line": 38
+    }
+  ],
+  "target_count": 10,
+  "resolved_count": 8,
+  "introduced_count": 0,
+  "unchanged_count": 2,
+  "repair_success_rate": 0.8,
+  "regression_rate": 0.0,
+  "net_delta": 8,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 4,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 3,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 1
+    },
+    "other": {
+      "resolved": 1,
+      "introduced": 0,
+      "unchanged": 1
+    }
+  },
+  "repair_cost_usd": 0.00029280000000000007,
+  "repair_tokens": 2127,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0021_nova-lite.repaired.tf",
+  "raw_response_path": "module_0021_nova-lite.raw.txt",
+  "repaired_code_sha256": "a1c129b5b326ca465060cdeafa4e2f74926b5375cb436e49c73cf09724725064"
+}

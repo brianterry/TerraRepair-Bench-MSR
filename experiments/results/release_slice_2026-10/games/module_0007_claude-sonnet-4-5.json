@@ -1,0 +1,208 @@
+{
+  "module_id": "module_0007",
+  "model_id": "claude-sonnet-4-5",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "aws_security_group.remote_access",
+      "resource_type": "aws_security_group",
+      "file_path": "main.tf",
+      "start_line": 565,
+      "end_line": 565
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0124",
+      "title": "Missing description for security group rule.",
+      "severity": "LOW",
+      "resource_name": "aws_security_group.remote_access",
+      "resource_type": "aws_security_group",
+      "file_path": "main.tf",
+      "start_line": 561,
+      "end_line": 567
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0178",
+      "title": "VPC Flow Logs is a feature that enables you to capture information about the IP traffic going to and from network interfaces in your VPC. After you've created a flow log, you can view and retrieve its data in Amazon CloudWatch Logs. It is recommended that VPC Flow Logs be enabled for packet \"Rejects\" for VPCs.",
+      "severity": "MEDIUM",
+      "resource_name": "module.vpc",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/vpc/aws/main.tf",
+      "start_line": 28,
+      "end_line": 53
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_394",
+      "title": "Ensure aws_availability_zones data source pins zone identity so its result set does not silently expand when AWS adds an Availability Zone",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_availability_zones.available",
+      "resource_type": "aws_availability_zones",
+      "file_path": "/main.tf",
+      "start_line": 7,
+      "end_line": 13
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "vpc",
+      "resource_type": "vpc",
+      "file_path": "/main.tf",
+      "start_line": 467,
+      "end_line": 500
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_vpc_cni_ipv6_pod_identity",
+      "resource_type": "aws_vpc_cni_ipv6_pod_identity",
+      "file_path": "/main.tf",
+      "start_line": 502,
+      "end_line": 512
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "ebs_kms_key",
+      "resource_type": "ebs_kms_key",
+      "file_path": "/main.tf",
+      "start_line": 514,
+      "end_line": 536
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "key_pair",
+      "resource_type": "key_pair",
+      "file_path": "/main.tf",
+      "start_line": 538,
+      "end_line": 546
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_382",
+      "title": "Ensure no security groups allow egress from 0.0.0.0:0 to port -1",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group.remote_access",
+      "resource_type": "aws_security_group",
+      "file_path": "/main.tf",
+      "start_line": 548,
+      "end_line": 570
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "Ensure every security group and rule has a description",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group.remote_access",
+      "resource_type": "aws_security_group",
+      "file_path": "/main.tf",
+      "start_line": 548,
+      "end_line": 570
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_355",
+      "title": "Ensure no IAM policies documents allow \"*\" as a statement's resource for restrictable actions",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy.node_additional",
+      "resource_type": "aws_iam_policy",
+      "file_path": "/main.tf",
+      "start_line": 572,
+      "end_line": 590
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_5",
+      "title": "Ensure that Security Groups are attached to another resource",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group.remote_access",
+      "resource_type": "aws_security_group",
+      "file_path": "/main.tf",
+      "start_line": 548,
+      "end_line": 570
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "aws_security_group.remote_access",
+      "resource_type": "aws_security_group",
+      "file_path": "main.tf",
+      "start_line": 528,
+      "end_line": 528
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "vpc",
+      "resource_type": "vpc",
+      "file_path": "/main.tf",
+      "start_line": 431,
+      "end_line": 469
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_5",
+      "title": "Ensure that Security Groups are attached to another resource",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group.remote_access",
+      "resource_type": "aws_security_group",
+      "file_path": "/main.tf",
+      "start_line": 510,
+      "end_line": 533
+    }
+  ],
+  "target_count": 12,
+  "resolved_count": 9,
+  "introduced_count": 0,
+  "unchanged_count": 3,
+  "repair_success_rate": 0.75,
+  "regression_rate": 0.0,
+  "net_delta": 9,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 2,
+      "introduced": 0,
+      "unchanged": 1
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 1,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 6,
+      "introduced": 0,
+      "unchanged": 2
+    }
+  },
+  "repair_cost_usd": 0.134385,
+  "repair_tokens": 15807,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0007_claude-sonnet-4-5.repaired.tf",
+  "raw_response_path": "module_0007_claude-sonnet-4-5.raw.txt",
+  "repaired_code_sha256": "c9bb0ed1c19ba35f42f110d3a24bb50dc58d552f3ad8529bae1b8780b0fd7318"
+}

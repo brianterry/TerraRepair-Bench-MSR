@@ -1,0 +1,380 @@
+{
+  "module_id": "module_0036",
+  "model_id": "nova-lite",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0342",
+      "title": "IAM Pass Role Filtering",
+      "severity": "MEDIUM",
+      "resource_name": "module.eks_blueprints_addons",
+      "resource_type": "module",
+      "file_path": "aws-ia/eks-blueprints-addons/aws/aws-ia/eks-blueprints-addon/aws/aws-ia/eks-blueprints-addons/aws/aws-ia/eks-blueprints-addon/aws/main.tf",
+      "start_line": 210,
+      "end_line": 256
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0040",
+      "title": "EKS Clusters should have the public access disabled",
+      "severity": "CRITICAL",
+      "resource_name": "module.eks",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/eks/aws/main.tf",
+      "start_line": 37,
+      "end_line": 37
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0041",
+      "title": "EKS cluster should not have open CIDR range for public access",
+      "severity": "CRITICAL",
+      "resource_name": "module.eks",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/eks/aws/main.tf",
+      "start_line": 38,
+      "end_line": 38
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "eks",
+      "resource_type": "eks",
+      "file_path": "/main.tf",
+      "start_line": 202,
+      "end_line": 254
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "eks_blueprints_platform_teams",
+      "resource_type": "eks_blueprints_platform_teams",
+      "file_path": "/main.tf",
+      "start_line": 264,
+      "end_line": 334
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "eks_blueprints_dev_teams[\"burnham\"]",
+      "resource_type": "eks_blueprints_dev_teams[\"burnham\"]",
+      "file_path": "/main.tf",
+      "start_line": 336,
+      "end_line": 428
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "eks_blueprints_ecsdemo_teams[\"ecsdemo-crystal\"]",
+      "resource_type": "eks_blueprints_ecsdemo_teams[\"ecsdemo-crystal\"]",
+      "file_path": "/main.tf",
+      "start_line": 430,
+      "end_line": 509
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "gitops_bridge_bootstrap",
+      "resource_type": "gitops_bridge_bootstrap",
+      "file_path": "/main.tf",
+      "start_line": 558,
+      "end_line": 586
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "eks_blueprints_addons",
+      "resource_type": "eks_blueprints_addons",
+      "file_path": "/main.tf",
+      "start_line": 591,
+      "end_line": 662
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_2",
+      "title": "Ensure Terraform module sources use a tag with a version number",
+      "severity": "UNKNOWN",
+      "resource_name": "eks_blueprints_addons",
+      "resource_type": "eks_blueprints_addons",
+      "file_path": "/main.tf",
+      "start_line": 591,
+      "end_line": 662
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "ebs_csi_driver_irsa",
+      "resource_type": "ebs_csi_driver_irsa",
+      "file_path": "/main.tf",
+      "start_line": 664,
+      "end_line": 680
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "vpc_cni_irsa",
+      "resource_type": "vpc_cni_irsa",
+      "file_path": "/main.tf",
+      "start_line": 682,
+      "end_line": 699
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "eks_blueprints_dev_teams[\"riker\"]",
+      "resource_type": "eks_blueprints_dev_teams[\"riker\"]",
+      "file_path": "/main.tf",
+      "start_line": 336,
+      "end_line": 428
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "eks_blueprints_ecsdemo_teams[\"ecsdemo-frontend\"]",
+      "resource_type": "eks_blueprints_ecsdemo_teams[\"ecsdemo-frontend\"]",
+      "file_path": "/main.tf",
+      "start_line": 430,
+      "end_line": 509
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "eks_blueprints_ecsdemo_teams[\"ecsdemo-nodejs\"]",
+      "resource_type": "eks_blueprints_ecsdemo_teams[\"ecsdemo-nodejs\"]",
+      "file_path": "/main.tf",
+      "start_line": 430,
+      "end_line": 509
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0342",
+      "title": "IAM Pass Role Filtering",
+      "severity": "MEDIUM",
+      "resource_name": "module.eks_blueprints_addons",
+      "resource_type": "module",
+      "file_path": "aws-ia/eks-blueprints-addons/aws/aws-ia/eks-blueprints-addon/aws/aws-ia/eks-blueprints-addons/aws/aws-ia/eks-blueprints-addon/aws/main.tf",
+      "start_line": 210,
+      "end_line": 256
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0040",
+      "title": "EKS Clusters should have the public access disabled",
+      "severity": "CRITICAL",
+      "resource_name": "module.eks",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/eks/aws/main.tf",
+      "start_line": 37,
+      "end_line": 37
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0041",
+      "title": "EKS cluster should not have open CIDR range for public access",
+      "severity": "CRITICAL",
+      "resource_name": "module.eks",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/eks/aws/main.tf",
+      "start_line": 38,
+      "end_line": 38
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "eks",
+      "resource_type": "eks",
+      "file_path": "/main.tf",
+      "start_line": 202,
+      "end_line": 254
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "eks_blueprints_platform_teams",
+      "resource_type": "eks_blueprints_platform_teams",
+      "file_path": "/main.tf",
+      "start_line": 264,
+      "end_line": 334
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "eks_blueprints_dev_teams[\"burnham\"]",
+      "resource_type": "eks_blueprints_dev_teams[\"burnham\"]",
+      "file_path": "/main.tf",
+      "start_line": 336,
+      "end_line": 428
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "eks_blueprints_ecsdemo_teams[\"ecsdemo-crystal\"]",
+      "resource_type": "eks_blueprints_ecsdemo_teams[\"ecsdemo-crystal\"]",
+      "file_path": "/main.tf",
+      "start_line": 430,
+      "end_line": 509
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "gitops_bridge_bootstrap",
+      "resource_type": "gitops_bridge_bootstrap",
+      "file_path": "/main.tf",
+      "start_line": 558,
+      "end_line": 586
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "eks_blueprints_addons",
+      "resource_type": "eks_blueprints_addons",
+      "file_path": "/main.tf",
+      "start_line": 591,
+      "end_line": 662
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_2",
+      "title": "Ensure Terraform module sources use a tag with a version number",
+      "severity": "UNKNOWN",
+      "resource_name": "eks_blueprints_addons",
+      "resource_type": "eks_blueprints_addons",
+      "file_path": "/main.tf",
+      "start_line": 591,
+      "end_line": 662
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "ebs_csi_driver_irsa",
+      "resource_type": "ebs_csi_driver_irsa",
+      "file_path": "/main.tf",
+      "start_line": 664,
+      "end_line": 680
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "vpc_cni_irsa",
+      "resource_type": "vpc_cni_irsa",
+      "file_path": "/main.tf",
+      "start_line": 682,
+      "end_line": 699
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "eks_blueprints_dev_teams[\"riker\"]",
+      "resource_type": "eks_blueprints_dev_teams[\"riker\"]",
+      "file_path": "/main.tf",
+      "start_line": 336,
+      "end_line": 428
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "eks_blueprints_ecsdemo_teams[\"ecsdemo-frontend\"]",
+      "resource_type": "eks_blueprints_ecsdemo_teams[\"ecsdemo-frontend\"]",
+      "file_path": "/main.tf",
+      "start_line": 430,
+      "end_line": 509
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "eks_blueprints_ecsdemo_teams[\"ecsdemo-nodejs\"]",
+      "resource_type": "eks_blueprints_ecsdemo_teams[\"ecsdemo-nodejs\"]",
+      "file_path": "/main.tf",
+      "start_line": 430,
+      "end_line": 509
+    }
+  ],
+  "target_count": 15,
+  "resolved_count": 0,
+  "introduced_count": 0,
+  "unchanged_count": 15,
+  "repair_success_rate": 0.0,
+  "regression_rate": 0.0,
+  "net_delta": 0,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 3
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 12
+    }
+  },
+  "repair_cost_usd": 0.0029358,
+  "repair_tokens": 19358,
+  "hcl_valid": false,
+  "failure_metadata": {
+    "source_chars": 29134,
+    "est_input_tokens": 7283,
+    "max_tokens": 40000,
+    "size_driven_failure": false,
+    "repair_error": "Repaired code failed HCL validation"
+  },
+  "repaired_code_path": "module_0036_nova-lite.repaired.tf",
+  "raw_response_path": "module_0036_nova-lite.raw.txt",
+  "repaired_code_sha256": "d98fb0b74b44341b8f7a4099944de09918c788c1c54bb9cdf99ee0b9e2673574"
+}

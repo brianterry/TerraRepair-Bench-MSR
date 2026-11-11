@@ -1,0 +1,329 @@
+{
+  "module_id": "module_0139",
+  "model_id": "llama-3-3-70b",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0178",
+      "title": "VPC Flow Logs is a feature that enables you to capture information about the IP traffic going to and from network interfaces in your VPC. After you've created a flow log, you can view and retrieve its data in Amazon CloudWatch Logs. It is recommended that VPC Flow Logs be enabled for packet \"Rejects\" for VPCs.",
+      "severity": "MEDIUM",
+      "resource_name": "aws_vpc.sagemaker",
+      "resource_type": "aws_vpc",
+      "file_path": "main.tf",
+      "start_line": 14,
+      "end_line": 16
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_307",
+      "title": "Ensure SageMaker Users should not have root access to SageMaker notebook instances",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_sagemaker_notebook_instance.ni",
+      "resource_type": "aws_sagemaker_notebook_instance",
+      "file_path": "/main.tf",
+      "start_line": 54,
+      "end_line": 64
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_122",
+      "title": "Ensure that direct internet access is disabled for an Amazon SageMaker Notebook Instance",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_sagemaker_notebook_instance.ni",
+      "resource_type": "aws_sagemaker_notebook_instance",
+      "file_path": "/main.tf",
+      "start_line": 54,
+      "end_line": 64
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_22",
+      "title": "Ensure SageMaker Notebook is encrypted at rest using KMS CMK",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_sagemaker_notebook_instance.ni",
+      "resource_type": "aws_sagemaker_notebook_instance",
+      "file_path": "/main.tf",
+      "start_line": 54,
+      "end_line": 64
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_371",
+      "title": "Ensure Amazon SageMaker Notebook Instance only allows for IMDSv2",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_sagemaker_notebook_instance.ni",
+      "resource_type": "aws_sagemaker_notebook_instance",
+      "file_path": "/main.tf",
+      "start_line": 54,
+      "end_line": 64
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_187",
+      "title": "Ensure Sagemaker domain and notebook instance are encrypted by KMS using a customer managed Key (CMK)",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_sagemaker_notebook_instance.ni",
+      "resource_type": "aws_sagemaker_notebook_instance",
+      "file_path": "/main.tf",
+      "start_line": 54,
+      "end_line": 64
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_12",
+      "title": "Ensure the default security group of every VPC restricts all traffic",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_vpc.sagemaker",
+      "resource_type": "aws_vpc",
+      "file_path": "/main.tf",
+      "start_line": 14,
+      "end_line": 16
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_11",
+      "title": "Ensure VPC flow logging is enabled in all VPCs",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_vpc.sagemaker",
+      "resource_type": "aws_vpc",
+      "file_path": "/main.tf",
+      "start_line": 14,
+      "end_line": 16
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0017",
+      "title": "CloudWatch log groups should be encrypted using CMK",
+      "severity": "LOW",
+      "resource_name": "aws_cloudwatch_log_group.sagemaker",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "main.tf",
+      "start_line": 25,
+      "end_line": 27
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0065",
+      "title": "A KMS key is not configured to auto-rotate.",
+      "severity": "MEDIUM",
+      "resource_name": "aws_kms_key.sagemaker",
+      "resource_type": "aws_kms_key",
+      "file_path": "main.tf",
+      "start_line": 92,
+      "end_line": 95
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "aws_security_group.allow_tls",
+      "resource_type": "aws_security_group",
+      "file_path": "main.tf",
+      "start_line": 51,
+      "end_line": 51
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "aws_security_group.default",
+      "resource_type": "aws_security_group",
+      "file_path": "main.tf",
+      "start_line": 71,
+      "end_line": 71
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0124",
+      "title": "Missing description for security group rule.",
+      "severity": "LOW",
+      "resource_name": "aws_security_group.allow_tls",
+      "resource_type": "aws_security_group",
+      "file_path": "main.tf",
+      "start_line": 47,
+      "end_line": 52
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0124",
+      "title": "Missing description for security group rule.",
+      "severity": "LOW",
+      "resource_name": "aws_security_group.default",
+      "resource_type": "aws_security_group",
+      "file_path": "main.tf",
+      "start_line": 60,
+      "end_line": 65
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_66",
+      "title": "Ensure that CloudWatch Log Group specifies retention days",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.sagemaker",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/main.tf",
+      "start_line": 25,
+      "end_line": 27
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_158",
+      "title": "Ensure that CloudWatch Log Group is encrypted by KMS",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.sagemaker",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/main.tf",
+      "start_line": 25,
+      "end_line": 27
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_338",
+      "title": "Ensure CloudWatch log groups retains logs for at least 1 year",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.sagemaker",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/main.tf",
+      "start_line": 25,
+      "end_line": 27
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_382",
+      "title": "Ensure no security groups allow egress from 0.0.0.0:0 to port -1",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group.allow_tls",
+      "resource_type": "aws_security_group",
+      "file_path": "/main.tf",
+      "start_line": 34,
+      "end_line": 53
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "Ensure every security group and rule has a description",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group.allow_tls",
+      "resource_type": "aws_security_group",
+      "file_path": "/main.tf",
+      "start_line": 34,
+      "end_line": 53
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_382",
+      "title": "Ensure no security groups allow egress from 0.0.0.0:0 to port -1",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group.default",
+      "resource_type": "aws_security_group",
+      "file_path": "/main.tf",
+      "start_line": 55,
+      "end_line": 73
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "Ensure every security group and rule has a description",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group.default",
+      "resource_type": "aws_security_group",
+      "file_path": "/main.tf",
+      "start_line": 55,
+      "end_line": 73
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_7",
+      "title": "Ensure rotation for customer created CMKs is enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_kms_key.sagemaker",
+      "resource_type": "aws_kms_key",
+      "file_path": "/main.tf",
+      "start_line": 92,
+      "end_line": 95
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_371",
+      "title": "Ensure Amazon SageMaker Notebook Instance only allows for IMDSv2",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_sagemaker_notebook_instance.ni",
+      "resource_type": "aws_sagemaker_notebook_instance",
+      "file_path": "/main.tf",
+      "start_line": 97,
+      "end_line": 107
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_5",
+      "title": "Ensure that Security Groups are attached to another resource",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group.default",
+      "resource_type": "aws_security_group",
+      "file_path": "/main.tf",
+      "start_line": 55,
+      "end_line": 73
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_12",
+      "title": "Ensure the default security group of every VPC restricts all traffic",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_vpc.sagemaker",
+      "resource_type": "aws_vpc",
+      "file_path": "/main.tf",
+      "start_line": 14,
+      "end_line": 16
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_64",
+      "title": "Ensure KMS key Policy is defined",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_kms_key.sagemaker",
+      "resource_type": "aws_kms_key",
+      "file_path": "/main.tf",
+      "start_line": 92,
+      "end_line": 95
+    }
+  ],
+  "target_count": 8,
+  "resolved_count": 6,
+  "introduced_count": 16,
+  "unchanged_count": 2,
+  "repair_success_rate": 0.75,
+  "regression_rate": 2.0,
+  "net_delta": -10,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 0,
+      "introduced": 5,
+      "unchanged": 1
+    },
+    "data_protection": {
+      "resolved": 2,
+      "introduced": 3,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 2,
+      "introduced": 2,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 2,
+      "introduced": 6,
+      "unchanged": 1
+    }
+  },
+  "repair_cost_usd": 0.0014600000000000001,
+  "repair_tokens": 1825,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0139_llama-3-3-70b.repaired.tf",
+  "raw_response_path": "module_0139_llama-3-3-70b.raw.txt",
+  "repaired_code_sha256": "743692d4ffd977e4dd68d7f028dc41a9c4204f81b61d5219902dc6f939111e54"
+}

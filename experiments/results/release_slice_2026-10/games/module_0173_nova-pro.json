@@ -1,0 +1,120 @@
+{
+  "module_id": "module_0173",
+  "model_id": "nova-pro",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0178",
+      "title": "VPC Flow Logs is a feature that enables you to capture information about the IP traffic going to and from network interfaces in your VPC. After you've created a flow log, you can view and retrieve its data in Amazon CloudWatch Logs. It is recommended that VPC Flow Logs be enabled for packet \"Rejects\" for VPCs.",
+      "severity": "MEDIUM",
+      "resource_name": "aws_vpc.default",
+      "resource_type": "aws_vpc",
+      "file_path": "vpc.tf",
+      "start_line": 1,
+      "end_line": 7
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_130",
+      "title": "Ensure VPC subnets do not assign public IP by default",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_subnet.subnets_pub",
+      "resource_type": "aws_subnet",
+      "file_path": "/subnet.tf",
+      "start_line": 2,
+      "end_line": 16
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_12",
+      "title": "Ensure the default security group of every VPC restricts all traffic",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_vpc.default",
+      "resource_type": "aws_vpc",
+      "file_path": "/vpc.tf",
+      "start_line": 1,
+      "end_line": 7
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_11",
+      "title": "Ensure VPC flow logging is enabled in all VPCs",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_vpc.default",
+      "resource_type": "aws_vpc",
+      "file_path": "/vpc.tf",
+      "start_line": 1,
+      "end_line": 7
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_290",
+      "title": "Ensure IAM policies does not allow write access without constraints",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_role_policy.vpc_flow_logs",
+      "resource_type": "aws_iam_role_policy",
+      "file_path": "/main.tf",
+      "start_line": 208,
+      "end_line": 225
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_355",
+      "title": "Ensure no IAM policies documents allow \"*\" as a statement's resource for restrictable actions",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_role_policy.vpc_flow_logs",
+      "resource_type": "aws_iam_role_policy",
+      "file_path": "/main.tf",
+      "start_line": 208,
+      "end_line": 225
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_12",
+      "title": "Ensure the default security group of every VPC restricts all traffic",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_vpc.default",
+      "resource_type": "aws_vpc",
+      "file_path": "/main.tf",
+      "start_line": 171,
+      "end_line": 179
+    }
+  ],
+  "target_count": 4,
+  "resolved_count": 3,
+  "introduced_count": 2,
+  "unchanged_count": 1,
+  "repair_success_rate": 0.75,
+  "regression_rate": 0.5,
+  "net_delta": 1,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 1,
+      "introduced": 2,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 2,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 1
+    }
+  },
+  "repair_cost_usd": 0.003887,
+  "repair_tokens": 3887,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0173_nova-pro.repaired.tf",
+  "raw_response_path": "module_0173_nova-pro.raw.txt",
+  "repaired_code_sha256": "af230edec47c767f73c33414adcdd4b5943680ec4d9b84c399b0b4ea078486ce"
+}

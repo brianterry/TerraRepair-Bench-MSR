@@ -1,0 +1,417 @@
+{
+  "module_id": "module_0155",
+  "model_id": "nova-lite",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0024",
+      "title": "Point in time recovery should be enabled to protect DynamoDB table",
+      "severity": "MEDIUM",
+      "resource_name": "aws_dynamodb_table.this",
+      "resource_type": "aws_dynamodb_table",
+      "file_path": "main.tf",
+      "start_line": 216,
+      "end_line": 233
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0025",
+      "title": "DynamoDB tables should use at rest encryption with a Customer Managed Key",
+      "severity": "LOW",
+      "resource_name": "aws_dynamodb_table.this",
+      "resource_type": "aws_dynamodb_table",
+      "file_path": "main.tf",
+      "start_line": 216,
+      "end_line": 233
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0064",
+      "title": "Kinesis stream is unencrypted.",
+      "severity": "HIGH",
+      "resource_name": "aws_kinesis_stream.this",
+      "resource_type": "aws_kinesis_stream",
+      "file_path": "main.tf",
+      "start_line": 236,
+      "end_line": 239
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0070",
+      "title": "MQ Broker should have audit logging enabled",
+      "severity": "MEDIUM",
+      "resource_name": "aws_mq_broker.this",
+      "resource_type": "aws_mq_broker",
+      "file_path": "main.tf",
+      "start_line": 255,
+      "end_line": 267
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0071",
+      "title": "MQ Broker should have general logging enabled",
+      "severity": "LOW",
+      "resource_name": "aws_mq_broker.this",
+      "resource_type": "aws_mq_broker",
+      "file_path": "main.tf",
+      "start_line": 255,
+      "end_line": 267
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0096",
+      "title": "Unencrypted SQS queue.",
+      "severity": "HIGH",
+      "resource_name": "aws_sqs_queue.failure",
+      "resource_type": "aws_sqs_queue",
+      "file_path": "main.tf",
+      "start_line": 211,
+      "end_line": 213
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0096",
+      "title": "Unencrypted SQS queue.",
+      "severity": "HIGH",
+      "resource_name": "aws_sqs_queue.this",
+      "resource_type": "aws_sqs_queue",
+      "file_path": "main.tf",
+      "start_line": 207,
+      "end_line": 209
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0098",
+      "title": "Secrets Manager should use customer managed keys",
+      "severity": "LOW",
+      "resource_name": "aws_secretsmanager_secret.this",
+      "resource_type": "aws_secretsmanager_secret",
+      "file_path": "main.tf",
+      "start_line": 269,
+      "end_line": 271
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0178",
+      "title": "VPC Flow Logs is a feature that enables you to capture information about the IP traffic going to and from network interfaces in your VPC. After you've created a flow log, you can view and retrieve its data in Amazon CloudWatch Logs. It is recommended that VPC Flow Logs be enabled for packet \"Rejects\" for VPCs.",
+      "severity": "MEDIUM",
+      "resource_name": "module.vpc",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/vpc/aws/main.tf",
+      "start_line": 28,
+      "end_line": 53
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "vpc",
+      "resource_type": "vpc",
+      "file_path": "/main.tf",
+      "start_line": 242,
+      "end_line": 253
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_27",
+      "title": "Ensure all data stored in the SQS queue is encrypted",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_sqs_queue.this",
+      "resource_type": "aws_sqs_queue",
+      "file_path": "/main.tf",
+      "start_line": 207,
+      "end_line": 209
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_27",
+      "title": "Ensure all data stored in the SQS queue is encrypted",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_sqs_queue.failure",
+      "resource_type": "aws_sqs_queue",
+      "file_path": "/main.tf",
+      "start_line": 211,
+      "end_line": 213
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_28",
+      "title": "Ensure DynamoDB point in time recovery (backup) is enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_dynamodb_table.this",
+      "resource_type": "aws_dynamodb_table",
+      "file_path": "/main.tf",
+      "start_line": 216,
+      "end_line": 233
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_119",
+      "title": "Ensure DynamoDB Tables are encrypted using a KMS Customer Managed CMK",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_dynamodb_table.this",
+      "resource_type": "aws_dynamodb_table",
+      "file_path": "/main.tf",
+      "start_line": 216,
+      "end_line": 233
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_185",
+      "title": "Ensure Kinesis Stream is encrypted by KMS using a customer managed Key (CMK)",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_kinesis_stream.this",
+      "resource_type": "aws_kinesis_stream",
+      "file_path": "/main.tf",
+      "start_line": 236,
+      "end_line": 239
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_43",
+      "title": "Ensure Kinesis Stream is securely encrypted",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_kinesis_stream.this",
+      "resource_type": "aws_kinesis_stream",
+      "file_path": "/main.tf",
+      "start_line": 236,
+      "end_line": 239
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_207",
+      "title": "Ensure MQ Broker minor version updates are enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_mq_broker.this",
+      "resource_type": "aws_mq_broker",
+      "file_path": "/main.tf",
+      "start_line": 255,
+      "end_line": 267
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_209",
+      "title": "Ensure MQ broker encrypted by KMS using a customer managed Key (CMK)",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_mq_broker.this",
+      "resource_type": "aws_mq_broker",
+      "file_path": "/main.tf",
+      "start_line": 255,
+      "end_line": 267
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_48",
+      "title": "Ensure MQ Broker logging is enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_mq_broker.this",
+      "resource_type": "aws_mq_broker",
+      "file_path": "/main.tf",
+      "start_line": 255,
+      "end_line": 267
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_149",
+      "title": "Ensure that Secrets Manager secret is encrypted using KMS CMK",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_secretsmanager_secret.this",
+      "resource_type": "aws_secretsmanager_secret",
+      "file_path": "/main.tf",
+      "start_line": 269,
+      "end_line": 271
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_394",
+      "title": "Ensure aws_availability_zones data source pins zone identity so its result set does not silently expand when AWS adds an Availability Zone",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_availability_zones.available",
+      "resource_type": "aws_availability_zones",
+      "file_path": "/main.tf",
+      "start_line": 11,
+      "end_line": 11
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_57",
+      "title": "Ensure Secrets Manager secrets should have automatic rotation enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_secretsmanager_secret.this",
+      "resource_type": "aws_secretsmanager_secret",
+      "file_path": "/main.tf",
+      "start_line": 269,
+      "end_line": 271
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "vpc",
+      "resource_type": "vpc",
+      "file_path": "/main.tf",
+      "start_line": 213,
+      "end_line": 224
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_28",
+      "title": "Ensure DynamoDB point in time recovery (backup) is enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_dynamodb_table.this",
+      "resource_type": "aws_dynamodb_table",
+      "file_path": "/main.tf",
+      "start_line": 183,
+      "end_line": 202
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_119",
+      "title": "Ensure DynamoDB Tables are encrypted using a KMS Customer Managed CMK",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_dynamodb_table.this",
+      "resource_type": "aws_dynamodb_table",
+      "file_path": "/main.tf",
+      "start_line": 183,
+      "end_line": 202
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_185",
+      "title": "Ensure Kinesis Stream is encrypted by KMS using a customer managed Key (CMK)",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_kinesis_stream.this",
+      "resource_type": "aws_kinesis_stream",
+      "file_path": "/main.tf",
+      "start_line": 204,
+      "end_line": 211
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_43",
+      "title": "Ensure Kinesis Stream is securely encrypted",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_kinesis_stream.this",
+      "resource_type": "aws_kinesis_stream",
+      "file_path": "/main.tf",
+      "start_line": 204,
+      "end_line": 211
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_207",
+      "title": "Ensure MQ Broker minor version updates are enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_mq_broker.this",
+      "resource_type": "aws_mq_broker",
+      "file_path": "/main.tf",
+      "start_line": 226,
+      "end_line": 244
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_48",
+      "title": "Ensure MQ Broker logging is enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_mq_broker.this",
+      "resource_type": "aws_mq_broker",
+      "file_path": "/main.tf",
+      "start_line": 226,
+      "end_line": 244
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_149",
+      "title": "Ensure that Secrets Manager secret is encrypted using KMS CMK",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_secretsmanager_secret.this",
+      "resource_type": "aws_secretsmanager_secret",
+      "file_path": "/main.tf",
+      "start_line": 246,
+      "end_line": 250
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_394",
+      "title": "Ensure aws_availability_zones data source pins zone identity so its result set does not silently expand when AWS adds an Availability Zone",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_availability_zones.available",
+      "resource_type": "aws_availability_zones",
+      "file_path": "/main.tf",
+      "start_line": 9,
+      "end_line": 11
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_57",
+      "title": "Ensure Secrets Manager secrets should have automatic rotation enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_secretsmanager_secret.this",
+      "resource_type": "aws_secretsmanager_secret",
+      "file_path": "/main.tf",
+      "start_line": 246,
+      "end_line": 250
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_73",
+      "title": "Ensure AWS SQS uses CMK not AWS default keys for encryption",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_sqs_queue.this",
+      "resource_type": "aws_sqs_queue",
+      "file_path": "/main.tf",
+      "start_line": 171,
+      "end_line": 175
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_73",
+      "title": "Ensure AWS SQS uses CMK not AWS default keys for encryption",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_sqs_queue.failure",
+      "resource_type": "aws_sqs_queue",
+      "file_path": "/main.tf",
+      "start_line": 177,
+      "end_line": 181
+    }
+  ],
+  "target_count": 22,
+  "resolved_count": 12,
+  "introduced_count": 2,
+  "unchanged_count": 10,
+  "repair_success_rate": 0.5454545454545454,
+  "regression_rate": 0.09090909090909091,
+  "net_delta": 10,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 8,
+      "introduced": 2,
+      "unchanged": 6
+    },
+    "observability": {
+      "resolved": 3,
+      "introduced": 0,
+      "unchanged": 1
+    },
+    "other": {
+      "resolved": 1,
+      "introduced": 0,
+      "unchanged": 3
+    }
+  },
+  "repair_cost_usd": 0.0010184,
+  "repair_tokens": 7329,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0155_nova-lite.repaired.tf",
+  "raw_response_path": "module_0155_nova-lite.raw.txt",
+  "repaired_code_sha256": "06b4d89187404b26dd93c421a020bcd23407a2b1d7ef0c4ce877351d7c89e4fe"
+}

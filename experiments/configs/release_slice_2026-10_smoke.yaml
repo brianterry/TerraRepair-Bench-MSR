@@ -1,0 +1,57 @@
+# SMOKE for the release slice (use --max-modules 3 --models nova-lite,qwen3-32b).
+# Release slice (MSR 2027 Data & Tool Showcase): same corpus rule, candidate cap,
+# models and settings as full_refresh_2026-09, re-run so every game ships its
+# model output as sidecars (<game>.repaired.tf, <game>.raw.txt).
+# Run with: --max-tokens 40000 (the refresh's nominal budget; clamped per model).
+experiment:
+  name: "_smoke"
+  description: "10-model cohort x refresh corpus, single draw, temp 0, closed-book, outputs persisted"
+  random_seed: 42
+
+corpus:
+  dir: "data/terrads_sample"
+  max_modules: 400
+
+models:
+  # --- existing anchor cohort (continuity with full_corrected baseline) ---
+  # claude-sonnet-4 was LEGACY-blocked on account <ACCOUNT_ID> (0 valid games,
+  # all ResourceNotFoundException). Replaced by claude-sonnet-4-5 (same Sonnet
+  # tier, accessible). Needs full run — it has no games in the 2026-09 results.
+  - id: "claude-sonnet-4-5"
+    bedrock_model_id: "us.anthropic.claude-sonnet-4-5-20250929-v1:0"
+    reasoning: false
+  - id: "nova-pro"
+    bedrock_model_id: "us.amazon.nova-pro-v1:0"
+    reasoning: false
+  - id: "nova-lite"
+    bedrock_model_id: "us.amazon.nova-lite-v1:0"
+    reasoning: false
+  - id: "llama-3-3-70b"
+    bedrock_model_id: "us.meta.llama3-3-70b-instruct-v1:0"
+    reasoning: false
+  - id: "deepseek-r1"
+    bedrock_model_id: "us.deepseek.r1-v1:0"
+    reasoning: true
+  - id: "qwen3-32b"
+    bedrock_model_id: "qwen.qwen3-32b-v1:0"
+    reasoning: true
+  # --- 2026 frontier refresh (MODEL_COHORT_2026.md) ---
+  # CONFIRM every slug + CRIS prefix + price + max-tokens in the Bedrock console.
+  - id: "claude-sonnet-5"        # Converse-native (Anthropic messages body)
+    bedrock_model_id: "global.anthropic.claude-sonnet-5"
+    reasoning: true
+  - id: "deepseek-v3-2"          # OpenAI-compatible (Project Mantle) -> _invoke_raw
+    bedrock_model_id: "deepseek.v3.2"
+    reasoning: true
+  - id: "kimi-k2-5"              # OpenAI-compatible (Project Mantle) -> _invoke_raw
+    bedrock_model_id: "moonshotai.kimi-k2.5"
+    reasoning: true
+  - id: "grok-4-6"              # Converse-native (xai namespace)
+    bedrock_model_id: "us.xai.grok-4.6"
+    reasoning: true
+
+scanners:
+  - trivy
+  - checkov
+
+output_dir: "experiments/results/release_slice_2026-10"

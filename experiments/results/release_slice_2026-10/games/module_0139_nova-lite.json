@@ -1,0 +1,175 @@
+{
+  "module_id": "module_0139",
+  "model_id": "nova-lite",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0178",
+      "title": "VPC Flow Logs is a feature that enables you to capture information about the IP traffic going to and from network interfaces in your VPC. After you've created a flow log, you can view and retrieve its data in Amazon CloudWatch Logs. It is recommended that VPC Flow Logs be enabled for packet \"Rejects\" for VPCs.",
+      "severity": "MEDIUM",
+      "resource_name": "aws_vpc.sagemaker",
+      "resource_type": "aws_vpc",
+      "file_path": "main.tf",
+      "start_line": 14,
+      "end_line": 16
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_307",
+      "title": "Ensure SageMaker Users should not have root access to SageMaker notebook instances",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_sagemaker_notebook_instance.ni",
+      "resource_type": "aws_sagemaker_notebook_instance",
+      "file_path": "/main.tf",
+      "start_line": 54,
+      "end_line": 64
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_122",
+      "title": "Ensure that direct internet access is disabled for an Amazon SageMaker Notebook Instance",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_sagemaker_notebook_instance.ni",
+      "resource_type": "aws_sagemaker_notebook_instance",
+      "file_path": "/main.tf",
+      "start_line": 54,
+      "end_line": 64
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_22",
+      "title": "Ensure SageMaker Notebook is encrypted at rest using KMS CMK",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_sagemaker_notebook_instance.ni",
+      "resource_type": "aws_sagemaker_notebook_instance",
+      "file_path": "/main.tf",
+      "start_line": 54,
+      "end_line": 64
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_371",
+      "title": "Ensure Amazon SageMaker Notebook Instance only allows for IMDSv2",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_sagemaker_notebook_instance.ni",
+      "resource_type": "aws_sagemaker_notebook_instance",
+      "file_path": "/main.tf",
+      "start_line": 54,
+      "end_line": 64
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_187",
+      "title": "Ensure Sagemaker domain and notebook instance are encrypted by KMS using a customer managed Key (CMK)",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_sagemaker_notebook_instance.ni",
+      "resource_type": "aws_sagemaker_notebook_instance",
+      "file_path": "/main.tf",
+      "start_line": 54,
+      "end_line": 64
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_12",
+      "title": "Ensure the default security group of every VPC restricts all traffic",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_vpc.sagemaker",
+      "resource_type": "aws_vpc",
+      "file_path": "/main.tf",
+      "start_line": 14,
+      "end_line": 16
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_11",
+      "title": "Ensure VPC flow logging is enabled in all VPCs",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_vpc.sagemaker",
+      "resource_type": "aws_vpc",
+      "file_path": "/main.tf",
+      "start_line": 14,
+      "end_line": 16
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0178",
+      "title": "VPC Flow Logs is a feature that enables you to capture information about the IP traffic going to and from network interfaces in your VPC. After you've created a flow log, you can view and retrieve its data in Amazon CloudWatch Logs. It is recommended that VPC Flow Logs be enabled for packet \"Rejects\" for VPCs.",
+      "severity": "MEDIUM",
+      "resource_name": "aws_vpc.sagemaker",
+      "resource_type": "aws_vpc",
+      "file_path": "main.tf",
+      "start_line": 14,
+      "end_line": 26
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_371",
+      "title": "Ensure Amazon SageMaker Notebook Instance only allows for IMDSv2",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_sagemaker_notebook_instance.ni",
+      "resource_type": "aws_sagemaker_notebook_instance",
+      "file_path": "/main.tf",
+      "start_line": 64,
+      "end_line": 87
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_12",
+      "title": "Ensure the default security group of every VPC restricts all traffic",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_vpc.sagemaker",
+      "resource_type": "aws_vpc",
+      "file_path": "/main.tf",
+      "start_line": 14,
+      "end_line": 26
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_11",
+      "title": "Ensure VPC flow logging is enabled in all VPCs",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_vpc.sagemaker",
+      "resource_type": "aws_vpc",
+      "file_path": "/main.tf",
+      "start_line": 14,
+      "end_line": 26
+    }
+  ],
+  "target_count": 8,
+  "resolved_count": 4,
+  "introduced_count": 0,
+  "unchanged_count": 4,
+  "repair_success_rate": 0.5,
+  "regression_rate": 0.0,
+  "net_delta": 4,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 1
+    },
+    "data_protection": {
+      "resolved": 2,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 2
+    },
+    "other": {
+      "resolved": 2,
+      "introduced": 0,
+      "unchanged": 1
+    }
+  },
+  "repair_cost_usd": 0.00026430000000000003,
+  "repair_tokens": 1913,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0139_nova-lite.repaired.tf",
+  "raw_response_path": "module_0139_nova-lite.raw.txt",
+  "repaired_code_sha256": "72192f567c85859b2562f13b6ebeb8f9066aedc97d7752364245a1db5d8063ef"
+}

@@ -1,0 +1,340 @@
+{
+  "module_id": "module_0176",
+  "model_id": "kimi-k2-5",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0028",
+      "title": "aws_instance should activate session tokens for Instance Metadata Service.",
+      "severity": "HIGH",
+      "resource_name": "aws_instance.ph-instance",
+      "resource_type": "aws_instance",
+      "file_path": "aws-instance.tf",
+      "start_line": 11,
+      "end_line": 43
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0178",
+      "title": "VPC Flow Logs is a feature that enables you to capture information about the IP traffic going to and from network interfaces in your VPC. After you've created a flow log, you can view and retrieve its data in Amazon CloudWatch Logs. It is recommended that VPC Flow Logs be enabled for packet \"Rejects\" for VPCs.",
+      "severity": "MEDIUM",
+      "resource_name": "aws_vpc.ph-vpc",
+      "resource_type": "aws_vpc",
+      "file_path": "aws-network.tf",
+      "start_line": 2,
+      "end_line": 9
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "aws_s3_bucket.ph-bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "aws-s3.tf",
+      "start_line": 2,
+      "end_line": 5
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "aws_security_group_rule.ph-pubsg-out-tcp",
+      "resource_type": "aws_security_group_rule",
+      "file_path": "aws-security.tf",
+      "start_line": 93,
+      "end_line": 93
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "aws_security_group_rule.ph-pubsg-out-udp",
+      "resource_type": "aws_security_group_rule",
+      "file_path": "aws-security.tf",
+      "start_line": 103,
+      "end_line": 103
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_394",
+      "title": "Ensure aws_availability_zones data source pins zone identity so its result set does not silently expand when AWS adds an Availability Zone",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_availability_zones.ph-azs",
+      "resource_type": "aws_availability_zones",
+      "file_path": "/aws-generic.tf",
+      "start_line": 102,
+      "end_line": 104
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_135",
+      "title": "Ensure that EC2 is EBS optimized",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_instance.ph-instance",
+      "resource_type": "aws_instance",
+      "file_path": "/aws-instance.tf",
+      "start_line": 11,
+      "end_line": 43
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_79",
+      "title": "Ensure Instance Metadata Service Version 1 is not enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_instance.ph-instance",
+      "resource_type": "aws_instance",
+      "file_path": "/aws-instance.tf",
+      "start_line": 11,
+      "end_line": 43
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_126",
+      "title": "Ensure that detailed monitoring is enabled for EC2 instances",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_instance.ph-instance",
+      "resource_type": "aws_instance",
+      "file_path": "/aws-instance.tf",
+      "start_line": 11,
+      "end_line": 43
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_62",
+      "title": "Ensure S3 buckets should have event notifications enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.ph-bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/aws-s3.tf",
+      "start_line": 2,
+      "end_line": 5
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_12",
+      "title": "Ensure the default security group of every VPC restricts all traffic",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_vpc.ph-vpc",
+      "resource_type": "aws_vpc",
+      "file_path": "/aws-network.tf",
+      "start_line": 2,
+      "end_line": 9
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_18",
+      "title": "Ensure the S3 bucket has access logging enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.ph-bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/aws-s3.tf",
+      "start_line": 2,
+      "end_line": 5
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_11",
+      "title": "Ensure VPC flow logging is enabled in all VPCs",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_vpc.ph-vpc",
+      "resource_type": "aws_vpc",
+      "file_path": "/aws-network.tf",
+      "start_line": 2,
+      "end_line": 9
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_65",
+      "title": "Ensure access control lists for S3 buckets are disabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket_ownership_controls.s3_bucket_acl_ownership",
+      "resource_type": "aws_s3_bucket_ownership_controls",
+      "file_path": "/aws-s3.tf",
+      "start_line": 8,
+      "end_line": 13
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_61",
+      "title": "Ensure that an S3 bucket has a lifecycle configuration",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.ph-bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/aws-s3.tf",
+      "start_line": 2,
+      "end_line": 5
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_144",
+      "title": "Ensure that S3 bucket has cross-region replication enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.ph-bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/aws-s3.tf",
+      "start_line": 2,
+      "end_line": 5
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0017",
+      "title": "CloudWatch log groups should be encrypted using CMK",
+      "severity": "LOW",
+      "resource_name": "aws_cloudwatch_log_group.ph-vpc-flow-log-group",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "main.tf",
+      "start_line": 654,
+      "end_line": 657
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0095",
+      "title": "Unencrypted SNS topic.",
+      "severity": "HIGH",
+      "resource_name": "aws_sns_topic.ph-bucket-events",
+      "resource_type": "aws_sns_topic",
+      "file_path": "main.tf",
+      "start_line": 826,
+      "end_line": 828
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "aws_security_group_rule.ph-pubsg-out-tcp",
+      "resource_type": "aws_security_group_rule",
+      "file_path": "main.tf",
+      "start_line": 1006,
+      "end_line": 1006
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "aws_security_group_rule.ph-pubsg-out-udp",
+      "resource_type": "aws_security_group_rule",
+      "file_path": "main.tf",
+      "start_line": 1016,
+      "end_line": 1016
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_158",
+      "title": "Ensure that CloudWatch Log Group is encrypted by KMS",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.ph-vpc-flow-log-group",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/main.tf",
+      "start_line": 654,
+      "end_line": 657
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_338",
+      "title": "Ensure CloudWatch log groups retains logs for at least 1 year",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.ph-vpc-flow-log-group",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/main.tf",
+      "start_line": 654,
+      "end_line": 657
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_290",
+      "title": "Ensure IAM policies does not allow write access without constraints",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_role_policy.ph-vpc-flow-log-policy",
+      "resource_type": "aws_iam_role_policy",
+      "file_path": "/main.tf",
+      "start_line": 675,
+      "end_line": 694
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_355",
+      "title": "Ensure no IAM policies documents allow \"*\" as a statement's resource for restrictable actions",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_role_policy.ph-vpc-flow-log-policy",
+      "resource_type": "aws_iam_role_policy",
+      "file_path": "/main.tf",
+      "start_line": 675,
+      "end_line": 694
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_26",
+      "title": "Ensure all data stored in the SNS topic is encrypted",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_sns_topic.ph-bucket-events",
+      "resource_type": "aws_sns_topic",
+      "file_path": "/main.tf",
+      "start_line": 826,
+      "end_line": 828
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_394",
+      "title": "Ensure aws_availability_zones data source pins zone identity so its result set does not silently expand when AWS adds an Availability Zone",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_availability_zones.ph-azs",
+      "resource_type": "aws_availability_zones",
+      "file_path": "/main.tf",
+      "start_line": 138,
+      "end_line": 144
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_144",
+      "title": "Ensure that S3 bucket has cross-region replication enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.ph-bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 740,
+      "end_line": 743
+    }
+  ],
+  "target_count": 16,
+  "resolved_count": 12,
+  "introduced_count": 7,
+  "unchanged_count": 4,
+  "repair_success_rate": 0.75,
+  "regression_rate": 0.4375,
+  "net_delta": 5,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 0,
+      "introduced": 2,
+      "unchanged": 2
+    },
+    "data_protection": {
+      "resolved": 1,
+      "introduced": 4,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 6,
+      "introduced": 1,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 5,
+      "introduced": 0,
+      "unchanged": 2
+    }
+  },
+  "repair_cost_usd": 0.026725500000000003,
+  "repair_tokens": 17230,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0176_kimi-k2-5.repaired.tf",
+  "raw_response_path": "module_0176_kimi-k2-5.raw.txt",
+  "repaired_code_sha256": "16b3b6699784e5fc505e9764a0bc0ab32555116629757c0e71bd8645b620c7f9"
+}

@@ -1,0 +1,340 @@
+{
+  "module_id": "module_0432",
+  "model_id": "qwen3-32b",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0014",
+      "title": "Cloudtrail should be enabled in all regions regardless of where your AWS resources are generally homed",
+      "severity": "MEDIUM",
+      "resource_name": "module.cloudtrail[0]",
+      "resource_type": "module",
+      "file_path": "cloudposse/cloudtrail/aws/main.tf",
+      "start_line": 8,
+      "end_line": 8
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0015",
+      "title": "CloudTrail should use Customer managed keys to encrypt the logs",
+      "severity": "HIGH",
+      "resource_name": "module.cloudtrail[0]",
+      "resource_type": "module",
+      "file_path": "cloudposse/cloudtrail/aws/main.tf",
+      "start_line": 13,
+      "end_line": 13
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0162",
+      "title": "CloudTrail logs should be stored in S3 and also sent to CloudWatch Logs",
+      "severity": "LOW",
+      "resource_name": "module.cloudtrail[0]",
+      "resource_type": "module",
+      "file_path": "cloudposse/cloudtrail/aws/main.tf",
+      "start_line": 11,
+      "end_line": 11
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "module.archive_bucket[0]",
+      "resource_type": "module",
+      "file_path": "cloudposse/s3-bucket/aws/main.tf",
+      "start_line": 29,
+      "end_line": 43
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "module.cloudtrail_s3_bucket[0]",
+      "resource_type": "module",
+      "file_path": "cloudposse/s3-bucket/aws/main.tf",
+      "start_line": 29,
+      "end_line": 43
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0090",
+      "title": "S3 Data should be versioned",
+      "severity": "MEDIUM",
+      "resource_name": "module.archive_bucket[0]",
+      "resource_type": "module",
+      "file_path": "cloudposse/s3-bucket/aws/main.tf",
+      "start_line": 57,
+      "end_line": 57
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0090",
+      "title": "S3 Data should be versioned",
+      "severity": "MEDIUM",
+      "resource_name": "module.cloudtrail_s3_bucket[0]",
+      "resource_type": "module",
+      "file_path": "cloudposse/s3-bucket/aws/main.tf",
+      "start_line": 57,
+      "end_line": 57
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0132",
+      "title": "S3 encryption should use Customer Managed Keys",
+      "severity": "HIGH",
+      "resource_name": "module.archive_bucket[0]",
+      "resource_type": "module",
+      "file_path": "cloudposse/s3-bucket/aws/main.tf",
+      "start_line": 71,
+      "end_line": 83
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0132",
+      "title": "S3 encryption should use Customer Managed Keys",
+      "severity": "HIGH",
+      "resource_name": "module.cloudtrail_s3_bucket[0]",
+      "resource_type": "module",
+      "file_path": "cloudposse/s3-bucket/aws/main.tf",
+      "start_line": 71,
+      "end_line": 83
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "this",
+      "resource_type": "this",
+      "file_path": "/context.tf",
+      "start_line": 23,
+      "end_line": 46
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "bucket_policy",
+      "resource_type": "bucket_policy",
+      "file_path": "/main.tf",
+      "start_line": 139,
+      "end_line": 146
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "archive_bucket",
+      "resource_type": "archive_bucket",
+      "file_path": "/main.tf",
+      "start_line": 160,
+      "end_line": 217
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "cloudtrail_s3_bucket",
+      "resource_type": "cloudtrail_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 219,
+      "end_line": 286
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "cloudtrail",
+      "resource_type": "cloudtrail",
+      "file_path": "/main.tf",
+      "start_line": 288,
+      "end_line": 320
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0015",
+      "title": "CloudTrail should use Customer managed keys to encrypt the logs",
+      "severity": "HIGH",
+      "resource_name": "module.cloudtrail[0]",
+      "resource_type": "module",
+      "file_path": "cloudposse/cloudtrail/aws/main.tf",
+      "start_line": 13,
+      "end_line": 13
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0162",
+      "title": "CloudTrail logs should be stored in S3 and also sent to CloudWatch Logs",
+      "severity": "LOW",
+      "resource_name": "module.cloudtrail[0]",
+      "resource_type": "module",
+      "file_path": "cloudposse/cloudtrail/aws/main.tf",
+      "start_line": 11,
+      "end_line": 11
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0090",
+      "title": "S3 Data should be versioned",
+      "severity": "MEDIUM",
+      "resource_name": "module.archive_bucket[0]",
+      "resource_type": "module",
+      "file_path": "cloudposse/s3-bucket/aws/main.tf",
+      "start_line": 57,
+      "end_line": 57
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0090",
+      "title": "S3 Data should be versioned",
+      "severity": "MEDIUM",
+      "resource_name": "module.cloudtrail_s3_bucket[0]",
+      "resource_type": "module",
+      "file_path": "cloudposse/s3-bucket/aws/main.tf",
+      "start_line": 57,
+      "end_line": 57
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0132",
+      "title": "S3 encryption should use Customer Managed Keys",
+      "severity": "HIGH",
+      "resource_name": "module.archive_bucket[0]",
+      "resource_type": "module",
+      "file_path": "cloudposse/s3-bucket/aws/main.tf",
+      "start_line": 71,
+      "end_line": 83
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0132",
+      "title": "S3 encryption should use Customer Managed Keys",
+      "severity": "HIGH",
+      "resource_name": "module.cloudtrail_s3_bucket[0]",
+      "resource_type": "module",
+      "file_path": "cloudposse/s3-bucket/aws/main.tf",
+      "start_line": 71,
+      "end_line": 83
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "this",
+      "resource_type": "this",
+      "file_path": "/main.tf",
+      "start_line": 12,
+      "end_line": 35
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "bucket_policy",
+      "resource_type": "bucket_policy",
+      "file_path": "/main.tf",
+      "start_line": 405,
+      "end_line": 412
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "archive_bucket",
+      "resource_type": "archive_bucket",
+      "file_path": "/main.tf",
+      "start_line": 426,
+      "end_line": 493
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "cloudtrail_s3_bucket",
+      "resource_type": "cloudtrail_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 495,
+      "end_line": 564
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "cloudtrail",
+      "resource_type": "cloudtrail",
+      "file_path": "/main.tf",
+      "start_line": 566,
+      "end_line": 594
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "kms_key_archive",
+      "resource_type": "kms_key_archive",
+      "file_path": "/main.tf",
+      "start_line": 596,
+      "end_line": 615
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "kms_key_cloudtrail",
+      "resource_type": "kms_key_cloudtrail",
+      "file_path": "/main.tf",
+      "start_line": 617,
+      "end_line": 636
+    }
+  ],
+  "target_count": 14,
+  "resolved_count": 3,
+  "introduced_count": 2,
+  "unchanged_count": 11,
+  "repair_success_rate": 0.21428571428571427,
+  "regression_rate": 0.14285714285714285,
+  "net_delta": 1,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 3
+    },
+    "observability": {
+      "resolved": 3,
+      "introduced": 0,
+      "unchanged": 1
+    },
+    "other": {
+      "resolved": 0,
+      "introduced": 2,
+      "unchanged": 7
+    }
+  },
+  "repair_cost_usd": 0.005527600000000001,
+  "repair_tokens": 13819,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0432_qwen3-32b.repaired.tf",
+  "raw_response_path": "module_0432_qwen3-32b.raw.txt",
+  "repaired_code_sha256": "1d32cae067ff66a2ec907afb98df2d5d1f79fffa17641beae770c62b397e5d81"
+}

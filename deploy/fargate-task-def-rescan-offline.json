@@ -1,0 +1,72 @@
+{
+  "_comment": "OFFLINE validation of the captured Trivy inputs (task #5). Image pinned by digest to commit 30e4c44 (rescan-30e4c44). Pulls the release results and the captured module cache + checks bundle WITHOUT a proxy, then blocks TRIVY's network by pointing the UPPERCASE HTTPS_PROXY/HTTP_PROXY at a dead local port (Go + git honor these). The lowercase https_proxy is deliberately NOT set: Checkov reads only that spelling, and blocking it stops Checkov fetching its vendor 'public run config', which changes which Checkov checks fire (rev 1 did this and produced spurious extra CKV findings). Checkov therefore keeps network access, as in the recorded run; aws s3 calls run outside the proxy scope. A negative control first proves the block works (empty cache must lose AWS-0028 on module_0045_claude-sonnet-5) and aborts (exit 3) otherwise. Then restores the captured bundle (VARIANT=full, or VARIANT=nogit with .git dirs stripped) and rescans only the remote-module inputs/games with TRIVY_SKIP_CHECK_UPDATE=true. On a nogit pass it also uploads the stripped archive. Writes only to OUT_S3_URI.",
+  "family": "terrarepair-rescan-offline",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": [
+    "FARGATE"
+  ],
+  "cpu": "4096",
+  "memory": "8192",
+  "ephemeralStorage": {
+    "sizeInGiB": 60
+  },
+  "runtimePlatform": {
+    "cpuArchitecture": "X86_64",
+    "operatingSystemFamily": "LINUX"
+  },
+  "executionRoleArn": "arn:aws:iam::<ACCOUNT_ID>:role/terrarepair-bench-exec-role",
+  "taskRoleArn": "arn:aws:iam::<ACCOUNT_ID>:role/terrarepair-bench-task-role",
+  "containerDefinitions": [
+    {
+      "name": "rescan",
+      "image": "<ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com/terrarepair-bench@sha256:18a1c1f1153b388192162d9acf457c6ce6061e51251d55f2c829fa4fda40502b",
+      "essential": true,
+      "entryPoint": [
+        "/bin/bash",
+        "-c"
+      ],
+      "command": [
+        "set -u; B='env HTTPS_PROXY=http://127.0.0.1:9 HTTP_PROXY=http://127.0.0.1:9 TRIVY_SKIP_CHECK_UPDATE=true'; echo \"[offline] start $(date -u +%FT%TZ) variant=$VARIANT commit=$TERRAREPAIR_GIT_COMMIT out=$OUT_S3_URI\"; aws s3 sync \"$RESULTS_S3_URI\" /app/rel --exclude '_smoke/*' --only-show-errors || { echo '[offline] FATAL: pull results'; exit 2; }; mkdir -p /app/b /app/out; aws s3 cp \"$BUNDLE_S3_URI/trivy_module_cache.tar.gz\" /app/b/ --only-show-errors && aws s3 cp \"$BUNDLE_S3_URI/trivy_checks_bundle.tar.gz\" /app/b/ --only-show-errors || { echo '[offline] FATAL: pull bundles'; exit 2; }; echo \"[offline] pulled $(ls /app/rel/games/*.json | wc -l) games, bundles: $(du -sh /app/b | cut -f1)\"; NC=$(mktemp -d); NT=$(mktemp -d); cp /app/rel/games/module_0045_claude-sonnet-5.repaired.tf $NC/main.tf; $B TMPDIR=$NT trivy config --format json --quiet --timeout 900s $NC > /app/out/negative_control.json 2>/app/out/negative_control.stderr; echo \"[offline] negative control rc=$? cache_entries=$(ls $NT/.aqua/cache 2>/dev/null | wc -l)\"; if grep -q AWS-0028 /app/out/negative_control.json; then echo '[offline] FATAL: network NOT blocked (empty cache still produced AWS-0028)'; aws s3 sync /app/out \"$OUT_S3_URI\" --only-show-errors; exit 3; fi; echo '[offline] negative control OK: blocked scan with empty cache lost AWS-0028'; mkdir -p /root/.cache; rm -rf /root/.cache/trivy/policy /tmp/.aqua; tar xzf /app/b/trivy_checks_bundle.tar.gz -C /root/.cache && tar xzf /app/b/trivy_module_cache.tar.gz -C /tmp || { echo '[offline] FATAL: extract'; exit 2; }; rm -f /app/b/trivy_module_cache.tar.gz; if [ \"$VARIANT\" = nogit ]; then find /tmp/.aqua/cache -name .git -prune -exec rm -rf {} +; fi; echo \"[offline] restored cache: $(ls /tmp/.aqua/cache | wc -l) entries, $(du -sh /tmp/.aqua/cache | cut -f1); .git dirs left: $(find /tmp/.aqua/cache -name .git -prune | wc -l); checks: $(cat /root/.cache/trivy/policy/metadata.json)\"; ( while true; do sleep \"$SYNC_INTERVAL\"; aws s3 sync /app/out \"$OUT_S3_URI\" --exclude '*.tar.gz' --only-show-errors; done ) & SP=$!; $B python3 scripts/rescan_release.py --results /app/rel --out /app/out --only-remote; RC=$?; kill $SP 2>/dev/null; echo \"[offline] rescan exit=$RC\"; cat /root/.cache/trivy/policy/metadata.json > /app/out/checks_bundle_after.json; if [ \"$VARIANT\" = nogit ] && [ $RC -eq 0 ]; then tar czf /app/out/trivy_module_cache_nogit.tar.gz -C /tmp .aqua/cache && echo \"[offline] stripped archive: $(du -h /app/out/trivy_module_cache_nogit.tar.gz | cut -f1)\"; fi; aws s3 sync /app/out \"$OUT_S3_URI\" --only-show-errors; echo \"[offline] end $(date -u +%FT%TZ)\"; exit $RC"
+      ],
+      "environment": [
+        {
+          "name": "RESULTS_S3_URI",
+          "value": "s3://terrarepair-bench-results-<ACCOUNT_ID>/terrarepair/release_slice_2026-10"
+        },
+        {
+          "name": "BUNDLE_S3_URI",
+          "value": "s3://terrarepair-bench-results-<ACCOUNT_ID>/terrarepair/release_slice_2026-10_rescan"
+        },
+        {
+          "name": "OUT_S3_URI",
+          "value": "s3://terrarepair-bench-results-<ACCOUNT_ID>/terrarepair/release_slice_2026-10_offline_full"
+        },
+        {
+          "name": "VARIANT",
+          "value": "full"
+        },
+        {
+          "name": "TERRAREPAIR_TRIVY_TIMEOUT",
+          "value": "900"
+        },
+        {
+          "name": "SYNC_INTERVAL",
+          "value": "120"
+        },
+        {
+          "name": "AWS_REGION",
+          "value": "us-east-1"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/terrarepair-bench",
+          "awslogs-region": "us-east-1",
+          "awslogs-stream-prefix": "offline",
+          "awslogs-create-group": "true"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,263 @@
+{
+  "module_id": "module_0116",
+  "model_id": "deepseek-r1",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "aws_s3_bucket.action_dist",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 5,
+      "end_line": 9
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0090",
+      "title": "S3 Data should be versioned",
+      "severity": "MEDIUM",
+      "resource_name": "aws_s3_bucket_versioning.action_dist",
+      "resource_type": "aws_s3_bucket_versioning",
+      "file_path": "main.tf",
+      "start_line": 78,
+      "end_line": 78
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0066",
+      "title": "Lambda functions should have X-Ray tracing enabled",
+      "severity": "LOW",
+      "resource_name": "aws_lambda_function.syncer",
+      "resource_type": "aws_lambda_function",
+      "file_path": "runner-binaries-syncer.tf",
+      "start_line": 10,
+      "end_line": 57
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_116",
+      "title": "Ensure that AWS Lambda function is configured for a Dead Letter Queue(DLQ)",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.syncer",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/runner-binaries-syncer.tf",
+      "start_line": 10,
+      "end_line": 57
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_173",
+      "title": "Check encryption settings for Lambda environmental variable",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.syncer",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/runner-binaries-syncer.tf",
+      "start_line": 10,
+      "end_line": 57
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_272",
+      "title": "Ensure AWS Lambda function is configured to validate code-signing",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.syncer",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/runner-binaries-syncer.tf",
+      "start_line": 10,
+      "end_line": 57
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_115",
+      "title": "Ensure that AWS Lambda function is configured for function-level concurrent execution limit",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.syncer",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/runner-binaries-syncer.tf",
+      "start_line": 10,
+      "end_line": 57
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_50",
+      "title": "X-Ray tracing is enabled for Lambda",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.syncer",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/runner-binaries-syncer.tf",
+      "start_line": 10,
+      "end_line": 57
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_338",
+      "title": "Ensure CloudWatch log groups retains logs for at least 1 year",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.syncer",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/runner-binaries-syncer.tf",
+      "start_line": 69,
+      "end_line": 74
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_21",
+      "title": "Ensure all data stored in the S3 bucket have versioning enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.action_dist",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 5,
+      "end_line": 9
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_144",
+      "title": "Ensure that S3 bucket has cross-region replication enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.action_dist",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 5,
+      "end_line": 9
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_145",
+      "title": "Ensure that S3 buckets are encrypted with KMS by default",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.action_dist",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 5,
+      "end_line": 9
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_19",
+      "title": "Ensure all data stored in the S3 bucket is securely encrypted at rest",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.action_dist",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 5,
+      "end_line": 9
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "aws_s3_bucket.action_dist",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 23,
+      "end_line": 27
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_116",
+      "title": "Ensure that AWS Lambda function is configured for a Dead Letter Queue(DLQ)",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.syncer",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/main.tf",
+      "start_line": 181,
+      "end_line": 230
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_272",
+      "title": "Ensure AWS Lambda function is configured to validate code-signing",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.syncer",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/main.tf",
+      "start_line": 181,
+      "end_line": 230
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_50",
+      "title": "X-Ray tracing is enabled for Lambda",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.syncer",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/main.tf",
+      "start_line": 181,
+      "end_line": 230
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_144",
+      "title": "Ensure that S3 bucket has cross-region replication enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.action_dist",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 23,
+      "end_line": 27
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_145",
+      "title": "Ensure that S3 buckets are encrypted with KMS by default",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.action_dist",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 23,
+      "end_line": 27
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_19",
+      "title": "Ensure all data stored in the S3 bucket is securely encrypted at rest",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.action_dist",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 23,
+      "end_line": 27
+    }
+  ],
+  "target_count": 13,
+  "resolved_count": 6,
+  "introduced_count": 0,
+  "unchanged_count": 7,
+  "repair_success_rate": 0.46153846153846156,
+  "regression_rate": 0.0,
+  "net_delta": 6,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 2,
+      "introduced": 0,
+      "unchanged": 2
+    },
+    "observability": {
+      "resolved": 1,
+      "introduced": 0,
+      "unchanged": 1
+    },
+    "other": {
+      "resolved": 3,
+      "introduced": 0,
+      "unchanged": 4
+    }
+  },
+  "repair_cost_usd": 0.0453278,
+  "repair_tokens": 19329,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0116_deepseek-r1.repaired.tf",
+  "raw_response_path": "module_0116_deepseek-r1.raw.txt",
+  "repaired_code_sha256": "bd444a7d7b7cda85a7bb998fc20c67ca4df91613587962027212dde57148542c"
+}

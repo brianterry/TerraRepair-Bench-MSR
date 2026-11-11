@@ -1,0 +1,87 @@
+{
+  "module_id": "module_0122",
+  "model_id": "kimi-k2-5",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0001",
+      "title": "API Gateway stages for V1 and V2 should have access logging enabled",
+      "severity": "MEDIUM",
+      "resource_name": "aws_apigatewayv2_stage.webhook",
+      "resource_type": "aws_apigatewayv2_stage",
+      "file_path": "main.tf",
+      "start_line": 28,
+      "end_line": 49
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_309",
+      "title": "Ensure API GatewayV2 routes specify an authorization type",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_apigatewayv2_route.webhook",
+      "resource_type": "aws_apigatewayv2_route",
+      "file_path": "/main.tf",
+      "start_line": 12,
+      "end_line": 26
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_34",
+      "title": "AWS SSM Parameter should be Encrypted",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_ssm_parameter.runner_matcher_config",
+      "resource_type": "aws_ssm_parameter",
+      "file_path": "/webhook.tf",
+      "start_line": 9,
+      "end_line": 14
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_338",
+      "title": "Ensure CloudWatch log groups retains logs for at least 1 year",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.api_gateway",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/main.tf",
+      "start_line": 49,
+      "end_line": 54
+    }
+  ],
+  "target_count": 3,
+  "resolved_count": 3,
+  "introduced_count": 1,
+  "unchanged_count": 0,
+  "repair_success_rate": 1.0,
+  "regression_rate": 0.3333333333333333,
+  "net_delta": 2,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 1,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 1,
+      "introduced": 1,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 1,
+      "introduced": 0,
+      "unchanged": 0
+    }
+  },
+  "repair_cost_usd": 0.0113142,
+  "repair_tokens": 7381,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0122_kimi-k2-5.repaired.tf",
+  "raw_response_path": "module_0122_kimi-k2-5.raw.txt",
+  "repaired_code_sha256": "a5311fa5bd5f478bc7a5f6148d0e4000dd01835dde6cec2998608116672cc7b7"
+}

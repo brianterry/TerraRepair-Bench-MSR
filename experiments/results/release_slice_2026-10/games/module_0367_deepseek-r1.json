@@ -1,0 +1,318 @@
+{
+  "module_id": "module_0367",
+  "model_id": "deepseek-r1",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "module.barman_s3_bucket",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/s3-bucket/aws/main.tf",
+      "start_line": 25,
+      "end_line": 34
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "eks_blueprints_addons",
+      "resource_type": "eks_blueprints_addons",
+      "file_path": "/addons.tf",
+      "start_line": 39,
+      "end_line": 84
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "eks_data_addons",
+      "resource_type": "eks_data_addons",
+      "file_path": "/addons.tf",
+      "start_line": 90,
+      "end_line": 122
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_394",
+      "title": "Ensure aws_availability_zones data source pins zone identity so its result set does not silently expand when AWS adds an Availability Zone",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_availability_zones.available",
+      "resource_type": "aws_availability_zones",
+      "file_path": "/data.tf",
+      "start_line": 6,
+      "end_line": 11
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_111",
+      "title": "Ensure IAM policies does not allow write access without constraints",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.irsa_backup_policy",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/data.tf",
+      "start_line": 16,
+      "end_line": 52
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_356",
+      "title": "Ensure no IAM policies documents allow \"*\" as a statement's resource for restrictable actions",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.irsa_backup_policy",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/data.tf",
+      "start_line": 16,
+      "end_line": 52
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "eks",
+      "resource_type": "eks",
+      "file_path": "/main.tf",
+      "start_line": 1,
+      "end_line": 116
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "ebs_csi_driver_irsa",
+      "resource_type": "ebs_csi_driver_irsa",
+      "file_path": "/resources.tf",
+      "start_line": 10,
+      "end_line": 22
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "barman_s3_bucket",
+      "resource_type": "barman_s3_bucket",
+      "file_path": "/resources.tf",
+      "start_line": 24,
+      "end_line": 57
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_149",
+      "title": "Ensure that Secrets Manager secret is encrypted using KMS CMK",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_secretsmanager_secret.grafana",
+      "resource_type": "aws_secretsmanager_secret",
+      "file_path": "/resources.tf",
+      "start_line": 97,
+      "end_line": 100
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "vpc",
+      "resource_type": "vpc",
+      "file_path": "/vpc.tf",
+      "start_line": 9,
+      "end_line": 42
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_57",
+      "title": "Ensure Secrets Manager secrets should have automatic rotation enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_secretsmanager_secret.grafana",
+      "resource_type": "aws_secretsmanager_secret",
+      "file_path": "/resources.tf",
+      "start_line": 97,
+      "end_line": 100
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0086",
+      "title": "S3 Access block should block public ACL",
+      "severity": "HIGH",
+      "resource_name": "module.barman_s3_bucket",
+      "resource_type": "module",
+      "file_path": "git::https:/github.com/terraform-aws-modules/terraform-aws-s3-bucket.git?ref=v3.8.0/main.tf",
+      "start_line": 697,
+      "end_line": 697
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0087",
+      "title": "S3 Access block should block public policy",
+      "severity": "HIGH",
+      "resource_name": "module.barman_s3_bucket",
+      "resource_type": "module",
+      "file_path": "git::https:/github.com/terraform-aws-modules/terraform-aws-s3-bucket.git?ref=v3.8.0/main.tf",
+      "start_line": 698,
+      "end_line": 698
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0091",
+      "title": "S3 Access Block should Ignore Public ACL",
+      "severity": "HIGH",
+      "resource_name": "module.barman_s3_bucket",
+      "resource_type": "module",
+      "file_path": "git::https:/github.com/terraform-aws-modules/terraform-aws-s3-bucket.git?ref=v3.8.0/main.tf",
+      "start_line": 699,
+      "end_line": 699
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0093",
+      "title": "S3 Access block should restrict public bucket to limit access",
+      "severity": "HIGH",
+      "resource_name": "module.barman_s3_bucket",
+      "resource_type": "module",
+      "file_path": "git::https:/github.com/terraform-aws-modules/terraform-aws-s3-bucket.git?ref=v3.8.0/main.tf",
+      "start_line": 700,
+      "end_line": 700
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_149",
+      "title": "Ensure that Secrets Manager secret is encrypted using KMS CMK",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_secretsmanager_secret.grafana",
+      "resource_type": "aws_secretsmanager_secret",
+      "file_path": "/main.tf",
+      "start_line": 466,
+      "end_line": 474
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_394",
+      "title": "Ensure aws_availability_zones data source pins zone identity so its result set does not silently expand when AWS adds an Availability Zone",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_availability_zones.available",
+      "resource_type": "aws_availability_zones",
+      "file_path": "/main.tf",
+      "start_line": 143,
+      "end_line": 152
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "eks_blueprints_addons",
+      "resource_type": "eks_blueprints_addons",
+      "file_path": "/main.tf",
+      "start_line": 39,
+      "end_line": 83
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "eks_data_addons",
+      "resource_type": "eks_data_addons",
+      "file_path": "/main.tf",
+      "start_line": 89,
+      "end_line": 120
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "eks",
+      "resource_type": "eks",
+      "file_path": "/main.tf",
+      "start_line": 220,
+      "end_line": 325
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "ebs_csi_driver_irsa",
+      "resource_type": "ebs_csi_driver_irsa",
+      "file_path": "/main.tf",
+      "start_line": 381,
+      "end_line": 392
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "barman_s3_bucket",
+      "resource_type": "barman_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 394,
+      "end_line": 427
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "vpc",
+      "resource_type": "vpc",
+      "file_path": "/main.tf",
+      "start_line": 540,
+      "end_line": 571
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_57",
+      "title": "Ensure Secrets Manager secrets should have automatic rotation enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_secretsmanager_secret.grafana",
+      "resource_type": "aws_secretsmanager_secret",
+      "file_path": "/main.tf",
+      "start_line": 466,
+      "end_line": 474
+    }
+  ],
+  "target_count": 12,
+  "resolved_count": 3,
+  "introduced_count": 4,
+  "unchanged_count": 9,
+  "repair_success_rate": 0.25,
+  "regression_rate": 0.3333333333333333,
+  "net_delta": -1,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 2,
+      "introduced": 4,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 2
+    },
+    "observability": {
+      "resolved": 1,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 7
+    }
+  },
+  "repair_cost_usd": 0.041349,
+  "repair_tokens": 17339,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0367_deepseek-r1.repaired.tf",
+  "raw_response_path": "module_0367_deepseek-r1.raw.txt",
+  "repaired_code_sha256": "9b9a1f0c510d4899a16c04a51917c9e0ec314e63b3cd280c600230e58dc2019e"
+}

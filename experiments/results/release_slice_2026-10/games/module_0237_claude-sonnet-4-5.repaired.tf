@@ -1,0 +1,3256 @@
+data "aws_caller_identity" "current" {}
+data "aws_region" "current" {}
+data "aws_partition" "current" {}
+
+provider "aws" {
+  alias  = "eu-west-2"
+  region = "eu-west-2"
+}
+
+resource "aws_s3_bucket" "acm-pca" {
+  bucket_prefix = "acm"
+
+  lifecycle {
+    prevent_destroy = true
+  }
+
+  tags = merge(
+    local.tags,
+    {
+      Name = "acm-pca"
+    },
+  )
+}
+
+resource "aws_s3_bucket_logging" "acm-pca" {
+  bucket        = aws_s3_bucket.acm-pca.id
+  target_bucket = split(":", local.core_logging_bucket_arns["s3-access-logs"])[5]
+  target_prefix = "acm-pca/"
+}
+
+resource "aws_s3_bucket_lifecycle_configuration" "acm-pca" {
+  bucket = aws_s3_bucket.acm-pca.bucket
+
+  rule {
+    id     = "default"
+    status = "Enabled"
+
+    filter {
+      prefix = ""
+    }
+    abort_incomplete_multipart_upload {
+      days_after_initiation = "3"
+    }
+
+    transition {
+      days          = 30
+      storage_class = "GLACIER"
+    }
+
+    noncurrent_version_transition {
+      noncurrent_days = 30
+      storage_class   = "GLACIER"
+    }
+  }
+}
+
+resource "aws_s3_bucket_public_access_block" "acm-pca" {
+  bucket                  = aws_s3_bucket.acm-pca.id
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "acm-pca" {
+  bucket                = aws_s3_bucket.acm-pca.id
+  expected_bucket_owner = local.environment_management.account_ids["core-network-services-production"]
+
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm     = "aws:kms"
+      kms_master_key_id = aws_kms_key.acm.arn
+    }
+    bucket_key_enabled = false
+  }
+}
+
+resource "aws_s3_bucket_versioning" "acm-pca" {
+  bucket                = aws_s3_bucket.acm-pca.id
+  expected_bucket_owner = local.environment_management.account_ids["core-network-services-production"]
+  versioning_configuration {
+    mfa_delete = "Disabled"
+    status     = "Enabled"
+  }
+}
+
+data "aws_iam_policy_document" "acmpca_bucket_access" {
+
+  statement {
+    actions = [
+      "s3:GetBucketAcl",
+      "s3:GetBucketLocation",
+      "s3:PutObject",
+      "s3:PutObjectAcl"
+    ]
+
+    resources = [
+      aws_s3_bucket.acm-pca.arn,
+      "${aws_s3_bucket.acm-pca.arn}/*"
+    ]
+    principals {
+      identifiers = ["acm-pca.amazonaws.com"]
+      type        = "Service"
+    }
+  }
+}
+
+resource "aws_s3_bucket_policy" "root" {
+
+  bucket = aws_s3_bucket.acm-pca.id
+  policy = data.aws_iam_policy_document.acmpca_bucket_access.json
+}
+
+resource "aws_acmpca_certificate_authority_certificate" "root" {
+  certificate_authority_arn = aws_acmpca_certificate_authority.root.arn
+
+  certificate       = aws_acmpca_certificate.root.certificate
+  certificate_chain = aws_acmpca_certificate.root.certificate_chain
+}
+
+resource "aws_acmpca_certificate" "root" {
+  certificate_authority_arn   = aws_acmpca_certificate_authority.root.arn
+  certificate_signing_request = aws_acmpca_certificate_authority.root.certificate_signing_request
+  signing_algorithm           = "SHA512WITHRSA"
+
+  template_arn = "arn:${data.aws_partition.current.partition}:acm-pca:::template/RootCACertificate/V1"
+
+  validity {
+    type  = "YEARS"
+    value = 25
+  }
+}
+
+resource "aws_acmpca_certificate_authority" "root" {
+
+  type = "ROOT"
+  certificate_authority_configuration {
+    key_algorithm     = "RSA_4096"
+    signing_algorithm = "SHA512WITHRSA"
+
+    subject {
+      common_name         = "moj-modernisation-platform-root-CA"
+      organization        = "ministry-of-justice"
+      organizational_unit = "modernisation-platform"
+      country             = "UK"
+      state               = "UK"
+      locality            = "UK"
+    }
+  }
+  revocation_configuration {
+
+    crl_configuration {
+      custom_cname       = "moj-modernisation-platform-crl-root-CA"
+      enabled            = true
+      expiration_in_days = 7
+      s3_bucket_name     = aws_s3_bucket.acm-pca.id
+    }
+  }
+
+  permanent_deletion_time_in_days = 7
+
+  tags = merge(
+    local.tags,
+    {
+      Name = "acm-pca-root-ca"
+    },
+  )
+  depends_on = [aws_s3_bucket_policy.root]
+}
+
+resource "aws_acmpca_certificate_authority_certificate" "live_subordinate" {
+
+  depends_on = [aws_acmpca_certificate_authority.root]
+
+  certificate_authority_arn = aws_acmpca_certificate_authority.live_subordinate.arn
+
+  certificate       = aws_acmpca_certificate.live_subordinate.certificate
+  certificate_chain = aws_acmpca_certificate.live_subordinate.certificate_chain
+}
+
+resource "aws_acmpca_certificate" "live_subordinate" {
+
+  depends_on = [aws_acmpca_certificate_authority.root]
+
+  certificate_authority_arn   = aws_acmpca_certificate_authority.root.arn
+  certificate_signing_request = aws_acmpca_certificate_authority.live_subordinate.certificate_signing_request
+  signing_algorithm           = "SHA512WITHRSA"
+
+  template_arn = "arn:${data.aws_partition.current.partition}:acm-pca:::template/SubordinateCACertificate_PathLen0/V1"
+
+  validity {
+    type  = "YEARS"
+    value = 24
+  }
+}
+
+resource "aws_acmpca_certificate_authority" "live_subordinate" {
+  type = "SUBORDINATE"
+
+  certificate_authority_configuration {
+    key_algorithm     = "RSA_4096"
+    signing_algorithm = "SHA512WITHRSA"
+
+    subject {
+      common_name         = "moj-modernisation-platform-sub-ca-live-data"
+      organization        = "ministry-of-justice"
+      organizational_unit = "modernisation-platform"
+      country             = "UK"
+      state               = "UK"
+      locality            = "UK"
+    }
+
+  }
+}
+
+resource "aws_acmpca_certificate_authority_certificate" "non-live_subordinate" {
+
+  depends_on = [aws_acmpca_certificate_authority.root]
+
+  certificate_authority_arn = aws_acmpca_certificate_authority.non-live_subordinate.arn
+
+  certificate       = aws_acmpca_certificate.non-live_subordinate.certificate
+  certificate_chain = aws_acmpca_certificate.non-live_subordinate.certificate_chain
+}
+
+resource "aws_acmpca_certificate" "non-live_subordinate" {
+
+  depends_on = [aws_acmpca_certificate_authority.root]
+
+  certificate_authority_arn   = aws_acmpca_certificate_authority.root.arn
+  certificate_signing_request = aws_acmpca_certificate_authority.non-live_subordinate.certificate_signing_request
+  signing_algorithm           = "SHA512WITHRSA"
+
+  template_arn = "arn:${data.aws_partition.current.partition}:acm-pca:::template/SubordinateCACertificate_PathLen0/V1"
+
+  validity {
+    type  = "YEARS"
+    value = 24
+  }
+}
+
+resource "aws_acmpca_certificate_authority" "non-live_subordinate" {
+  type = "SUBORDINATE"
+
+  certificate_authority_configuration {
+    key_algorithm     = "RSA_4096"
+    signing_algorithm = "SHA512WITHRSA"
+
+    subject {
+      common_name         = "moj-modernisation-platform-sub-ca-non-live-data"
+      organization        = "ministry-of-justice"
+      organizational_unit = "modernisation-platform"
+      country             = "UK"
+      state               = "UK"
+      locality            = "UK"
+    }
+  }
+}
+
+resource "aws_kms_key" "acm" {
+  description         = "ACM PCA (private certificate authority) encryption key"
+  enable_key_rotation = true
+  policy              = data.aws_iam_policy_document.kms-acm.json
+
+  tags = merge(
+    local.tags,
+    {
+      Name = "acm-pca"
+    },
+  )
+}
+
+resource "aws_kms_alias" "acm-alias" {
+  name          = "alias/acm-pca-root"
+  target_key_id = aws_kms_key.acm.arn
+}
+
+data "aws_iam_policy_document" "kms-acm" {
+
+  statement {
+    effect  = "Allow"
+    actions = ["kms:*"]
+
+    resources = ["*"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["acm-pca.amazonaws.com"]
+    }
+
+    principals {
+      type        = "AWS"
+      identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"]
+    }
+  }
+}
+
+
+output "acmpca_subordinate_non_live" {
+  value = aws_acmpca_certificate_authority.non-live_subordinate.arn
+}
+
+output "acmpca_subordinate_live" {
+  value = aws_acmpca_certificate_authority.live_subordinate.arn
+}
+
+
+terraform {
+  backend "s3" {
+    acl                  = "bucket-owner-full-control"
+    bucket               = "modernisation-platform-terraform-state"
+    encrypt              = true
+    key                  = "terraform.tfstate"
+    region               = "eu-west-2"
+    use_lockfile         = true
+    workspace_key_prefix = "environments/accounts/core-network-services"
+  }
+}
+
+
+variable "networking" {
+  type = list(any)
+  default = [
+    {
+      "business-unit" : "",
+      "set" : "",
+      "application" : "core-network-services"
+    }
+  ]
+}
+
+
+locals {
+  mp_core_cidr_ranges = {
+    mp-core                            = "10.20.0.0/16"
+    mp-core-shared-services-additional = "10.27.136.0/21"
+    mp-development-test                = "10.26.0.0/16"
+    mp-preproduction-production        = "10.27.0.0/16"
+    mp-sandbox                         = "10.231.0.0/20"
+    mp-sandbox-garden                  = "10.231.0.0/21"
+    mp-sandbox-house                   = "10.231.8.0/21"
+  }
+
+  platform_general_set_cidr_ranges = {
+    for key, value in local.core-vpcs : key => value.cidr.subnet_sets.general.cidr
+  }
+
+  other_cidr_ranges = {
+    analytical-platform-airflow-dev     = "10.200.0.0/16"
+    analytical-platform-airflow-prod    = "10.201.0.0/16"
+    analytical-platform-ingest-dev      = "10.26.128.0/23"
+    analytical-platform-ingest-prod     = "10.27.128.0/23"
+    data-engineering-dev                = "172.24.0.0/16"
+    data-engineering-prod               = "172.25.0.0/16"
+    data-engineering-stage              = "172.26.0.0/16"
+    atos_arkc_ras                       = "10.175.0.0/16"
+    atos_arkf_ras                       = "10.176.0.0/16"
+    cloud-platform                      = "172.20.0.0/16"
+    dom1-domain-controllers             = "10.172.68.144/29"
+    global-protect                      = "10.184.0.0/14"
+    i2n                                 = "10.110.0.0/16"
+    moj-core-azure-1                    = "10.50.25.0/27"
+    moj-core-azure-2                    = "10.50.26.0/24"
+    mojo-azure-landing-zone             = "10.192.0.0/16"
+    moj-wifi                            = "10.148.0.0/14"
+    parole-board                        = "10.50.0.0/16"
+    psn                                 = "51.0.0.0/8"
+    psn-ppud                            = "51.247.2.115/32"
+    vodafone_wan_nicts_aggregate        = "10.80.0.0/12"
+    youth-justice-networking-production = "10.20.224.0/21"
+    xsiam-prod-vpc                      = "10.180.96.0/22"
+
+    noms-live-vnet         = "10.40.0.0/18"
+    noms-mgmt-live-vnet    = "10.40.128.0/20"
+    noms-transit-live-vnet = "10.40.160.0/20"
+    noms-test-vnet         = "10.101.0.0/16"
+    noms-mgmt-vnet         = "10.102.0.0/16"
+    moj-smtp-relay1        = "10.180.104.100/32"
+    moj-smtp-relay2        = "10.180.105.100/32"
+
+    delius-eng-dev                    = "10.161.98.0/25"
+    delius-eng-prod                   = "10.160.98.0/25"
+    delius-mis-dev                    = "10.162.32.0/20"
+    delius-mis-dev-private-eu-west-2a = "10.162.32.0/22"
+    delius-mis-dev-private-eu-west-2b = "10.162.36.0/22"
+    delius-mis-dev-private-eu-west-2c = "10.162.40.0/22"
+    delius-test                       = "10.162.0.0/20"
+    delius-stage                      = "10.160.32.0/20"
+    delius-pre-prod                   = "10.160.0.0/20"
+    delius-training                   = "10.162.96.0/20"
+    delius-prod                       = "10.160.16.0/20"
+
+    laa-lz-development             = "10.202.0.0/20"
+    laa-lz-test                    = "10.203.0.0/20"
+    laa-lz-uat                     = "10.206.0.0/20"
+    laa-lz-staging                 = "10.204.0.0/20"
+    laa-lz-production              = "10.205.0.0/20"
+    laa-lz-shared-services-nonprod = "10.200.0.0/20"
+    laa-lz-shared-services-prod    = "10.200.16.0/20"
+    laa-appstream-vpc              = "10.200.32.0/19"
+    laa-appstream-vpc_additional   = "10.200.68.0/22"
+    laa-ecp-db-lb                  = "10.205.10.0/24"
+    laa-ecp-safedb-1               = "10.205.14.0/24"
+    laa-ecp-safedb-2               = "10.205.15.0/24"
+    laa-ecp-safedb-3               = "10.205.11.0/24"
+
+    nec-nonprod = "10.120.0.0/24"
+    nec-prod    = "10.110.0.0/24"
+
+    laa-mp-development-general-private-subnets-a = "10.26.56.0/24"
+    laa-mp-development-general-private-subnets-b = "10.26.57.0/24"
+    laa-mp-development-general-private-subnets-c = "10.26.58.0/24"
+
+    laa-mp-development-general-data-subnets-a = "10.26.60.128/25"
+    laa-mp-development-general-data-subnets-b = "10.26.61.0/25"
+    laa-mp-development-general-data-subnets-c = "10.26.61.128/25"
+
+    laa-mp-test-general-private-subnets-a = "10.26.96.0/24"
+    laa-mp-test-general-private-subnets-b = "10.26.97.0/24"
+    laa-mp-test-general-private-subnets-c = "10.26.98.0/24"
+
+    laa-mp-test-general-data-subnets-a = "10.26.100.128/25"
+    laa-mp-test-general-data-subnets-b = "10.26.101.0/25"
+    laa-mp-test-general-data-subnets-c = "10.26.101.128/25"
+
+    laa-mp-preproduction-general-private-subnets-a = "10.27.72.0/24"
+    laa-mp-preproduction-general-private-subnets-b = "10.27.73.0/24"
+    laa-mp-preproduction-general-private-subnets-c = "10.27.74.0/24"
+
+    laa-mp-preproduction-general-data-subnets-a = "10.27.76.128/25"
+    laa-mp-preproduction-general-data-subnets-b = "10.27.77.0/25"
+    laa-mp-preproduction-general-data-subnets-c = "10.27.77.128/25"
+
+    laa-mp-production-general-private-subnets-a = "10.27.64.0/24"
+    laa-mp-production-general-private-subnets-b = "10.27.65.0/24"
+    laa-mp-production-general-private-subnets-c = "10.27.66.0/24"
+
+    laa-mp-production-general-data-subnets-a = "10.27.68.128/25"
+    laa-mp-production-general-data-subnets-b = "10.27.69.0/25"
+    laa-mp-production-general-data-subnets-c = "10.27.69.128/25"
+
+    hmpps-preproduction-general-private-subnets = "10.27.0.0/22"
+    hmpps-production-general-private-subnets    = "10.27.8.0/22"
+
+    cica-aws-ss-a         = "10.10.10.0/24"
+    cica-aws-ss-b         = "10.10.110.0/24"
+    cica-aws-dev-a        = "10.11.10.0/24"
+    cica-aws-dev-b        = "10.11.110.0/24"
+    cica-aws-dev-data-a   = "10.11.20.0/24"
+    cica-aws-dev-data-b   = "10.11.120.0/24"
+    cica-aws-uat-a        = "10.12.10.0/24"
+    cica-aws-uat-b        = "10.12.110.0/24"
+    cica-aws-uat-data-a   = "10.12.20.0/24"
+    cica-aws-uat-data-b   = "10.12.120.0/24"
+    cica-onprem-uat       = "192.168.4.0/24"
+    cica-onprem-prod      = "10.2.30.0/24"
+    cica-end-user-devices = "10.9.14.0/23"
+    cica-ras-nat          = "10.7.14.224/28"
+    cica-aws-prod-a       = "10.13.10.0/24"
+    cica-aws-prod-b       = "10.13.110.0/24"
+    cica-aws-prod-c       = "10.13.20.0/24"
+    cica-aws-prod-d       = "10.13.120.0/24"
+    cica-onprem-lan       = "10.7.11.0/24"
+
+
+
+    mojo-end-user-devices = "10.0.0.0/8"
+    dom1-dcs              = "10.0.0.0/8"
+    ad-hmpp-dc-azure-1    = "10.40.128.196/32"
+    ad-hmpp-dc-azure-2    = "10.40.0.133/32"
+    ad-hmpp-dc-a          = "10.27.136.5/32"
+    ad-hmpp-dc-b          = "10.27.137.5/32"
+    ad-hmpp-rdlic         = "10.27.138.6/32"
+    ad-azure-dc-azure-1   = "10.102.0.196/32"
+    ad-azure-dc-a         = "10.20.104.5/32"
+    ad-azure-dc-b         = "10.20.106.5/32"
+    ad-azure-rdlic        = "10.20.108.6/32"
+  }
+
+  all_cidr_ranges = merge(
+    local.mp_core_cidr_ranges,
+    local.platform_general_set_cidr_ranges,
+    local.other_cidr_ranges
+  )
+}
+
+
+data "aws_route" "non_live_data" {
+  for_each = merge(
+    module.vpc_inspection["non_live_data"].route_table_ids.transit_gateway,
+    module.vpc_inspection["non_live_data"].route_table_ids.inspection,
+    module.vpc_inspection["non_live_data"].route_table_ids.public
+  )
+  route_table_id         = each.value
+  destination_cidr_block = "0.0.0.0/0"
+}
+
+data "aws_route" "live_data" {
+  for_each = merge(
+    module.vpc_inspection["live_data"].route_table_ids.transit_gateway,
+    module.vpc_inspection["live_data"].route_table_ids.inspection,
+    module.vpc_inspection["live_data"].route_table_ids.public
+  )
+  route_table_id         = each.value
+  destination_cidr_block = "0.0.0.0/0"
+}
+
+data "aws_kms_key" "general_shared" {
+  key_id = "arn:aws:kms:eu-west-2:${local.environment_management.account_ids["core-shared-services-production"]}:alias/general-platforms"
+}
+
+data "aws_vpc" "live" {
+  filter {
+    name   = "tag:Name"
+    values = ["live_data"]
+  }
+}
+
+data "aws_vpc" "non_live" {
+  filter {
+    name   = "tag:Name"
+    values = ["non_live_data"]
+  }
+}
+
+data "aws_nat_gateways" "live" {
+  vpc_id = data.aws_vpc.live.id
+
+  filter {
+    name   = "state"
+    values = ["available"]
+  }
+}
+
+data "aws_nat_gateways" "non_live" {
+  vpc_id = data.aws_vpc.non_live.id
+
+  filter {
+    name   = "state"
+    values = ["available"]
+  }
+}
+
+data "aws_sns_topic" "security_hub_arn" {
+  name = "securityhub-alarms"
+}
+
+
+locals {
+  external_inspection_vpc             = "10.56.0.0/24"
+  external_inspection_subnet_in       = cidrsubnet(local.external_inspection_vpc, 2, 1)
+  external_inspection_subnet_out      = cidrsubnet(local.external_inspection_vpc, 2, 0)
+  external_inspection_in_subnets_map  = { for key, cidr in cidrsubnets(local.external_inspection_subnet_in, 2, 2, 2) : local.availability_zones[key] => cidr }
+  external_inspection_out_subnets_map = { for key, cidr in cidrsubnets(local.external_inspection_subnet_out, 2, 2, 2) : local.availability_zones[key] => cidr }
+
+}
+
+resource "aws_vpc" "external_inspection" {
+
+  cidr_block = local.external_inspection_vpc
+
+  instance_tenancy = "default"
+
+  enable_dns_support   = false
+  enable_dns_hostnames = false
+
+  assign_generated_ipv6_cidr_block = false
+
+  tags = merge(
+    local.tags,
+    {
+      Name = "external_inspection"
+    }
+  )
+}
+
+resource "aws_default_security_group" "external_inspection" {
+  vpc_id = aws_vpc.external_inspection.id
+
+  tags = merge(
+    local.tags,
+    {
+      Name = "external_inspection"
+    }
+  )
+}
+
+resource "aws_kms_key" "external_inspection_logs" {
+  description         = "KMS key for external inspection flow logs"
+  enable_key_rotation = true
+  policy              = data.aws_iam_policy_document.external_inspection_logs_kms.json
+}
+
+resource "aws_kms_alias" "external_inspection_logs" {
+  name          = "alias/external-inspection-logs"
+  target_key_id = aws_kms_key.external_inspection_logs.key_id
+}
+
+data "aws_iam_policy_document" "external_inspection_logs_kms" {
+  statement {
+    sid    = "Enable IAM User Permissions"
+    effect = "Allow"
+    principals {
+      type        = "AWS"
+      identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"]
+    }
+    actions   = ["kms:*"]
+    resources = ["*"]
+  }
+  statement {
+    sid    = "Allow CloudWatch access"
+    effect = "Allow"
+    principals {
+      type        = "Service"
+      identifiers = ["logs.eu-west-2.amazonaws.com"]
+    }
+    actions = [
+      "kms:Encrypt*",
+      "kms:Decrypt*",
+      "kms:ReEncrypt*",
+      "kms:GenerateDataKey*",
+      "kms:Describe*"
+    ]
+    resources = ["*"]
+    condition {
+      test     = "ArnLike"
+      values   = ["arn:aws:logs:eu-west-2:${data.aws_caller_identity.current.account_id}:*"]
+      variable = "kms:EncryptionContext:aws:logs:arn"
+    }
+  }
+}
+
+resource "aws_cloudwatch_log_group" "external_inspection" {
+  name              = "external-inspection-flow-logs"
+  retention_in_days = 365
+  kms_key_id        = aws_kms_key.external_inspection_logs.arn
+  tags              = local.tags
+}
+
+resource "aws_flow_log" "external_inspection" {
+  iam_role_arn             = aws_iam_role.vpc_flow_log.arn
+  log_destination          = aws_cloudwatch_log_group.external_inspection.arn
+  log_format               = local.custom_vpc_flow_log_format
+  traffic_type             = "ALL"
+  log_destination_type     = "cloud-watch-logs"
+  max_aggregation_interval = "60"
+  vpc_id                   = aws_vpc.external_inspection.id
+
+  tags = merge(
+    local.tags,
+    {
+      Name = "external-inspection-flow-logs"
+    }
+  )
+}
+
+resource "aws_flow_log" "external_inspection_s3" {
+  log_destination          = local.core_logging_bucket_arns["vpc-flow-logs"]
+  log_destination_type     = "s3"
+  log_format               = local.custom_vpc_flow_log_format
+  max_aggregation_interval = "60"
+  traffic_type             = "ALL"
+  vpc_id                   = aws_vpc.external_inspection.id
+
+  tags = merge(
+    local.tags,
+    {
+      Name = "external-inspection-vpc-flow-logs-s3"
+    }
+  )
+}
+
+resource "aws_subnet" "external_inspection_in" {
+  for_each = local.external_inspection_in_subnets_map
+
+  vpc_id            = aws_vpc.external_inspection.id
+  cidr_block        = each.value
+  availability_zone = each.key
+
+  tags = merge(
+    local.tags,
+    {
+      Name = "external-inspection-in-${each.key}"
+    }
+  )
+}
+
+resource "aws_subnet" "external_inspection_out" {
+  for_each = local.external_inspection_out_subnets_map
+
+  vpc_id            = aws_vpc.external_inspection.id
+  cidr_block        = each.value
+  availability_zone = each.key
+
+  tags = merge(
+    local.tags,
+    {
+      Name = "external-inspection-out-${each.key}"
+    }
+  )
+}
+
+resource "aws_route_table" "external_inspection_in" {
+  for_each = local.external_inspection_in_subnets_map
+
+  vpc_id = aws_vpc.external_inspection.id
+
+  route {
+    cidr_block      = "0.0.0.0/0"
+    vpc_endpoint_id = element([for ss in tolist(aws_networkfirewall_firewall.external_inspection.firewall_status[0].sync_states) : ss.attachment[0].endpoint_id if ss.attachment[0].subnet_id == aws_subnet.external_inspection_out[each.key].id], 0)
+  }
+
+  tags = merge(
+    local.tags,
+    {
+      Name = "external-inspection_in_${each.key}"
+    }
+  )
+}
+
+resource "aws_route_table_association" "external_inspection_in" {
+  for_each = local.external_inspection_in_subnets_map
+
+  route_table_id = aws_route_table.external_inspection_in[each.key].id
+  subnet_id      = aws_subnet.external_inspection_in[each.key].id
+}
+
+resource "aws_route_table" "external_inspection_out" {
+  vpc_id = aws_vpc.external_inspection.id
+
+  route {
+    cidr_block         = "0.0.0.0/0"
+    transit_gateway_id = aws_ec2_transit_gateway.transit-gateway.id
+  }
+
+  tags = merge(
+    local.tags,
+    {
+      Name = "external-inspection_out"
+    }
+  )
+}
+
+resource "aws_route_table_association" "external_inspection_out" {
+  for_each = local.external_inspection_in_subnets_map
+
+  route_table_id = aws_route_table.external_inspection_out.id
+  subnet_id      = aws_subnet.external_inspection_out[each.key].id
+}
+
+module "firewall_policy" {
+  source                 = "../../modules/firewall-policy"
+  fw_rulegroup_capacity  = "10000"
+  fw_kms_arn             = data.aws_kms_key.general_shared.arn
+  fw_policy_name         = format("%s-fw-policy", local.application_name)
+  fw_rulegroup_name      = format("%s-fw-rulegroup", local.application_name)
+  fw_fqdn_rulegroup_name = format("%s-fw-fqdn-rulegroup", local.application_name)
+  fw_allowed_domains     = local.fqdn_firewall_rules.fw_allowed_domains
+  fw_home_net_ips        = local.fqdn_firewall_rules.fw_home_net_ips
+  ip_sets                = local.firewall_sets["IP_SETS"]
+  port_sets              = local.firewall_sets["PORT_SETS"]
+  rules                  = local.firewall_rules
+  tags                   = local.tags
+}
+
+module "firewall_logging" {
+  source                    = "../../modules/firewall-logging"
+  cloudwatch_log_group_name = format("fw-%s-logs", aws_networkfirewall_firewall.external_inspection.name)
+  fw_arn                    = aws_networkfirewall_firewall.external_inspection.arn
+  tags                      = local.tags
+}
+
+resource "aws_networkfirewall_firewall" "external_inspection" {
+  depends_on          = [aws_subnet.external_inspection_out]
+  name                = "external-inspection"
+  firewall_policy_arn = module.firewall_policy.fw_policy_arn
+  vpc_id              = aws_vpc.external_inspection.id
+  delete_protection   = true
+  encryption_configuration {
+    type   = "CUSTOMER_KMS"
+    key_id = data.aws_kms_key.general_shared.arn
+  }
+  subnet_mapping { subnet_id = aws_subnet.external_inspection_out["eu-west-2a"].id }
+  subnet_mapping { subnet_id = aws_subnet.external_inspection_out["eu-west-2b"].id }
+  subnet_mapping { subnet_id = aws_subnet.external_inspection_out["eu-west-2c"].id }
+  tags = merge(
+    local.tags,
+    { Name = "external-inspection" }
+  )
+}
+
+resource "aws_ec2_transit_gateway_vpc_attachment" "external_inspection_in" {
+
+  transit_gateway_id = aws_ec2_transit_gateway.transit-gateway.id
+
+  vpc_id = aws_vpc.external_inspection.id
+  subnet_ids = [
+    for subnet in aws_subnet.external_inspection_in :
+    subnet.id
+  ]
+
+  transit_gateway_default_route_table_association = false
+  transit_gateway_default_route_table_propagation = false
+
+  dns_support = "disable"
+
+  ipv6_support = "disable"
+
+  appliance_mode_support = "enable"
+
+  tags = merge(
+    local.tags,
+    {
+      Name = "inspection-attachment"
+    }
+  )
+
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
+
+resource "aws_iam_role" "vpc_flow_log" {
+  name               = "AWSVPCFlowLog"
+  assume_role_policy = data.aws_iam_policy_document.vpc_flow_log_assume_role_policy.json
+}
+
+data "aws_iam_policy_document" "vpc_flow_log_assume_role_policy" {
+  version = "2012-10-17"
+  statement {
+    effect  = "Allow"
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["vpc-flow-logs.amazonaws.com"]
+    }
+  }
+}
+
+resource "aws_iam_policy" "vpc_flow_log_publish_policy" {
+  name   = "AWSVPCFlowLogPublishPolicy"
+  policy = data.aws_iam_policy_document.vpc_flow_log_publish_policy.json
+}
+
+data "aws_iam_policy_document" "vpc_flow_log_publish_policy" {
+
+  version = "2012-10-17"
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "logs:CreateLogGroup",
+      "logs:CreateLogStream",
+      "logs:PutLogEvents",
+      "logs:DescribeLogGroups",
+      "logs:DescribeLogStreams"
+    ]
+    resources = ["*"]
+  }
+}
+
+resource "aws_iam_role_policy_attachment" "vpc_flow_log_publish_policy" {
+  role       = aws_iam_role.vpc_flow_log.id
+  policy_arn = aws_iam_policy.vpc_flow_log_publish_policy.arn
+}
+
+resource "aws_iam_role" "dns" {
+  name = "modify-dns-records"
+  assume_role_policy = jsonencode(
+    {
+      "Version" : "2012-10-17",
+      "Statement" : [
+        {
+          "Effect" : "Allow",
+          "Principal" : {
+            "AWS" : data.aws_caller_identity.modernisation-platform.account_id
+          },
+          "Action" : "sts:AssumeRole",
+          "Condition" : {}
+        },
+        {
+          "Effect" : "Allow",
+          "Principal" : {
+            "AWS" : "arn:aws:iam::${local.environment_management.account_ids["testing-test"]}:user/testing-ci"
+          },
+          "Action" : "sts:AssumeRole",
+          "Condition" : {}
+        },
+        {
+          "Effect" : "Allow",
+          "Principal" : {
+            "AWS" : "*"
+          },
+          "Action" : "sts:AssumeRole",
+          "Condition" : {
+            "ForAnyValue:StringLike" : {
+              "aws:PrincipalOrgPaths" : ["${data.aws_organizations_organization.root_account.id}/*/${local.environment_management.modernisation_platform_organisation_unit_id}/*"],
+              "aws:PrincipalArn" : ["arn:aws:iam::*:role/github-actions", "arn:aws:iam::*:role/github-actions-environments-read-only", "arn:aws:iam::*:role/github-actions-environments-dev-test", "arn:aws:iam::*:role/aws-reserved/sso.amazonaws.com/*/AWSReservedSSO_AdministratorAccess_*"]
+            }
+          }
+        }
+      ]
+  })
+
+  tags = merge(
+    local.tags,
+    {
+      Name = "modify-dns-records"
+    },
+  )
+}
+
+resource "aws_iam_role_policy" "dns" {
+  name = "modify-dns-records"
+  role = aws_iam_role.dns.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        "Effect" : "Allow",
+        "Action" : [
+          "route53:Get*",
+          "route53:List*"
+        ],
+        "Resource" : "*"
+      },
+      {
+        Effect = "Allow",
+        Action = ["route53:ChangeResourceRecordSets"],
+        Resource = concat(
+          [for zone in aws_route53_zone.application_zones : format("arn:aws:route53:::hostedzone/%s", zone.id)],
+          [for zone in aws_route53_zone.private_application_zones : format("arn:aws:route53:::hostedzone/%s", zone.id)],
+          [
+            "arn:aws:route53:::hostedzone/${aws_route53_zone.modernisation-platform.id}",
+            "arn:aws:route53:::hostedzone/${aws_route53_zone.modernisation-platform-internal.id}"
+
+          ]
+        )
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role" "read_logs" {
+  name = "read-log-records"
+  assume_role_policy = jsonencode(
+    {
+      "Version" : "2012-10-17",
+      "Statement" : [
+        {
+          "Effect" : "Allow",
+          "Principal" : {
+            "AWS" : "*"
+          },
+          "Action" : "sts:AssumeRole",
+          "Condition" : {
+            "ForAnyValue:StringLike" : {
+              "aws:PrincipalOrgPaths" : ["${data.aws_organizations_organization.root_account.id}/*/${local.environment_management.modernisation_platform_organisation_unit_id}/*"]
+            }
+          }
+        }
+      ]
+  })
+
+  tags = merge(
+    local.tags,
+    {
+      Name = "read-log-records"
+    },
+  )
+}
+
+resource "aws_iam_role_policy" "read_dns" {
+  name = "ReadDNSRecords"
+  role = aws_iam_role.read_logs.id
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        "Effect" : "Allow",
+        "Action" : [
+          "route53:Get*",
+          "route53:List*"
+        ],
+        "Resource" : "*"
+      },
+      {
+        "Effect" : "Allow",
+        "Action" : [
+          "ec2:DescribeVpcs",
+          "ec2:DescribeSubnets",
+          "ec2:DescribeRouteTables",
+          "ec2:DescribeInternetGateways",
+          "ec2:DescribeNatGateways",
+          "ec2:DescribeVpnConnections",
+          "ec2:DescribeVpnGateways",
+          "ec2:DescribeCustomerGateways",
+          "ec2:DescribeTransitGateways",
+          "ec2:DescribeTransitGatewayAttachments",
+          "ec2:DescribeTransitGatewayRouteTables",
+          "ec2:DescribeNetworkAcls",
+          "ec2:DescribeSecurityGroups",
+          "ec2:DescribeAddresses",
+          "ec2:DescribeNetworkInterfaces",
+          "ec2:GetTransitGatewayRouteTablePropagations",
+          "ec2:GetTransitGatewayRouteTableAssociations",
+          "ec2:GetTransitGatewayPrefixListReferences",
+          "ec2:SearchTransitGatewayRoutes"
+        ],
+        "Resource" : "*"
+      }
+    ]
+  })
+}
+
+
+resource "aws_iam_role_policy" "read_firewall" {
+  name = "ReadFirewallRecords"
+  role = aws_iam_role.read_logs.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        "Effect" : "Allow",
+        "Action" : [
+          "logs:DescribeLogGroups",
+          "logs:DescribeLogStreams",
+          "logs:DescribeQueries",
+          "logs:FilterLogEvents",
+          "logs:GetLogEvents",
+          "logs:GetLogGroupFields",
+          "logs:GetLogRecord",
+          "logs:GetQueryResults",
+          "logs:StartQuery",
+          "logs:StopQuery"
+        ],
+        "Resource" : [
+          "arn:aws:logs:*:*:log-group::log-stream:",
+          "arn:aws:logs:*:*:log-group:fw-*:log-stream:*",
+          "arn:aws:logs:*:*:log-group:*-vpc-flow-logs-*:log-stream:*",
+          "arn:aws:logs:*:*:log-group:external-inspection-flow-logs:log-stream:*",
+          "arn:aws:logs:*:*:log-group:tgw-*:log-stream:*",
+          "arn:aws:logs:*:*:log-group:NEC*:log-stream:*"
+        ],
+      },
+      {
+        "Effect" : "Allow",
+        "Action" : [
+          "network-firewall:Describe*",
+          "network-firewall:List*"
+        ],
+        "Resource" : "arn:aws:network-firewall:*:*:*/*"
+      }
+    ]
+  })
+}
+
+module "vpn_environment_check_oidc" {
+  source                      = "github.com/ministryofjustice/modernisation-platform-github-oidc-provider?ref=6dd6f177091fb1664998aa37a1d0d5cf5894c10a"
+  role_name                   = "github-actions-vpn-environment-check"
+  create_github_oidc_provider = false
+  github_repositories         = ["ministryofjustice/modernisation-platform-environments:*"]
+  additional_permissions      = data.aws_iam_policy_document.vpn_environment_check_permissions.json
+  tags_common                 = { "Name" = format("%s-oidc", terraform.workspace) }
+  tags_prefix                 = ""
+}
+
+data "aws_iam_policy_document" "vpn_environment_check_permissions" {
+  version = "2012-10-17"
+  statement {
+    effect = "Allow"
+    actions = [
+      "ec2:DescribeVpnConnections"
+    ]
+    resources = local.vpn_lifecycle_control_arns
+  }
+}
+module "vpn_maintenance_oidc" {
+  source                      = "github.com/ministryofjustice/modernisation-platform-github-oidc-provider?ref=6dd6f177091fb1664998aa37a1d0d5cf5894c10a"
+  role_name                   = "github-actions-vpn-maintenance"
+  create_github_oidc_provider = false
+  github_repositories         = local.github_repository_environments_from_vpns
+  additional_permissions      = data.aws_iam_policy_document.vpn_maintenance_permissions.json
+  tags_common                 = { "Name" = format("%s-oidc", terraform.workspace) }
+  tags_prefix                 = ""
+}
+
+data "aws_iam_policy_document" "vpn_maintenance_permissions" {
+  version = "2012-10-17"
+  statement {
+    effect = "Allow"
+    actions = [
+      "ec2:DescribeVpnConnections",
+      "ec2:ReplaceVpnTunnel"
+    ]
+    resources = local.vpn_lifecycle_control_arns
+  }
+}
+
+data "aws_caller_identity" "modernisation-platform" {
+  provider = aws.modernisation-platform
+}
+
+data "aws_organizations_organization" "root_account" {}
+
+locals {
+  application_name = "core-network-services"
+
+  custom_tgw_flow_log_format = "$${version} $${resource-type} $${account-id} $${tgw-id} $${tgw-attachment-id} $${tgw-src-vpc-account-id} $${tgw-dst-vpc-account-id} $${tgw-src-vpc-id} $${tgw-dst-vpc-id} $${tgw-src-subnet-id} $${tgw-dst-subnet-id} $${tgw-src-eni} $${tgw-dst-eni} $${tgw-src-az-id} $${tgw-dst-az-id} $${tgw-pair-attachment-id} $${srcaddr} $${dstaddr} $${srcport} $${dstport} $${protocol} $${packets} $${bytes} $${start} $${end} $${log-status} $${type} $${packets-lost-no-route} $${packets-lost-blackhole} $${packets-lost-mtu-exceeded} $${packets-lost-ttl-expired} $${tcp-flags} $${region} $${flow-direction} $${pkt-src-aws-service} $${pkt-dst-aws-service}"
+  custom_vpc_flow_log_format = "$${version} $${account-id} $${interface-id} $${srcaddr} $${dstaddr} $${srcport} $${dstport} $${protocol} $${packets} $${bytes} $${start} $${end} $${action} $${log-status} $${vpc-id} $${subnet-id} $${instance-id} $${tcp-flags} $${type} $${pkt-srcaddr} $${pkt-dstaddr} $${region} $${az-id} $${sublocation-type} $${sublocation-id} $${pkt-src-aws-service} $${pkt-dst-aws-service} $${flow-direction} $${traffic-path}"
+  environment_management     = jsondecode(data.aws_secretsmanager_secret_version.environment_management.secret_string)
+  pagerduty_integration_keys = jsondecode(data.aws_secretsmanager_secret_version.pagerduty_integration_keys.secret_string)
+
+  is-production = substr(terraform.workspace, length(local.application_name), length(terraform.workspace)) == "-production"
+
+  core_logging_bucket_arns      = jsondecode(data.aws_ssm_parameter.core_logging_bucket_arns.insecure_value)
+  cloudwatch_generic_log_groups = concat([module.firewall_logging.cloudwatch_log_group_name], [for key, value in module.vpc_inspection : value.fw_cloudwatch_name])
+
+  tags = {
+    business-unit = "Platforms"
+    service-area  = "Hosting"
+    application   = "Modernisation Platform: core-network-services"
+    is-production = local.is-production
+    owner         = "Modernisation Platform: modernisation-platform@digital.justice.gov.uk"
+  }
+
+  active_tgw_peering_attachments = [
+    "MOJ-TGW-attachment-accepter"
+  ]
+
+  active_tgw_vpc_attachments = [
+    "hmcts-production-attachment",
+    "hmpps-production-attachment",
+    "core-network-services-live_data-attachment",
+  ]
+
+  sandbox_rules         = fileexists("./firewall-rules/sandbox_rules.json") ? { for k in sort(keys(jsondecode(templatefile("./firewall-rules/sandbox_rules.json", local.all_cidr_ranges)))) : k => jsondecode(templatefile("./firewall-rules/sandbox_rules.json", local.all_cidr_ranges))[k] } : {}
+  development_rules     = fileexists("./firewall-rules/development_rules.json") ? { for k in sort(keys(jsondecode(templatefile("./firewall-rules/development_rules.json", local.all_cidr_ranges)))) : k => jsondecode(templatefile("./firewall-rules/development_rules.json", local.all_cidr_ranges))[k] } : {}
+  test_rules            = fileexists("./firewall-rules/test_rules.json") ? { for k in sort(keys(jsondecode(templatefile("./firewall-rules/test_rules.json", local.all_cidr_ranges)))) : k => jsondecode(templatefile("./firewall-rules/test_rules.json", local.all_cidr_ranges))[k] } : {}
+  preproduction_rules   = fileexists("./firewall-rules/preproduction_rules.json") ? { for k in sort(keys(jsondecode(templatefile("./firewall-rules/preproduction_rules.json", local.all_cidr_ranges)))) : k => jsondecode(templatefile("./firewall-rules/preproduction_rules.json", local.all_cidr_ranges))[k] } : {}
+  production_rules      = fileexists("./firewall-rules/production_rules.json") ? { for k in sort(keys(jsondecode(templatefile("./firewall-rules/production_rules.json", local.all_cidr_ranges)))) : k => jsondecode(templatefile("./firewall-rules/production_rules.json", local.all_cidr_ranges))[k] } : {}
+  live_data_rules       = fileexists("./firewall-rules/live_data_rules.json") ? { for k in sort(keys(jsondecode(templatefile("./firewall-rules/live_data_rules.json", local.all_cidr_ranges)))) : k => jsondecode(templatefile("./firewall-rules/live_data_rules.json", local.all_cidr_ranges))[k] } : {}
+  non_live_data_rules   = fileexists("./firewall-rules/non_live_data_rules.json") ? { for k in sort(keys(jsondecode(templatefile("./firewall-rules/non_live_data_rules.json", local.all_cidr_ranges)))) : k => jsondecode(templatefile("./firewall-rules/non_live_data_rules.json", local.all_cidr_ranges))[k] } : {}
+  fqdn_firewall_rules   = fileexists("./firewall-rules/fqdn_rules.json") ? jsondecode(file("./firewall-rules/fqdn_rules.json")) : {}
+  inline_firewall_rules = fileexists("./firewall-rules/inline_rules.json") ? jsondecode(templatefile("./firewall-rules/inline_rules.json", local.all_cidr_ranges)) : {}
+
+
+  firewall_rules = merge(
+    local.sandbox_rules,
+    local.development_rules,
+    local.test_rules,
+    local.preproduction_rules,
+    local.production_rules,
+    local.live_data_rules,
+    local.non_live_data_rules
+  )
+  firewall_sets = fileexists("./firewall-rules/sets.json") ? jsondecode(templatefile("./firewall-rules/sets.json", local.all_cidr_ranges)) : {}
+
+  vpn_attachments = fileexists("./vpn_attachments.json") ? jsondecode(file("./vpn_attachments.json")) : tomap({})
+
+  vpn_lifecycle_control_ids = [
+    for name, cfg in local.vpn_attachments :
+    name
+    if(
+      (try(cfg.tunnel1_enable_tunnel_lifecycle_control, "false") == "true") ||
+      (try(cfg.tunnel2_enable_tunnel_lifecycle_control, "false") == "true")
+    )
+  ]
+
+  vpn_lifecycle_control_arns = [
+    for k, v in aws_vpn_connection.this :
+    v.arn
+    if contains(local.vpn_lifecycle_control_ids, k)
+  ]
+
+  github_repository_environments_from_vpns = distinct([
+    for vpn_id, vpn in local.vpn_attachments :
+    "ministryofjustice/modernisation-platform-environments:environment:${vpn.github_environment}"
+    if contains(keys(vpn), "github_environment") && vpn.github_environment != ""
+  ])
+
+  noms_vpn_attachment_ids = toset([for k in aws_vpn_connection.this : k.transit_gateway_attachment_id if(length(regexall("(?:NOMS)", k.tags.Name)) > 0)])
+
+  nec_vpn_attachment_ids = toset([for k in aws_vpn_connection.this : k.transit_gateway_attachment_id if(length(regexall("(?:NEC)", k.tags.Name)) > 0)])
+
+  azure_static_routes = [
+    "10.0.0.0/11",
+    "10.64.0.0/11",
+    "10.100.0.0/15",
+    "10.104.0.0/16",
+    "10.108.0.0/18",
+    "10.108.64.0/23",
+    "10.128.0.0/16",
+    "10.132.0.0/16",
+    "10.136.0.0/13",
+    "10.147.0.0/16",
+    "10.148.0.0/14",
+    "10.154.0.0/23",
+    "10.154.16.0/23",
+    "10.154.32.0/23",
+    "10.154.48.0/23",
+    "10.154.64.0/23",
+    "10.154.80.0/23",
+    "10.154.96.0/23",
+    "10.154.112.0/23",
+    "10.154.128.0/23",
+    "10.154.144.0/23",
+    "10.154.160.0/23",
+    "10.154.176.0/23",
+    "10.154.192.0/23",
+    "10.154.208.0/23",
+    "10.154.240.0/21",
+    "10.154.224.0/21",
+    "10.180.0.0/16",
+    "10.184.128.0/18",
+    "10.184.192.0/18",
+    "10.184.32.0/19",
+    "10.184.64.0/19",
+    "10.184.96.0/19",
+    "10.185.0.0/16",
+    "10.155.0.0/23",
+    "10.159.240.0/20",
+    "10.163.0.0/20",
+    "10.171.0.0/16",
+    "10.172.0.0/16",
+    "10.175.0.0/16",
+    "10.176.0.0/16",
+    "10.178.0.0/16",
+    "10.179.0.0/16",
+    "10.188.0.160/27",
+    "10.205.0.0/24",
+    "10.208.0.0/12",
+    "10.211.0.0/22",
+    "10.228.224.0/19",
+    "10.231.252.0/23",
+    "10.232.0.0/16",
+    "10.233.64.0/18",
+    "10.233.128.0/18",
+    "10.233.192.0/20",
+    "10.233.208.0/22",
+    "10.233.212.0/23",
+    "10.233.214.0/23",
+    "10.233.216.0/21",
+    "10.233.224.0/19",
+    "10.234.0.0/15",
+    "10.236.0.0/14",
+    "10.240.0.0/16",
+    "10.243.224.0/20",
+    "10.245.252.0/22",
+    "172.16.0.0/12",
+    "172.16.9.0/24",
+    "172.16.10.0/24",
+    "172.17.0.0/16",
+    "172.18.0.0/15",
+    "172.20.0.0/15",
+    "172.22.0.0/15",
+    "172.25.181.0/24",
+    "195.59.116.244/32"
+  ]
+
+  parole_board_vpn_static_routes = ["10.50.0.0/16"]
+
+  yjb_vpn_static_route_srx01 = ["10.20.228.0/22"]
+
+  yjb_vpn_static_route_srx02 = ["10.20.224.0/22"]
+
+
+  core-vpcs = {
+    for file in fileset("../../../environments-networks", "*.json") :
+    replace(file, ".json", "") => jsondecode(file("../../../environments-networks/${file}"))
+  }
+
+  vpns_with_notifications = {
+    for name, cfg in local.vpn_attachments :
+    name => cfg
+    if(
+      try(cfg.notification_slack_channel_id, "") != "" ||
+      try(cfg.notification_email, "") != ""
+    )
+  }
+
+  vpn_slack_notifications = {
+    for name, cfg in local.vpns_with_notifications :
+    name => cfg.notification_slack_channel_id
+    if try(cfg.notification_slack_channel_id, "") != ""
+  }
+
+  vpn_email_notifications = {
+    for name, cfg in local.vpns_with_notifications :
+    name => cfg.notification_email
+    if try(cfg.notification_email, "") != ""
+  }
+
+  vpns_by_slack_channel = {
+    for channel_id in distinct([
+      for name, cfg in local.vpns_with_notifications :
+      cfg.notification_slack_channel_id
+      if try(cfg.notification_slack_channel_id, "") != ""
+    ]) :
+    channel_id => [
+      for name, cfg in local.vpns_with_notifications :
+      name
+      if try(cfg.notification_slack_channel_id, "") == channel_id
+    ]
+  }
+
+  vpns_by_email = {
+    for email in distinct([
+      for name, cfg in local.vpns_with_notifications :
+      cfg.notification_email
+      if try(cfg.notification_email, "") != ""
+    ]) :
+    email => [
+      for name, cfg in local.vpns_with_notifications :
+      name
+      if try(cfg.notification_email, "") == email
+    ]
+  }
+
+  vpn_eventbridge_slack_rules = {
+    for channel_id, vpn_list in local.vpns_by_slack_channel :
+    vpn_list[0] => {
+      channel_id = channel_id
+      vpn_list   = vpn_list
+    }
+  }
+
+  vpn_eventbridge_email_rules = {
+    for email, vpn_list in local.vpns_by_email :
+    vpn_list[0] => {
+      email    = email
+      vpn_list = vpn_list
+    }
+  }
+
+  all_vpn_health_notifications = merge(
+    { for k, v in local.vpn_slack_notifications : "slack-${k}" => v },
+    { for k, v in local.vpn_email_notifications : "email-${k}" => v }
+  )
+
+}
+
+
+locals {
+  resolver_query_log_config_names = toset(["core-logging-rlq-cloudwatch", "core-logging-rlq-s3"])
+  vpc_ids                         = { for key, value in module.vpc_inspection : key => value["vpc_id"] if key == "live_data" }
+  rlq_ids                         = { for name, config in data.aws_route53_resolver_query_log_config.core_logging : name => config.id }
+  vpc_rlq_associations = merge([
+    for vpc_key, vpc_id in local.vpc_ids : {
+      for rlq_name, rlq_id in local.rlq_ids :
+      "${vpc_key}_${rlq_name}" => {
+        vpc_id = vpc_id
+        rlq_id = rlq_id
+      }
+    }
+  ]...)
+}
+
+data "aws_route53_resolver_query_log_config" "core_logging" {
+  for_each = local.resolver_query_log_config_names
+  filter {
+    name   = "Name"
+    values = [each.value]
+  }
+}
+
+resource "aws_route53_resolver_query_log_config_association" "core_logging" {
+  for_each                     = local.is-production ? local.vpc_rlq_associations : {}
+  resolver_query_log_config_id = each.value.rlq_id
+  resource_id                  = each.value.vpc_id
+}
+
+resource "aws_kms_key" "stream_firewall_logs" {
+  description         = "KMS key for firewall logs streaming"
+  enable_key_rotation = true
+  policy              = data.aws_iam_policy_document.stream_firewall_logs_kms.json
+}
+
+resource "aws_kms_alias" "stream_firewall_logs" {
+  name          = "alias/stream-firewall-logs"
+  target_key_id = aws_kms_key.stream_firewall_logs.key_id
+}
+
+data "aws_iam_policy_document" "stream_firewall_logs_kms" {
+  statement {
+    sid    = "Enable IAM User Permissions"
+    effect = "Allow"
+    principals {
+      type        = "AWS"
+      identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"]
+    }
+    actions   = ["kms:*"]
+    resources = ["*"]
+  }
+  statement {
+    sid    = "Allow CloudWatch Logs"
+    effect = "Allow"
+    principals {
+      type        = "Service"
+      identifiers = ["logs.amazonaws.com"]
+    }
+    actions = [
+      "kms:Encrypt",
+      "kms:Decrypt",
+      "kms:ReEncrypt*",
+      "kms:GenerateDataKey*",
+      "kms:CreateGrant",
+      "kms:DescribeKey"
+    ]
+    resources = ["*"]
+    condition {
+      test     = "ArnLike"
+      variable = "kms:EncryptionContext:aws:logs:arn"
+      values   = ["arn:aws:logs:*:${data.aws_caller_identity.current.account_id}:*"]
+    }
+  }
+  statement {
+    sid    = "Allow Firehose"
+    effect = "Allow"
+    principals {
+      type        = "Service"
+      identifiers = ["firehose.amazonaws.com"]
+    }
+    actions = [
+      "kms:Decrypt",
+      "kms:GenerateDataKey"
+    ]
+    resources = ["*"]
+  }
+}
+
+resource "aws_s3_bucket" "stream_firewall_logs" {
+  bucket_prefix = "stream-firewall-logs"
+  tags          = local.tags
+}
+
+resource "aws_s3_bucket_logging" "stream_firewall_logs" {
+  bucket        = aws_s3_bucket.stream_firewall_logs.id
+  target_bucket = split(":", local.core_logging_bucket_arns["s3-access-logs"])[5]
+  target_prefix = "stream-firewall-logs/"
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "stream_firewall_logs" {
+  bucket = aws_s3_bucket.stream_firewall_logs.id
+
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm     = "aws:kms"
+      kms_master_key_id = aws_kms_key.stream_firewall_logs.arn
+    }
+  }
+}
+
+resource "aws_s3_bucket_public_access_block" "stream_firewall_logs" {
+  bucket                  = aws_s3_bucket.stream_firewall_logs.id
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
+resource "aws_s3_bucket_versioning" "stream_firewall_logs" {
+  bucket = aws_s3_bucket.stream_firewall_logs.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+module "stream_firewall_logs" {
+  source                     = "github.com/ministryofjustice/modernisation-platform-terraform-aws-data-firehose?ref=c350bc56f980cddededac981d1bfc8479da715e9"
+  cloudwatch_log_group_names = [module.vpc_inspection["live_data"].fw_cloudwatch_name, module.firewall_logging.cloudwatch_log_group_name]
+  destination_http_endpoint  = data.aws_ssm_parameter.cortex_xsiam_endpoint.value
+  kms_key_arn                = aws_kms_key.stream_firewall_logs.arn
+  s3_bucket_name             = aws_s3_bucket.stream_firewall_logs.id
+  tags                       = local.tags
+}
+
+
+resource "aws_cloudwatch_log_group" "public_dns_query_logging" {
+  provider          = aws.aws-us-east-1
+  name              = "/aws/route53/core-public-dns-query-logging"
+  retention_in_days = 365
+  kms_key_id        = aws_kms_key.public_dns_query_logging.arn
+  tags              = local.tags
+}
+
+resource "aws_cloudwatch_log_resource_policy" "public_dns_query_logging" {
+  provider    = aws.aws-us-east-1
+  policy_name = "core-public-dns-query-logging"
+  policy_document = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid    = "AllowRoute53ToPutLogs"
+        Effect = "Allow"
+        Principal = {
+          Service = "route53.amazonaws.com"
+        }
+        Action = ["logs:CreateLogStream", "logs:DescribeLogStreams", "logs:PutLogEvents"]
+        Resource = [
+          aws_cloudwatch_log_group.public_dns_query_logging.arn,
+          "${aws_cloudwatch_log_group.public_dns_query_logging.arn}:*"
+        ]
+      }
+    ]
+  })
+}
+
+resource "aws_route53_query_log" "public_dns_query_logging" {
+  provider                 = aws.aws-us-east-1
+  for_each                 = aws_route53_zone.application_zones
+  zone_id                  = each.value.zone_id
+  cloudwatch_log_group_arn = aws_cloudwatch_log_group.public_dns_query_logging.arn
+}
+
+resource "aws_route53_query_log" "modernisation_platform_public_dns_query_logging" {
+  provider                 = aws.aws-us-east-1
+  zone_id                  = aws_route53_zone.modernisation-platform.zone_id
+  cloudwatch_log_group_arn = aws_cloudwatch_log_group.public_dns_query_logging.arn
+}
+
+resource "aws_kms_key" "public_dns_query_logging" {
+  provider                = aws.aws-us-east-1
+  description             = "KMS key for encrypting public DNS query logging CloudWatch log group"
+  enable_key_rotation     = true
+  deletion_window_in_days = 30
+  tags                    = local.tags
+}
+
+resource "aws_kms_alias" "public_dns_query_logging" {
+  provider      = aws.aws-us-east-1
+  name          = "alias/public-dns-query-logging"
+  target_key_id = aws_kms_key.public_dns_query_logging.id
+}
+
+resource "aws_kms_key_policy" "public_dns_query_logging" {
+  provider = aws.aws-us-east-1
+  key_id   = aws_kms_key.public_dns_query_logging.id
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid    = "Allow administration of the key"
+        Effect = "Allow"
+        Principal = {
+          AWS = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
+        }
+        Action   = "kms:*"
+        Resource = "*"
+      },
+      {
+        Sid    = "Allow CloudWatch Logs to use the key"
+        Effect = "Allow"
+        Principal = {
+          Service = "logs.us-east-1.amazonaws.com"
+        }
+        Action = [
+          "kms:Encrypt",
+          "kms:Decrypt",
+          "kms:ReEncrypt*",
+          "kms:GenerateDataKey*",
+          "kms:DescribeKey"
+        ]
+        Resource = "*"
+        Condition = {
+          StringEquals = {
+            "kms:EncryptionContext:aws:logs:arn" = "arn:aws:logs:us-east-1:${local.environment_management.account_ids["core-network-services-production"]}:log-group:/aws/route53/core-public-dns-query-logging"
+          }
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role" "cwl_to_core_logging" {
+  provider = aws.aws-us-east-1
+  name     = "${local.application_name}-cwl-to-core-logging"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Principal = {
+          Service = "logs.us-east-1.amazonaws.com"
+        },
+        Action = "sts:AssumeRole"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy" "cwl_to_core_logging_policy" {
+  provider = aws.aws-us-east-1
+  name     = "${local.application_name}-cwl-to-core-logging-policy"
+  role     = aws_iam_role.cwl_to_core_logging.name
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [{
+      Effect   = "Allow",
+      Action   = ["logs:PutSubscriptionFilter"],
+      Resource = "arn:aws:logs:us-east-1:${local.environment_management.account_ids["core-logging-production"]}:destination:r53-public-dns-logs-destination"
+    }]
+  })
+}
+
+resource "aws_cloudwatch_log_subscription_filter" "forward_to_core_logging" {
+  provider        = aws.aws-us-east-1
+  name            = "${local.application_name}-cwl-to-core-logging"
+  log_group_name  = aws_cloudwatch_log_group.public_dns_query_logging.name
+  filter_pattern  = ""
+  destination_arn = "arn:aws:logs:us-east-1:${local.environment_management.account_ids["core-logging-production"]}:destination:r53-public-dns-logs-destination"
+  role_arn        = aws_iam_role.cwl_to_core_logging.arn
+
+  depends_on = [
+    aws_cloudwatch_log_group.public_dns_query_logging,
+    aws_iam_role_policy.cwl_to_core_logging_policy
+  ]
+}
+
+module "core_monitoring" {
+  source                     = "../../modules/core-monitoring"
+  pagerduty_integration_keys = local.pagerduty_integration_keys
+}
+
+resource "aws_sns_topic" "route53_monitoring" {
+  provider = aws.aws-us-east-1
+  name     = "route53_monitoring"
+
+  tags = local.tags
+}
+
+module "pagerduty_route53" {
+  providers = {
+    aws = aws.aws-us-east-1
+  }
+  depends_on = [
+    aws_sns_topic.route53_monitoring
+  ]
+  source                    = "github.com/ministryofjustice/modernisation-platform-terraform-pagerduty-integration?ref=d88bd90d490268896670a898edfaba24bba2f8ab"
+  sns_topics                = [aws_sns_topic.route53_monitoring.name]
+  pagerduty_integration_key = local.pagerduty_integration_keys["ddos_cloudwatch"]
+}
+
+module "pagerduty_transit_gateway_production" {
+  depends_on = [
+    aws_sns_topic.tgw_monitoring_production
+  ]
+  source                    = "github.com/ministryofjustice/modernisation-platform-terraform-pagerduty-integration?ref=d88bd90d490268896670a898edfaba24bba2f8ab"
+  sns_topics                = [aws_sns_topic.tgw_monitoring_production.name]
+  pagerduty_integration_key = local.pagerduty_integration_keys["tgw_cloudwatch"]
+}
+
+resource "aws_cloudwatch_metric_alarm" "ddos_attack_modernisation_platform_public_hosted_zone" {
+  provider = aws.aws-us-east-1
+
+  alarm_name          = "DDoSDetected-modernisation-platform-public-hosted-zone"
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  datapoints_to_alarm = "1"
+  evaluation_periods  = "20"
+  metric_name         = "DDoSDetected"
+  namespace           = "AWS/DDoSProtection"
+  period              = "60"
+  statistic           = "Sum"
+  threshold           = "1"
+  alarm_description   = "Alarm for DDoS events detected on resource ${aws_route53_zone.modernisation-platform.arn}"
+  treat_missing_data  = "notBreaching"
+  alarm_actions       = [aws_sns_topic.route53_monitoring.arn]
+  dimensions = {
+    ResourceArn = aws_route53_zone.modernisation-platform.arn
+  }
+  tags = local.tags
+}
+
+resource "aws_cloudwatch_metric_alarm" "ddos_attack_application_public_hosted_zone" {
+  for_each = aws_route53_zone.application_zones
+  provider = aws.aws-us-east-1
+
+  alarm_name          = "DDoSDetected-${each.value.tags.Name}"
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  datapoints_to_alarm = "1"
+  evaluation_periods  = "20"
+  metric_name         = "DDoSDetected"
+  namespace           = "AWS/DDoSProtection"
+  period              = "60"
+  statistic           = "Sum"
+  threshold           = "1"
+  alarm_description   = "Alarm for DDoS events detected on resource ${each.value.arn}"
+  treat_missing_data  = "notBreaching"
+  alarm_actions       = [aws_sns_topic.route53_monitoring.arn]
+  dimensions = {
+    ResourceArn = each.value.arn
+  }
+  tags = local.tags
+}
+
+data "aws_ec2_transit_gateway_peering_attachment" "transit_gateway_production" {
+  for_each = toset(local.active_tgw_peering_attachments)
+  filter {
+    name   = "tag:Name"
+    values = [each.key]
+  }
+}
+
+data "aws_ec2_transit_gateway_vpc_attachment" "transit_gateway_production" {
+  for_each = toset(local.active_tgw_vpc_attachments)
+  filter {
+    name   = "tag:Name"
+    values = [each.key]
+  }
+}
+
+resource "aws_cloudwatch_metric_alarm" "production_attachment_no_traffic_5_minutes" {
+  for_each            = merge(data.aws_ec2_transit_gateway_vpc_attachment.transit_gateway_production, data.aws_ec2_transit_gateway_peering_attachment.transit_gateway_production)
+  alarm_actions       = [aws_sns_topic.tgw_monitoring_production.arn]
+  alarm_description   = format("Low traffic detected for VPC attachment %s", each.value.tags.Name)
+  alarm_name          = format("NoVPCAttachmentTraffic-%s", each.value.tags.Name)
+  comparison_operator = "LessThanOrEqualToThreshold"
+  datapoints_to_alarm = "15"
+  dimensions = {
+    TransitGateway           = aws_ec2_transit_gateway.transit-gateway.id
+    TransitGatewayAttachment = each.value["id"]
+  }
+  evaluation_periods = "15"
+  metric_name        = "BytesIn"
+  namespace          = "AWS/TransitGateway"
+  period             = "60"
+  statistic          = "Sum"
+  threshold          = "1"
+  treat_missing_data = "breaching"
+  tags               = local.tags
+}
+
+resource "aws_sns_topic" "tgw_monitoring_production" {
+  name = "tgw_monitoring_production"
+
+  tags = local.tags
+}
+
+resource "aws_kms_key" "tgw_flowlog_group" {
+  description         = "KMS key for TGW flow logs"
+  enable_key_rotation = true
+  policy              = data.aws_iam_policy_document.tgw_flowlog_group_kms.json
+}
+
+resource "aws_kms_alias" "tgw_flowlog_group" {
+  name          = "alias/tgw-flowlog-group"
+  target_key_id = aws_kms_key.tgw_flowlog_group.key_id
+}
+
+data "aws_iam_policy_document" "tgw_flowlog_group_kms" {
+  statement {
+    sid    = "Enable IAM User Permissions"
+    effect = "Allow"
+    principals {
+      type        = "AWS"
+      identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"]
+    }
+    actions   = ["kms:*"]
+    resources = ["*"]
+  }
+  statement {
+    sid    = "Allow CloudWatch access"
+    effect = "Allow"
+    principals {
+      type        = "Service"
+      identifiers = ["logs.eu-west-2.amazonaws.com"]
+    }
+    actions = [
+      "kms:Encrypt*",
+      "kms:Decrypt*",
+      "kms:ReEncrypt*",
+      "kms:GenerateDataKey*",
+      "kms:Describe*"
+    ]
+    resources = ["*"]
+    condition {
+      test     = "ArnLike"
+      values   = ["arn:aws:logs:eu-west-2:${data.aws_caller_identity.current.account_id}:*"]
+      variable = "kms:EncryptionContext:aws:logs:arn"
+    }
+  }
+}
+
+resource "aws_cloudwatch_log_group" "tgw_flowlog_group" {
+  name              = "tgw-flowlogs"
+  retention_in_days = 365
+  kms_key_id        = aws_kms_key.tgw_flowlog_group.arn
+  tags              = local.tags
+}
+
+resource "aws_flow_log" "tgw_flowlog" {
+  depends_on                    = [aws_cloudwatch_log_group.tgw_flowlog_group]
+  for_each                      = merge(data.aws_ec2_transit_gateway_vpc_attachment.transit_gateway_all, data.aws_ec2_transit_gateway_peering_attachment.transit_gateway_production)
+  iam_role_arn                  = aws_iam_role.vpc_flow_log.arn
+  log_destination               = aws_cloudwatch_log_group.tgw_flowlog_group.arn
+  log_destination_type          = "cloud-watch-logs"
+  traffic_type                  = "ALL"
+  max_aggregation_interval      = "60"
+  transit_gateway_attachment_id = each.value["id"]
+  tags                          = local.tags
+}
+
+resource "aws_flow_log" "tgw_flowlog_s3" {
+  log_destination          = local.core_logging_bucket_arns["vpc-flow-logs"]
+  log_destination_type     = "s3"
+  log_format               = local.custom_tgw_flow_log_format
+  max_aggregation_interval = "60"
+  traffic_type             = "ALL"
+  transit_gateway_id       = aws_ec2_transit_gateway.transit-gateway.id
+  tags = merge(
+    local.tags,
+    {
+      Name = "${aws_vpc.external_inspection.id}-vpc-flow-logs-s3"
+    }
+  )
+}
+
+resource "aws_cloudwatch_metric_alarm" "firewall-traffic-drop-alarm" {
+  alarm_name          = "firewall-traffic-dropped"
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  metric_name         = "DroppedPackets"
+  namespace           = "AWS/NetworkFirewall"
+  period              = 300
+  evaluation_periods  = 10
+  alarm_description   = "Dropped packets alarm"
+  statistic           = "Sum"
+  treat_missing_data  = "notBreaching"
+  alarm_actions       = [aws_sns_topic.networking_general.arn]
+
+  insufficient_data_actions = []
+  dimensions = {
+    AvailabilityZone = "eu-west-2"
+    FirewallName     = aws_networkfirewall_firewall.external_inspection.name
+  }
+}
+
+resource "aws_sns_topic" "networking_general" {
+  name = "networking_general"
+  tags = local.tags
+}
+
+module "pagerduty_networking_general" {
+  depends_on = [
+    aws_sns_topic.networking_general
+  ]
+  source                    = "github.com/ministryofjustice/modernisation-platform-terraform-pagerduty-integration?ref=d88bd90d490268896670a898edfaba24bba2f8ab"
+  sns_topics                = [aws_sns_topic.networking_general.name]
+  pagerduty_integration_key = local.pagerduty_integration_keys["networking_cloudwatch"]
+}
+
+locals {
+  nat_gateway_ids = {
+    live     = data.aws_nat_gateways.live.ids
+    non_live = data.aws_nat_gateways.non_live.ids
+  }
+
+  all_nat_gateways = flatten([
+    for env, ids in local.nat_gateway_ids : [
+      for id in ids : {
+        env = env
+        id  = id
+      }
+    ]
+  ])
+}
+
+resource "aws_cloudwatch_metric_alarm" "nat_packets_drop_count" {
+  for_each = { for nat in local.all_nat_gateways : "${nat.env}_${nat.id}" => nat }
+
+  alarm_name          = "nat_packets_drop_count_${each.key}"
+  comparison_operator = "GreaterThanThreshold"
+  evaluation_periods  = 5
+  threshold           = 100
+  alarm_description   = "NAT Gateway ${each.value.id} in ${each.value.env} environment is dropping packets. This might indicate an issue with the NAT Gateway."
+
+  metric_query {
+    id          = "e1"
+    expression  = "m1"
+    label       = "Dropped Packets"
+    return_data = "true"
+  }
+
+  metric_query {
+    id = "m1"
+    metric {
+      metric_name = "PacketsDropCount"
+      namespace   = "AWS/NATGateway"
+      period      = 60
+      stat        = "Sum"
+      dimensions = {
+        NatGatewayId = each.value.id
+      }
+    }
+  }
+
+  alarm_actions = [data.aws_sns_topic.security_hub_arn.arn]
+  tags          = local.tags
+}
+
+resource "aws_cloudwatch_log_metric_filter" "NATGatewayErrorPortAllocation" {
+  name           = "nat_gateway_error_port_allocation_filter"
+  pattern        = "{ $.eventSource = \"ec2.amazonaws.com\" && $.eventName = \"CreateNatGateway\" && $.errorCode = \"*\" && $.errorMessage = \"*Port Allocation*\" }"
+  log_group_name = "cloudtrail"
+
+  metric_transformation {
+    name      = "ErrorPortAllocation"
+    namespace = "NAT/Gateway"
+    value     = "1"
+  }
+}
+
+resource "aws_cloudwatch_metric_alarm" "ErrorPortAllocation" {
+  alarm_name        = "nat_gateway_error_port_allocation"
+  alarm_description = "This alarm detects when the NAT Gateway is unable to allocate ports to new connections."
+  alarm_actions     = [data.aws_sns_topic.security_hub_arn.arn]
+
+  comparison_operator = "GreaterThanThreshold"
+  evaluation_periods  = "1"
+  metric_name         = "ErrorPortAllocation"
+  namespace           = "NAT/Gateway"
+  period              = "300"
+  statistic           = "Sum"
+  threshold           = "0"
+  treat_missing_data  = "notBreaching"
+
+  tags = local.tags
+}
+
+data "aws_sns_topic" "high_priority_alerts" {
+  name = "high-priority-alarms-topic"
+}
+
+resource "aws_cloudwatch_log_metric_filter" "mpa_trust_policy_changed" {
+  name           = "mpa_trust_policy_changed_filter"
+  log_group_name = "cloudtrail"
+
+  pattern = "{ ($.eventSource = \"iam.amazonaws.com\") && ($.eventName = \"UpdateAssumeRolePolicy\") && ($.requestParameters.roleName = \"ModernisationPlatformAccess\") }"
+
+  metric_transformation {
+    name      = "MPATrustPolicyChanged"
+    namespace = "MP/Security"
+    value     = "1"
+  }
+}
+
+resource "aws_cloudwatch_metric_alarm" "mpa_trust_policy_changed" {
+  alarm_name        = "modernisation-platform-access-trust-policy-changed"
+  alarm_description = "High priority alert: Trust relationship (assume role policy) changed for ModernisationPlatformAccess."
+
+  alarm_actions = [data.aws_sns_topic.high_priority_alerts.arn]
+  ok_actions    = [data.aws_sns_topic.high_priority_alerts.arn]
+
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  evaluation_periods  = "1"
+  metric_name         = "MPATrustPolicyChanged"
+  namespace           = "MP/Security"
+  period              = "60"
+  statistic           = "Sum"
+  threshold           = "1"
+  treat_missing_data  = "notBreaching"
+
+  tags = local.tags
+}
+
+locals {
+  tgw_unauthorized_role_name = "ModernisationPlatformAccess"
+
+  tgw_unauthorized_event_names = [
+    "CreateTransitGateway",
+    "ModifyTransitGateway",
+    "DeleteTransitGateway",
+
+    "CreateTransitGatewayVpcAttachment",
+    "ModifyTransitGatewayVpcAttachment",
+    "DeleteTransitGatewayVpcAttachment",
+
+    "CreateTransitGatewayPeeringAttachment",
+    "AcceptTransitGatewayPeeringAttachment",
+    "RejectTransitGatewayPeeringAttachment",
+    "DeleteTransitGatewayPeeringAttachment",
+
+    "CreateTransitGatewayRouteTable",
+    "DeleteTransitGatewayRouteTable",
+    "AssociateTransitGatewayRouteTable",
+    "DisassociateTransitGatewayRouteTable",
+
+    "CreateTransitGatewayRoute",
+    "ReplaceTransitGatewayRoute",
+    "DeleteTransitGatewayRoute",
+    "EnableTransitGatewayRouteTablePropagation",
+    "DisableTransitGatewayRouteTablePropagation",
+  ]
+}
+
+resource "aws_cloudwatch_log_metric_filter" "tgw_unauthorized_changes" {
+  for_each = toset(local.tgw_unauthorized_event_names)
+
+  name           = "tgw_unauthorized_${lower(each.value)}_filter"
+  log_group_name = "cloudtrail"
+
+  pattern = "{ ($.eventSource = \"ec2.amazonaws.com\") && ($.eventName = \"${each.value}\") && (($.userIdentity.type != \"AssumedRole\") || ($.userIdentity.sessionContext.sessionIssuer.userName != \"${local.tgw_unauthorized_role_name}\")) }"
+
+  metric_transformation {
+    name      = "TGWUnauthorizedChange"
+    namespace = "TransitGateway/Security"
+    value     = "1"
+  }
+}
+
+resource "aws_cloudwatch_metric_alarm" "tgw_unauthorized_change" {
+  alarm_name        = "unauthorized-tgw-change"
+  alarm_description = "High priority alert: Transit Gateway change detected outside of ${local.tgw_unauthorized_role_name} automation role. This may indicate unauthorized manual modification."
+
+  alarm_actions = [data.aws_sns_topic.high_priority_alerts.arn]
+  ok_actions    = [data.aws_sns_topic.high_priority_alerts.arn]
+
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  evaluation_periods  = "1"
+  metric_name         = "TGWUnauthorizedChange"
+  namespace           = "TransitGateway/Security"
+  period              = "60"
+  statistic           = "Sum"
+  threshold           = "1"
+  treat_missing_data  = "notBreaching"
+
+  tags = local.tags
+}
+
+moved {
+  from = aws_ec2_transit_gateway_peering_attachment_accepter.PTTP-Production
+  to   = aws_ec2_transit_gateway_peering_attachment_accepter.moj_tgw_production
+}
+
+moved {
+  from = aws_ec2_transit_gateway_route.tgw_external_egress_routes_for_live_data_to_PTTP["psn"]
+  to   = aws_ec2_transit_gateway_route.tgw_external_egress_routes_for_live_data_to_moj["psn"]
+}
+
+moved {
+  from = aws_ec2_transit_gateway_route.tgw_external_egress_routes_for_live_data_to_PTTP["rfc-1918-10.0.0.0/8"]
+  to   = aws_ec2_transit_gateway_route.tgw_external_egress_routes_for_live_data_to_moj["rfc-1918-10.0.0.0/8"]
+}
+
+moved {
+  from = aws_ec2_transit_gateway_route.tgw_external_egress_routes_for_live_data_to_PTTP["rfc-1918-172.16.0.0/12"]
+  to   = aws_ec2_transit_gateway_route.tgw_external_egress_routes_for_live_data_to_moj["rfc-1918-172.16.0.0/12"]
+}
+
+moved {
+  from = aws_ec2_transit_gateway_route.tgw_external_egress_routes_for_live_data_to_PTTP["rfc-1918-192.168.0.0/16"]
+  to   = aws_ec2_transit_gateway_route.tgw_external_egress_routes_for_live_data_to_moj["rfc-1918-192.168.0.0/16"]
+}
+
+moved {
+  from = aws_ec2_transit_gateway_route.tgw_external_egress_routes_for_non_live_data_to_PTTP["rfc-1918-10.0.0.0/8"]
+  to   = aws_ec2_transit_gateway_route.tgw_external_egress_routes_for_non_live_data_to_moj["rfc-1918-10.0.0.0/8"]
+}
+
+moved {
+  from = aws_ec2_transit_gateway_route.tgw_external_egress_routes_for_non_live_data_to_PTTP["rfc-1918-172.16.0.0/12"]
+  to   = aws_ec2_transit_gateway_route.tgw_external_egress_routes_for_non_live_data_to_moj["rfc-1918-172.16.0.0/12"]
+}
+
+moved {
+  from = aws_ec2_transit_gateway_route.tgw_external_egress_routes_for_non_live_data_to_PTTP["rfc-1918-192.168.0.0/16"]
+  to   = aws_ec2_transit_gateway_route.tgw_external_egress_routes_for_non_live_data_to_moj["rfc-1918-192.168.0.0/16"]
+}
+
+moved {
+  from = aws_flow_log.tgw_flowlog["PTTP-Transit-Gateway-attachment-accepter"]
+  to   = aws_flow_log.tgw_flowlog["MOJ-TGW-attachment-accepter"]
+}
+
+
+module "observability_platform_tenant" {
+
+  source = "github.com/ministryofjustice/terraform-aws-observability-platform-tenant?ref=f69b36c79ba18976d8e500e7cf61cf407158eb61"
+
+  observability_platform_account_id = local.environment_management.account_ids["observability-platform-production"]
+
+  tags = local.tags
+}
+
+
+output "live_cidr" {
+  value = local.networking.live_data
+}
+
+output "nonlive-cidr" {
+  value = local.networking.non_live_data
+}
+
+output "vpc_cidrs" {
+  value = {
+    for key, value in local.networking :
+    key => value
+  }
+}
+
+output "transit_gateway" {
+  value = aws_ec2_transit_gateway.transit-gateway.amazon_side_asn
+}
+
+output "transit_gateway_ram_share" {
+  value = aws_ram_resource_share.transit-gateway.name
+}
+
+output "inspection_tgw_subnets" {
+  value = {
+    for vpc_key, vpc_value in local.networking : vpc_key => length([
+      for subnet_key, subnet_value in module.vpc_inspection[vpc_key].subnet_attributes.transit_gateway : subnet_value[0].id
+    ])
+  }
+}
+
+output "inspection_inspection_subnets" {
+  value = {
+    for vpc_key, vpc_value in local.networking : vpc_key => length([
+      for subnet_key, subnet_value in module.vpc_inspection[vpc_key].subnet_attributes.inspection : subnet_value[0].id
+    ])
+  }
+}
+
+output "inspection_public_subnets" {
+  value = {
+    for vpc_key, vpc_value in local.networking : vpc_key => length([
+      for subnet_key, subnet_value in module.vpc_inspection[vpc_key].subnet_attributes.public : subnet_value[0].id
+    ])
+  }
+}
+
+output "firewall_arn" {
+  value = {
+    for vpc_key, vpc_value in local.networking : vpc_key => module.vpc_inspection[vpc_key].firewall.arn
+  }
+}
+
+output "inspection_vpc_ids" {
+  value = {
+    for vpc_key, vpc_value in local.networking : vpc_key => module.vpc_inspection[vpc_key].vpc_id
+  }
+}
+
+output "inspection_igw_id" {
+  value = {
+    for vpc_key, vpc_value in local.networking : vpc_key => module.vpc_inspection[vpc_key].internet_gateway.id
+  }
+}
+
+output "inspection_natgw_ids" {
+  value = {
+    for vpc_key, vpc_value in local.networking : vpc_key => length([
+    for key in module.vpc_inspection[vpc_key].nat_gateway : key.id])
+  }
+}
+
+output "inspection_default_routes" {
+  value = {
+    live_data     = { for key, value in data.aws_route.live_data : key => value.destination_cidr_block }
+    non_live_data = { for key, value in data.aws_route.non_live_data : key => value.destination_cidr_block }
+  }
+}
+
+
+provider "aws" {
+  region = "eu-west-2"
+  assume_role {
+    role_arn = "arn:aws:iam::${local.environment_management.account_ids[terraform.workspace]}:role/ModernisationPlatformAccess"
+  }
+  default_tags { tags = local.tags }
+}
+provider "aws" {
+  region = "eu-west-1"
+  alias  = "core-eu-west-1"
+  assume_role {
+    role_arn = "arn:aws:iam::${local.environment_management.account_ids[terraform.workspace]}:role/ModernisationPlatformAccess"
+  }
+  default_tags { tags = local.tags }
+}
+
+provider "aws" {
+  alias  = "modernisation-platform"
+  region = "eu-west-2"
+  default_tags { tags = local.tags }
+}
+
+provider "aws" {
+  alias  = "aws-us-east-1"
+  region = "us-east-1"
+  assume_role {
+    role_arn = "arn:aws:iam::${local.environment_management.account_ids[terraform.workspace]}:role/ModernisationPlatformAccess"
+  }
+  default_tags { tags = local.tags }
+}
+
+provider "aws" {
+  alias  = "modernisation-secrets-read"
+  region = "eu-west-2"
+  assume_role {
+    role_arn = "arn:aws:iam::${data.aws_ssm_parameter.modernisation_platform_account_id.value}:role/modernisation-account-limited-read-member-access"
+  }
+  default_tags { tags = local.tags }
+}
+
+
+resource "aws_ram_resource_share" "transit-gateway" {
+  name                      = "transit-gateway"
+  allow_external_principals = false
+
+  tags = local.tags
+}
+
+resource "aws_ram_resource_association" "transit-gateway" {
+  resource_arn       = aws_ec2_transit_gateway.transit-gateway.arn
+  resource_share_arn = aws_ram_resource_share.transit-gateway.id
+}
+
+resource "aws_ram_resource_share" "acm-pca-live" {
+  name                      = "acm-pca-live"
+  allow_external_principals = false
+
+  tags = merge(
+    local.tags,
+    {
+      Name = "acm-pca-live"
+    },
+  )
+}
+
+resource "aws_ram_resource_association" "acm-pca-live" {
+  resource_arn       = aws_acmpca_certificate_authority.live_subordinate.arn
+  resource_share_arn = aws_ram_resource_share.acm-pca-live.id
+}
+
+resource "aws_ram_resource_share" "acm-pca-non-live" {
+  name                      = "acm-pca-non-live"
+  allow_external_principals = false
+
+  tags = merge(
+    local.tags,
+    {
+      Name = "acm-pca-non-live"
+    },
+  )
+}
+
+resource "aws_ram_resource_association" "acm-pca-non-live" {
+  resource_arn       = aws_acmpca_certificate_authority.non-live_subordinate.arn
+  resource_share_arn = aws_ram_resource_share.acm-pca-non-live.id
+}
+
+
+locals {
+  modernisation-platform-domain          = "modernisation-platform.service.justice.gov.uk"
+  modernisation-platform-internal-domain = "modernisation-platform.internal"
+
+  application-zones = {
+    ccms-ebs           = "ccms-ebs.service.justice.gov.uk",
+    cdpt-chaps         = "correspondence-handling-and-processing.service.justice.gov.uk",
+    cdpt-chaps-dev     = "cdpt-chaps.hq-development.modernisation-platform.service.justice.gov.uk",
+    cdpt-chaps-preprod = "cdpt-chaps.hq-preproduction.modernisation-platform.service.justice.gov.uk"
+    cdpt-ifs           = "integrated-fraud-system.service.justice.gov.uk",
+    dacp               = "divorce-section-search.service.justice.gov.uk",
+    delius-jitbit      = "jitbit.cr.probation.service.justice.gov.uk",
+    equip              = "equip.service.justice.gov.uk",
+    laa-apex           = "laa-apex.service.justice.gov.uk",
+    maat               = "means-assessment-administration.service.justice.gov.uk",
+    mlra               = "maat-libra-administration-tool.service.justice.gov.uk",
+    mojfin             = "laa-finance-data.service.justice.gov.uk",
+    ncas               = "neutral-citation-allocation.service.justice.gov.uk",
+    ppud               = "ppud.justice.gov.uk",
+    pra-register       = "parental-responsibility-agreement.service.justice.gov.uk",
+    tipstaff           = "tipstaff.service.justice.gov.uk",
+    tribunals          = "tribunals.gov.uk",
+    wardship           = "wardship-agreements-register.service.justice.gov.uk"
+    legalservices      = "legalservices.gov.uk"
+    laa                = "laa.service.justice.gov.uk"
+  }
+
+  private-application-zones = {
+    aws-prd-legalservices-gov-uk = "aws.prd.legalservices.gov.uk"
+    yjaf-development             = "development.yjaf"
+    yjaf-test                    = "test.yjaf",
+    yjaf-preproduction           = "preproduction.yjaf",
+    yjaf-production              = "production.yjaf"
+  }
+
+  legalservices_records = {
+    "legalservices"             = { name = "legalservices.gov.uk", type = "A", ttl = 300, records = ["151.101.2.30"] }
+    "wwwlegalservices"          = { name = "www.legalservices.gov.uk", type = "A", ttl = 300, records = ["151.101.2.30"] }
+    "mxlegalservices"           = { name = "legalservices.gov.uk", type = "MX", ttl = 300, records = ["0 legalservices-gov-uk.mail.protection.outlook.com"] }
+    "securetransfer"            = { name = "securetransfer.legalservices.gov.uk", type = "A", ttl = 300, records = ["34.240.69.223"] }
+    "gwasecuretransfer"         = { name = "gwa.securetransfer.legalservices.gov.uk", type = "A", ttl = 300, records = ["34.240.69.223"] }
+    "hybridtoolssecuretransfer" = { name = "hybridtools.securetransfer.legalservices.gov.uk", type = "A", ttl = 300, records = ["34.240.69.223"] }
+    "managersecuretransfer"     = { name = "manager.securetransfer.legalservices.gov.uk", type = "A", ttl = 300, records = ["34.240.69.223"] }
+    "oosecuretransfer"          = { name = "oo.securetransfer.legalservices.gov.uk", type = "A", ttl = 300, records = ["34.240.69.223"] }
+    "gwphybrid"                 = { name = "gwphybrid.securetransfer.legalservices.gov.uk", type = "A", ttl = 300, records = ["34.240.69.223"] }
+    "dev"                       = { name = "dev.legalservices.gov.uk", type = "NS", ttl = 300, records = ["ns-674.awsdns-20.net", "ns-1463.awsdns-54.org", "ns-1537.awsdns-00.co.uk", "ns-495.awsdns-61.com"] }
+    "tst"                       = { name = "tst.legalservices.gov.uk", type = "NS", ttl = 300, records = ["ns-1914.awsdns-47.co.uk", "ns-609.awsdns-12.net", "ns-195.awsdns-24.com", "ns-1187.awsdns-20.org"] }
+    "uat"                       = { name = "uat.legalservices.gov.uk", type = "NS", ttl = 300, records = ["ns-938.awsdns-53.net", "ns-1046.awsdns-02.org", "ns-334.awsdns-41.com", "ns-1731.awsdns-24.co.uk"] }
+    "stg"                       = { name = "stg.legalservices.gov.uk", type = "NS", ttl = 300, records = ["ns-1269.awsdns-30.org", "ns-1897.awsdns-45.co.uk", "ns-296.awsdns-37.com", "ns-917.awsdns-50.net"] }
+    "ses-1"                     = { name = "u2hsqlvidbbhlfkkiff3fpuwjm6gu5mq._domainkey.legalservices.gov.uk", type = "CNAME", ttl = 300, records = ["u2hsqlvidbbhlfkkiff3fpuwjm6gu5mq.dkim.amazonses.com"] }
+    "ses-2"                     = { name = "3jn7gxoog7vhao6dnt4vytejnkwrxaow._domainkey.legalservices.gov.uk", type = "CNAME", ttl = 300, records = ["3jn7gxoog7vhao6dnt4vytejnkwrxaow.dkim.amazonses.com"] }
+    "ses-3"                     = { name = "lr4yk5yyneh2seaoiujphvk23mow7vty._domainkey.legalservices.gov.uk", type = "CNAME", ttl = 300, records = ["lr4yk5yyneh2seaoiujphvk23mow7vty.dkim.amazonses.com"] }
+  }
+}
+
+resource "aws_route53_zone" "private_application_zones" {
+
+  for_each = local.private-application-zones
+  name     = each.value
+
+  vpc {
+    vpc_id = module.vpc_inspection["live_data"].vpc_id
+  }
+
+  lifecycle {
+    ignore_changes = [vpc]
+  }
+  tags = local.tags
+}
+
+resource "aws_route53_zone" "modernisation-platform" {
+  name = local.modernisation-platform-domain
+  tags = local.tags
+}
+
+resource "aws_route53_zone" "modernisation-platform-internal" {
+
+  name = local.modernisation-platform-internal-domain
+
+  vpc {
+    vpc_id = module.vpc_inspection["live_data"].vpc_id
+  }
+
+  tags = local.tags
+}
+
+resource "aws_route53_zone" "application_zones" {
+  for_each = local.application-zones
+
+  name = each.value
+
+  tags = merge(
+    local.tags,
+    {
+      Name = "${each.key}-hosted-zone"
+    }
+  )
+}
+
+resource "aws_shield_protection" "modernisation_platform_public_hosted_zone" {
+  name         = "modernisation-platform-public-hosted-zone"
+  resource_arn = aws_route53_zone.modernisation-platform.arn
+
+  tags = local.tags
+}
+
+resource "aws_shield_protection" "application_public_hosted_zone" {
+  for_each = aws_route53_zone.application_zones
+
+  name         = each.value.tags.Name
+  resource_arn = each.value.arn
+
+  tags = local.tags
+}
+
+resource "aws_route53_record" "bichard7" {
+  allow_overwrite = true
+  name            = "bichard7.${local.modernisation-platform-domain}"
+  ttl             = 30
+  type            = "NS"
+  zone_id         = aws_route53_zone.modernisation-platform.zone_id
+  records = [
+    "ns-1067.awsdns-05.org.",
+    "ns-434.awsdns-54.com.",
+    "ns-1782.awsdns-30.co.uk.",
+    "ns-836.awsdns-40.net."
+  ]
+}
+
+resource "aws_route53_record" "submit_a_bulk_claim_laa" {
+  allow_overwrite = true
+  name            = "submit-a-bulk-claim.laa.service.justice.gov.uk"
+  ttl             = 30
+  type            = "NS"
+  zone_id         = aws_route53_zone.application_zones["laa"].zone_id
+  records = [
+    "ns-1297.awsdns-34.org.",
+    "ns-167.awsdns-20.com.",
+    "ns-1932.awsdns-49.co.uk.",
+    "ns-513.awsdns-00.net."
+  ]
+}
+
+resource "aws_route53_record" "amend_a_claim_laa" {
+  allow_overwrite = true
+  name            = "amend-a-claim.laa.service.justice.gov.uk"
+  ttl             = 30
+  type            = "NS"
+  zone_id         = aws_route53_zone.application_zones["laa"].zone_id
+  records = [
+    "ns-1285.awsdns-32.org.",
+    "ns-2014.awsdns-59.co.uk.",
+    "ns-28.awsdns-03.com.",
+    "ns-746.awsdns-29.net."
+  ]
+}
+
+resource "aws_route53_record" "github_pages" {
+  zone_id = aws_route53_zone.modernisation-platform.zone_id
+  name    = "user-guide"
+  type    = "CNAME"
+  ttl     = "300"
+  records = ["ministryofjustice.github.io"]
+}
+
+resource "aws_route53_record" "pagerduty_mail_cname" {
+  zone_id = aws_route53_zone.modernisation-platform.zone_id
+  name    = "em3857.status"
+  type    = "CNAME"
+  ttl     = "300"
+  records = ["u31181182.wl183.sendgrid.net"]
+}
+resource "aws_route53_record" "pagerduty_dkim1" {
+  zone_id = aws_route53_zone.modernisation-platform.zone_id
+  name    = "pdt._domainkey.status"
+  type    = "CNAME"
+  ttl     = "300"
+  records = ["pdt.domainkey.u31181182.wl183.sendgrid.net"]
+}
+resource "aws_route53_record" "pagerduty_dkim2" {
+  zone_id = aws_route53_zone.modernisation-platform.zone_id
+  name    = "pdt2._domainkey.status"
+  type    = "CNAME"
+  ttl     = "300"
+  records = ["pdt2.domainkey.u31181182.wl183.sendgrid.net"]
+}
+resource "aws_route53_record" "pagerduty_http" {
+  zone_id = aws_route53_zone.modernisation-platform.zone_id
+  name    = "status"
+  type    = "CNAME"
+  ttl     = "300"
+  records = ["cd-2b4752bd7016497638e8dfd051a53722.hosted-status.pagerduty.com"]
+}
+
+resource "aws_route53_record" "pagerduty_tls-certificate" {
+  zone_id = aws_route53_zone.modernisation-platform.zone_id
+  name    = "_0b49b12fdddbd40651a7458e0b054120.status"
+  type    = "CNAME"
+  ttl     = "300"
+  records = ["_2b9d3139a782805455e260f16df743e1.xpybkgmvdt.acm-validations.aws."]
+}
+
+resource "aws_route53_record" "legalservices" {
+  for_each = local.legalservices_records
+  zone_id  = aws_route53_zone.application_zones["legalservices"].zone_id
+  name     = each.value.name
+  type     = each.value.type
+  ttl      = each.value.ttl
+  records  = each.value.records
+}
+
+resource "aws_route53_record" "portal" {
+  zone_id = aws_route53_zone.application_zones["legalservices"].zone_id
+  name    = "portal.legalservices.gov.uk"
+  type    = "A"
+
+  alias {
+    name                   = "d1yzmx9d5z0sdz.cloudfront.net"
+    zone_id                = "Z2FDTNDATAQYW2"
+    evaluate_target_health = false
+  }
+}
+
+resource "aws_route53_record" "cwa-prod-db" {
+  zone_id = aws_route53_zone.private_application_zones["aws-prd-legalservices-gov-uk"].zone_id
+  name    = "cwa-prod-db"
+  type    = "A"
+
+  alias {
+    name                   = "cwa-production-db-nlb-blue-green-6a4d60ef7d3e7b0b.elb.eu-west-2.amazonaws.com"
+    zone_id                = "ZD4D7Y8KGAS4G"
+    evaluate_target_health = false
+  }
+}
+
+resource "aws_route53_record" "cwa-prod-db1" {
+  zone_id = aws_route53_zone.private_application_zones["aws-prd-legalservices-gov-uk"].zone_id
+  name    = "cwa-prod-db1"
+  type    = "A"
+
+  alias {
+    name                   = "cwa-production-database-nlb-12d44851fda0f196.elb.eu-west-2.amazonaws.com"
+    zone_id                = "ZD4D7Y8KGAS4G"
+    evaluate_target_health = false
+  }
+}
+
+resource "aws_route53_record" "cwa-prod-db3" {
+  zone_id = aws_route53_zone.private_application_zones["aws-prd-legalservices-gov-uk"].zone_id
+  name    = "cwa-prod-db3"
+  type    = "A"
+
+  alias {
+    name                   = "cwa-production-db-nlb-green-68322e6a90023a4a.elb.eu-west-2.amazonaws.com"
+    zone_id                = "ZD4D7Y8KGAS4G"
+    evaluate_target_health = false
+  }
+}
+
+resource "aws_route53_record" "cwa-prod-db2" {
+  zone_id = aws_route53_zone.private_application_zones["aws-prd-legalservices-gov-uk"].zone_id
+  name    = "cwa-prod-db2"
+  type    = "A"
+
+  alias {
+    name                   = "cwa-production-db-nlb-safe2-54d001c6914e7379.elb.eu-west-2.amazonaws.com"
+    zone_id                = "ZD4D7Y8KGAS4G"
+    evaluate_target_health = false
+  }
+}
+
+
+data "aws_ssm_parameter" "modernisation_platform_account_id" {
+  provider = aws.modernisation-platform
+  name     = "modernisation_platform_account_id"
+}
+
+data "aws_secretsmanager_secret" "environment_management" {
+  provider = aws.modernisation-secrets-read
+  name     = "environment_management"
+}
+
+data "aws_secretsmanager_secret_version" "environment_management" {
+  provider  = aws.modernisation-secrets-read
+  secret_id = data.aws_secretsmanager_secret.environment_management.id
+}
+
+data "aws_secretsmanager_secret" "pagerduty_integration_keys" {
+  provider = aws.modernisation-secrets-read
+  name     = "pagerduty_integration_keys"
+}
+
+data "aws_secretsmanager_secret_version" "pagerduty_integration_keys" {
+  provider  = aws.modernisation-secrets-read
+  secret_id = data.aws_secretsmanager_secret.pagerduty_integration_keys.id
+}
+
+resource "aws_kms_key" "environment_logging" {
+  description             = "environment-logging"
+  enable_key_rotation     = true
+  deletion_window_in_days = 30
+  policy                  = data.aws_iam_policy_document.environment_logging.json
+}
+
+resource "aws_kms_alias" "environment_logging" {
+  name          = "alias/environment-logging"
+  target_key_id = aws_kms_key.environment_logging.key_id
+}
+
+data "aws_iam_policy_document" "environment_logging" {
+
+  statement {
+    sid    = "Enable IAM User Permissions"
+    effect = "Allow"
+    principals {
+      type        = "AWS"
+      identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"]
+    }
+    actions   = ["kms:*"]
+    resources = ["*"]
+  }
+  statement {
+    sid    = "Allow CloudWatch access"
+    effect = "Allow"
+    principals {
+      type        = "Service"
+      identifiers = ["logs.eu-west-2.amazonaws.com"]
+    }
+    actions = [
+      "kms:Encrypt*",
+      "kms:Decrypt*",
+      "kms:ReEncrypt*",
+      "kms:GenerateDataKey*",
+      "kms:Describe*"
+    ]
+    resources = ["*"]
+    condition {
+      test     = "ArnLike"
+      values   = ["arn:aws:logs:region:${data.aws_caller_identity.current.account_id}:*"]
+      variable = "kms:EncryptionContext:aws:logs:arn"
+    }
+  }
+}
+
+
+resource "aws_securityhub_standards_control" "ec2_23_tgw_auto_accept" {
+  standards_control_arn = "arn:aws:securityhub:eu-west-2:${data.aws_caller_identity.current.account_id}:control/aws-foundational-security-best-practices/v/1.0.0/EC2.23"
+  control_status        = "DISABLED"
+  disabled_reason       = "Compensating control: CloudWatch monitoring detects unauthorized TGW attachments. Auto-accept required for automated infrastructure deployment."
+}
+
+
+data "aws_ssm_parameter" "core_logging_bucket_arns" {
+  provider = aws.modernisation-platform
+  name     = "core_logging_bucket_arns"
+}
+
+data "aws_ssm_parameter" "cortex_xsiam_endpoint" {
+  provider = aws.modernisation-platform
+  name     = "cortex_xsiam_endpoint"
+}
+
+
+resource "aws_ec2_transit_gateway" "transit-gateway" {
+  description = "Managed by Terraform"
+
+  amazon_side_asn                 = "64589"
+  auto_accept_shared_attachments  = "enable"
+  default_route_table_association = "disable"
+  default_route_table_propagation = "disable"
+  dns_support                     = "enable"
+  vpn_ecmp_support                = "enable"
+
+  tags = merge(
+    local.tags,
+    {
+      Name = "Modernisation Platform: Transit Gateway"
+    },
+  )
+
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
+resource "aws_ec2_transit_gateway_route_table" "route-tables" {
+  for_each = local.networking
+
+  transit_gateway_id = aws_ec2_transit_gateway.transit-gateway.id
+
+  tags = merge(
+    local.tags,
+    {
+      Name = each.key
+    },
+  )
+
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
+resource "aws_ec2_transit_gateway_route_table_association" "inspection_association" {
+  for_each                       = local.networking
+  transit_gateway_attachment_id  = module.vpc_inspection[each.key].transit_gateway_attachment_id
+  transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.route-tables[each.key].id
+}
+
+resource "aws_ec2_transit_gateway_route" "inspection_route" {
+  for_each                       = local.networking
+  destination_cidr_block         = "0.0.0.0/0"
+  transit_gateway_attachment_id  = module.vpc_inspection[each.key].transit_gateway_attachment_id
+  transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.route-tables[each.key].id
+}
+
+
+data "aws_availability_zones" "available" {
+  state = "available"
+  filter {
+    name   = "zone-id"
+    values = ["euw2-az1", "euw2-az2", "euw2-az3"]
+  }
+}
+
+data "aws_ec2_transit_gateway_vpc_attachments" "transit_gateway_all" {}
+
+data "aws_ec2_transit_gateway_vpc_attachment" "transit_gateway_all" {
+  for_each = toset(data.aws_ec2_transit_gateway_vpc_attachments.transit_gateway_all.ids)
+  id       = each.key
+}
+
+data "aws_ec2_transit_gateway_peering_attachment" "moj_tgw" {
+  filter {
+    name   = "tag:Name"
+    values = ["MOJ-TGW-attachment-accepter"]
+  }
+}
+
+locals {
+
+  vpcs = {
+
+    core-vpc-production = {
+      for file in fileset("../../../environments-networks", "*-production.json") :
+      replace(file, ".json", "") => jsondecode(file("../../../environments-networks/${file}"))
+    }
+
+    core-vpc-preproduction = {
+      for file in fileset("../../../environments-networks", "*-preproduction.json") :
+      replace(file, ".json", "") => jsondecode(file("../../../environments-networks/${file}"))
+    }
+
+    core-vpc-test = {
+      for file in fileset("../../../environments-networks", "*-test.json") :
+      replace(file, ".json", "") => jsondecode(file("../../../environments-networks/${file}"))
+    }
+
+    core-vpc-development = {
+      for file in fileset("../../../environments-networks", "*-development.json") :
+      replace(file, ".json", "") => jsondecode(file("../../../environments-networks/${file}"))
+    }
+  }
+  availability_zones = sort(data.aws_availability_zones.available.names)
+
+  non_live_data_static_routes = {
+    "rfc-1918-10.0.0.0/8"     = "10.0.0.0/8",
+    "rfc-1918-172.16.0.0/12"  = "172.16.0.0/12",
+    "rfc-1918-192.168.0.0/16" = "192.168.0.0/16",
+  }
+
+  live_data_static_routes = {
+    "rfc-1918-10.0.0.0/8"     = "10.0.0.0/8",
+    "rfc-1918-172.16.0.0/12"  = "172.16.0.0/12",
+    "rfc-1918-192.168.0.0/16" = "192.168.0.0/16",
+    "psn"                     = "51.247.0.0/16",
+  }
+
+  external_static_routes = {
+    "modernisation-platform-core"     = "10.20.0.0/16"
+    "modernisation-platform-non-live" = "10.26.0.0/16",
+    "modernisation-platform-live"     = "10.27.0.0/16"
+  }
+
+  inspection_static_routes = {
+    "default" = "0.0.0.0/0"
+  }
+
+  tgw_live_data_attachments = {
+    for k, v in data.aws_ec2_transit_gateway_vpc_attachment.transit_gateway_all : k => v.tags.Name if(
+      length(regexall("(?:production-attachment)", v.tags.Name)) > 0 ||
+      length(regexall("(?:preproduction-attachment)", v.tags.Name)) > 0 ||
+      length(regexall("(?:-live_data-attachment)", v.tags.Name)) > 0
+    )
+  }
+
+  tgw_non_live_data_attachments = {
+    for k, v in data.aws_ec2_transit_gateway_vpc_attachment.transit_gateway_all : k => v.tags.Name if(
+      length(regexall("(?:development-attachment)", v.tags.Name)) > 0 ||
+      length(regexall("(?:sandbox-attachment)", v.tags.Name)) > 0 ||
+      length(regexall("(?:test-attachment)", v.tags.Name)) > 0 ||
+      length(regexall("(?:-non_live_data-attachment)", v.tags.Name)) > 0
+    )
+  }
+
+}
+
+resource "aws_ec2_transit_gateway_peering_attachment_accepter" "moj_tgw_production" {
+  transit_gateway_attachment_id = data.aws_ec2_transit_gateway_peering_attachment.moj_tgw.id
+  tags = {
+    Name = "MOJ-TGW-attachment-accepter"
+    Side = "Acceptor"
+  }
+
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
+resource "aws_ec2_transit_gateway_route_table" "external_inspection_in" {
+  transit_gateway_id = aws_ec2_transit_gateway.transit-gateway.id
+  tags = merge(
+    local.tags,
+    { Name = "external" }
+  )
+}
+
+resource "aws_ec2_transit_gateway_route_table" "external_inspection_out" {
+  transit_gateway_id = aws_ec2_transit_gateway.transit-gateway.id
+  tags = merge(
+    local.tags,
+    { Name = "inspection" }
+  )
+}
+
+resource "aws_ec2_transit_gateway_route_table_propagation" "propagate_live_data_vpcs" {
+  for_each                       = local.tgw_live_data_attachments
+  transit_gateway_attachment_id  = each.key
+  transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.route-tables["live_data"].id
+}
+
+resource "aws_ec2_transit_gateway_route_table_propagation" "propagate_non_live_data_vpcs" {
+  for_each                       = local.tgw_non_live_data_attachments
+  transit_gateway_attachment_id  = each.key
+  transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.route-tables["non_live_data"].id
+}
+
+resource "aws_ec2_transit_gateway_route_table_propagation" "propagate_firewall" {
+  for_each                       = data.aws_ec2_transit_gateway_vpc_attachment.transit_gateway_all
+  transit_gateway_attachment_id  = each.key
+  transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.external_inspection_out.id
+}
+
+resource "aws_ec2_transit_gateway_route" "tgw_external_egress_routes_for_non_live_data_to_moj" {
+  for_each                       = local.non_live_data_static_routes
+  destination_cidr_block         = each.value
+  transit_gateway_attachment_id  = aws_ec2_transit_gateway_vpc_attachment.external_inspection_in.id
+  transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.route-tables["non_live_data"].id
+}
+
+resource "aws_ec2_transit_gateway_route" "tgw_external_egress_routes_for_live_data_to_moj" {
+  for_each                       = local.live_data_static_routes
+  destination_cidr_block         = each.value
+  transit_gateway_attachment_id  = aws_ec2_transit_gateway_vpc_attachment.external_inspection_in.id
+  transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.route-tables["live_data"].id
+}
+
+resource "aws_ec2_transit_gateway_route" "external_static_routes" {
+  for_each                       = local.external_static_routes
+  destination_cidr_block         = each.value
+  transit_gateway_attachment_id  = aws_ec2_transit_gateway_vpc_attachment.external_inspection_in.id
+  transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.external_inspection_in.id
+}
+
+resource "aws_ec2_transit_gateway_route" "inspection_static_routes" {
+  for_each                       = local.inspection_static_routes
+  destination_cidr_block         = each.value
+  transit_gateway_attachment_id  = data.aws_ec2_transit_gateway_peering_attachment.moj_tgw.id
+  transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.external_inspection_out.id
+}
+
+resource "aws_ec2_transit_gateway_route_table_association" "external_inspection_in" {
+  transit_gateway_attachment_id  = data.aws_ec2_transit_gateway_peering_attachment.moj_tgw.id
+  transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.external_inspection_in.id
+}
+
+resource "aws_ec2_transit_gateway_route_table_association" "external_inspection_out" {
+  transit_gateway_attachment_id  = aws_ec2_transit_gateway_vpc_attachment.external_inspection_in.id
+  transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.external_inspection_out.id
+}
+
+data "aws_ec2_transit_gateway_peering_attachment" "ecp_tgw" {
+  filter {
+    name   = "tag:Name"
+    values = ["ECP-TGW-attachment-accepter"]
+  }
+}
+
+resource "aws_ec2_transit_gateway_peering_attachment_accepter" "ecp_tgw_production" {
+  transit_gateway_attachment_id = data.aws_ec2_transit_gateway_peering_attachment.ecp_tgw.id
+  tags = {
+    Name = "ECP-TGW-attachment-accepter"
+    Side = "Acceptor"
+  }
+
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
+resource "aws_ec2_transit_gateway_route_table_association" "external_inspection_in_ecp" {
+  transit_gateway_attachment_id  = data.aws_ec2_transit_gateway_peering_attachment.ecp_tgw.id
+  transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.external_inspection_in.id
+}
+
+resource "aws_ec2_transit_gateway_route" "inspection_static_routes_ecp_safedb" {
+  for_each                       = toset(["10.205.10.0/24", "10.205.11.0/24", "10.205.14.0/24", "10.205.15.0/24"])
+  destination_cidr_block         = each.key
+  transit_gateway_attachment_id  = data.aws_ec2_transit_gateway_peering_attachment.ecp_tgw.id
+  transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.external_inspection_out.id
+}
+
+
+terraform {
+  required_providers {
+    aws = {
+      version = "~> 6.0"
+      source  = "hashicorp/aws"
+    }
+    time = {
+      source  = "hashicorp/time"
+      version = "~> 0.13.0"
+    }
+  }
+  required_version = "~> 1.0"
+}
+
+
+locals {
+  networking = {
+    live_data     = "10.20.0.0/19"
+    non_live_data = "10.20.32.0/19"
+  }
+
+}
+
+module "vpc_inspection" {
+  for_each = local.networking
+
+  source                      = "../../modules/vpc-inspection"
+  application_name            = local.application_name
+  flow_log_s3_destination_arn = each.key == "live_data" ? local.core_logging_bucket_arns["vpc-flow-logs"] : ""
+  fw_allowed_domains          = local.fqdn_firewall_rules.fw_allowed_domains
+  fw_home_net_ips             = local.fqdn_firewall_rules.fw_home_net_ips
+  fw_kms_arn                  = data.aws_kms_key.general_shared.arn
+  fw_rules                    = local.inline_firewall_rules
+  vpc_cidr                    = each.value
+  vpc_flow_log_iam_role       = aws_iam_role.vpc_flow_log.arn
+  transit_gateway_id          = aws_ec2_transit_gateway.transit-gateway.id
+
+  tags_common = merge(
+    local.tags,
+    { inline-inspection = "true" }
+  )
+  tags_prefix = each.key
+}
+
+
+resource "aws_customer_gateway" "this" {
+  for_each   = local.vpn_attachments
+  bgp_asn    = each.value.bgp_asn
+  ip_address = each.value.customer_gateway_ip
+  type       = "ipsec.1"
+
+  tags = merge(
+    local.tags,
+    { "Name" = replace(each.key, "_", "-") },
+  )
+}
+
+resource "aws_vpn_connection" "this" {
+  for_each                                = local.vpn_attachments
+  transit_gateway_id                      = aws_ec2_transit_gateway.transit-gateway.id
+  customer_gateway_id                     = aws_customer_gateway.this[each.key].id
+  static_routes_only                      = try(each.value.static_routes_only, false)
+  type                                    = "ipsec.1"
+  tunnel1_dpd_timeout_action              = try(each.value.tunnel_dpd_timeout_action, null)
+  tunnel1_dpd_timeout_seconds             = try(each.value.tunnel_dpd_timeout_seconds, "30")
+  tunnel1_ike_versions                    = try(toset(each.value.tunnel1_ike_versions), null)
+  tunnel1_inside_cidr                     = try(each.value.tunnel1_inside_cidr, null)
+  tunnel1_phase1_dh_group_numbers         = [try(each.value.tunnel_phase1_dh_group_numbers, null)]
+  tunnel1_phase1_encryption_algorithms    = [try(each.value.tunnel_phase1_encryption_algorithms, null)]
+  tunnel1_phase1_integrity_algorithms     = [try(each.value.tunnel_phase1_integrity_algorithms, null)]
+  tunnel1_phase1_lifetime_seconds         = try(each.value.tunnel_phase1_lifetime_seconds, null)
+  tunnel1_phase2_dh_group_numbers         = [try(each.value.tunnel_phase2_dh_group_numbers, null)]
+  tunnel1_phase2_encryption_algorithms    = [try(each.value.tunnel_phase2_encryption_algorithms, null)]
+  tunnel1_phase2_integrity_algorithms     = [try(each.value.tunnel_phase2_integrity_algorithms, null)]
+  tunnel1_phase2_lifetime_seconds         = try(each.value.tunnel_phase2_lifetime_seconds, null)
+  tunnel1_startup_action                  = try(each.value.tunnel_startup_action, null)
+  tunnel1_enable_tunnel_lifecycle_control = try(each.value.tunnel1_enable_tunnel_lifecycle_control, false)
+  tunnel2_dpd_timeout_action              = try(each.value.tunnel_dpd_timeout_action, null)
+  tunnel2_dpd_timeout_seconds             = try(each.value.tunnel_dpd_timeout_seconds, "30")
+  tunnel2_ike_versions                    = try(toset(each.value.tunnel2_ike_versions), null)
+  tunnel2_inside_cidr                     = try(each.value.tunnel2_inside_cidr, null)
+  tunnel2_phase1_dh_group_numbers         = [try(each.value.tunnel_phase1_dh_group_numbers, null)]
+  tunnel2_phase1_encryption_algorithms    = [try(each.value.tunnel_phase1_encryption_algorithms, null)]
+  tunnel2_phase1_integrity_algorithms     = [try(each.value.tunnel_phase1_integrity_algorithms, null)]
+  tunnel2_phase1_lifetime_seconds         = try(each.value.tunnel_phase1_lifetime_seconds, null)
+  tunnel2_phase2_dh_group_numbers         = [try(each.value.tunnel_phase2_dh_group_numbers, null)]
+  tunnel2_phase2_encryption_algorithms    = [try(each.value.tunnel_phase2_encryption_algorithms, null)]
+  tunnel2_phase2_integrity_algorithms     = [try(each.value.tunnel_phase2_integrity_algorithms, null)]
+  tunnel2_phase2_lifetime_seconds         = try(each.value.tunnel_phase2_lifetime_seconds, null)
+  tunnel2_startup_action                  = try(each.value.tunnel_startup_action, null)
+  tunnel2_enable_tunnel_lifecycle_control = try(each.value.tunnel2_enable_tunnel_lifecycle_control, false)
+  remote_ipv4_network_cidr                = try(each.value.remote_ipv4_network_cidr, local.core-vpcs[each.value.modernisation_platform_vpc].cidr.subnet_sets["general"].cidr)
+
+  tunnel1_log_options {
+    cloudwatch_log_options {
+      log_enabled       = true
+      log_group_arn     = aws_cloudwatch_log_group.vpn_attachments[each.key].arn
+      log_output_format = "json"
+    }
+  }
+
+  tunnel2_log_options {
+    cloudwatch_log_options {
+      log_enabled       = true
+      log_group_arn     = aws_cloudwatch_log_group.vpn_attachments[each.key].arn
+      log_output_format = "json"
+    }
+  }
+
+  tags = merge(
+    local.tags,
+    { "Name" = replace(each.key, "_", "-") },
+    try({ "github-environment" = each.value.github_environment }, {})
+  )
+
+  lifecycle {
+    ignore_changes = [
+      tunnel1_phase1_dh_group_numbers, tunnel1_phase1_encryption_algorithms, tunnel1_phase1_integrity_algorithms,
+      tunnel1_phase2_dh_group_numbers, tunnel1_phase2_encryption_algorithms, tunnel1_phase2_integrity_algorithms,
+      tunnel2_phase1_dh_group_numbers, tunnel2_phase1_encryption_algorithms, tunnel2_phase1_integrity_algorithms,
+      tunnel2_phase2_dh_group_numbers, tunnel2_phase2_encryption_algorithms, tunnel2_phase2_integrity_algorithms,
+    ]
+  }
+
+}
+
+resource "aws_ec2_transit_gateway_route_table_association" "vpn_attachments" {
+  for_each                       = local.vpn_attachments
+  transit_gateway_attachment_id  = aws_vpn_connection.this[each.key].transit_gateway_attachment_id
+  transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.external_inspection_in.id
+}
+
+resource "aws_ec2_transit_gateway_route" "azure_static_routes" {
+  for_each                       = toset(local.azure_static_routes)
+  destination_cidr_block         = each.value
+  transit_gateway_attachment_id  = data.aws_ec2_transit_gateway_peering_attachment.moj_tgw.id
+  transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.external_inspection_out.id
+}
+
+resource "aws_ec2_transit_gateway_route_table_propagation" "propagate_noms_routes_to_firewall" {
+  depends_on                     = [aws_ec2_transit_gateway_route.azure_static_routes]
+  for_each                       = local.noms_vpn_attachment_ids
+  transit_gateway_attachment_id  = each.key
+  transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.external_inspection_out.id
+}
+
+resource "aws_ec2_transit_gateway_route_table_propagation" "propagate_nec_routes_to_firewall" {
+  for_each                       = local.nec_vpn_attachment_ids
+  transit_gateway_attachment_id  = each.key
+  transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.external_inspection_out.id
+}
+
+resource "aws_ec2_transit_gateway_route" "parole_board_routes" {
+  for_each                       = toset(local.parole_board_vpn_static_routes)
+  destination_cidr_block         = each.key
+  transit_gateway_attachment_id  = aws_vpn_connection.this["Parole-Board-VPN"].transit_gateway_attachment_id
+  transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.external_inspection_out.id
+}
+
+resource "aws_ec2_transit_gateway_route" "yjb_routes_srx01" {
+  for_each                       = toset(local.yjb_vpn_static_route_srx01)
+  destination_cidr_block         = each.key
+  transit_gateway_attachment_id  = aws_vpn_connection.this["YJB-Juniper-vSRX01-VPN"].transit_gateway_attachment_id
+  transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.external_inspection_out.id
+}
+resource "aws_ec2_transit_gateway_route" "yjb_routes_srx02" {
+  for_each                       = toset(local.yjb_vpn_static_route_srx02)
+  destination_cidr_block         = each.key
+  transit_gateway_attachment_id  = aws_vpn_connection.this["YJB-Juniper-vSRX02-VPN"].transit_gateway_attachment_id
+  transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.external_inspection_out.id
+}
+
+resource "aws_cloudwatch_log_group" "vpn_attachments" {
+  for_each          = local.vpn_attachments
+  name              = "${replace(each.key, "_", "-")}-vpn-attachment-logs"
+  retention_in_days = 365
+  tags              = local.tags
+}
+
+resource "aws_dx_gateway_association_proposal" "this" {
+  for_each = {
+    for k, v in local.vpn_attachments : k => v
+    if try((v.dx_gateway_id != ""), false)
+  }
+  dx_gateway_id               = try(each.value.dx_gateway_id, null)
+  dx_gateway_owner_account_id = try(each.value.dx_gateway_owner_account_id, null)
+  associated_gateway_id       = aws_customer_gateway.this[each.key].id
+}
+
+resource "aws_sns_topic" "vpn_health_alerts_slack" {
+  for_each          = local.vpn_slack_notifications
+  name              = "vpn-health-alerts-${replace(each.key, "_", "-")}"
+  kms_master_key_id = aws_kms_key.sns_kms_key.id
+
+  tags = merge(
+    local.tags,
+    {
+      "Name"              = "vpn-health-alerts-${replace(each.key, "_", "-")}"
+      "notification-type" = "slack"
+      "slack-channel-id"  = each.value
+      "vpn-name"          = each.key
+    }
+  )
+}
+
+resource "aws_sns_topic" "vpn_health_alerts_email" {
+  for_each          = local.vpn_email_notifications
+  name              = "vpn-health-alerts-${replace(each.key, "_", "-")}"
+  kms_master_key_id = aws_kms_key.sns_kms_key.id
+
+  tags = merge(
+    local.tags,
+    {
+      "Name"               = "vpn-health-alerts-${replace(each.key, "_", "-")}"
+      "notification-type"  = "email"
+      "notification-email" = each.value
+      "vpn-name"           = each.key
+    }
+  )
+}
+
+resource "aws_sns_topic_policy" "vpn_health_alerts_slack" {
+  for_each = aws_sns_topic.vpn_health_alerts_slack
+  arn      = each.value.arn
+  policy   = data.aws_iam_policy_document.vpn_health_sns_topic_policy["slack-${each.key}"].json
+}
+
+resource "aws_sns_topic_policy" "vpn_health_alerts_email" {
+  for_each = aws_sns_topic.vpn_health_alerts_email
+  arn      = each.value.arn
+  policy   = data.aws_iam_policy_document.vpn_health_sns_topic_policy["email-${each.key}"].json
+}
+
+data "aws_iam_policy_document" "vpn_health_sns_topic_policy" {
+  for_each  = local.all_vpn_health_notifications
+  policy_id = "vpn health sns topic policy"
+
+  statement {
+    sid    = "Allow topic owner to manage sns topic"
+    effect = "Allow"
+    actions = [
+      "sns:Publish",
+      "sns:RemovePermission",
+      "sns:SetTopicAttributes",
+      "sns:DeleteTopic",
+      "sns:ListSubscriptionsByTopic",
+      "sns:GetTopicAttributes",
+      "sns:AddPermission",
+      "sns:Subscribe"
+    ]
+    resources = [
+      startswith(each.key, "slack-") ? aws_sns_topic.vpn_health_alerts_slack[replace(each.key, "slack-", "")].arn : aws_sns_topic.vpn_health_alerts_email[replace(each.key, "email-", "")].arn
+    ]
+
+    condition {
+      test     = "StringEquals"
+      variable = "AWS:SourceOwner"
+      values = [
+        local.environment_management.account_ids["core-network-services-production"]
+      ]
+    }
+    principals {
+      type        = "AWS"
+      identifiers = ["*"]
+    }
+  }
+
+  statement {
+    sid    = "Allow eventbridge to publish messages to sns topic"
+    effect = "Allow"
+    actions = [
+      "sns:Publish",
+    ]
+    resources = [
+      startswith(each.key, "slack-") ? aws_sns_topic.vpn_health_alerts_slack[replace(each.key, "slack-", "")].arn : aws_sns_topic.vpn_health_alerts_email[replace(each.key, "email-", "")].arn
+    ]
+
+    principals {
+      type        = "Service"
+      identifiers = ["events.amazonaws.com"]
+    }
+  }
+}
+
+resource "aws_sns_topic_subscription" "vpn_health_email" {
+  for_each  = local.vpn_email_notifications
+  topic_arn = aws_sns_topic.vpn_health_alerts_email[each.key].arn
+  protocol  = "email"
+  endpoint  = each.value
+}
+
+resource "aws_cloudwatch_event_rule" "vpn_health_slack" {
+  for_each    = local.vpn_slack_notifications
+  name        = "vpn-health-alerts-${replace(each.key, "_", "-")}"
+  description = "Monitor VPN health events for ${each.key} notifying Slack channel ${each.value}"
+
+  event_pattern = jsonencode({
+    "source" : ["aws.health"],
+    "detail-type" : ["AWS Health Event"],
+    "resources" = [
+      aws_vpn_connection.this[each.key].id
+    ]
+  })
+
+  tags = merge(
+    local.tags,
+    {
+      "notification-type" = "slack"
+      "slack-channel-id"  = each.value
+      "vpn-name"          = each.key
+    }
+  )
+}
+
+resource "aws_cloudwatch_event_rule" "vpn_health_email" {
+  for_each    = local.vpn_email_notifications
+  name        = "vpn-health-alerts-${replace(each.key, "_", "-")}"
+  description = "Monitor VPN health events for ${each.key} notifying email ${each.value}"
+
+  event_pattern = jsonencode({
+    "source" : ["aws.health"],
+    "detail-type" : ["AWS Health Event"],
+    "resources" = [
+      aws_vpn_connection.this[each.key].id
+    ]
+  })
+
+  tags = merge(
+    local.tags,
+    {
+      "notification-type"  = "email"
+      "notification-email" = each.value
+      "vpn-name"           = each.key
+    }
+  )
+}
+
+resource "aws_cloudwatch_event_target" "vpn_health_slack" {
+  for_each  = local.vpn_slack_notifications
+  rule      = aws_cloudwatch_event_rule.vpn_health_slack[each.key].name
+  target_id = "SendToSNS"
+  arn       = aws_sns_topic.vpn_health_alerts_slack[each.key].arn
+}
+
+resource "aws_cloudwatch_event_target" "vpn_health_email" {
+  for_each  = local.vpn_email_notifications
+  rule      = aws_cloudwatch_event_rule.vpn_health_email[each.key].name
+  target_id = "SendToSNS"
+  arn       = aws_sns_topic.vpn_health_alerts_email[each.key].arn
+}
+
+resource "aws_kms_key" "sns_kms_key" {
+  description         = "KMS key for SNS topic encryption"
+  enable_key_rotation = true
+  policy              = data.aws_iam_policy_document.sns-kms.json
+}
+
+resource "aws_kms_alias" "sns_kms_alias" {
+  name          = "alias/sns-kms-key"
+  target_key_id = aws_kms_key.sns_kms_key.id
+}
+
+data "aws_iam_policy_document" "sns-kms" {
+
+  statement {
+    sid    = "Allow management access of the key to the core-network-services account"
+    effect = "Allow"
+    actions = [
+      "kms:*"
+    ]
+    resources = [
+      "*"
+    ]
+    principals {
+      type = "AWS"

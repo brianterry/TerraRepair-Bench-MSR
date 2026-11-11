@@ -1,0 +1,1201 @@
+locals {
+  certificate_authority_data = try(aws_eks_cluster.default[0].certificate_authority[0]["data"], "")
+
+  eks_policy_short_abbreviation_map = {
+    Admin        = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSAdminPolicy"
+    ClusterAdmin = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+    Edit         = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSEditPolicy"
+    View         = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSViewPolicy"
+  }
+
+  eks_policy_abbreviation_map = merge({ for k, v in local.eks_policy_short_abbreviation_map : format("AmazonEKS%sPolicy", k) => v },
+  local.eks_policy_short_abbreviation_map)
+
+
+  access_entry_expanded_map = { for k, v in var.access_entry_map : k => merge({
+    access_policy_associations = { for kk, vv in v.access_policy_associations : try(local.eks_policy_abbreviation_map[kk], kk) => vv }
+    }, { for kk, vv in v : kk => vv if kk != "access_policy_associations" })
+  }
+
+  access_entry_map = { for k, v in local.access_entry_expanded_map : k => merge({
+    kubernetes_groups = [for group in v.kubernetes_groups : group if group != "system:masters" || v.type != "STANDARD"]
+    access_policy_associations = merge(
+      v.access_policy_associations,
+      contains(v.kubernetes_groups, "system:masters") && v.type == "STANDARD" ? {
+        "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy" = {
+          access_scope = {
+            type       = "cluster"
+            namespaces = null
+          }
+        }
+      } : {}
+    )
+    }, { for kk, vv in v : kk => vv if kk != "kubernetes_groups" && kk != "access_policy_associations" })
+  }
+
+  eks_access_policy_association_product_map = merge(flatten([
+    for k, v in local.access_entry_map : [for kk, vv in v.access_policy_associations : { format("%s-%s", k, kk) = {
+      principal_arn = k
+      policy_arn    = kk
+      }
+    }]
+  ])...)
+}
+
+resource "aws_eks_access_entry" "map" {
+  for_each = local.enabled ? local.access_entry_map : {}
+
+  cluster_name      = local.eks_cluster_id
+  principal_arn     = each.key
+  kubernetes_groups = each.value.kubernetes_groups
+  type              = each.value.type
+
+  tags = module.this.tags
+}
+
+resource "aws_eks_access_policy_association" "map" {
+  for_each = local.enabled ? local.eks_access_policy_association_product_map : {}
+
+  cluster_name  = local.eks_cluster_id
+  principal_arn = each.value.principal_arn
+  policy_arn    = each.value.policy_arn
+
+  access_scope {
+    type       = local.access_entry_map[each.value.principal_arn].access_policy_associations[each.value.policy_arn].access_scope.type
+    namespaces = local.access_entry_map[each.value.principal_arn].access_policy_associations[each.value.policy_arn].access_scope.namespaces
+  }
+
+  depends_on = [
+    aws_eks_access_entry.map,
+    aws_eks_access_entry.standard,
+    aws_eks_access_entry.linux,
+    aws_eks_access_entry.windows,
+  ]
+}
+
+resource "aws_eks_access_entry" "standard" {
+  count = local.enabled ? length(var.access_entries) : 0
+
+  cluster_name      = local.eks_cluster_id
+  principal_arn     = var.access_entries[count.index].principal_arn
+  kubernetes_groups = var.access_entries[count.index].kubernetes_groups
+  type              = "STANDARD"
+
+  tags = module.this.tags
+}
+
+resource "aws_eks_access_entry" "linux" {
+  count = local.enabled ? length(lookup(var.access_entries_for_nodes, "EC2_LINUX", [])) : 0
+
+  cluster_name  = local.eks_cluster_id
+  principal_arn = var.access_entries_for_nodes.EC2_LINUX[count.index]
+  type          = "EC2_LINUX"
+
+  tags = module.this.tags
+}
+
+resource "aws_eks_access_entry" "windows" {
+  count = local.enabled ? length(lookup(var.access_entries_for_nodes, "EC2_WINDOWS", [])) : 0
+
+  cluster_name  = local.eks_cluster_id
+  principal_arn = var.access_entries_for_nodes.EC2_WINDOWS[count.index]
+  type          = "EC2_WINDOWS"
+
+  tags = module.this.tags
+}
+
+resource "aws_eks_access_policy_association" "list" {
+  count = local.enabled ? length(var.access_policy_associations) : 0
+
+  cluster_name  = local.eks_cluster_id
+  principal_arn = var.access_policy_associations[count.index].principal_arn
+  policy_arn = try(local.eks_policy_abbreviation_map[var.access_policy_associations[count.index].policy_arn],
+  var.access_policy_associations[count.index].policy_arn)
+
+  access_scope {
+    type       = var.access_policy_associations[count.index].access_scope.type
+    namespaces = var.access_policy_associations[count.index].access_scope.namespaces
+  }
+
+  depends_on = [
+    aws_eks_access_entry.map,
+    aws_eks_access_entry.standard,
+    aws_eks_access_entry.linux,
+    aws_eks_access_entry.windows,
+  ]
+}
+
+module "this" {
+  source  = "cloudposse/label/null"
+  version = "0.25.0"
+
+  enabled             = var.enabled
+  namespace           = var.namespace
+  tenant              = var.tenant
+  environment         = var.environment
+  stage               = var.stage
+  name                = var.name
+  delimiter           = var.delimiter
+  attributes          = var.attributes
+  tags                = var.tags
+  additional_tag_map  = var.additional_tag_map
+  label_order         = var.label_order
+  regex_replace_chars = var.regex_replace_chars
+  id_length_limit     = var.id_length_limit
+  label_key_case      = var.label_key_case
+  label_value_case    = var.label_value_case
+  descriptor_formats  = var.descriptor_formats
+  labels_as_tags      = var.labels_as_tags
+
+  context = var.context
+}
+
+variable "context" {
+  type = any
+  default = {
+    enabled             = true
+    namespace           = null
+    tenant              = null
+    environment         = null
+    stage               = null
+    name                = null
+    delimiter           = null
+    attributes          = []
+    tags                = {}
+    additional_tag_map  = {}
+    regex_replace_chars = null
+    label_order         = []
+    id_length_limit     = null
+    label_key_case      = null
+    label_value_case    = null
+    descriptor_formats  = {}
+    labels_as_tags      = ["unset"]
+  }
+  description = <<-EOT
+    Single object for setting entire context at once.
+    See description of individual variables for details.
+    Leave string and numeric variables as `null` to use default value.
+    Individual variable settings (non-null) override settings in context object,
+    except for attributes, tags, and additional_tag_map, which are merged.
+  EOT
+
+  validation {
+    condition     = lookup(var.context, "label_key_case", null) == null ? true : contains(["lower", "title", "upper"], var.context["label_key_case"])
+    error_message = "Allowed values: `lower`, `title`, `upper`."
+  }
+
+  validation {
+    condition     = lookup(var.context, "label_value_case", null) == null ? true : contains(["lower", "title", "upper", "none"], var.context["label_value_case"])
+    error_message = "Allowed values: `lower`, `title`, `upper`, `none`."
+  }
+}
+
+variable "enabled" {
+  type        = bool
+  default     = null
+  description = "Set to false to prevent the module from creating any resources"
+}
+
+variable "namespace" {
+  type        = string
+  default     = null
+  description = "ID element. Usually an abbreviation of your organization name, e.g. 'eg' or 'cp', to help ensure generated IDs are globally unique"
+}
+
+variable "tenant" {
+  type        = string
+  default     = null
+  description = "ID element _(Rarely used, not included by default)_. A customer identifier, indicating who this instance of a resource is for"
+}
+
+variable "environment" {
+  type        = string
+  default     = null
+  description = "ID element. Usually used for region e.g. 'uw2', 'us-west-2', OR role 'prod', 'staging', 'dev', 'UAT'"
+}
+
+variable "stage" {
+  type        = string
+  default     = null
+  description = "ID element. Usually used to indicate role, e.g. 'prod', 'staging', 'source', 'build', 'test', 'deploy', 'release'"
+}
+
+variable "name" {
+  type        = string
+  default     = null
+  description = <<-EOT
+    ID element. Usually the component or solution name, e.g. 'app' or 'jenkins'.
+    This is the only ID element not also included as a `tag`.
+    The "name" tag is set to the full `id` string. There is no tag with the value of the `name` input.
+    EOT
+}
+
+variable "delimiter" {
+  type        = string
+  default     = null
+  description = <<-EOT
+    Delimiter to be used between ID elements.
+    Defaults to `-` (hyphen). Set to `""` to use no delimiter at all.
+  EOT
+}
+
+variable "attributes" {
+  type        = list(string)
+  default     = []
+  description = <<-EOT
+    ID element. Additional attributes (e.g. `workers` or `cluster`) to add to `id`,
+    in the order they appear in the list. New attributes are appended to the
+    end of the list. The elements of the list are joined by the `delimiter`
+    and treated as a single ID element.
+    EOT
+}
+
+variable "labels_as_tags" {
+  type        = set(string)
+  default     = ["default"]
+  description = <<-EOT
+    Set of labels (ID elements) to include as tags in the `tags` output.
+    Default is to include all labels.
+    Tags with empty values will not be included in the `tags` output.
+    Set to `[]` to suppress all generated tags.
+    **Notes:**
+      The value of the `name` tag, if included, will be the `id`, not the `name`.
+      Unlike other `null-label` inputs, the initial setting of `labels_as_tags` cannot be
+      changed in later chained modules. Attempts to change it will be silently ignored.
+    EOT
+}
+
+variable "tags" {
+  type        = map(string)
+  default     = {}
+  description = <<-EOT
+    Additional tags (e.g. `{'BusinessUnit': 'XYZ'}`).
+    Neither the tag keys nor the tag values will be modified by this module.
+    EOT
+}
+
+variable "additional_tag_map" {
+  type        = map(string)
+  default     = {}
+  description = <<-EOT
+    Additional key-value pairs to add to each map in `tags_as_list_of_maps`. Not added to `tags` or `id`.
+    This is for some rare cases where resources want additional configuration of tags
+    and therefore take a list of maps with tag key, value, and additional configuration.
+    EOT
+}
+
+variable "label_order" {
+  type        = list(string)
+  default     = null
+  description = <<-EOT
+    The order in which the labels (ID elements) appear in the `id`.
+    Defaults to ["namespace", "environment", "stage", "name", "attributes"].
+    You can omit any of the 6 labels ("tenant" is the 6th), but at least one must be present.
+    EOT
+}
+
+variable "regex_replace_chars" {
+  type        = string
+  default     = null
+  description = <<-EOT
+    Terraform regular expression (regex) string.
+    Characters matching the regex will be removed from the ID elements.
+    If not set, `"/[^a-zA-Z0-9-]/"` is used to remove all characters other than hyphens, letters and digits.
+  EOT
+}
+
+variable "id_length_limit" {
+  type        = number
+  default     = null
+  description = <<-EOT
+    Limit `id` to this many characters (minimum 6).
+    Set to `0` for unlimited length.
+    Set to `null` for keep the existing setting, which defaults to `0`.
+    Does not affect `id_full`.
+  EOT
+  validation {
+    condition     = var.id_length_limit == null ? true : var.id_length_limit >= 6 || var.id_length_limit == 0
+    error_message = "The id_length_limit must be >= 6 if supplied (not null), or 0 for unlimited length."
+  }
+}
+
+variable "label_key_case" {
+  type        = string
+  default     = null
+  description = <<-EOT
+    Controls the letter case of the `tags` keys (label names) for tags generated by this module.
+    Does not affect keys of tags passed in via the `tags` input.
+    Possible values: `lower`, `title`, `upper`.
+    Default value: `title`.
+  EOT
+
+  validation {
+    condition     = var.label_key_case == null ? true : contains(["lower", "title", "upper"], var.label_key_case)
+    error_message = "Allowed values: `lower`, `title`, `upper`."
+  }
+}
+
+variable "label_value_case" {
+  type        = string
+  default     = null
+  description = <<-EOT
+    Controls the letter case of ID elements (labels) as included in `id`,
+    set as tag values, and output by this module individually.
+    Does not affect values of tags passed in via the `tags` input.
+    Possible values: `lower`, `title`, `upper` and `none` (no transformation).
+    Set this to `title` and set `delimiter` to `""` to yield Pascal Case IDs.
+    Default value: `lower`.
+  EOT
+
+  validation {
+    condition     = var.label_value_case == null ? true : contains(["lower", "title", "upper", "none"], var.label_value_case)
+    error_message = "Allowed values: `lower`, `title`, `upper`, `none`."
+  }
+}
+
+variable "descriptor_formats" {
+  type        = any
+  default     = {}
+  description = <<-EOT
+    Describe additional descriptors to be output in the `descriptors` output map.
+    Map of maps. Keys are names of descriptors. Values are maps of the form
+    `{
+       format = string
+       labels = list(string)
+    }`
+    (Type is `any` so the map values can later be enhanced to provide additional options.)
+    `format` is a Terraform format string to be passed to the `format()` function.
+    `labels` is a list of labels, in order, to pass to `format()` function.
+    Label values will be normalized before being passed to `format()` so they will be
+    identical to how they appear in `id`.
+    Default is `{}` (`descriptors` output will be empty).
+    EOT
+}
+
+locals {
+  create_eks_service_role = local.enabled && var.create_eks_service_role
+
+  eks_service_role_arn = local.create_eks_service_role ? one(aws_iam_role.default[*].arn) : var.eks_cluster_service_role_arn
+}
+
+data "aws_iam_policy_document" "assume_role" {
+  count = local.create_eks_service_role ? 1 : 0
+
+  statement {
+    effect  = "Allow"
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["eks.amazonaws.com"]
+    }
+  }
+}
+
+resource "aws_iam_role" "default" {
+  count = local.create_eks_service_role ? 1 : 0
+
+  name                 = module.label.id
+  assume_role_policy   = one(data.aws_iam_policy_document.assume_role[*].json)
+  tags                 = module.label.tags
+  permissions_boundary = var.permissions_boundary
+}
+
+resource "aws_iam_role_policy_attachment" "amazon_eks_cluster_policy" {
+  count = local.create_eks_service_role ? 1 : 0
+
+  policy_arn = format("arn:%s:iam::aws:policy/AmazonEKSClusterPolicy", one(data.aws_partition.current[*].partition))
+  role       = one(aws_iam_role.default[*].name)
+}
+
+resource "aws_iam_role_policy_attachment" "amazon_eks_service_policy" {
+  count = local.create_eks_service_role ? 1 : 0
+
+  policy_arn = format("arn:%s:iam::aws:policy/AmazonEKSServicePolicy", one(data.aws_partition.current[*].partition))
+  role       = one(aws_iam_role.default[*].name)
+}
+
+data "aws_iam_policy_document" "cluster_elb_service_role" {
+  count = local.create_eks_service_role ? 1 : 0
+
+  statement {
+    sid    = "AllowElasticLoadBalancer"
+    effect = "Allow"
+    actions = [
+      "ec2:DescribeAccountAttributes",
+      "ec2:DescribeAddresses",
+      "ec2:DescribeInternetGateways",
+    ]
+    resources = ["*"]
+  }
+  statement {
+    sid    = "AllowElasticLoadBalancerWithCondition"
+    effect = "Allow"
+    actions = [
+      "elasticloadbalancing:SetIpAddressType",
+      "elasticloadbalancing:SetSubnets"
+    ]
+    resources = ["arn:aws:elasticloadbalancing:*:*:loadbalancer/*"]
+  }
+  statement {
+    sid    = "DenyCreateLogGroup"
+    effect = "Deny"
+    actions = [
+      "logs:CreateLogGroup"
+    ]
+    resources = ["*"]
+  }
+}
+
+resource "aws_iam_policy" "cluster_elb_service_role" {
+  count = local.create_eks_service_role ? 1 : 0
+
+  name   = "${module.label.id}-ServiceRole"
+  policy = one(data.aws_iam_policy_document.cluster_elb_service_role[*].json)
+
+  tags = module.this.tags
+}
+
+resource "aws_iam_role_policy_attachment" "cluster_elb_service_role" {
+  count = local.create_eks_service_role ? 1 : 0
+
+  policy_arn = one(aws_iam_policy.cluster_elb_service_role[*].arn)
+  role       = one(aws_iam_role.default[*].name)
+}
+
+locals {
+  enabled = module.this.enabled
+
+  use_ipv6 = var.kubernetes_network_ipv6_enabled
+
+  eks_cluster_id = one(aws_eks_cluster.default[*].id)
+
+  cluster_encryption_config = {
+    resources = var.cluster_encryption_config_resources
+
+    provider_key_arn = local.enabled && var.cluster_encryption_config_enabled && var.cluster_encryption_config_kms_key_id == "" ? (
+      one(aws_kms_key.cluster[*].arn)
+    ) : var.cluster_encryption_config_kms_key_id
+  }
+
+  cloudwatch_log_group_name = "/aws/eks/${module.label.id}/cluster"
+}
+
+module "label" {
+  source  = "cloudposse/label/null"
+  version = "0.25.0"
+
+  attributes = var.cluster_attributes
+
+  context = module.this.context
+}
+
+data "aws_partition" "current" {
+  count = local.enabled ? 1 : 0
+}
+
+resource "aws_cloudwatch_log_group" "default" {
+  count             = local.enabled && length(var.enabled_cluster_log_types) > 0 ? 1 : 0
+  name              = local.cloudwatch_log_group_name
+  retention_in_days = var.cluster_log_retention_period
+  kms_key_id        = var.cloudwatch_log_group_kms_key_id
+  tags              = module.label.tags
+  log_group_class   = var.cloudwatch_log_group_class
+}
+
+resource "aws_kms_key" "cluster" {
+  count                   = local.enabled && var.cluster_encryption_config_enabled && var.cluster_encryption_config_kms_key_id == "" ? 1 : 0
+  description             = "EKS Cluster ${module.label.id} Encryption Config KMS Key"
+  enable_key_rotation     = var.cluster_encryption_config_kms_key_enable_key_rotation
+  deletion_window_in_days = var.cluster_encryption_config_kms_key_deletion_window_in_days
+  policy                  = var.cluster_encryption_config_kms_key_policy
+  tags                    = module.label.tags
+}
+
+resource "aws_kms_alias" "cluster" {
+  count         = local.enabled && var.cluster_encryption_config_enabled && var.cluster_encryption_config_kms_key_id == "" ? 1 : 0
+  name          = format("alias/%v", module.label.id)
+  target_key_id = one(aws_kms_key.cluster[*].key_id)
+}
+
+resource "aws_eks_cluster" "default" {
+  count                         = local.enabled ? 1 : 0
+  name                          = module.label.id
+  tags                          = module.label.tags
+  role_arn                      = local.eks_service_role_arn
+  version                       = var.kubernetes_version
+  enabled_cluster_log_types     = length(var.enabled_cluster_log_types) > 0 ? var.enabled_cluster_log_types : ["api", "audit", "authenticator", "controllerManager", "scheduler"]
+  bootstrap_self_managed_addons = var.bootstrap_self_managed_addons_enabled
+
+  access_config {
+    authentication_mode                         = var.access_config.authentication_mode
+    bootstrap_cluster_creator_admin_permissions = var.access_config.bootstrap_cluster_creator_admin_permissions
+  }
+
+  lifecycle {
+    ignore_changes = [access_config[0].bootstrap_cluster_creator_admin_permissions]
+  }
+
+  dynamic "encryption_config" {
+    for_each = var.cluster_encryption_config_enabled ? [local.cluster_encryption_config] : []
+    content {
+      resources = encryption_config.value.resources
+      provider {
+        key_arn = encryption_config.value.provider_key_arn
+      }
+    }
+  }
+
+  vpc_config {
+    security_group_ids      = var.associated_security_group_ids
+    subnet_ids              = var.subnet_ids
+    endpoint_private_access = var.endpoint_private_access
+    endpoint_public_access  = false
+    public_access_cidrs     = []
+  }
+
+  dynamic "kubernetes_network_config" {
+    for_each = local.use_ipv6 ? [] : compact([var.service_ipv4_cidr])
+    content {
+      service_ipv4_cidr = kubernetes_network_config.value
+    }
+  }
+
+  dynamic "kubernetes_network_config" {
+    for_each = local.use_ipv6 ? [true] : []
+    content {
+      ip_family = "ipv6"
+    }
+  }
+
+  dynamic "remote_network_config" {
+    for_each = var.remote_network_config != null ? [var.remote_network_config] : []
+
+    content {
+      dynamic "remote_node_networks" {
+        for_each = [remote_network_config.value.remote_node_networks_cidrs]
+
+        content {
+          cidrs = remote_network_config.value.remote_node_networks_cidrs
+        }
+      }
+
+      dynamic "remote_pod_networks" {
+        for_each = remote_network_config.value.remote_pod_networks_cidrs != null ? [remote_network_config.value.remote_pod_networks_cidrs] : []
+
+        content {
+          cidrs = remote_network_config.value.remote_pod_networks_cidrs
+        }
+      }
+    }
+  }
+
+  dynamic "upgrade_policy" {
+    for_each = var.upgrade_policy != null ? [var.upgrade_policy] : []
+    content {
+      support_type = upgrade_policy.value.support_type
+    }
+  }
+
+  dynamic "zonal_shift_config" {
+    for_each = var.zonal_shift_config != null ? [var.zonal_shift_config] : []
+    content {
+      enabled = zonal_shift_config.value.enabled
+    }
+  }
+
+  depends_on = [
+    aws_iam_role.default,
+    aws_iam_role_policy_attachment.cluster_elb_service_role,
+    aws_iam_role_policy_attachment.amazon_eks_cluster_policy,
+    aws_iam_role_policy_attachment.amazon_eks_service_policy,
+    aws_kms_alias.cluster,
+    aws_cloudwatch_log_group.default,
+    var.associated_security_group_ids,
+    var.cluster_depends_on,
+    var.subnet_ids,
+  ]
+}
+
+data "tls_certificate" "cluster" {
+  count = local.enabled && var.oidc_provider_enabled ? 1 : 0
+  url   = one(aws_eks_cluster.default[*].identity[0].oidc[0].issuer)
+}
+
+resource "aws_iam_openid_connect_provider" "default" {
+  count = local.enabled && var.oidc_provider_enabled ? 1 : 0
+  url   = one(aws_eks_cluster.default[*].identity[0].oidc[0].issuer)
+  tags  = module.label.tags
+
+  client_id_list  = ["sts.amazonaws.com"]
+  thumbprint_list = [one(data.tls_certificate.cluster[*].certificates[0].sha1_fingerprint)]
+}
+
+resource "aws_eks_addon" "cluster" {
+  for_each = local.enabled ? {
+    for addon in var.addons :
+    addon.addon_name => addon
+  } : {}
+
+  cluster_name                = one(aws_eks_cluster.default[*].name)
+  addon_name                  = each.key
+  addon_version               = lookup(each.value, "addon_version", null)
+  configuration_values        = lookup(each.value, "configuration_values", null)
+  resolve_conflicts_on_create = lookup(each.value, "resolve_conflicts_on_create", try(replace(each.value.resolve_conflicts, "PRESERVE", "NONE"), null))
+  resolve_conflicts_on_update = lookup(each.value, "resolve_conflicts_on_update", lookup(each.value, "resolve_conflicts", null))
+  service_account_role_arn    = lookup(each.value, "service_account_role_arn", null)
+
+  dynamic "pod_identity_association" {
+    for_each = merge({}, lookup(each.value, "pod_identity_association", {}))
+
+    content {
+      service_account = pod_identity_association.key
+      role_arn        = pod_identity_association.value
+    }
+  }
+
+  tags = merge(module.label.tags, each.value.additional_tags)
+
+  depends_on = [
+    var.addons_depends_on,
+    aws_eks_cluster.default,
+    aws_iam_openid_connect_provider.default,
+  ]
+
+  timeouts {
+    create = each.value.create_timeout
+    update = each.value.update_timeout
+    delete = each.value.delete_timeout
+  }
+}
+
+output "eks_cluster_id" {
+  description = "The name of the cluster"
+  value       = one(aws_eks_cluster.default[*].id)
+}
+
+output "eks_cluster_arn" {
+  description = "The Amazon Resource Name (ARN) of the cluster"
+  value       = one(aws_eks_cluster.default[*].arn)
+}
+
+output "eks_cluster_endpoint" {
+  description = "The endpoint for the Kubernetes API server"
+  value       = one(aws_eks_cluster.default[*].endpoint)
+}
+
+output "eks_cluster_version" {
+  description = "The Kubernetes server version of the cluster"
+  value       = one(aws_eks_cluster.default[*].version)
+}
+
+output "eks_cluster_identity_oidc_issuer" {
+  description = "The OIDC Identity issuer for the cluster"
+  value       = one(aws_eks_cluster.default[*].identity[0].oidc[0].issuer)
+}
+
+output "eks_cluster_identity_oidc_issuer_arn" {
+  description = "The OIDC Identity issuer ARN for the cluster that can be used to associate IAM roles with a service account"
+  value       = one(aws_iam_openid_connect_provider.default[*].arn)
+}
+
+output "eks_cluster_certificate_authority_data" {
+  description = "The Kubernetes cluster certificate authority data"
+  value       = local.certificate_authority_data
+}
+
+output "eks_cluster_managed_security_group_id" {
+  description = <<-EOT
+    Security Group ID that was created by EKS for the cluster.
+    EKS creates a Security Group and applies it to the ENI that are attached to EKS Control Plane master nodes and to any managed workloads.
+    EOT
+  value       = one(aws_eks_cluster.default[*].vpc_config[0].cluster_security_group_id)
+}
+
+output "eks_cluster_role_arn" {
+  description = "ARN of the EKS cluster IAM role"
+  value       = local.eks_service_role_arn
+}
+
+output "eks_cluster_ipv4_service_cidr" {
+  description = <<-EOT
+    The IPv4 CIDR block that Kubernetes pod and service IP addresses are assigned from
+    if `kubernetes_network_ipv6_enabled` is set to false. If set to true this output will be null.
+    EOT
+  value       = one(aws_eks_cluster.default[*].kubernetes_network_config[0].service_ipv4_cidr)
+}
+
+output "eks_cluster_ipv6_service_cidr" {
+  description = <<-EOT
+    The IPv6 CIDR block that Kubernetes pod and service IP addresses are assigned from
+    if `kubernetes_network_ipv6_enabled` is set to true. If set to false this output will be null.
+    EOT
+  value       = one(aws_eks_cluster.default[*].kubernetes_network_config[0].service_ipv6_cidr)
+}
+
+output "eks_addons_versions" {
+  description = "Map of enabled EKS Addons names and versions"
+  value = local.enabled ? {
+    for addon in aws_eks_addon.cluster :
+    addon.addon_name => addon.addon_version
+  } : {}
+}
+
+output "cluster_encryption_config_enabled" {
+  description = "If true, Cluster Encryption Configuration is enabled"
+  value       = var.cluster_encryption_config_enabled
+}
+
+output "cluster_encryption_config_resources" {
+  description = "Cluster Encryption Config Resources"
+  value       = var.cluster_encryption_config_resources
+}
+
+output "cluster_encryption_config_provider_key_arn" {
+  description = "Cluster Encryption Config KMS Key ARN"
+  value       = local.cluster_encryption_config.provider_key_arn
+}
+
+output "cluster_encryption_config_provider_key_alias" {
+  description = "Cluster Encryption Config KMS Key Alias ARN"
+  value       = one(aws_kms_alias.cluster[*].arn)
+}
+
+output "cloudwatch_log_group_name" {
+  description = "The name of the log group created in cloudwatch where cluster logs are forwarded to if enabled"
+  value       = local.cloudwatch_log_group_name
+}
+
+output "cloudwatch_log_group_kms_key_id" {
+  description = "KMS Key ID to encrypt AWS CloudWatch logs"
+  value       = var.cloudwatch_log_group_kms_key_id
+}
+
+locals {
+  cluster_security_group_id            = one(aws_eks_cluster.default[*].vpc_config[0].cluster_security_group_id)
+  managed_security_group_rules_enabled = local.enabled && var.managed_security_group_rules_enabled
+}
+
+resource "aws_vpc_security_group_ingress_rule" "managed_ingress_security_groups" {
+  count = local.managed_security_group_rules_enabled ? length(var.allowed_security_group_ids) : 0
+
+  description                  = "Allow inbound traffic from existing Security Groups"
+  ip_protocol                  = "-1"
+  referenced_security_group_id = var.allowed_security_group_ids[count.index]
+  security_group_id            = local.cluster_security_group_id
+}
+
+resource "aws_vpc_security_group_ingress_rule" "managed_ingress_cidr_blocks" {
+  count = local.managed_security_group_rules_enabled ? length(var.allowed_cidr_blocks) : 0
+
+  description       = "Allow inbound traffic from CIDR blocks"
+  ip_protocol       = "-1"
+  cidr_ipv4         = var.allowed_cidr_blocks[count.index]
+  security_group_id = local.cluster_security_group_id
+}
+
+resource "aws_vpc_security_group_ingress_rule" "custom_ingress_rules" {
+  for_each = { for sg_rule in var.custom_ingress_rules : sg_rule.source_security_group_id => sg_rule }
+
+  description                  = each.value.description
+  from_port                    = each.value.from_port
+  to_port                      = each.value.to_port
+  ip_protocol                  = each.value.protocol
+  referenced_security_group_id = each.value.source_security_group_id
+  security_group_id            = local.cluster_security_group_id
+}
+
+variable "region" {
+
+  type        = string
+  description = "OBSOLETE (not needed): AWS Region"
+  default     = null
+}
+
+variable "subnet_ids" {
+  type        = list(string)
+  description = "A list of subnet IDs to launch the cluster in"
+}
+
+variable "associated_security_group_ids" {
+  type        = list(string)
+  default     = []
+  description = <<-EOT
+    A list of IDs of Security Groups to associate the cluster with.
+    These security groups will not be modified.
+    EOT
+}
+
+variable "cluster_depends_on" {
+  type        = any
+  description = <<-EOT
+    If provided, the EKS will depend on this object, and therefore not be created until this object is finalized.
+    This is useful if you want to ensure that the cluster is not created before some other condition is met, e.g. VPNs into the subnet are created.
+    EOT
+  default     = null
+}
+
+variable "create_eks_service_role" {
+  type        = bool
+  description = "Set `false` to use existing `eks_cluster_service_role_arn` instead of creating one"
+  default     = true
+}
+
+variable "eks_cluster_service_role_arn" {
+  type        = string
+  description = <<-EOT
+    The ARN of an IAM role for the EKS cluster to use that provides permissions
+    for the Kubernetes control plane to perform needed AWS API operations.
+    Required if `create_eks_service_role` is `false`, ignored otherwise.
+    EOT
+  default     = null
+}
+
+variable "kubernetes_version" {
+  type        = string
+  description = "Desired Kubernetes master version. If you do not specify a value, the latest available version is used"
+  default     = "1.31"
+}
+
+variable "oidc_provider_enabled" {
+  type        = bool
+  description = <<-EOT
+    Create an IAM OIDC identity provider for the cluster, then you can create IAM roles to associate with a
+    service account in the cluster, instead of using kiam or kube2iam. For more information,
+    see [EKS User Guide](https://docs.aws.amazon.com/eks/latest/userguide/enable-iam-roles-for-service-accounts.html).
+    EOT
+  default     = false
+}
+
+variable "endpoint_private_access" {
+  type        = bool
+  description = "Indicates whether or not the Amazon EKS private API server endpoint is enabled. Default to AWS EKS resource and it is false"
+  default     = false
+}
+
+variable "endpoint_public_access" {
+  type        = bool
+  description = "Indicates whether or not the Amazon EKS public API server endpoint is enabled. Default to AWS EKS resource and it is true"
+  default     = false
+}
+
+variable "public_access_cidrs" {
+  type        = list(string)
+  description = "Indicates which CIDR blocks can access the Amazon EKS public API server endpoint when enabled. EKS defaults this to a list with 0.0.0.0/0."
+  default     = []
+}
+
+variable "service_ipv4_cidr" {
+  type        = string
+  description = <<-EOT
+    The CIDR block to assign Kubernetes service IP addresses from.
+    You can only specify a custom CIDR block when you create a cluster, changing this value will force a new cluster to be created.
+    EOT
+  default     = null
+}
+
+variable "kubernetes_network_ipv6_enabled" {
+  type        = bool
+  description = "Set true to use IPv6 addresses for Kubernetes pods and services"
+  default     = false
+}
+
+variable "enabled_cluster_log_types" {
+  type        = list(string)
+  description = "A list of the desired control plane logging to enable. For more information, see https://docs.aws.amazon.com/en_us/eks/latest/userguide/control-plane-logs.html. Possible values [`api`, `audit`, `authenticator`, `controllerManager`, `scheduler`]"
+  default     = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
+}
+
+variable "cluster_log_retention_period" {
+  type        = number
+  description = "Number of days to retain cluster logs. Requires `enabled_cluster_log_types` to be set. See https://docs.aws.amazon.com/en_us/eks/latest/userguide/control-plane-logs.html."
+  default     = 0
+}
+
+variable "cluster_encryption_config_enabled" {
+  type        = bool
+  description = "Set to `true` to enable Cluster Encryption Configuration"
+  default     = true
+}
+
+variable "cluster_encryption_config_kms_key_id" {
+  type        = string
+  description = "KMS Key ID to use for cluster encryption config"
+  default     = ""
+}
+
+variable "cluster_encryption_config_kms_key_enable_key_rotation" {
+  type        = bool
+  description = "Cluster Encryption Config KMS Key Resource argument - enable kms key rotation"
+  default     = true
+}
+
+variable "cluster_encryption_config_kms_key_deletion_window_in_days" {
+  type        = number
+  description = "Cluster Encryption Config KMS Key Resource argument - key deletion windows in days post destruction"
+  default     = 10
+}
+
+variable "cluster_encryption_config_kms_key_policy" {
+  type        = string
+  description = "Cluster Encryption Config KMS Key Resource argument - key policy"
+  default     = null
+}
+
+variable "cluster_encryption_config_resources" {
+  type        = list(any)
+  description = "Cluster Encryption Config Resources to encrypt, e.g. ['secrets']"
+  default     = ["secrets"]
+}
+
+variable "permissions_boundary" {
+  type        = string
+  description = "If provided, all IAM roles will be created with this permissions boundary attached"
+  default     = null
+}
+
+variable "cloudwatch_log_group_kms_key_id" {
+  type        = string
+  description = "If provided, the KMS Key ID to use to encrypt AWS CloudWatch logs"
+  default     = null
+}
+
+variable "cloudwatch_log_group_class" {
+  type        = string
+  description = "Specified the log class of the log group. Possible values are: `STANDARD` or `INFREQUENT_ACCESS`"
+  default     = null
+}
+
+variable "addons" {
+  type = list(object({
+    addon_name           = string
+    addon_version        = optional(string, null)
+    configuration_values = optional(string, null)
+    resolve_conflicts           = optional(string, null)
+    resolve_conflicts_on_create = optional(string, null)
+    resolve_conflicts_on_update = optional(string, null)
+    service_account_role_arn    = optional(string, null)
+    pod_identity_association    = optional(map(string), {})
+    create_timeout              = optional(string, null)
+    update_timeout              = optional(string, null)
+    delete_timeout              = optional(string, null)
+    additional_tags             = optional(map(string), {})
+  }))
+  description = <<-EOT
+    Manages [`aws_eks_addon`](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eks_addon) resources.
+    Note: `resolve_conflicts` is deprecated. If `resolve_conflicts` is set and
+    `resolve_conflicts_on_create` or `resolve_conflicts_on_update` is not set,
+    `resolve_conflicts` will be used instead. If `resolve_conflicts_on_create` is
+    not set and `resolve_conflicts` is `PRESERVE`, `resolve_conflicts_on_create`
+    will be set to `NONE`.
+    If `additional_tags` are specified, they are added to the standard resource tags.
+    EOT
+  default     = []
+}
+
+variable "addons_depends_on" {
+  type        = any
+  description = <<-EOT
+    If provided, all addons will depend on this object, and therefore not be installed until this object is finalized.
+    This is useful if you want to ensure that addons are not applied before some other condition is met, e.g. node groups are created.
+    See [issue #170](https://github.com/cloudposse/terraform-aws-eks-cluster/issues/170) for more details.
+    EOT
+  default     = null
+}
+
+variable "bootstrap_self_managed_addons_enabled" {
+  description = "Manages bootstrap of default networking addons after cluster has been created"
+  type        = bool
+  default     = null
+}
+
+variable "upgrade_policy" {
+  type = object({
+    support_type = optional(string, null)
+  })
+  description = "Configuration block for the support policy to use for the cluster"
+  default     = null
+}
+
+variable "zonal_shift_config" {
+  type = object({
+    enabled = optional(bool, null)
+  })
+  description = "Configuration block with zonal shift configuration for the cluster"
+  default     = null
+}
+
+variable "cluster_attributes" {
+  type        = list(string)
+  description = "Override label module default cluster attributes"
+  default     = ["cluster"]
+}
+
+variable "access_config" {
+  type = object({
+    authentication_mode                         = optional(string, "API")
+    bootstrap_cluster_creator_admin_permissions = optional(bool, false)
+  })
+  description = "Access configuration for the EKS cluster."
+  default     = {}
+  nullable    = false
+
+  validation {
+    condition     = !contains(["CONFIG_MAP"], var.access_config.authentication_mode)
+    error_message = "The CONFIG_MAP authentication_mode is not supported."
+  }
+}
+
+variable "access_entry_map" {
+  type = map(object({
+    user_name = optional(string)
+    kubernetes_groups = optional(list(string), [])
+    type              = optional(string, "STANDARD")
+    access_policy_associations = optional(map(object({
+      access_scope = optional(object({
+        type       = optional(string, "cluster")
+        namespaces = optional(list(string))
+      }), {})
+    })), {})
+  }))
+  description = <<-EOT
+    Map of IAM Principal ARNs to access configuration.
+    Preferred over other inputs as this configuration remains stable
+    when elements are added or removed, but it requires that the Principal ARNs
+    and Policy ARNs are known at plan time.
+    Can be used along with other `access_*` inputs, but do not duplicate entries.
+    Map `access_policy_associations` keys are policy ARNs, policy
+    full name (AmazonEKSViewPolicy), or short name (View).
+    It is recommended to use the default `user_name` because the default includes
+    IAM role or user name and the session name for assumed roles.
+    As a special case in support of backwards compatibility, membership in the
+    `system:masters` group is is translated to an association with the ClusterAdmin policy.
+    In all other cases, including any `system:*` group in `kubernetes_groups` is prohibited.
+    EOT
+  default     = {}
+  nullable    = false
+}
+
+variable "access_entries" {
+  type = list(object({
+    principal_arn     = string
+    user_name         = optional(string, null)
+    kubernetes_groups = optional(list(string), null)
+  }))
+  description = <<-EOT
+    List of IAM principles to allow to access the EKS cluster.
+    It is recommended to use the default `user_name` because the default includes
+    the IAM role or user name and the session name for assumed roles.
+    Use when Principal ARN is not known at plan time.
+    EOT
+  default     = []
+  nullable    = false
+}
+
+variable "access_policy_associations" {
+  type = list(object({
+    principal_arn = string
+    policy_arn    = string
+    access_scope = optional(object({
+      type       = optional(string, "cluster")
+      namespaces = optional(list(string))
+    }), {})
+  }))
+  description = <<-EOT
+    List of AWS managed EKS access policies to associate with IAM principles.
+    Use when Principal ARN or Policy ARN is not known at plan time.
+    `policy_arn` can be the full ARN, the full name (AmazonEKSViewPolicy) or short name (View).
+    EOT
+  default     = []
+  nullable    = false
+}
+
+variable "access_entries_for_nodes" {
+  type        = map(list(string))
+  description = <<-EOT
+    Map of list of IAM roles for the EKS non-managed worker nodes.
+    The map key is the node type, either `EC2_LINUX` or `EC2_WINDOWS`,
+    and the list contains the IAM roles of the nodes of that type.
+    There is no need for or utility in creating Fargate access entries, as those
+    are always created automatically by AWS, just as with managed nodes.
+    Use when Principal ARN is not known at plan time.
+    EOT
+  default     = {}
+  nullable    = false
+  validation {
+    condition = length([for k in keys(var.access_entries_for_nodes) : k if !contains(["EC2_LINUX", "EC2_WINDOWS"], k)]) == 0
+    error_message = format(<<-EOS
+      The access_entries_for_nodes object can only contain the EC2_LINUX and EC2_WINDOWS attributes:
+      Keys "%s" not allowed.
+      EOS
+    , join("\", \"", [for k in keys(var.access_entries_for_nodes) : k if !contains(["EC2_LINUX", "EC2_WINDOWS"], k)]))
+  }
+  validation {
+    condition     = !(contains(keys(var.access_entries_for_nodes), "FARGATE_LINUX"))
+    error_message = <<-EOM
+      Access entries of type "FARGATE_LINUX" are not supported because they are
+      automatically created by AWS EKS and should not be managed by Terraform.
+      EOM
+  }
+}
+
+variable "managed_security_group_rules_enabled" {
+  type        = bool
+  description = "Flag to enable/disable the ingress and egress rules for the EKS managed Security Group"
+  default     = true
+}
+
+variable "allowed_security_group_ids" {
+  type        = list(string)
+  default     = []
+  description = <<-EOT
+    A list of IDs of Security Groups to allow access to the cluster.
+    EOT
+}
+
+variable "allowed_cidr_blocks" {
+  type        = list(string)
+  default     = []
+  description = <<-EOT
+    A list of IPv4 CIDRs to allow access to the cluster.
+    The length of this list must be known at "plan" time.
+    EOT
+}
+
+variable "custom_ingress_rules" {
+  type = list(object({
+    description              = string
+    from_port                = number
+    to_port                  = number
+    protocol                 = string
+    source_security_group_id = string
+  }))
+  default     = []
+  description = <<-EOT
+    A List of Objects, which are custom security group rules that
+    EOT
+}
+
+variable "remote_network_config" {
+  description = "Configuration block for the cluster remote network configuration"
+  type = object({
+    remote_node_networks_cidrs = list(string)
+    remote_pod_networks_cidrs  = optional(list(string))
+  })
+  default = null
+}
+
+terraform {
+  required_version = ">= 1.3.0"
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 5.75.1"
+    }
+    tls = {
+      source  = "hashicorp/tls"
+      version = ">= 3.1.0, != 4.0.0"
+    }
+  }
+}

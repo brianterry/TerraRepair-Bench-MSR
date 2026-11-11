@@ -1,0 +1,35 @@
+{
+  "findings_count": 5,
+  "findings": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_386",
+      "title": "",
+      "resource_name": "aws_ami.nat_ami"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_12",
+      "title": "",
+      "resource_name": "aws_vpc.main"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_35",
+      "title": "",
+      "resource_name": "aws_route.internal_nat_instance"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_11",
+      "title": "",
+      "resource_name": "aws_vpc.main"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_41",
+      "title": "",
+      "resource_name": "aws_instance.nat_instance"
+    }
+  ]
+}

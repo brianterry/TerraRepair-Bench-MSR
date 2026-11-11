@@ -1,0 +1,40 @@
+{
+  "_comment": "Fargate task definition for the TerraRepair-Bench full run. Replace every <PLACEHOLDER>. See CONTAINER.md. The workload is I/O-bound (waiting on Bedrock), so modest CPU/memory is fine; the Bedrock token spend dominates cost, not Fargate compute.",
+  "family": "terrarepair-bench",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "1024",
+  "memory": "4096",
+  "runtimePlatform": {
+    "cpuArchitecture": "X86_64",
+    "operatingSystemFamily": "LINUX"
+  },
+  "executionRoleArn": "arn:aws:iam::<ACCOUNT_ID>:role/<ECS_EXECUTION_ROLE>",
+  "taskRoleArn": "arn:aws:iam::<ACCOUNT_ID>:role/<TERRAREPAIR_TASK_ROLE>",
+  "containerDefinitions": [
+    {
+      "name": "runner",
+      "image": "<ACCOUNT_ID>.dkr.ecr.<REGION>.amazonaws.com/terrarepair-bench:latest",
+      "essential": true,
+      "environment": [
+        { "name": "RESULTS_S3_URI", "value": "s3://<RESULTS_BUCKET>/terrarepair/full_refresh_2026-09" },
+        { "name": "CONFIG", "value": "experiments/configs/full_refresh_2026.yaml" },
+        { "name": "REGION", "value": "<REGION>" },
+        { "name": "AWS_REGION", "value": "<REGION>" },
+        { "name": "CONCURRENCY", "value": "4" },
+        { "name": "MAX_TOKENS", "value": "16384" },
+        { "name": "SYNC_INTERVAL", "value": "120" },
+        { "name": "HEARTBEAT_SECS", "value": "300" }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/terrarepair-bench",
+          "awslogs-region": "<REGION>",
+          "awslogs-stream-prefix": "runner",
+          "awslogs-create-group": "true"
+        }
+      }
+    }
+  ]
+}

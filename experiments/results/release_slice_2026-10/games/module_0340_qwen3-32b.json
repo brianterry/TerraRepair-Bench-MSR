@@ -1,0 +1,251 @@
+{
+  "module_id": "module_0340",
+  "model_id": "qwen3-32b",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "aws_s3_bucket.aft_codepipeline_customizations_bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "s3.tf",
+      "start_line": 6,
+      "end_line": 8
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_116",
+      "title": "Ensure that AWS Lambda function is configured for a Dead Letter Queue(DLQ)",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.aft_customizations_identify_targets",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/lambda.tf",
+      "start_line": 7,
+      "end_line": 28
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_272",
+      "title": "Ensure AWS Lambda function is configured to validate code-signing",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.aft_customizations_identify_targets",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/lambda.tf",
+      "start_line": 7,
+      "end_line": 28
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_115",
+      "title": "Ensure that AWS Lambda function is configured for function-level concurrent execution limit",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.aft_customizations_identify_targets",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/lambda.tf",
+      "start_line": 7,
+      "end_line": 28
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_50",
+      "title": "X-Ray tracing is enabled for Lambda",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.aft_customizations_identify_targets",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/lambda.tf",
+      "start_line": 7,
+      "end_line": 28
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_116",
+      "title": "Ensure that AWS Lambda function is configured for a Dead Letter Queue(DLQ)",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.aft_customizations_execute_pipeline",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/lambda.tf",
+      "start_line": 39,
+      "end_line": 60
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_272",
+      "title": "Ensure AWS Lambda function is configured to validate code-signing",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.aft_customizations_execute_pipeline",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/lambda.tf",
+      "start_line": 39,
+      "end_line": 60
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_115",
+      "title": "Ensure that AWS Lambda function is configured for function-level concurrent execution limit",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.aft_customizations_execute_pipeline",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/lambda.tf",
+      "start_line": 39,
+      "end_line": 60
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_50",
+      "title": "X-Ray tracing is enabled for Lambda",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.aft_customizations_execute_pipeline",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/lambda.tf",
+      "start_line": 39,
+      "end_line": 60
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_116",
+      "title": "Ensure that AWS Lambda function is configured for a Dead Letter Queue(DLQ)",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.aft_customizations_get_pipeline_executions",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/lambda.tf",
+      "start_line": 70,
+      "end_line": 92
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_272",
+      "title": "Ensure AWS Lambda function is configured to validate code-signing",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.aft_customizations_get_pipeline_executions",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/lambda.tf",
+      "start_line": 70,
+      "end_line": 92
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_115",
+      "title": "Ensure that AWS Lambda function is configured for function-level concurrent execution limit",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.aft_customizations_get_pipeline_executions",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/lambda.tf",
+      "start_line": 70,
+      "end_line": 92
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_50",
+      "title": "X-Ray tracing is enabled for Lambda",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.aft_customizations_get_pipeline_executions",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/lambda.tf",
+      "start_line": 70,
+      "end_line": 92
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_300",
+      "title": "Ensure S3 lifecycle configuration sets period for aborting failed uploads",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket_lifecycle_configuration.aft_codepipeline_customizations_bucket",
+      "resource_type": "aws_s3_bucket_lifecycle_configuration",
+      "file_path": "/s3.tf",
+      "start_line": 44,
+      "end_line": 56
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_284",
+      "title": "Ensure State Machine has X-Ray tracing enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_sfn_state_machine.aft_invoke_customizations_sfn",
+      "resource_type": "aws_sfn_state_machine",
+      "file_path": "/states.tf",
+      "start_line": 18,
+      "end_line": 27
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_285",
+      "title": "Ensure State Machine has execution history logging enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_sfn_state_machine.aft_invoke_customizations_sfn",
+      "resource_type": "aws_sfn_state_machine",
+      "file_path": "/states.tf",
+      "start_line": 18,
+      "end_line": 27
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_62",
+      "title": "Ensure S3 buckets should have event notifications enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.aft_codepipeline_customizations_bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/s3.tf",
+      "start_line": 6,
+      "end_line": 8
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_18",
+      "title": "Ensure the S3 bucket has access logging enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.aft_codepipeline_customizations_bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/s3.tf",
+      "start_line": 6,
+      "end_line": 8
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_144",
+      "title": "Ensure that S3 bucket has cross-region replication enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.aft_codepipeline_customizations_bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/s3.tf",
+      "start_line": 6,
+      "end_line": 8
+    }
+  ],
+  "findings_after": [],
+  "target_count": 19,
+  "resolved_count": 19,
+  "introduced_count": 0,
+  "unchanged_count": 0,
+  "repair_success_rate": 1.0,
+  "regression_rate": 0.0,
+  "net_delta": 19,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 4,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 15,
+      "introduced": 0,
+      "unchanged": 0
+    }
+  },
+  "repair_cost_usd": 0.006222,
+  "repair_tokens": 15555,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0340_qwen3-32b.repaired.tf",
+  "raw_response_path": "module_0340_qwen3-32b.raw.txt",
+  "repaired_code_sha256": "605724b56717d3a13e66832762185a0783185a2a4c941756b5be54a20416f0f9"
+}

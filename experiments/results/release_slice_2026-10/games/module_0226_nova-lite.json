@@ -1,0 +1,138 @@
+{
+  "module_id": "module_0226",
+  "model_id": "nova-lite",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0342",
+      "title": "IAM Pass Role Filtering",
+      "severity": "MEDIUM",
+      "resource_name": "data.aws_iam_policy_document.data_engineering_additional",
+      "resource_type": "data",
+      "file_path": "policies.tf",
+      "start_line": 406,
+      "end_line": 528
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0342",
+      "title": "IAM Pass Role Filtering",
+      "severity": "MEDIUM",
+      "resource_name": "data.aws_iam_policy_document.developer_additional",
+      "resource_type": "data",
+      "file_path": "policies.tf",
+      "start_line": 171,
+      "end_line": 395
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0342",
+      "title": "IAM Pass Role Filtering",
+      "severity": "MEDIUM",
+      "resource_name": "data.aws_iam_policy_document.migration_additional",
+      "resource_type": "data",
+      "file_path": "policies.tf",
+      "start_line": 901,
+      "end_line": 949
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0342",
+      "title": "IAM Pass Role Filtering",
+      "severity": "MEDIUM",
+      "resource_name": "data.aws_iam_policy_document.reporting-operations",
+      "resource_type": "data",
+      "file_path": "policies.tf",
+      "start_line": 1288,
+      "end_line": 1435
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0342",
+      "title": "IAM Pass Role Filtering",
+      "severity": "MEDIUM",
+      "resource_name": "data.aws_iam_policy_document.data_engineering_additional",
+      "resource_type": "data",
+      "file_path": "policies.tf",
+      "start_line": 406,
+      "end_line": 528
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0342",
+      "title": "IAM Pass Role Filtering",
+      "severity": "MEDIUM",
+      "resource_name": "data.aws_iam_policy_document.developer_additional",
+      "resource_type": "data",
+      "file_path": "policies.tf",
+      "start_line": 171,
+      "end_line": 395
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0342",
+      "title": "IAM Pass Role Filtering",
+      "severity": "MEDIUM",
+      "resource_name": "data.aws_iam_policy_document.migration_additional",
+      "resource_type": "data",
+      "file_path": "policies.tf",
+      "start_line": 901,
+      "end_line": 949
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0342",
+      "title": "IAM Pass Role Filtering",
+      "severity": "MEDIUM",
+      "resource_name": "data.aws_iam_policy_document.reporting-operations",
+      "resource_type": "data",
+      "file_path": "policies.tf",
+      "start_line": 1288,
+      "end_line": 1435
+    }
+  ],
+  "target_count": 4,
+  "resolved_count": 0,
+  "introduced_count": 0,
+  "unchanged_count": 4,
+  "repair_success_rate": 0.0,
+  "regression_rate": 0.0,
+  "net_delta": 0,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 4
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    }
+  },
+  "repair_cost_usd": 0.0041963999999999994,
+  "repair_tokens": 31964,
+  "hcl_valid": false,
+  "failure_metadata": {
+    "source_chars": 69978,
+    "est_input_tokens": 17494,
+    "max_tokens": 40000,
+    "size_driven_failure": false,
+    "repair_error": "Repaired code failed HCL validation"
+  },
+  "repaired_code_path": "module_0226_nova-lite.repaired.tf",
+  "raw_response_path": "module_0226_nova-lite.raw.txt",
+  "repaired_code_sha256": "a0e0945b1e387039c67d39c7ffcb3dad9f24473ca6a2fa1cf92cdec6a29abe51"
+}

@@ -1,0 +1,113 @@
+terraform {
+  required_version = ">= 0.12.0"
+}
+
+provider "aws" {
+  region = "us-west-2"
+}
+
+variable "vpc_name" {
+  description = "name of the VPC"
+  default = "tf-0.12-fce-example"
+}
+
+resource "aws_vpc" "my_vpc" {
+  cidr_block = "172.16.0.0/16"
+
+  tags = {
+    Name = var.vpc_name
+  }
+
+  enable_dns_support   = true
+  enable_dns_hostnames = true
+
+  tags = {
+    Name = var.vpc_name
+  }
+}
+
+resource "aws_subnet" "my_subnet" {
+  vpc_id = aws_vpc.my_vpc.id
+  cidr_block = "172.16.10.0/24"
+
+  tags = {
+    Name = "tf-0.12-fce-example"
+  }
+}
+
+resource "aws_network_interface" "foo" {
+  subnet_id = aws_subnet.my_subnet.id
+  private_ips = ["172.16.10.100"]
+  
+  tags = {
+    Name = "tf-0.12-fce-primary_network_interface"
+  }
+}
+
+data "aws_ami" "ubuntu_14_04" {
+  most_recent      = true
+
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm/ubuntu-trusty-14.04-amd64-server-*"]
+  }
+
+  owners     = ["099720109477"]
+}
+
+resource "aws_instance" "foo" {
+  ami = data.aws_ami.ubuntu_14_04.image_id
+  instance_type = "t2.micro"
+  ebs_optimized = true
+  monitoring    = true
+
+  tags = {
+    Name = "tf-0.12-fce-ec2-instance"
+  }
+
+  network_interface {
+    network_interface_id = aws_network_interface.foo.id
+    device_index = 0
+  }
+
+  metadata_options {
+    http_tokens = "required"
+    http_endpoint = "enabled"
+    http_protocol_ipv6 = "disabled"
+    http_put_response_hop_limit = 2
+    instance_metadata_tags = "disabled"
+  }
+
+  root_block_device {
+    encrypted = true
+  }
+}
+
+resource "aws_default_security_group" "default" {
+  vpc_id = aws_vpc.my_vpc.id
+
+  ingress {
+    from_port = 0
+    to_port = 0
+    protocol = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port = 0
+    to_port = 0
+    protocol = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "default"
+  }
+}
+
+resource "aws_flow_log" "vpc_flow_log" {
+  log_destination_type = "cloud-watch-logs"
+  log_destination = "arn:aws:logs:us-west-2:123456789012:log-group:/vpc/flow-logs"
+  resource_id = aws_vpc.my_vpc.id
+  traffic_type = "REJECT"
+}

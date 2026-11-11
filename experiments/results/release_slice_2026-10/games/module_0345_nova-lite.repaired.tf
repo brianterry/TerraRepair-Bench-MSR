@@ -1,0 +1,460 @@
+provider "aws" {
+  region = "${var.vpc_aws_region}"
+}
+
+# Declare the data source
+data "aws_availability_zones" "available" {}
+
+resource "aws_vpc" "vpc" {
+  cidr_block           = "${var.vpc_cidr}"
+  enable_dns_support   = true
+  enable_dns_hostnames = true
+
+  tags {
+    Name = "${var.vpc_name}"
+  }
+}
+
+data "aws_ami" "coreos_ami" {
+  most_recent = true
+
+  filter {
+    name   = "name"
+    values = ["CoreOS-stable-*"]
+  }
+
+  filter {
+    name   = "architecture"
+    values = ["x86_64"]
+  }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+
+  filter {
+    name   = "owner-id"
+    values = ["190570271432"]
+  }
+}
+
+resource "aws_instance" "bastion" {
+  # 1st available AZ
+  availability_zone      = "${data.aws_availability_zones.available.names[0]}"
+  ami                    = "${data.aws_ami.coreos_ami.image_id}"
+  instance_type          = "${var.instance_type}"
+  subnet_id              = "${aws_subnet.pub_subnet_generic.id}"
+  vpc_security_group_ids = ["${compact(concat(list(aws_security_group.powerdns.id), list(aws_security_group.vpn_sg.id)))}"]
+  source_dest_check      = false
+  key_name               = "${var.ssh_key}"
+  user_data              = "${data.ignition_config.main.rendered}"
+
+  depends_on = ["aws_eip.ovpn_eip"]
+
+  tags {
+    Name = "${var.vpc_name}-server"
+  }
+
+  # Enable Instance Metadata Service v2
+  metadata_options {
+    http_tokens          = "required"
+    http_put_response_hop_limit = 1
+    http_endpoint       = "enabled"
+  }
+
+  # EBS optimization
+  ebs_optimized = true
+
+  # Enable detailed monitoring
+  monitoring {
+    enabled = true
+  }
+
+  # Attach IAM role
+  iam_instance_profile = "${aws_iam_instance_profile.bastion_profile.name}"
+
+  # EBS encryption
+  root_block_device {
+    encrypted = true
+  }
+}
+
+data "ignition_config" "main" {
+  files = ["${data.ignition_file.nginx_conf.id}"]
+
+  systemd = ["${compact(list(
+    data.ignition_systemd_unit.gateway_service.id,
+    data.ignition_systemd_unit.nginx_service.id,
+    data.ignition_systemd_unit.openvpn_service.id,
+    data.ignition_systemd_unit.powerdns_service.id,
+    data.ignition_systemd_unit.update_engine.id,
+    data.ignition_systemd_unit.locksmithd.id,
+   ))}"]
+}
+
+data "ignition_systemd_unit" "update_engine" {
+  name = "update-engine.service"
+  mask = true
+}
+
+data "ignition_systemd_unit" "locksmithd" {
+  name = "locksmithd.service"
+  mask = true
+}
+
+# IGW
+resource "aws_internet_gateway" "igw" {
+  vpc_id = "${aws_vpc.vpc.id}"
+
+  tags {
+    Name = "${var.vpc_name}-igw"
+  }
+}
+
+# General purpose public subnet. used for OVPN access and IGW/NAT attachment.
+resource "aws_subnet" "pub_subnet_generic" {
+  vpc_id = "${aws_vpc.vpc.id}"
+
+  # 1st available AZ
+  availability_zone       = "${data.aws_availability_zones.available.names[0]}"
+  cidr_block              = "10.0.255.0/24"
+  map_public_ip_on_launch = false
+
+  tags {
+    Name = "${var.vpc_name}-vpn"
+  }
+}
+
+resource "aws_route_table_association" "pub_subnet_generic" {
+  subnet_id      = "${aws_subnet.pub_subnet_generic.id}"
+  route_table_id = "${aws_route_table.pub_rt.id}"
+}
+
+# public subnet route table
+resource "aws_route_table" "pub_rt" {
+  vpc_id = "${aws_vpc.vpc.id}"
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = "${aws_internet_gateway.igw.id}"
+  }
+
+  tags {
+    Name = "${var.vpc_name}-public"
+  }
+}
+
+# private subnets
+resource "aws_subnet" "priv_subnet" {
+  count             = "${var.subnet_count}"
+  vpc_id            = "${aws_vpc.vpc.id}"
+  availability_zone = "${element(data.aws_availability_zones.available.names, count.index)}"
+  cidr_block        = "${cidrsubnet(var.vpc_cidr, 8, count.index + 100)}"
+
+  tags {
+    Name = "${var.vpc_name}-${count.index}"
+  }
+}
+
+resource "aws_route_table_association" "priv_subnet" {
+  count          = "${var.subnet_count}"
+  subnet_id      = "${aws_subnet.priv_subnet.*.id[count.index]}"
+  route_table_id = "${aws_route_table.priv_rt.id}"
+}
+
+# private subnet route table
+resource "aws_route_table" "priv_rt" {
+  vpc_id           = "${aws_vpc.vpc.id}"
+  propagating_vgws = ["${aws_vpn_gateway.vpg.id}"]
+
+  route {
+    cidr_block  = "0.0.0.0/0"
+    instance_id = "${aws_instance.bastion.id}"
+  }
+
+  route {
+    cidr_block = "${var.local_network_cidr}"
+    gateway_id = "${aws_vpn_gateway.vpg.id}"
+  }
+
+  tags {
+    Name = "${var.vpc_name}-private"
+  }
+}
+
+# Security Group
+resource "aws_security_group" "powerdns" {
+  vpc_id = "${aws_vpc.vpc.id}"
+
+  description = "Security group for PowerDNS service"
+
+  tags {
+    Name = "powerdns-sg"
+  }
+}
+
+resource "aws_security_group_rule" "powerdns_egress" {
+  type              = "egress"
+  security_group_id = "${aws_security_group.powerdns.id}"
+
+  from_port   = 0
+  to_port     = 0
+  protocol    = "-1"
+  cidr_blocks = ["0.0.0.0/0"]
+
+  description = "Allow all outbound traffic"
+}
+
+resource "aws_security_group_rule" "powerdns_ingress_ssh" {
+  type              = "ingress"
+  security_group_id = "${aws_security_group.powerdns.id}"
+
+  protocol    = "tcp"
+  cidr_blocks = ["192.168.1.0/24"]
+  from_port   = 22
+  to_port     = 22
+
+  description = "Allow SSH access from specific IP range"
+}
+
+resource "aws_security_group_rule" "powerdns_ingress_http" {
+  type              = "ingress"
+  security_group_id = "${aws_security_group.powerdns.id}"
+
+  protocol    = "tcp"
+  cidr_blocks = ["0.0.0.0/0"]
+  from_port   = 80
+  to_port     = 80
+
+  description = "Allow HTTP traffic"
+}
+
+resource "aws_security_group_rule" "powerdns_ingress_https" {
+  type              = "ingress"
+  security_group_id = "${aws_security_group.powerdns.id}"
+
+  protocol    = "tcp"
+  cidr_blocks = ["0.0.0.0/0"]
+  from_port   = 443
+  to_port     = 443
+
+  description = "Allow HTTPS traffic"
+}
+
+resource "aws_security_group_rule" "powerdns_ingress_api" {
+  type              = "ingress"
+  security_group_id = "${aws_security_group.powerdns.id}"
+
+  protocol    = "tcp"
+  cidr_blocks = ["0.0.0.0/0"]
+  from_port   = 8081
+  to_port     = 8081
+
+  description = "Allow API traffic"
+}
+
+resource "aws_security_group_rule" "powerdns_ingress_dns" {
+  type              = "ingress"
+  security_group_id = "${aws_security_group.powerdns.id}"
+
+  protocol    = "tcp"
+  cidr_blocks = ["0.0.0.0/0"]
+  from_port   = 53
+  to_port     = 53
+
+  description = "Allow DNS traffic"
+}
+
+resource "aws_security_group_rule" "powerdns_ingress_dns_udp" {
+  type              = "ingress"
+  security_group_id = "${aws_security_group.powerdns.id}"
+
+  protocol    = "udp"
+  cidr_blocks = ["0.0.0.0/0"]
+  from_port   = 53
+  to_port     = 53
+
+  description = "Allow DNS UDP traffic"
+}
+
+resource "aws_security_group" "vpn_sg" {
+  name        = "ovpn-server-sg"
+  description = "Security group for VPN server"
+  vpc_id      = "${aws_vpc.vpc.id}"
+
+  ingress {
+    from_port   = 0
+    to_port     = 65535
+    protocol    = "tcp"
+    cidr_blocks = ["${cidrsubnet(var.vpc_cidr, 6, 25)}"]
+
+    description = "Allow all inbound traffic from VPC"
+  }
+
+  ingress {
+    from_port   = 943
+    to_port     = 943
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+
+    description = "Allow OpenVPN traffic"
+  }
+
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["192.168.1.0/24"]
+
+    description = "Allow SSH access from specific IP range"
+  }
+
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+
+    description = "Allow HTTP traffic"
+  }
+
+  ingress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+
+    description = "Allow HTTPS traffic"
+  }
+
+  ingress {
+    from_port   = 943
+    to_port     = 943
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+
+    description = "Allow OpenVPN traffic"
+  }
+
+  ingress {
+    from_port   = 1194
+    to_port     = 1194
+    protocol    = "udp"
+    cidr_blocks = ["0.0.0.0/0"]
+
+    description = "Allow OpenVPN UDP traffic"
+  }
+
+  egress {
+    from_port = 0
+    to_port   = 0
+
+    # all
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+
+    description = "Allow all outbound traffic"
+  }
+
+  tags {
+    Name = "${var.vpc_name}-ovpn-sg"
+  }
+}
+
+resource "aws_iam_instance_profile" "bastion_profile" {
+  name = "bastion_profile"
+  role = "${aws_iam_role.bastion_role.name}"
+}
+
+resource "aws_iam_role" "bastion_role" {
+  name = "bastion_role"
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "ec2.amazonaws.com"
+      },
+      "Effect": "Allow"
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_vpn_gateway" "vpg" {
+  vpc_id = "${aws_vpc.vpc.id}"
+
+  # 1st available AZ
+  availability_zone = "${data.aws_availability_zones.available.names[0]}"
+
+  tags {
+    Name = "${var.vpc_name}-vpg"
+  }
+}
+
+resource "aws_eip" "ovpn_eip" {
+  vpc = true
+}
+
+resource "aws_eip_association" "vpn_eip_assoc" {
+  instance_id   = "${aws_instance.bastion.id}"
+  allocation_id = "${aws_eip.ovpn_eip.id}"
+}
+
+resource "aws_customer_gateway" "customer_gateway" {
+  bgp_asn    = 65000
+  ip_address = "${aws_eip.ovpn_eip.public_ip}"
+  type       = "ipsec.1"
+
+  tags {
+    Name = "${var.vpc_name}-customer-gateway"
+  }
+}
+
+resource "aws_vpn_connection" "main" {
+  vpn_gateway_id      = "${aws_vpn_gateway.vpg.id}"
+  customer_gateway_id = "${aws_customer_gateway.customer_gateway.id}"
+  type                = "ipsec.1"
+  static_routes_only  = true
+
+  tags {
+    Name = "${var.vpc_name}-vpn-conn"
+  }
+}
+
+resource "aws_flow_log" "vpc_flow_log" {
+  vpc_id = "${aws_vpc.vpc.id}"
+
+  log_group_name = "vpc-flow-logs"
+
+  traffic_type = "REJECT"
+}
+
+output "ovpn_url" {
+  value = "http://${aws_eip.ovpn_eip.public_ip}"
+}
+
+output "base_domain" {
+  value = "${var.base_domain}"
+}
+
+output "vpc_id" {
+  value = "${aws_vpc.vpc.id}"
+}
+
+output "vpc_dns_ip" {
+  value = "${aws_instance.bastion.private_ip}"
+}
+
+output "dns_api_url" {
+  value = "http://${aws_instance.bastion.private_ip}:8081"
+}
+
+output "subnets" {
+  value = "${aws_subnet.priv_subnet.*.id}"
+}

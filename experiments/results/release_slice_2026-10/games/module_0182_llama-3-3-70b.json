@@ -1,0 +1,428 @@
+{
+  "module_id": "module_0182",
+  "model_id": "llama-3-3-70b",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0017",
+      "title": "CloudWatch log groups should be encrypted using CMK",
+      "severity": "LOW",
+      "resource_name": "aws_cloudwatch_log_group.audit",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "cloudwatch.tf",
+      "start_line": 26,
+      "end_line": 29
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0017",
+      "title": "CloudWatch log groups should be encrypted using CMK",
+      "severity": "LOW",
+      "resource_name": "aws_cloudwatch_log_group.dmesg",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "cloudwatch.tf",
+      "start_line": 6,
+      "end_line": 9
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0017",
+      "title": "CloudWatch log groups should be encrypted using CMK",
+      "severity": "LOW",
+      "resource_name": "aws_cloudwatch_log_group.docker",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "cloudwatch.tf",
+      "start_line": 11,
+      "end_line": 14
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0017",
+      "title": "CloudWatch log groups should be encrypted using CMK",
+      "severity": "LOW",
+      "resource_name": "aws_cloudwatch_log_group.ecs-agent",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "cloudwatch.tf",
+      "start_line": 16,
+      "end_line": 19
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0017",
+      "title": "CloudWatch log groups should be encrypted using CMK",
+      "severity": "LOW",
+      "resource_name": "aws_cloudwatch_log_group.ecs-init",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "cloudwatch.tf",
+      "start_line": 21,
+      "end_line": 24
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0017",
+      "title": "CloudWatch log groups should be encrypted using CMK",
+      "severity": "LOW",
+      "resource_name": "aws_cloudwatch_log_group.messages",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "cloudwatch.tf",
+      "start_line": 31,
+      "end_line": 34
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0008",
+      "title": "Launch configuration with unencrypted block device.",
+      "severity": "HIGH",
+      "resource_name": "aws_launch_configuration.launch",
+      "resource_type": "aws_launch_configuration",
+      "file_path": "main.tf",
+      "start_line": 47,
+      "end_line": 62
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "aws_security_group_rule.outbound_internet_access",
+      "resource_type": "aws_security_group_rule",
+      "file_path": "main.tf",
+      "start_line": 42,
+      "end_line": 42
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0124",
+      "title": "Missing description for security group rule.",
+      "severity": "LOW",
+      "resource_name": "aws_security_group_rule.outbound_internet_access",
+      "resource_type": "aws_security_group_rule",
+      "file_path": "main.tf",
+      "start_line": 37,
+      "end_line": 44
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0130",
+      "title": "aws_instance should activate session tokens for Instance Metadata Service.",
+      "severity": "HIGH",
+      "resource_name": "aws_launch_configuration.launch",
+      "resource_type": "aws_launch_configuration",
+      "file_path": "main.tf",
+      "start_line": 47,
+      "end_line": 62
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_158",
+      "title": "Ensure that CloudWatch Log Group is encrypted by KMS",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.dmesg",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/cloudwatch.tf",
+      "start_line": 6,
+      "end_line": 9
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_338",
+      "title": "Ensure CloudWatch log groups retains logs for at least 1 year",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.dmesg",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/cloudwatch.tf",
+      "start_line": 6,
+      "end_line": 9
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_158",
+      "title": "Ensure that CloudWatch Log Group is encrypted by KMS",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.docker",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/cloudwatch.tf",
+      "start_line": 11,
+      "end_line": 14
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_338",
+      "title": "Ensure CloudWatch log groups retains logs for at least 1 year",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.docker",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/cloudwatch.tf",
+      "start_line": 11,
+      "end_line": 14
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_158",
+      "title": "Ensure that CloudWatch Log Group is encrypted by KMS",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.ecs-agent",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/cloudwatch.tf",
+      "start_line": 16,
+      "end_line": 19
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_338",
+      "title": "Ensure CloudWatch log groups retains logs for at least 1 year",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.ecs-agent",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/cloudwatch.tf",
+      "start_line": 16,
+      "end_line": 19
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_158",
+      "title": "Ensure that CloudWatch Log Group is encrypted by KMS",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.ecs-init",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/cloudwatch.tf",
+      "start_line": 21,
+      "end_line": 24
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_338",
+      "title": "Ensure CloudWatch log groups retains logs for at least 1 year",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.ecs-init",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/cloudwatch.tf",
+      "start_line": 21,
+      "end_line": 24
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_158",
+      "title": "Ensure that CloudWatch Log Group is encrypted by KMS",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.audit",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/cloudwatch.tf",
+      "start_line": 26,
+      "end_line": 29
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_338",
+      "title": "Ensure CloudWatch log groups retains logs for at least 1 year",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.audit",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/cloudwatch.tf",
+      "start_line": 26,
+      "end_line": 29
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_158",
+      "title": "Ensure that CloudWatch Log Group is encrypted by KMS",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.messages",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/cloudwatch.tf",
+      "start_line": 31,
+      "end_line": 34
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_338",
+      "title": "Ensure CloudWatch log groups retains logs for at least 1 year",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.messages",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/cloudwatch.tf",
+      "start_line": 31,
+      "end_line": 34
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_382",
+      "title": "Ensure no security groups allow egress from 0.0.0.0:0 to port -1",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group_rule.outbound_internet_access",
+      "resource_type": "aws_security_group_rule",
+      "file_path": "/main.tf",
+      "start_line": 37,
+      "end_line": 44
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "Ensure every security group and rule has a description",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group_rule.outbound_internet_access",
+      "resource_type": "aws_security_group_rule",
+      "file_path": "/main.tf",
+      "start_line": 37,
+      "end_line": 44
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_79",
+      "title": "Ensure Instance Metadata Service Version 1 is not enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_launch_configuration.launch",
+      "resource_type": "aws_launch_configuration",
+      "file_path": "/main.tf",
+      "start_line": 47,
+      "end_line": 62
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_8",
+      "title": "Ensure all data stored in the Launch configuration or instance Elastic Blocks Store is securely encrypted",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_launch_configuration.launch",
+      "resource_type": "aws_launch_configuration",
+      "file_path": "/main.tf",
+      "start_line": 47,
+      "end_line": 62
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_315",
+      "title": "Ensure EC2 Auto Scaling groups use EC2 launch templates",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_autoscaling_group.asg",
+      "resource_type": "aws_autoscaling_group",
+      "file_path": "/main.tf",
+      "start_line": 65,
+      "end_line": 106
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0008",
+      "title": "Launch configuration with unencrypted block device.",
+      "severity": "HIGH",
+      "resource_name": "aws_launch_configuration.launch",
+      "resource_type": "aws_launch_configuration",
+      "file_path": "main.tf",
+      "start_line": 94,
+      "end_line": 117
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0065",
+      "title": "A KMS key is not configured to auto-rotate.",
+      "severity": "MEDIUM",
+      "resource_name": "aws_kms_key.cloudwatch",
+      "resource_type": "aws_kms_key",
+      "file_path": "main.tf",
+      "start_line": 37,
+      "end_line": 40
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "aws_security_group_rule.outbound_internet_access",
+      "resource_type": "aws_security_group_rule",
+      "file_path": "main.tf",
+      "start_line": 88,
+      "end_line": 88
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_7",
+      "title": "Ensure rotation for customer created CMKs is enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_kms_key.cloudwatch",
+      "resource_type": "aws_kms_key",
+      "file_path": "/main.tf",
+      "start_line": 37,
+      "end_line": 40
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_382",
+      "title": "Ensure no security groups allow egress from 0.0.0.0:0 to port -1",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group_rule.outbound_internet_access",
+      "resource_type": "aws_security_group_rule",
+      "file_path": "/main.tf",
+      "start_line": 83,
+      "end_line": 91
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_8",
+      "title": "Ensure all data stored in the Launch configuration or instance Elastic Blocks Store is securely encrypted",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_launch_configuration.launch",
+      "resource_type": "aws_launch_configuration",
+      "file_path": "/main.tf",
+      "start_line": 94,
+      "end_line": 117
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_315",
+      "title": "Ensure EC2 Auto Scaling groups use EC2 launch templates",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_autoscaling_group.asg",
+      "resource_type": "aws_autoscaling_group",
+      "file_path": "/main.tf",
+      "start_line": 120,
+      "end_line": 161
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_64",
+      "title": "Ensure KMS key Policy is defined",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_kms_key.cloudwatch",
+      "resource_type": "aws_kms_key",
+      "file_path": "/main.tf",
+      "start_line": 37,
+      "end_line": 40
+    }
+  ],
+  "target_count": 27,
+  "resolved_count": 22,
+  "introduced_count": 3,
+  "unchanged_count": 5,
+  "repair_success_rate": 0.8148148148148148,
+  "regression_rate": 0.1111111111111111,
+  "net_delta": 19,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 0,
+      "introduced": 1,
+      "unchanged": 2
+    },
+    "data_protection": {
+      "resolved": 13,
+      "introduced": 1,
+      "unchanged": 2
+    },
+    "observability": {
+      "resolved": 6,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 3,
+      "introduced": 1,
+      "unchanged": 1
+    }
+  },
+  "repair_cost_usd": 0.004146400000000001,
+  "repair_tokens": 5183,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0182_llama-3-3-70b.repaired.tf",
+  "raw_response_path": "module_0182_llama-3-3-70b.raw.txt",
+  "repaired_code_sha256": "9ec3c3960a270867b089c1c75c14c9325f9141b5669d60bad3e679a8fd9eefd1"
+}

@@ -1,0 +1,153 @@
+{
+  "module_id": "module_0150",
+  "model_id": "nova-lite",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0017",
+      "title": "CloudWatch log groups should be encrypted using CMK",
+      "severity": "LOW",
+      "resource_name": "aws_cloudwatch_log_group.default_vpc_flow_logs[0]",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "main.tf",
+      "start_line": 21,
+      "end_line": 28
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0101",
+      "title": "AWS best practice to not use the default VPC for workflows",
+      "severity": "HIGH",
+      "resource_name": "aws_default_vpc.default",
+      "resource_type": "aws_default_vpc",
+      "file_path": "main.tf",
+      "start_line": 46,
+      "end_line": 51
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_158",
+      "title": "Ensure that CloudWatch Log Group is encrypted by KMS",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.default_vpc_flow_logs[0]",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/main.tf",
+      "start_line": 21,
+      "end_line": 28
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_148",
+      "title": "Ensure no default VPC is planned to be provisioned",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_default_vpc.default",
+      "resource_type": "aws_default_vpc",
+      "file_path": "/main.tf",
+      "start_line": 46,
+      "end_line": 51
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0017",
+      "title": "CloudWatch log groups should be encrypted using CMK",
+      "severity": "LOW",
+      "resource_name": "aws_cloudwatch_log_group.default_vpc_flow_logs[0]",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "main.tf",
+      "start_line": 26,
+      "end_line": 26
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0099",
+      "title": "Missing description for security group.",
+      "severity": "LOW",
+      "resource_name": "aws_security_group.custom",
+      "resource_type": "aws_security_group",
+      "file_path": "main.tf",
+      "start_line": 92,
+      "end_line": 99
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_158",
+      "title": "Ensure that CloudWatch Log Group is encrypted by KMS",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.default_vpc_flow_logs[0]",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/main.tf",
+      "start_line": 21,
+      "end_line": 29
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "Ensure every security group and rule has a description",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group.custom",
+      "resource_type": "aws_security_group",
+      "file_path": "/main.tf",
+      "start_line": 92,
+      "end_line": 99
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_5",
+      "title": "Ensure that Security Groups are attached to another resource",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group.custom",
+      "resource_type": "aws_security_group",
+      "file_path": "/main.tf",
+      "start_line": 92,
+      "end_line": 99
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_12",
+      "title": "Ensure the default security group of every VPC restricts all traffic",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_vpc.custom",
+      "resource_type": "aws_vpc",
+      "file_path": "/main.tf",
+      "start_line": 43,
+      "end_line": 50
+    }
+  ],
+  "target_count": 4,
+  "resolved_count": 2,
+  "introduced_count": 4,
+  "unchanged_count": 2,
+  "repair_success_rate": 0.5,
+  "regression_rate": 1.0,
+  "net_delta": -2,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 2
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 2,
+      "introduced": 4,
+      "unchanged": 0
+    }
+  },
+  "repair_cost_usd": 0.0005723000000000001,
+  "repair_tokens": 3988,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0150_nova-lite.repaired.tf",
+  "raw_response_path": "module_0150_nova-lite.raw.txt",
+  "repaired_code_sha256": "1ae2622281727914c578f4e4bc7bd69cdb3413259904eb8aa7cb289b6dec469b"
+}

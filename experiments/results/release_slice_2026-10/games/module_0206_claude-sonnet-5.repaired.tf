@@ -1,0 +1,202 @@
+variable "azs" {}
+variable "cidr" {}
+variable "hyperkube-tag" {}
+variable "depends-id" {}
+variable "name" {}
+variable "region" {}
+
+output "depends-id" { value = "${null_resource.dummy_dependency.id}" }
+output "gateway-id" { value = "${ aws_internet_gateway.main.id }" }
+output "id" { value = "${ aws_vpc.main.id }" }
+output "route-table-id" { value = "${ aws_route_table.private.id }" }
+output "subnet-ids-private" { value = "${ join(",", aws_subnet.private.*.id) }" }
+output "subnet-ids-public" { value = "${ join(",", aws_subnet.public.*.id) }" }
+
+
+resource "aws_eip" "nat" { vpc = true }
+
+resource "aws_nat_gateway" "nat" {
+  depends_on = [
+    "aws_eip.nat",
+    "aws_internet_gateway.main",
+  ]
+
+  allocation_id = "${ aws_eip.nat.id }"
+  subnet_id = "${ aws_subnet.public.0.id }"
+}
+
+resource "aws_subnet" "private" {
+  count = "${ length( split(",", var.azs) ) }"
+
+  availability_zone = "${ element( split(",", var.azs), count.index ) }"
+  cidr_block = "${ cidrsubnet(var.cidr, 8, count.index + 10) }"
+  vpc_id = "${ aws_vpc.main.id }"
+
+  tags {
+    "kubernetes.io/role/internal-elb" = "${ var.name }"
+    builtWith = "terraform"
+    KubernetesCluster = "${ var.name }"
+    kz8s = "${ var.name }"
+    Name = "kz8s-${ var.name }-private"
+    visibility = "private"
+  }
+}
+
+resource "aws_route_table" "private" {
+  vpc_id = "${ aws_vpc.main.id }"
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    nat_gateway_id = "${ aws_nat_gateway.nat.id }"
+  }
+
+  tags {
+    builtWith = "terraform"
+    KubernetesCluster = "${ var.name }"
+    kz8s = "${ var.name }"
+    Name = "kz8s-${ var.name }"
+    visibility = "private"
+  }
+}
+
+resource "aws_route_table_association" "private" {
+  count = "${ length(split(",", var.azs)) }"
+
+  route_table_id = "${ aws_route_table.private.id }"
+  subnet_id = "${ element(aws_subnet.private.*.id, count.index) }"
+}
+
+
+resource "aws_internet_gateway" "main" {
+  vpc_id = "${ aws_vpc.main.id }"
+
+  tags {
+    builtWith = "terraform"
+    KubernetesCluster = "${ var.name }"
+    kz8s = "${ var.name }"
+    Name = "kz8s-${ var.name }"
+    version = "${ var.hyperkube-tag }"
+  }
+}
+
+resource "aws_subnet" "public" {
+  count = "${ length( split(",", var.azs) ) }"
+
+  availability_zone = "${ element( split(",", var.azs), count.index ) }"
+  cidr_block = "${ cidrsubnet(var.cidr, 8, count.index) }"
+  vpc_id = "${ aws_vpc.main.id }"
+
+  tags {
+    "kubernetes.io/role/elb" = "${ var.name }"
+    builtWith = "terraform"
+    KubernetesCluster = "${ var.name }"
+    kz8s = "${ var.name }"
+    Name = "kz8s-${ var.name }-public"
+    version = "${ var.hyperkube-tag }"
+    visibility = "public"
+  }
+}
+
+resource "aws_route" "public" {
+  route_table_id = "${ aws_vpc.main.main_route_table_id }"
+  destination_cidr_block = "0.0.0.0/0"
+  gateway_id = "${ aws_internet_gateway.main.id }"
+}
+
+resource "aws_route_table_association" "public" {
+  count = "${ length(split(",", var.azs)) }"
+
+  route_table_id = "${ aws_vpc.main.main_route_table_id }"
+  subnet_id = "${ element(aws_subnet.public.*.id, count.index) }"
+}
+
+
+resource "aws_vpc" "main" {
+  cidr_block = "${ var.cidr }"
+
+  enable_dns_hostnames = true
+  enable_dns_support = true
+
+  tags {
+    builtWith = "terraform"
+    KubernetesCluster = "${ var.name }"
+    kz8s = "${ var.name }"
+    Name = "kz8s-${ var.name }"
+    version = "${ var.hyperkube-tag }"
+    visibility = "private,public"
+  }
+}
+
+resource "aws_default_security_group" "main" {
+  vpc_id = "${ aws_vpc.main.id }"
+
+  tags {
+    builtWith = "terraform"
+    KubernetesCluster = "${ var.name }"
+    kz8s = "${ var.name }"
+    Name = "kz8s-${ var.name }-default"
+  }
+}
+
+resource "aws_cloudwatch_log_group" "flow_log" {
+  name = "kz8s-${ var.name }-vpc-flow-log"
+  retention_in_days = 90
+}
+
+resource "aws_iam_role" "flow_log" {
+  name = "kz8s-${ var.name }-vpc-flow-log-role"
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "vpc-flow-logs.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy" "flow_log" {
+  name = "kz8s-${ var.name }-vpc-flow-log-policy"
+  role = "${ aws_iam_role.flow_log.id }"
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents",
+        "logs:DescribeLogGroups",
+        "logs:DescribeLogStreams"
+      ],
+      "Resource": "*"
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_flow_log" "main" {
+  iam_role_arn    = "${ aws_iam_role.flow_log.arn }"
+  log_destination = "${ aws_cloudwatch_log_group.flow_log.arn }"
+  traffic_type    = "REJECT"
+  vpc_id          = "${ aws_vpc.main.id }"
+}
+
+resource "null_resource" "dummy_dependency" {
+  depends_on = [
+    "aws_vpc.main",
+    "aws_nat_gateway.nat"
+  ]
+}

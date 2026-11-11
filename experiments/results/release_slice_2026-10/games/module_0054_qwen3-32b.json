@@ -1,0 +1,428 @@
+{
+  "module_id": "module_0054",
+  "model_id": "qwen3-32b",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0178",
+      "title": "VPC Flow Logs is a feature that enables you to capture information about the IP traffic going to and from network interfaces in your VPC. After you've created a flow log, you can view and retrieve its data in Amazon CloudWatch Logs. It is recommended that VPC Flow Logs be enabled for packet \"Rejects\" for VPCs.",
+      "severity": "MEDIUM",
+      "resource_name": "aws_vpc.main",
+      "resource_type": "aws_vpc",
+      "file_path": "1-vpc.tf",
+      "start_line": 3,
+      "end_line": 9
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0164",
+      "title": "Instances in a subnet should not receive a public IP address by default.",
+      "severity": "HIGH",
+      "resource_name": "aws_subnet.public-us-east-1a",
+      "resource_type": "aws_subnet",
+      "file_path": "3-subnets.tf",
+      "start_line": 31,
+      "end_line": 31
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0164",
+      "title": "Instances in a subnet should not receive a public IP address by default.",
+      "severity": "HIGH",
+      "resource_name": "aws_subnet.public-us-east-1b",
+      "resource_type": "aws_subnet",
+      "file_path": "3-subnets.tf",
+      "start_line": 44,
+      "end_line": 44
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0038",
+      "title": "EKS Clusters should have cluster control plane logging turned on",
+      "severity": "MEDIUM",
+      "resource_name": "aws_eks_cluster.demo",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "6-eks.tf",
+      "start_line": 31,
+      "end_line": 47
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0039",
+      "title": "EKS should have the encryption of secrets enabled",
+      "severity": "HIGH",
+      "resource_name": "aws_eks_cluster.demo",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "6-eks.tf",
+      "start_line": 31,
+      "end_line": 47
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0040",
+      "title": "EKS Clusters should have the public access disabled",
+      "severity": "CRITICAL",
+      "resource_name": "aws_eks_cluster.demo",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "6-eks.tf",
+      "start_line": 35,
+      "end_line": 42
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0041",
+      "title": "EKS cluster should not have open CIDR range for public access",
+      "severity": "CRITICAL",
+      "resource_name": "aws_eks_cluster.demo",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "6-eks.tf",
+      "start_line": 35,
+      "end_line": 42
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0130",
+      "title": "aws_instance should activate session tokens for Instance Metadata Service.",
+      "severity": "HIGH",
+      "resource_name": "aws_launch_template.eks-with-disks",
+      "resource_type": "aws_launch_template",
+      "file_path": "7-nodes.tf",
+      "start_line": 70,
+      "end_line": 83
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_130",
+      "title": "Ensure VPC subnets do not assign public IP by default",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_subnet.public-us-east-1a",
+      "resource_type": "aws_subnet",
+      "file_path": "/3-subnets.tf",
+      "start_line": 27,
+      "end_line": 38
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_130",
+      "title": "Ensure VPC subnets do not assign public IP by default",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_subnet.public-us-east-1b",
+      "resource_type": "aws_subnet",
+      "file_path": "/3-subnets.tf",
+      "start_line": 40,
+      "end_line": 51
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_37",
+      "title": "Ensure Amazon EKS control plane logging is enabled for all log types",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_eks_cluster.demo",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "/6-eks.tf",
+      "start_line": 31,
+      "end_line": 47
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_38",
+      "title": "Ensure Amazon EKS public endpoint not accessible to 0.0.0.0/0",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_eks_cluster.demo",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "/6-eks.tf",
+      "start_line": 31,
+      "end_line": 47
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_39",
+      "title": "Ensure Amazon EKS public endpoint disabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_eks_cluster.demo",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "/6-eks.tf",
+      "start_line": 31,
+      "end_line": 47
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_58",
+      "title": "Ensure EKS Cluster has Secrets Encryption Enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_eks_cluster.demo",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "/6-eks.tf",
+      "start_line": 31,
+      "end_line": 47
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_79",
+      "title": "Ensure Instance Metadata Service Version 1 is not enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_launch_template.eks-with-disks",
+      "resource_type": "aws_launch_template",
+      "file_path": "/7-nodes.tf",
+      "start_line": 70,
+      "end_line": 83
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_12",
+      "title": "Ensure the default security group of every VPC restricts all traffic",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_vpc.main",
+      "resource_type": "aws_vpc",
+      "file_path": "/1-vpc.tf",
+      "start_line": 3,
+      "end_line": 9
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_11",
+      "title": "Ensure VPC flow logging is enabled in all VPCs",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_vpc.main",
+      "resource_type": "aws_vpc",
+      "file_path": "/1-vpc.tf",
+      "start_line": 3,
+      "end_line": 9
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0017",
+      "title": "CloudWatch log groups should be encrypted using CMK",
+      "severity": "LOW",
+      "resource_name": "aws_cloudwatch_log_group.vpc_flow_log",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "main.tf",
+      "start_line": 32,
+      "end_line": 34
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0038",
+      "title": "EKS Clusters should have cluster control plane logging turned on",
+      "severity": "MEDIUM",
+      "resource_name": "aws_eks_cluster.demo",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "main.tf",
+      "start_line": 233,
+      "end_line": 269
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0040",
+      "title": "EKS Clusters should have the public access disabled",
+      "severity": "CRITICAL",
+      "resource_name": "aws_eks_cluster.demo",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "main.tf",
+      "start_line": 237,
+      "end_line": 245
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0041",
+      "title": "EKS cluster should not have open CIDR range for public access",
+      "severity": "CRITICAL",
+      "resource_name": "aws_eks_cluster.demo",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "main.tf",
+      "start_line": 237,
+      "end_line": 245
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0065",
+      "title": "A KMS key is not configured to auto-rotate.",
+      "severity": "MEDIUM",
+      "resource_name": "aws_kms_key.eks_secrets_key",
+      "resource_type": "aws_kms_key",
+      "file_path": "main.tf",
+      "start_line": 271,
+      "end_line": 274
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0130",
+      "title": "aws_instance should activate session tokens for Instance Metadata Service.",
+      "severity": "HIGH",
+      "resource_name": "aws_launch_template.eks-with-disks",
+      "resource_type": "aws_launch_template",
+      "file_path": "main.tf",
+      "start_line": 361,
+      "end_line": 364
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0178",
+      "title": "VPC Flow Logs is a feature that enables you to capture information about the IP traffic going to and from network interfaces in your VPC. After you've created a flow log, you can view and retrieve its data in Amazon CloudWatch Logs. It is recommended that VPC Flow Logs be enabled for packet \"Rejects\" for VPCs.",
+      "severity": "MEDIUM",
+      "resource_name": "aws_vpc.main",
+      "resource_type": "aws_vpc",
+      "file_path": "main.tf",
+      "start_line": 18,
+      "end_line": 30
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_66",
+      "title": "Ensure that CloudWatch Log Group specifies retention days",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.vpc_flow_log",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/main.tf",
+      "start_line": 32,
+      "end_line": 34
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_158",
+      "title": "Ensure that CloudWatch Log Group is encrypted by KMS",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.vpc_flow_log",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/main.tf",
+      "start_line": 32,
+      "end_line": 34
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_338",
+      "title": "Ensure CloudWatch log groups retains logs for at least 1 year",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.vpc_flow_log",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/main.tf",
+      "start_line": 32,
+      "end_line": 34
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_37",
+      "title": "Ensure Amazon EKS control plane logging is enabled for all log types",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_eks_cluster.demo",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "/main.tf",
+      "start_line": 233,
+      "end_line": 269
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_38",
+      "title": "Ensure Amazon EKS public endpoint not accessible to 0.0.0.0/0",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_eks_cluster.demo",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "/main.tf",
+      "start_line": 233,
+      "end_line": 269
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_39",
+      "title": "Ensure Amazon EKS public endpoint disabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_eks_cluster.demo",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "/main.tf",
+      "start_line": 233,
+      "end_line": 269
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_7",
+      "title": "Ensure rotation for customer created CMKs is enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_kms_key.eks_secrets_key",
+      "resource_type": "aws_kms_key",
+      "file_path": "/main.tf",
+      "start_line": 271,
+      "end_line": 274
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_79",
+      "title": "Ensure Instance Metadata Service Version 1 is not enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_launch_template.eks-with-disks",
+      "resource_type": "aws_launch_template",
+      "file_path": "/main.tf",
+      "start_line": 347,
+      "end_line": 365
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_12",
+      "title": "Ensure the default security group of every VPC restricts all traffic",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_vpc.main",
+      "resource_type": "aws_vpc",
+      "file_path": "/main.tf",
+      "start_line": 18,
+      "end_line": 30
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_11",
+      "title": "Ensure VPC flow logging is enabled in all VPCs",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_vpc.main",
+      "resource_type": "aws_vpc",
+      "file_path": "/main.tf",
+      "start_line": 18,
+      "end_line": 30
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_64",
+      "title": "Ensure KMS key Policy is defined",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_kms_key.eks_secrets_key",
+      "resource_type": "aws_kms_key",
+      "file_path": "/main.tf",
+      "start_line": 271,
+      "end_line": 274
+    }
+  ],
+  "target_count": 17,
+  "resolved_count": 6,
+  "introduced_count": 7,
+  "unchanged_count": 11,
+  "repair_success_rate": 0.35294117647058826,
+  "regression_rate": 0.4117647058823529,
+  "net_delta": -1,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 4,
+      "introduced": 1,
+      "unchanged": 4
+    },
+    "data_protection": {
+      "resolved": 2,
+      "introduced": 3,
+      "unchanged": 1
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 2,
+      "unchanged": 4
+    },
+    "other": {
+      "resolved": 0,
+      "introduced": 1,
+      "unchanged": 2
+    }
+  },
+  "repair_cost_usd": 0.0024268,
+  "repair_tokens": 6067,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0054_qwen3-32b.repaired.tf",
+  "raw_response_path": "module_0054_qwen3-32b.raw.txt",
+  "repaired_code_sha256": "84842b571ed43c73d58057149149dd9e17714ce7f156191be05ac3c825a2e2ea"
+}

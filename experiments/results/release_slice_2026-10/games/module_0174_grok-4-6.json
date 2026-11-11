@@ -1,0 +1,218 @@
+{
+  "module_id": "module_0174",
+  "model_id": "grok-4-6",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0345",
+      "title": "Disallow unrestricted S3 IAM Policies",
+      "severity": "HIGH",
+      "resource_name": "aws_iam_policy.server",
+      "resource_type": "aws_iam_policy",
+      "file_path": "iam.tf",
+      "start_line": 24,
+      "end_line": 60
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "aws_security_group.servers",
+      "resource_type": "aws_security_group",
+      "file_path": "sg.tf",
+      "start_line": 32,
+      "end_line": 32
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0124",
+      "title": "Missing description for security group rule.",
+      "severity": "LOW",
+      "resource_name": "aws_security_group.servers",
+      "resource_type": "aws_security_group",
+      "file_path": "sg.tf",
+      "start_line": 21,
+      "end_line": 26
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_290",
+      "title": "Ensure IAM policies does not allow write access without constraints",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy.fleet_role",
+      "resource_type": "aws_iam_policy",
+      "file_path": "/ec2_work_pc.tf",
+      "start_line": 18,
+      "end_line": 76
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_355",
+      "title": "Ensure no IAM policies documents allow \"*\" as a statement's resource for restrictable actions",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy.fleet_role",
+      "resource_type": "aws_iam_policy",
+      "file_path": "/ec2_work_pc.tf",
+      "start_line": 18,
+      "end_line": 76
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_88",
+      "title": "EC2 instance should not have public IP.",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_launch_template.master",
+      "resource_type": "aws_launch_template",
+      "file_path": "/ec2_work_pc.tf",
+      "start_line": 85,
+      "end_line": 159
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_79",
+      "title": "Ensure Instance Metadata Service Version 1 is not enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_launch_template.master",
+      "resource_type": "aws_launch_template",
+      "file_path": "/ec2_work_pc.tf",
+      "start_line": 85,
+      "end_line": 159
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_135",
+      "title": "Ensure that EC2 is EBS optimized",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_instance.master",
+      "resource_type": "aws_instance",
+      "file_path": "/ec2_work_pc_ondemand.tf",
+      "start_line": 1,
+      "end_line": 43
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_88",
+      "title": "EC2 instance should not have public IP.",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_instance.master",
+      "resource_type": "aws_instance",
+      "file_path": "/ec2_work_pc_ondemand.tf",
+      "start_line": 1,
+      "end_line": 43
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_79",
+      "title": "Ensure Instance Metadata Service Version 1 is not enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_instance.master",
+      "resource_type": "aws_instance",
+      "file_path": "/ec2_work_pc_ondemand.tf",
+      "start_line": 1,
+      "end_line": 43
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_126",
+      "title": "Ensure that detailed monitoring is enabled for EC2 instances",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_instance.master",
+      "resource_type": "aws_instance",
+      "file_path": "/ec2_work_pc_ondemand.tf",
+      "start_line": 1,
+      "end_line": 43
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_189",
+      "title": "Ensure EBS Volume is encrypted by KMS using a customer managed Key (CMK)",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_ebs_volume.master",
+      "resource_type": "aws_ebs_volume",
+      "file_path": "/ec2_work_pc_ondemand.tf",
+      "start_line": 45,
+      "end_line": 54
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_290",
+      "title": "Ensure IAM policies does not allow write access without constraints",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy.server",
+      "resource_type": "aws_iam_policy",
+      "file_path": "/iam.tf",
+      "start_line": 22,
+      "end_line": 61
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_355",
+      "title": "Ensure no IAM policies documents allow \"*\" as a statement's resource for restrictable actions",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy.server",
+      "resource_type": "aws_iam_policy",
+      "file_path": "/iam.tf",
+      "start_line": 22,
+      "end_line": 61
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_382",
+      "title": "Ensure no security groups allow egress from 0.0.0.0:0 to port -1",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group.servers",
+      "resource_type": "aws_security_group",
+      "file_path": "/sg.tf",
+      "start_line": 1,
+      "end_line": 36
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "Ensure every security group and rule has a description",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group.servers",
+      "resource_type": "aws_security_group",
+      "file_path": "/sg.tf",
+      "start_line": 1,
+      "end_line": 36
+    }
+  ],
+  "findings_after": [],
+  "target_count": 16,
+  "resolved_count": 16,
+  "introduced_count": 0,
+  "unchanged_count": 0,
+  "repair_success_rate": 1.0,
+  "regression_rate": 0.0,
+  "net_delta": 16,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 9,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 1,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 1,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 5,
+      "introduced": 0,
+      "unchanged": 0
+    }
+  },
+  "repair_cost_usd": 0.14691800000000002,
+  "repair_tokens": 29131,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0174_grok-4-6.repaired.tf",
+  "raw_response_path": "module_0174_grok-4-6.raw.txt",
+  "repaired_code_sha256": "f4ac53eebc416472682b84b8a005bb364c13d49878350824f9215e5221edf8eb"
+}

@@ -1,0 +1,717 @@
+locals {
+  eks_resource_pb_name = "EKSResourcesPermissionBoundary"
+}
+
+resource "aws_iam_policy" "eks_resources_permission_boundary" {
+  name        = local.eks_resource_pb_name
+  path        = "/boundary/"
+  description = "Permission boundary for roles created by EKSInfraAdmin."
+  policy      = data.aws_iam_policy_document.eks_resources_permission_boundary_doc.json
+  tags        = var.tags
+}
+
+data "aws_iam_policy_document" "eks_resources_permission_boundary_doc" {
+  statement {
+    sid = "AllowMany"
+
+    effect = "Allow"
+
+    actions = [
+      "autoscaling:*",
+      "ec2:*",
+      "ecr:*",
+      "eks:*",
+      "eks-auth:AssumeRoleForPodIdentity",
+      "elasticloadbalancing:*",
+      "kms:*",
+      "logs:*",
+      "secretsmanager:GetSecretValue",
+      "secretsmanager:DescribeSecret",
+      "ecr-public:*"
+    ]
+
+    resources = ["*"]
+  }
+
+  statement {
+    sid = "AllowIAMRead"
+
+    effect = "Allow"
+
+    actions = [
+      "iam:Get*",
+      "iam:List*"
+    ]
+
+    resources = ["*"]
+  }
+
+  statement {
+    sid = "AllowIAMWriteWithConstraints"
+
+    effect = "Allow"
+
+    actions = [
+      "iam:CreateRole",
+      "iam:DeleteRole",
+      "iam:UpdateRole",
+      "iam:AttachRolePolicy",
+      "iam:DetachRolePolicy",
+      "iam:PutRolePolicy",
+      "iam:DeleteRolePolicy",
+      "iam:CreatePolicy",
+      "iam:DeletePolicy",
+      "iam:CreatePolicyVersion",
+      "iam:DeletePolicyVersion",
+      "iam:TagRole",
+      "iam:UntagRole",
+      "iam:TagPolicy",
+      "iam:UntagPolicy",
+      "iam:CreateOpenIDConnectProvider",
+      "iam:DeleteOpenIDConnectProvider",
+      "iam:TagOpenIDConnectProvider",
+      "iam:UpdateOpenIDConnectProviderThumbprint",
+      "iam:UpdateAssumeRolePolicy"
+    ]
+
+    resources = [
+      "arn:aws:iam::${local.account_id}:role/eks-*",
+      "arn:aws:iam::${local.account_id}:policy/eks-*",
+      "arn:aws:iam::${local.account_id}:oidc-provider/*"
+    ]
+  }
+
+  statement {
+    sid = "AllowS3WithConstraints"
+
+    effect = "Allow"
+
+    actions = [
+      "s3:GetObject",
+      "s3:PutObject",
+      "s3:ListBucket"
+    ]
+
+    resources = [
+      "arn:aws:s3:::k8s-infra-*",
+      "arn:aws:s3:::k8s-infra-*/*"
+    ]
+  }
+
+  statement {
+    sid = "AllowSTSWithConstraints"
+
+    effect = "Allow"
+
+    actions = [
+      "sts:AssumeRole",
+      "sts:GetCallerIdentity"
+    ]
+
+    resources = [
+      "arn:aws:iam::${local.account_id}:role/eks-*"
+    ]
+  }
+
+  statement {
+    sid = "DenyCreateWithoutBoundary"
+
+    effect = "Deny"
+
+    actions = [
+      "iam:CreateRole",
+      "iam:CreateUser",
+    ]
+
+    resources = ["*"]
+
+    condition {
+      test     = "StringNotEquals"
+      variable = "iam:PermissionsBoundary"
+      values = [
+        "arn:aws:iam::${local.account_id}:policy/boundary/${local.eks_resource_pb_name}"
+      ]
+    }
+  }
+
+  statement {
+    sid       = "DenyChangeWithoutBoundary"
+    effect    = "Deny"
+    resources = ["*"]
+
+    actions = [
+      "iam:AttachRolePolicy",
+      "iam:DeleteRolePolicy",
+      "iam:PutRolePolicy",
+      "iam:PutRolePermissionsBoundary",
+      "iam:AttachUserPolicy",
+      "iam:DeleteUserPolicy",
+      "iam:DetachUserPolicy",
+      "iam:PutUserPolicy",
+      "iam:PutUserPermissionsBoundary",
+    ]
+
+    condition {
+      test     = "StringNotEquals"
+      variable = "iam:PermissionsBoundary"
+      values = [
+        "arn:aws:iam::${local.account_id}:policy/boundary/${local.eks_resource_pb_name}"
+      ]
+    }
+  }
+
+  statement {
+    sid = "DenyEditBoundaries"
+
+    effect = "Deny"
+
+    actions = [
+      "iam:DeletePolicy",
+      "iam:CreatePolicyVersion",
+      "iam:DeletePolicyVersion",
+      "iam:SetDefaultPolicyVersion"
+    ]
+
+    resources = [
+      "arn:aws:iam::${local.account_id}:policy/boundary/*"
+    ]
+  }
+
+  statement {
+    sid = "DenyLeaveOrganisation"
+
+    effect = "Deny"
+
+    actions = [
+      "organizations:LeaveOrganization"
+    ]
+
+    resources = ["*"]
+  }
+}
+
+data "aws_caller_identity" "current" {}
+
+data "aws_iam_user" "eks_infra_admins" {
+  count     = length(var.eks_infra_admins)
+  user_name = var.eks_infra_admins[count.index]
+}
+
+data "aws_iam_user" "eks_infra_viewers" {
+  count     = length(var.eks_infra_viewers)
+  user_name = var.eks_infra_viewers[count.index]
+}
+
+locals {
+  account_id = data.aws_caller_identity.current.account_id
+}
+
+output "eks_infra_admin_role_arn" {
+  description = "ARN of the EKS admin role."
+  value       = aws_iam_role.eks_infra_admin.arn
+}
+
+output "eks_infra_viewer_role_arn" {
+  description = "ARN of the EKS viewer role."
+  value       = aws_iam_role.eks_viewer.arn
+}
+
+output "eks_infra_admin_permission_boundary" {
+  description = "ARN of the permission boundary enforcing EKSResourcePermissionBounday on EKS IAM resources."
+  value       = aws_iam_role.eks_infra_admin.arn
+}
+
+output "eks_resources_permission_boundary" {
+  description = "ARN of the permission boundary enfored on EKS IAM resources."
+  value       = aws_iam_policy.eks_resources_permission_boundary.arn
+}
+
+resource "aws_iam_policy" "eks_apply" {
+  name_prefix = "EKSClusterApplier"
+  path        = "/terraform/eks/"
+  policy      = data.aws_iam_policy_document.eks_apply.json
+  tags        = var.tags
+}
+
+data "aws_iam_policy_document" "eks_apply" {
+  statement {
+    sid       = "AllowEKSCreateOrUpadate"
+    effect    = "Allow"
+    resources = ["*"]
+
+    actions = [
+      "acm:AddTagsToCertificate",
+      "acm:RequestCertificate",
+      "autoscaling:CreateOrUpdateTags",
+      "ec2:AllocateAddress",
+      "ec2:AssociateRouteTable",
+      "ec2:AssociateVpcCidrBlock",
+      "ec2:AttachInternetGateway",
+      "ec2:AuthorizeSecurityGroupEgress",
+      "ec2:AuthorizeSecurityGroupIngress",
+      "ec2:CreateEgressOnlyInternetGateway",
+      "ec2:CreateInternetGateway",
+      "ec2:CreateLaunchTemplate",
+      "ec2:CreateLaunchTemplateVersion",
+      "ec2:ModifyLaunchTemplate",
+      "ec2:CreateNatGateway",
+      "ec2:CreateRoute",
+      "ec2:CreateRouteTable",
+      "ec2:CreateSecurityGroup",
+      "ec2:CreateSubnet",
+      "ec2:CreateTags",
+      "ec2:CreateVpc",
+      "ec2:ModifySubnetAttribute",
+      "ec2:ModifyVpcAttribute",
+      "ec2:RevokeSecurityGroupEgress",
+      "ec2:RunInstances",
+      "ec2:ModifyInstanceAttribute",
+      "ec2:TerminateInstances",
+      "ec2:ImportKeyPair",
+      "eks:CreateAccessEntry",
+      "eks:CreateAddon",
+      "eks:CreateCluster",
+      "eks:CreateNodegroup",
+      "eks:CreatePodIdentityAssociation",
+      "eks:TagResource",
+      "eks:UpdateAccessEntry",
+      "eks:UpdateAddon",
+      "eks:UpdateClusterConfig",
+      "eks:UpdateClusterVersion",
+      "eks:UpdateNodegroupConfig",
+      "eks:UpdateNodegroupVersion",
+      "events:DeleteRule",
+      "events:PutRule",
+      "events:PutTargets",
+      "events:RemoveTargets",
+      "events:TagResource",
+      "kms:CreateAlias",
+      "kms:CreateGrant",
+      "kms:CreateKey",
+      "kms:EnableKeyRotation",
+      "kms:PutKeyPolicy",
+      "kms:TagResource",
+      "logs:CreateLogGroup",
+      "logs:PutRetentionPolicy",
+      "logs:TagLogGroup",
+      "sqs:CreateQueue",
+      "sqs:DeleteQueue",
+      "sqs:SetQueueAttributes",
+      "sqs:TagQueue",
+      "ecr-public:*"
+    ]
+  }
+
+  statement {
+    sid = "AllowIAMWriteWithConstraints"
+
+    effect = "Allow"
+
+    actions = [
+      "iam:CreateRole",
+      "iam:CreatePolicy",
+      "iam:CreatePolicyVersion",
+      "iam:AttachRolePolicy",
+      "iam:CreateOpenIDConnectProvider",
+      "iam:TagOpenIDConnectProvider",
+      "iam:TagPolicy",
+      "iam:TagRole",
+      "iam:UpdateOpenIDConnectProviderThumbprint",
+      "iam:UpdateAssumeRolePolicy"
+    ]
+
+    resources = [
+      "arn:aws:iam::${local.account_id}:role/eks-*",
+      "arn:aws:iam::${local.account_id}:policy/eks-*",
+      "arn:aws:iam::${local.account_id}:oidc-provider/*"
+    ]
+  }
+
+  statement {
+    sid = "AllowPassRoleWithConstraints"
+
+    effect = "Allow"
+
+    actions = [
+      "iam:PassRole"
+    ]
+
+    resources = [
+      "arn:aws:iam::${local.account_id}:role/eks-*"
+    ]
+
+    condition {
+      test     = "StringEquals"
+      variable = "iam:PassedToService"
+      values = [
+        "eks.amazonaws.com",
+        "ec2.amazonaws.com"
+      ]
+    }
+  }
+
+  statement {
+    sid = "AllowS3WithConstraints"
+
+    effect = "Allow"
+
+    actions = [
+      "s3:PutObject"
+    ]
+
+    resources = [
+      "arn:aws:s3:::k8s-infra-*/*"
+    ]
+  }
+
+  statement {
+    sid = "AllowCreateOnlyWithBoundary"
+
+    effect = "Allow"
+
+    actions = [
+      "iam:CreateRole",
+      "iam:CreateUser",
+    ]
+
+    resources = ["*"]
+
+    condition {
+      test     = "StringEquals"
+      variable = "iam:PermissionsBoundary"
+      values = [
+        aws_iam_policy.eks_resources_permission_boundary.arn
+      ]
+    }
+  }
+
+  statement {
+    sid       = "AllowChangeOnlyWithEKSResourceBoundary"
+    effect    = "Allow"
+    resources = ["*"]
+
+    actions = [
+      "iam:AttachRolePolicy",
+      "iam:DeleteRolePolicy",
+      "iam:PutRolePolicy",
+      "iam:PutRolePermissionsBoundary",
+      "iam:AttachUserPolicy",
+      "iam:DeleteUserPolicy",
+      "iam:DetachUserPolicy",
+      "iam:PutUserPolicy",
+      "iam:PutUserPermissionsBoundary",
+    ]
+
+    condition {
+      test     = "StringEquals"
+      variable = "iam:PermissionsBoundary"
+      values = [
+        aws_iam_policy.eks_resources_permission_boundary.arn
+      ]
+    }
+  }
+
+  statement {
+    sid = "DenyEditBoundaries"
+
+    effect = "Deny"
+
+    actions = [
+      "iam:DeletePolicy",
+      "iam:CreatePolicyVersion",
+      "iam:DeletePolicyVersion",
+      "iam:SetDefaultPolicyVersion"
+    ]
+
+    resources = [
+      "arn:aws:iam::${local.account_id}:policy/boundary/*"
+    ]
+  }
+
+  statement {
+    sid = "DenyLeaveOrganisation"
+
+    effect = "Deny"
+
+    actions = [
+      "organizations:LeaveOrganization"
+    ]
+
+    resources = ["*"]
+  }
+}
+
+resource "aws_iam_policy" "eks_destroy" {
+  name_prefix = "EKSClusterDestroyer"
+  path        = "/terraform/eks/"
+  policy      = data.aws_iam_policy_document.eks_destroy.json
+  tags        = var.tags
+}
+
+data "aws_iam_policy_document" "eks_destroy" {
+  statement {
+    sid       = "AllowEKSDelete"
+    effect    = "Allow"
+    resources = ["*"]
+
+    actions = [
+      "acm:DeleteCertificate",
+      "autoscaling:DeleteTags",
+      "ec2:DeleteEgressOnlyInternetGateway",
+      "ec2:DeleteInternetGateway",
+      "ec2:DeleteLaunchTemplate",
+      "ec2:DeleteLaunchTemplateVersion",
+      "ec2:DeleteNatGateway",
+      "ec2:DeleteRoute",
+      "ec2:DeleteRouteTable",
+      "ec2:DeleteSecurityGroup",
+      "ec2:DeleteSubnet",
+      "ec2:DeleteVpc",
+      "ec2:DeleteTags",
+      "ec2:DetachInternetGateway",
+      "ec2:DisassociateAddress",
+      "ec2:DisassociateRouteTable",
+      "ec2:DisassociateVpcCidrBlock",
+      "ec2:ReleaseAddress",
+      "ec2:RevokeSecurityGroupEgress",
+      "ec2:RevokeSecurityGroupIngress",
+      "ec2:DeleteKeyPair",
+      "ec2:TerminateInstances",
+      "eks:DeleteAddon",
+      "eks:DeleteAccessEntry",
+      "eks:DeleteCluster",
+      "eks:DeleteNodegroup",
+      "eks:DeletePodIdentityAssociation",
+      "eks:UntagResource",
+      "events:UntagResource",
+      "kms:DeleteAlias",
+      "kms:ScheduleKeyDeletion",
+      "logs:DeleteLogGroup",
+      "sqs:UntagQueue"
+    ]
+  }
+
+  statement {
+    sid = "AllowIAMDeleteWithConstraints"
+
+    effect = "Allow"
+
+    actions = [
+      "iam:DeleteOpenIDConnectProvider",
+      "iam:DeletePolicy",
+      "iam:DeleteRole",
+      "iam:DeleteRolePolicy",
+      "iam:DeleteRolePermissionsBoundary",
+      "iam:DetachRolePolicy",
+      "iam:DeletePolicyVersion",
+      "iam:RemoveRoleFromInstanceProfile",
+      "iam:UntagPolicy",
+      "iam:UntagRole"
+    ]
+
+    resources = [
+      "arn:aws:iam::${local.account_id}:role/eks-*",
+      "arn:aws:iam::${local.account_id}:policy/eks-*",
+      "arn:aws:iam::${local.account_id}:oidc-provider/*"
+    ]
+  }
+
+  statement {
+    sid = "DenyDeleteBoundary"
+
+    effect = "Deny"
+
+    actions = [
+      "iam:DeletePolicy",
+      "iam:DeletePolicyVersion",
+      "iam:DeleteRolePermissionsBoundary",
+      "iam:DetachRolePolicy",
+    ]
+
+    resources = [
+      aws_iam_policy.eks_resources_permission_boundary.arn
+    ]
+  }
+}
+
+resource "aws_iam_policy" "eks_plan" {
+  name_prefix = "EKSClusterPlanner"
+  path        = "/terraform/eks/"
+  policy      = data.aws_iam_policy_document.eks_plan.json
+  tags        = var.tags
+}
+
+data "aws_iam_policy_document" "eks_plan" {
+  statement {
+    sid       = "AllowReadEKSSupportingInfra"
+    effect    = "Allow"
+    resources = ["*"]
+
+    actions = [
+      "acm:DescribeCertificate",
+      "acm:ListTagsForCertificate",
+      "ec2:DescribeAddresses",
+      "ec2:DescribeAddressesAttribute",
+      "ec2:DescribeAvailabilityZones",
+      "ec2:DescribeEgressOnlyInternetGateways",
+      "ec2:DescribeInternetGateways",
+      "ec2:DescribeImages",
+      "ec2:DescribeInstanceAttribute",
+      "ec2:DescribeInstanceCreditSpecifications",
+      "ec2:DescribeInstanceTypes",
+      "ec2:DescribeInstances",
+      "ec2:DescribeLaunchTemplateVersions",
+      "ec2:DescribeLaunchTemplates",
+      "ec2:DescribeNatGateways",
+      "ec2:DescribeNetworkInterfaces",
+      "ec2:DescribeNetworkAcls",
+      "ec2:DescribeRouteTables",
+      "ec2:DescribeSecurityGroupRules",
+      "ec2:DescribeSecurityGroups",
+      "ec2:DescribeSecurityGroupReferences",
+      "ec2:DescribeSubnets",
+      "ec2:DescribeVpcAttribute",
+      "ec2:DescribeVpcClassicLink",
+      "ec2:DescribeVpcClassicLinkDnsSupport",
+      "ec2:DescribeVpcs",
+      "ec2:DescribeVolumes",
+      "ec2:DescribeKeyPairs",
+      "ec2:DescribeTags",
+      "eks:DescribeAccessEntry",
+      "eks:DescribeAddon",
+      "eks:DescribeAddonVersions",
+      "eks:DescribeCluster",
+      "eks:DescribeNodegroup",
+      "eks:DescribePodIdentityAssociation",
+      "eks:DescribeUpdate",
+      "eks:ListAddons",
+      "eks:ListClusters",
+      "eks:ListIdentityProviderConfigs",
+      "eks:ListNodegroups",
+      "eks:ListUpdates",
+      "eks:ListTagsForResource",
+      "events:DescribeRule",
+      "events:ListTagsForResource",
+      "events:ListTargetsByRule",
+      "iam:GetOpenIDConnectProvider",
+      "iam:GetPolicy",
+      "iam:GetPolicyVersion",
+      "iam:GetRole",
+      "iam:GetRolePolicy",
+      "iam:GetUser",
+      "iam:ListAttachedRolePolicies",
+      "iam:ListRoles",
+      "iam:ListRolePolicies",
+      "iam:ListPolicies",
+      "iam:ListInstanceProfilesForRole",
+      "iam:ListPolicyVersions",
+      "kms:DescribeKey",
+      "kms:GetKeyPolicy",
+      "kms:GetKeyRotationStatus",
+      "kms:ListAliases",
+      "kms:ListResourceTags",
+      "logs:DescribeLogGroups",
+      "logs:ListTagsForResource",
+      "logs:ListTagsLogGroup",
+      "sqs:GetQueueAttributes",
+      "sqs:ListQueueTags",
+      "ssm:GetParameter"
+    ]
+  }
+
+  statement {
+    sid       = "AllowS3ReadWithConstraints"
+    effect    = "Allow"
+
+    actions = [
+      "s3:GetObject",
+      "s3:ListBucket"
+    ]
+
+    resources = [
+      "arn:aws:s3:::k8s-infra-*",
+      "arn:aws:s3:::k8s-infra-*/*"
+    ]
+  }
+}
+
+resource "aws_iam_role" "eks_infra_admin" {
+  name        = "EKSInfraAdmin"
+  description = "IAM role used for planning/applying/destroying infrastructure."
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        "Effect" : "Allow",
+        "Principal" : {
+          "AWS" : data.aws_iam_user.eks_infra_admins[*].arn
+        },
+        "Action" : "sts:AssumeRole",
+        "Condition" : {}
+      }
+    ]
+  })
+
+  tags = var.tags
+}
+
+resource "aws_iam_role_policy_attachment" "admin_eks_plan" {
+  role       = aws_iam_role.eks_infra_admin.name
+  policy_arn = aws_iam_policy.eks_plan.arn
+}
+
+resource "aws_iam_role_policy_attachment" "admin_eks_apply" {
+  role       = aws_iam_role.eks_infra_admin.name
+  policy_arn = aws_iam_policy.eks_apply.arn
+}
+
+resource "aws_iam_role_policy_attachment" "admin_eks_destroy" {
+  role       = aws_iam_role.eks_infra_admin.name
+  policy_arn = aws_iam_policy.eks_destroy.arn
+}
+
+resource "aws_iam_role" "eks_viewer" {
+  name        = "EKSInfraViewer"
+  description = "IAM read role."
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        "Effect" : "Allow",
+        "Principal" : {
+          "AWS" : data.aws_iam_user.eks_infra_viewers[*].arn
+        },
+        "Action" : "sts:AssumeRole",
+        "Condition" : {}
+      }
+    ]
+  })
+
+  tags = var.tags
+}
+
+resource "aws_iam_role_policy_attachment" "viewer_eks_plan" {
+  role       = aws_iam_role.eks_viewer.name
+  policy_arn = aws_iam_policy.eks_plan.arn
+}
+
+variable "eks_infra_admins" {
+  type        = list(string)
+  description = "List of maintainers that have permissions to run apply/destory."
+  default     = []
+}
+
+variable "eks_infra_viewers" {
+  type        = list(string)
+  description = "List of maintainers that have permissions to run plan."
+  default     = []
+}
+
+variable "tags" {
+  type = map(string)
+  default = {
+    Terraform = true
+  }
+}

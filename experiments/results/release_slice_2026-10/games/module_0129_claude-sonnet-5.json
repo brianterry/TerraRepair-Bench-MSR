@@ -1,0 +1,75 @@
+{
+  "module_id": "module_0129",
+  "model_id": "claude-sonnet-5",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0130",
+      "title": "aws_instance should activate session tokens for Instance Metadata Service.",
+      "severity": "HIGH",
+      "resource_name": "aws_launch_template.worker",
+      "resource_type": "aws_launch_template",
+      "file_path": "workers.tf",
+      "start_line": 86,
+      "end_line": 86
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_88",
+      "title": "EC2 instance should not have public IP.",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_launch_template.worker",
+      "resource_type": "aws_launch_template",
+      "file_path": "/workers.tf",
+      "start_line": 57,
+      "end_line": 111
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_79",
+      "title": "Ensure Instance Metadata Service Version 1 is not enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_launch_template.worker",
+      "resource_type": "aws_launch_template",
+      "file_path": "/workers.tf",
+      "start_line": 57,
+      "end_line": 111
+    }
+  ],
+  "findings_after": [],
+  "target_count": 3,
+  "resolved_count": 3,
+  "introduced_count": 0,
+  "unchanged_count": 0,
+  "repair_success_rate": 1.0,
+  "regression_rate": 0.0,
+  "net_delta": 3,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 1,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 1,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 1,
+      "introduced": 0,
+      "unchanged": 0
+    }
+  },
+  "repair_cost_usd": 0.047456,
+  "repair_tokens": 8012,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0129_claude-sonnet-5.repaired.tf",
+  "raw_response_path": "module_0129_claude-sonnet-5.raw.txt",
+  "repaired_code_sha256": "78a49d6e1d77269eada51f462d82a6e166ba5a09ee252062d0f40e0e486c7494"
+}

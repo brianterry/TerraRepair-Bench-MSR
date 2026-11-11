@@ -1,0 +1,120 @@
+{
+  "module_id": "module_0405",
+  "model_id": "kimi-k2-5",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0143",
+      "title": "IAM policies should not be granted directly to users.",
+      "severity": "LOW",
+      "resource_name": "module.user",
+      "resource_type": "module",
+      "file_path": "git::https:/github.com/cloudposse/terraform-aws-iam-system-user.git?ref=tags/0.3.2/main.tf",
+      "start_line": 13,
+      "end_line": 18
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "user",
+      "resource_type": "user",
+      "file_path": "/main.tf",
+      "start_line": 14,
+      "end_line": 20
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "organization_account_access_role_arns",
+      "resource_type": "organization_account_access_role_arns",
+      "file_path": "/main.tf",
+      "start_line": 37,
+      "end_line": 40
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_274",
+      "title": "Disallow IAM roles, users, and groups from using the AWS AdministratorAccess policy",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_role_policy_attachment.administrator_access",
+      "resource_type": "aws_iam_role_policy_attachment",
+      "file_path": "/main.tf",
+      "start_line": 49,
+      "end_line": 52
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_49",
+      "title": "Ensure no IAM policies documents allow \"*\" as a statement's actions",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.custom_administrator",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/main.tf",
+      "start_line": 49,
+      "end_line": 64
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_1",
+      "title": "Ensure IAM policies that allow full \"*-*\" administrative privileges are not created",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.custom_administrator",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/main.tf",
+      "start_line": 49,
+      "end_line": 64
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_40",
+      "title": "Ensure AWS IAM policy does not allow full IAM privileges",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.custom_administrator",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/main.tf",
+      "start_line": 49,
+      "end_line": 64
+    }
+  ],
+  "target_count": 4,
+  "resolved_count": 4,
+  "introduced_count": 3,
+  "unchanged_count": 0,
+  "repair_success_rate": 1.0,
+  "regression_rate": 0.75,
+  "net_delta": 1,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 2,
+      "introduced": 3,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 2,
+      "introduced": 0,
+      "unchanged": 0
+    }
+  },
+  "repair_cost_usd": 0.0048311,
+  "repair_tokens": 3229,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0405_kimi-k2-5.repaired.tf",
+  "raw_response_path": "module_0405_kimi-k2-5.raw.txt",
+  "repaired_code_sha256": "4924d505fad7e2d4f1101a39b3023ffdcda9a77ff34ec1fc1603b100774d191a"
+}

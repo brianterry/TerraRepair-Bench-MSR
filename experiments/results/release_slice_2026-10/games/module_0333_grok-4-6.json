@@ -1,0 +1,446 @@
+{
+  "module_id": "module_0333",
+  "model_id": "grok-4-6",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "aws_s3_bucket.elastic_stack[0]",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "eks-elk.tf",
+      "start_line": 797,
+      "end_line": 806
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0090",
+      "title": "S3 Data should be versioned",
+      "severity": "MEDIUM",
+      "resource_name": "aws_s3_bucket.elastic_stack[0]",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "eks-elk.tf",
+      "start_line": 797,
+      "end_line": 806
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0132",
+      "title": "S3 encryption should use Customer Managed Keys",
+      "severity": "HIGH",
+      "resource_name": "aws_s3_bucket_server_side_encryption_configuration.elastic_stack_encryption[0]",
+      "resource_type": "aws_s3_bucket_server_side_encryption_configuration",
+      "file_path": "eks-elk.tf",
+      "start_line": 815,
+      "end_line": 825
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "aws_s3_bucket.gitlab_runner_cache[0]",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "eks-gitlab-runner.tf",
+      "start_line": 115,
+      "end_line": 125
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0090",
+      "title": "S3 Data should be versioned",
+      "severity": "MEDIUM",
+      "resource_name": "aws_s3_bucket.gitlab_runner_cache[0]",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "eks-gitlab-runner.tf",
+      "start_line": 115,
+      "end_line": 125
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0132",
+      "title": "S3 encryption should use Customer Managed Keys",
+      "severity": "HIGH",
+      "resource_name": "aws_s3_bucket_server_side_encryption_configuration.gitlab_runner_encryption[0]",
+      "resource_type": "aws_s3_bucket_server_side_encryption_configuration",
+      "file_path": "eks-gitlab-runner.tf",
+      "start_line": 134,
+      "end_line": 144
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0342",
+      "title": "IAM Pass Role Filtering",
+      "severity": "MEDIUM",
+      "resource_name": "module.karpenter[0]",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/eks/aws/modules/karpenter/terraform-aws-modules/eks/aws/modules/karpenter/modules/karpenter/main.tf",
+      "start_line": 70,
+      "end_line": 181
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_300",
+      "title": "Ensure S3 lifecycle configuration sets period for aborting failed uploads",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket_lifecycle_configuration.gitlab_runner_lifecycle",
+      "resource_type": "aws_s3_bucket_lifecycle_configuration",
+      "file_path": "/eks-gitlab-runner.tf",
+      "start_line": 146,
+      "end_line": 166
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "karpenter",
+      "resource_type": "karpenter",
+      "file_path": "/eks-karpenter.tf",
+      "start_line": 34,
+      "end_line": 52
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_62",
+      "title": "Ensure S3 buckets should have event notifications enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.elastic_stack",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/eks-elk.tf",
+      "start_line": 797,
+      "end_line": 806
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_62",
+      "title": "Ensure S3 buckets should have event notifications enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.gitlab_runner_cache",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/eks-gitlab-runner.tf",
+      "start_line": 115,
+      "end_line": 125
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_21",
+      "title": "Ensure all data stored in the S3 bucket have versioning enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.elastic_stack",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/eks-elk.tf",
+      "start_line": 797,
+      "end_line": 806
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_21",
+      "title": "Ensure all data stored in the S3 bucket have versioning enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.gitlab_runner_cache",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/eks-gitlab-runner.tf",
+      "start_line": 115,
+      "end_line": 125
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_18",
+      "title": "Ensure the S3 bucket has access logging enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.elastic_stack",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/eks-elk.tf",
+      "start_line": 797,
+      "end_line": 806
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_18",
+      "title": "Ensure the S3 bucket has access logging enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.gitlab_runner_cache",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/eks-gitlab-runner.tf",
+      "start_line": 115,
+      "end_line": 125
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_61",
+      "title": "Ensure that an S3 bucket has a lifecycle configuration",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.elastic_stack",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/eks-elk.tf",
+      "start_line": 797,
+      "end_line": 806
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_144",
+      "title": "Ensure that S3 bucket has cross-region replication enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.elastic_stack",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/eks-elk.tf",
+      "start_line": 797,
+      "end_line": 806
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_144",
+      "title": "Ensure that S3 bucket has cross-region replication enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.gitlab_runner_cache",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/eks-gitlab-runner.tf",
+      "start_line": 115,
+      "end_line": 125
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "aws_s3_bucket.elastic_stack[0]",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "eks-elk.tf",
+      "start_line": 797,
+      "end_line": 806
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0090",
+      "title": "S3 Data should be versioned",
+      "severity": "MEDIUM",
+      "resource_name": "aws_s3_bucket.elastic_stack[0]",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "eks-elk.tf",
+      "start_line": 797,
+      "end_line": 806
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0132",
+      "title": "S3 encryption should use Customer Managed Keys",
+      "severity": "HIGH",
+      "resource_name": "aws_s3_bucket_server_side_encryption_configuration.elastic_stack_encryption[0]",
+      "resource_type": "aws_s3_bucket_server_side_encryption_configuration",
+      "file_path": "eks-elk.tf",
+      "start_line": 815,
+      "end_line": 825
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "aws_s3_bucket.gitlab_runner_cache[0]",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "eks-gitlab-runner.tf",
+      "start_line": 115,
+      "end_line": 125
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0090",
+      "title": "S3 Data should be versioned",
+      "severity": "MEDIUM",
+      "resource_name": "aws_s3_bucket.gitlab_runner_cache[0]",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "eks-gitlab-runner.tf",
+      "start_line": 115,
+      "end_line": 125
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0132",
+      "title": "S3 encryption should use Customer Managed Keys",
+      "severity": "HIGH",
+      "resource_name": "aws_s3_bucket_server_side_encryption_configuration.gitlab_runner_encryption[0]",
+      "resource_type": "aws_s3_bucket_server_side_encryption_configuration",
+      "file_path": "eks-gitlab-runner.tf",
+      "start_line": 134,
+      "end_line": 144
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0342",
+      "title": "IAM Pass Role Filtering",
+      "severity": "MEDIUM",
+      "resource_name": "module.karpenter[0]",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/eks/aws/modules/karpenter/terraform-aws-modules/eks/aws/modules/karpenter/modules/karpenter/main.tf",
+      "start_line": 70,
+      "end_line": 181
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_300",
+      "title": "Ensure S3 lifecycle configuration sets period for aborting failed uploads",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket_lifecycle_configuration.gitlab_runner_lifecycle",
+      "resource_type": "aws_s3_bucket_lifecycle_configuration",
+      "file_path": "/eks-gitlab-runner.tf",
+      "start_line": 146,
+      "end_line": 166
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "karpenter",
+      "resource_type": "karpenter",
+      "file_path": "/eks-karpenter.tf",
+      "start_line": 34,
+      "end_line": 52
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_62",
+      "title": "Ensure S3 buckets should have event notifications enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.elastic_stack",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/eks-elk.tf",
+      "start_line": 797,
+      "end_line": 806
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_62",
+      "title": "Ensure S3 buckets should have event notifications enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.gitlab_runner_cache",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/eks-gitlab-runner.tf",
+      "start_line": 115,
+      "end_line": 125
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_21",
+      "title": "Ensure all data stored in the S3 bucket have versioning enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.elastic_stack",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/eks-elk.tf",
+      "start_line": 797,
+      "end_line": 806
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_21",
+      "title": "Ensure all data stored in the S3 bucket have versioning enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.gitlab_runner_cache",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/eks-gitlab-runner.tf",
+      "start_line": 115,
+      "end_line": 125
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_18",
+      "title": "Ensure the S3 bucket has access logging enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.elastic_stack",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/eks-elk.tf",
+      "start_line": 797,
+      "end_line": 806
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_18",
+      "title": "Ensure the S3 bucket has access logging enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.gitlab_runner_cache",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/eks-gitlab-runner.tf",
+      "start_line": 115,
+      "end_line": 125
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_61",
+      "title": "Ensure that an S3 bucket has a lifecycle configuration",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.elastic_stack",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/eks-elk.tf",
+      "start_line": 797,
+      "end_line": 806
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_144",
+      "title": "Ensure that S3 bucket has cross-region replication enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.elastic_stack",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/eks-elk.tf",
+      "start_line": 797,
+      "end_line": 806
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_144",
+      "title": "Ensure that S3 bucket has cross-region replication enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.gitlab_runner_cache",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/eks-gitlab-runner.tf",
+      "start_line": 115,
+      "end_line": 125
+    }
+  ],
+  "target_count": 18,
+  "resolved_count": 0,
+  "introduced_count": 0,
+  "unchanged_count": 18,
+  "repair_success_rate": 0.0,
+  "regression_rate": 0.0,
+  "net_delta": 0,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 1
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 4
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 6
+    },
+    "other": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 7
+    }
+  },
+  "repair_cost_usd": 0.31998,
+  "repair_tokens": 79990,
+  "hcl_valid": false,
+  "failure_metadata": {
+    "source_chars": 142231,
+    "est_input_tokens": 35557,
+    "max_tokens": 40000,
+    "size_driven_failure": false,
+    "repair_error": "Repaired code failed HCL validation"
+  },
+  "repaired_code_path": "module_0333_grok-4-6.repaired.tf",
+  "raw_response_path": "module_0333_grok-4-6.raw.txt",
+  "repaired_code_sha256": "d1bfd679f4217b3f64786dcad1d281a3f1cabc9720e110b48335df5d10f0be38"
+}

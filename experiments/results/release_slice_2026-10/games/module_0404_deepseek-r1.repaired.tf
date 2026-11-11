@@ -1,0 +1,1309 @@
+variable "mysql_name" {
+  type        = string
+  description = "Name of the application, e.g. `app` or `analytics`"
+  default     = "mysql"
+}
+
+variable "mysql_admin_user" {
+  type        = string
+  description = "MySQL admin user name"
+  default     = ""
+}
+
+variable "mysql_admin_password" {
+  type        = string
+  description = "MySQL password for the admin user"
+  default     = ""
+}
+
+variable "mysql_db_name" {
+  type        = string
+  description = "MySQL database name"
+  default     = ""
+}
+
+variable "mysql_instance_type" {
+  type        = string
+  default     = "db.t2.small"
+  description = "EC2 instance type for Aurora MySQL cluster"
+}
+
+variable "mysql_cluster_size" {
+  type        = string
+  default     = "2"
+  description = "MySQL cluster size"
+}
+
+variable "mysql_cluster_enabled" {
+  type        = string
+  default     = "false"
+  description = "Set to false to prevent the module from creating any resources"
+}
+
+variable "mysql_cluster_publicly_accessible" {
+  default     = true
+  description = "Specifies the accessibility options for the DB instance. A value of true specifies an Internet-facing instance with a publicly resolvable DNS name, which resolves to a public IP address. A value of false specifies an internal instance with a DNS name that resolves to a private IP address"
+}
+
+variable "mysql_cluster_allowed_cidr_blocks" {
+  type        = list(string)
+  default     = ["0.0.0.0/0"]
+  description = "List of CIDR blocks allowed to access the cluster"
+}
+
+resource "random_pet" "mysql_db_name" {
+  count     = local.mysql_cluster_enabled ? 1 : 0
+  separator = "_"
+}
+
+resource "random_string" "mysql_admin_user" {
+  count   = local.mysql_cluster_enabled ? 1 : 0
+  length  = 8
+  number  = false
+  special = false
+}
+
+resource "random_string" "mysql_admin_password" {
+  count   = local.mysql_cluster_enabled ? 1 : 0
+  length  = 16
+  special = true
+}
+
+locals {
+  mysql_cluster_enabled = var.mysql_cluster_enabled == "true"
+  mysql_admin_user      = length(var.mysql_admin_user) > 0 ? var.mysql_admin_user : join("", random_string.mysql_admin_user.*.result)
+  mysql_admin_password  = length(var.mysql_admin_password) > 0 ? var.mysql_admin_password : join("", random_string.mysql_admin_password.*.result)
+  mysql_db_name         = join("", random_pet.mysql_db_name.*.id)
+}
+
+module "aurora_mysql" {
+  source         = "git::https://github.com/cloudposse/terraform-aws-rds-cluster.git?ref=xyz123"
+  namespace      = var.namespace
+  stage          = var.stage
+  name           = var.mysql_name
+  engine         = "aurora-mysql"
+  cluster_family = "aurora-mysql5.7"
+  instance_type  = var.mysql_instance_type
+  cluster_size   = var.mysql_cluster_size
+  admin_user     = local.mysql_admin_user
+  admin_password = local.mysql_admin_password
+  db_name        = local.mysql_db_name
+  db_port        = "3306"
+  vpc_id         = module.vpc.vpc_id
+  subnets             = ["${module.subnets.public_subnet_ids}"]
+  zone_id             = local.zone_id
+  enabled             = var.mysql_cluster_enabled
+  publicly_accessible = var.mysql_cluster_publicly_accessible
+  allowed_cidr_blocks = var.mysql_cluster_allowed_cidr_blocks
+}
+
+resource "aws_ssm_parameter" "aurora_mysql_database_name" {
+  count       = local.mysql_cluster_enabled ? 1 : 0
+  name        = format(var.chamber_parameter_name, local.chamber_service, "aurora_mysql_database_name")
+  value       = module.aurora_mysql.name
+  description = "Aurora MySQL Database Name"
+  type        = "SecureString"
+  overwrite   = "true"
+}
+
+resource "aws_ssm_parameter" "aurora_mysql_master_username" {
+  count       = local.mysql_cluster_enabled ? 1 : 0
+  name        = format(var.chamber_parameter_name, local.chamber_service, "aurora_mysql_master_username")
+  value       = module.aurora_mysql.user
+  description = "Aurora MySQL Username for the master DB user"
+  type        = "SecureString"
+  overwrite   = "true"
+}
+
+resource "aws_ssm_parameter" "aurora_mysql_master_password" {
+  count       = local.mysql_cluster_enabled ? 1 : 0
+  name        = format(var.chamber_parameter_name, local.chamber_service, "aurora_mysql_master_password")
+  value       = module.aurora_mysql.password
+  description = "Aurora MySQL Password for the master DB user"
+  type        = "SecureString"
+  overwrite   = "true"
+}
+
+resource "aws_ssm_parameter" "aurora_mysql_master_hostname" {
+  count       = local.mysql_cluster_enabled ? 1 : 0
+  name        = format(var.chamber_parameter_name, local.chamber_service, "aurora_mysql_master_hostname")
+  value       = module.aurora_mysql.master_host
+  description = "Aurora MySQL DB Master hostname"
+  type        = "SecureString"
+  overwrite   = "true"
+}
+
+resource "aws_ssm_parameter" "aurora_mysql_replicas_hostname" {
+  count       = local.mysql_cluster_enabled ? 1 : 0
+  name        = format(var.chamber_parameter_name, local.chamber_service, "aurora_mysql_replicas_hostname")
+  value       = module.aurora_mysql.replicas_host
+  description = "Aurora MySQL DB Replicas hostname"
+  type        = "SecureString"
+  overwrite   = "true"
+}
+
+resource "aws_ssm_parameter" "aurora_mysql_cluster_name" {
+  count       = local.mysql_cluster_enabled ? 1 : 0
+  name        = format(var.chamber_parameter_name, local.chamber_service, "aurora_mysql_cluster_name")
+  value       = module.aurora_mysql.cluster_name
+  description = "Aurora MySQL DB Cluster Identifier"
+  type        = "SecureString"
+  overwrite   = "true"
+}
+
+output "aurora_mysql_database_name" {
+  value       = module.aurora_mysql.name
+  description = "Aurora MySQL Database name"
+}
+
+output "aurora_mysql_master_username" {
+  value       = module.aurora_mysql.user
+  description = "Aurora MySQL Username for the master DB user"
+}
+
+output "aurora_mysql_master_hostname" {
+  value       = module.aurora_mysql.master_host
+  description = "Aurora MySQL DB Master hostname"
+}
+
+output "aurora_mysql_replicas_hostname" {
+  value       = module.aurora_mysql.replicas_host
+  description = "Aurora MySQL Replicas hostname"
+}
+
+output "aurora_mysql_cluster_name" {
+  value       = module.aurora_mysql.cluster_name
+  description = "Aurora MySQL Cluster Identifier"
+}
+
+variable "postgres_replica_name" {
+  type        = string
+  description = "Name of the replica, e.g. `postgres` or `reporting`"
+  default     = "postgres"
+}
+
+variable "postgres_replica_instance_type" {
+  type        = string
+  default     = "db.r4.large"
+  description = "EC2 instance type for Postgres cluster"
+}
+
+variable "postgres_replica_cluster_size" {
+  type        = string
+  default     = "2"
+  description = "Postgres cluster size"
+}
+
+variable "postgres_replica_enabled" {
+  type        = string
+  default     = "false"
+  description = "Set to false to prevent the module from creating any resources"
+}
+
+variable "postgres_replica_cluster_identifier" {
+  type        = string
+  description = "The cluster identifier"
+  default     = ""
+}
+
+locals {
+  postgres_replica_enabled = var.postgres_replica_enabled == "true"
+}
+
+module "postgres_replica" {
+  source             = "git::https://github.com/cloudposse/terraform-aws-rds-cluster-instance-group.git?ref=xyz123"
+  enabled            = var.postgres_replica_enabled
+  namespace          = var.namespace
+  stage              = var.stage
+  name               = var.postgres_replica_name
+  cluster_identifier = var.postgres_replica_cluster_identifier
+  cluster_family     = "aurora-postgresql9.6"
+  engine             = "aurora-postgresql"
+  instance_type      = var.postgres_replica_instance_type
+  cluster_size       = var.postgres_replica_cluster_size
+  db_port            = "5432"
+  vpc_id             = module.vpc.vpc_id
+  subnets            = ["${module.subnets.private_subnet_ids}"]
+  zone_id            = local.zone_id
+  security_groups    = ["${module.kops_metadata.nodes_security_group_id}"]
+}
+
+resource "aws_ssm_parameter" "postgres_replica_hostname" {
+  count       = local.postgres_replica_enabled ? 1 : 0
+  name        = format(var.chamber_parameter_name, local.chamber_service, "postgres_replica_hostname")
+  value       = module.postgres_replica.hostname
+  description = "RDS Cluster replica hostname"
+  type        = "SecureString"
+  overwrite   = "true"
+}
+
+resource "aws_ssm_parameter" "postgres_replica_endpoint" {
+  count       = local.postgres_replica_enabled ? 1 : 0
+  name        = format(var.chamber_parameter_name, local.chamber_service, "postgres_replica_endpoint")
+  value       = module.postgres_replica.endpoint
+  description = "RDS Cluster Replicas hostname"
+  type        = "SecureString"
+  overwrite   = "true"
+}
+
+output "postgres_replica_hostname" {
+  value       = module.postgres_replica.hostname
+  description = "RDS Cluster replica hostname"
+}
+
+output "postgres_replica_endpoint" {
+  value       = module.postgres_replica.endpoint
+  description = "RDS Cluster replica endpoint"
+}
+
+variable "postgres_name" {
+  type        = string
+  description = "Name of the application, e.g. `app` or `analytics`"
+  default     = "postgres"
+}
+
+variable "postgres_admin_user" {
+  type        = string
+  description = "Postgres admin user name"
+  default     = ""
+}
+
+variable "postgres_admin_password" {
+  type        = string
+  description = "Postgres password for the admin user"
+  default     = ""
+}
+
+variable "postgres_db_name" {
+  type        = string
+  description = "Postgres database name"
+  default     = ""
+}
+
+variable "postgres_instance_type" {
+  type        = string
+  default     = "db.r4.large"
+  description = "EC2 instance type for Postgres cluster"
+}
+
+variable "postgres_cluster_size" {
+  type        = string
+  default     = "2"
+  description = "Postgres cluster size"
+}
+
+variable "postgres_cluster_enabled" {
+  type        = string
+  default     = "false"
+  description = "Set to false to prevent the module from creating any resources"
+}
+
+variable "postgres_iam_database_authentication_enabled" {
+  type        = string
+  default     = "false"
+  description = "Specifies whether or mappings of AWS Identity and Access Management (IAM) accounts to database accounts is enabled."
+}
+
+resource "random_pet" "postgres_db_name" {
+  count     = local.postgres_cluster_enabled ? 1 : 0
+  separator = "_"
+}
+
+resource "random_string" "postgres_admin_user" {
+  count   = local.postgres_cluster_enabled ? 1 : 0
+  length  = 8
+  special = false
+  number  = false
+}
+
+resource "random_string" "postgres_admin_password" {
+  count   = local.postgres_cluster_enabled ? 1 : 0
+  length  = 16
+  special = true
+}
+
+locals {
+  postgres_cluster_enabled = var.postgres_cluster_enabled == "true"
+  postgres_admin_user      = length(var.postgres_admin_user) > 0 ? var.postgres_admin_user : join("", random_string.postgres_admin_user.*.result)
+  postgres_admin_password  = length(var.postgres_admin_password) > 0 ? var.postgres_admin_password : join("", random_string.postgres_admin_password.*.result)
+  postgres_db_name         = join("", random_pet.postgres_db_name.*.id)
+}
+
+module "aurora_postgres" {
+  source          = "git::https://github.com/cloudposse/terraform-aws-rds-cluster.git?ref=xyz123"
+  namespace       = var.namespace
+  stage           = var.stage
+  name            = var.postgres_name
+  engine          = "aurora-postgresql"
+  cluster_family  = "aurora-postgresql9.6"
+  instance_type   = var.postgres_instance_type
+  cluster_size    = var.postgres_cluster_size
+  admin_user      = local.postgres_admin_user
+  admin_password  = local.postgres_admin_password
+  db_name         = local.postgres_db_name
+  db_port         = "5432"
+  vpc_id          = module.vpc.vpc_id
+  subnets         = ["${module.subnets.private_subnet_ids}"]
+  zone_id         = local.zone_id
+  security_groups = ["${module.kops_metadata.nodes_security_group_id}"]
+  enabled         = var.postgres_cluster_enabled
+  iam_database_authentication_enabled = var.postgres_iam_database_authentication_enabled
+}
+
+resource "aws_ssm_parameter" "aurora_postgres_database_name" {
+  count       = local.postgres_cluster_enabled ? 1 : 0
+  name        = format(var.chamber_parameter_name, local.chamber_service, "aurora_postgres_database_name")
+  value       = module.aurora_postgres.name
+  description = "Aurora Postgres Database Name"
+  type        = "SecureString"
+  overwrite   = "true"
+}
+
+resource "aws_ssm_parameter" "aurora_postgres_master_username" {
+  count       = local.postgres_cluster_enabled ? 1 : 0
+  name        = format(var.chamber_parameter_name, local.chamber_service, "aurora_postgres_master_username")
+  value       = module.aurora_postgres.user
+  description = "Aurora Postgres Username for the master DB user"
+  type        = "SecureString"
+  overwrite   = "true"
+}
+
+resource "aws_ssm_parameter" "aurora_postgres_master_password" {
+  count       = local.postgres_cluster_enabled ? 1 : 0
+  name        = format(var.chamber_parameter_name, local.chamber_service, "aurora_postgres_master_password")
+  value       = module.aurora_postgres.password
+  description = "Aurora Postgres Password for the master DB user"
+  type        = "SecureString"
+  overwrite   = "true"
+}
+
+resource "aws_ssm_parameter" "aurora_postgres_master_hostname" {
+  count       = local.postgres_cluster_enabled ? 1 : 0
+  name        = format(var.chamber_parameter_name, local.chamber_service, "aurora_postgres_master_hostname")
+  value       = module.aurora_postgres.master_host
+  description = "Aurora Postgres DB Master hostname"
+  type        = "SecureString"
+  overwrite   = "true"
+}
+
+resource "aws_ssm_parameter" "aurora_postgres_replicas_hostname" {
+  count       = local.postgres_cluster_enabled ? 1 : 0
+  name        = format(var.chamber_parameter_name, local.chamber_service, "aurora_postgres_replicas_hostname")
+  value       = module.aurora_postgres.replicas_host
+  description = "Aurora Postgres DB Replicas hostname"
+  type        = "SecureString"
+  overwrite   = "true"
+}
+
+resource "aws_ssm_parameter" "aurora_postgres_cluster_name" {
+  count       = local.postgres_cluster_enabled ? 1 : 0
+  name        = format(var.chamber_parameter_name, local.chamber_service, "aurora_postgres_cluster_name")
+  value       = module.aurora_postgres.cluster_name
+  description = "Aurora Postgres DB Cluster Identifier"
+  type        = "SecureString"
+  overwrite   = "true"
+}
+
+output "aurora_postgres_database_name" {
+  value       = module.aurora_postgres.name
+  description = "Aurora Postgres Database name"
+}
+
+output "aurora_postgres_master_username" {
+  value       = module.aurora_postgres.user
+  description = "Aurora Postgres Username for the master DB user"
+}
+
+output "aurora_postgres_master_hostname" {
+  value       = module.aurora_postgres.master_host
+  description = "Aurora Postgres DB Master hostname"
+}
+
+output "aurora_postgres_replicas_hostname" {
+  value       = module.aurora_postgres.replicas_host
+  description = "Aurora Postgres Replicas hostname"
+}
+
+output "aurora_postgres_cluster_name" {
+  value       = module.aurora_postgres.cluster_name
+  description = "Aurora Postgres Cluster Identifier"
+}
+
+variable "redis_name" {
+  type        = string
+  default     = "redis"
+  description = "Redis name"
+}
+
+variable "redis_instance_type" {
+  type        = string
+  default     = "cache.t2.medium"
+  description = "EC2 instance type for Redis cluster"
+}
+
+variable "redis_cluster_size" {
+  type        = string
+  default     = "2"
+  description = "Redis cluster size"
+}
+
+variable "redis_cluster_enabled" {
+  type        = string
+  default     = "false"
+  description = "Set to false to prevent the module from creating any resources"
+}
+
+variable "redis_auth_token" {
+  type        = string
+  default     = ""
+  description = "Auth token for password protecting redis, transit_encryption_enabled must be set to 'true'! Password must be longer than 16 chars"
+}
+
+variable "redis_transit_encryption_enabled" {
+  type        = string
+  default     = "true"
+  description = "Enable TLS"
+}
+
+variable "redis_params" {
+  type        = list(string)
+  default     = []
+  description = "A list of Redis parameters to apply. Note that parameters may differ from a Redis family to another"
+}
+
+module "elasticache_redis" {
+  source                       = "git::https://github.com/cloudposse/terraform-aws-elasticache-redis.git?ref=xyz123"
+  namespace                    = var.namespace
+  stage                        = var.stage
+  name                         = var.redis_name
+  zone_id                      = local.zone_id
+  security_groups              = ["${module.kops_metadata.nodes_security_group_id}"]
+  vpc_id                       = module.vpc.vpc_id
+  subnets                      = ["${module.subnets.private_subnet_ids}"]
+  maintenance_window           = "sun:03:00-sun:04:00"
+  cluster_size                 = var.redis_cluster_size
+  instance_type                = var.redis_instance_type
+  transit_encryption_enabled   = var.redis_transit_encryption_enabled
+  engine_version               = "3.2.6"
+  family                       = "redis3.2"
+  port                         = "6379"
+  alarm_cpu_threshold_percent  = "75"
+  alarm_memory_threshold_bytes = "10000000"
+  apply_immediately            = "true"
+  availability_zones           = ["${local.availability_zones}"]
+  automatic_failover           = "false"
+  enabled                      = var.redis_cluster_enabled
+  auth_token                   = var.redis_auth_token
+  parameter = var.redis_params
+}
+
+output "elasticache_redis_id" {
+  value = module.elasticache_redis.id
+}
+
+output "elasticache_redis_security_group_id" {
+  value = module.elasticache_redis.security_group_id
+}
+
+output "elasticache_redis_host" {
+  value = module.elasticache_redis.host
+}
+
+variable "elasticsearch_name" {
+  type        = string
+  default     = "elasticsearch"
+  description = "Elasticsearch cluster name"
+}
+
+variable "elasticsearch_version" {
+  type        = string
+  default     = "6.2"
+  description = "Version of Elasticsearch to deploy"
+}
+
+variable "elasticsearch_encrypt_at_rest_enabled" {
+  type        = string
+  default     = "true"
+  description = "Whether to enable encryption at rest"
+}
+
+variable "elasticsearch_ebs_volume_size" {
+  default     = 20
+  description = "Optionally use EBS volumes for data storage by specifying volume size in GB"
+}
+
+variable "elasticsearch_instance_type" {
+  type        = string
+  default     = "t2.small.elasticsearch"
+  description = "Elasticsearch instance type for data nodes in the cluster"
+}
+
+variable "elasticsearch_instance_count" {
+  description = "Number of data nodes in the cluster"
+  default     = 4
+}
+
+variable "elasticsearch_iam_actions" {
+  type        = list(string)
+  default     = ["es:ESHttpGet", "es:ESHttpPut", "es:ESHttpPost", "es:ESHttpHead", "es:Describe*", "es:List*"]
+  description = "List of actions to allow for the IAM roles, _e.g._ `es:ESHttpGet`, `es:ESHttpPut`, `es:ESHttpPost`"
+}
+
+variable "elasticsearch_enabled" {
+  type        = string
+  default     = "false"
+  description = "Set to false to prevent the module from creating any resources"
+}
+
+variable "elasticsearch_permitted_nodes" {
+  type        = string
+  description = "Kops kubernetes nodes that are permitted to access elastic search (e.g. 'nodes', 'masters', 'both' or 'any')"
+  default     = "nodes"
+}
+
+locals {
+  role_arns = {
+    masters = ["${module.kops_metadata.masters_role_arn}"]
+    nodes   = ["${module.kops_metadata.nodes_role_arn}"]
+    both    = ["${module.kops_metadata.masters_role_arn}", "${module.kops_metadata.nodes_role_arn}"]
+    any     = ["*"]
+  }
+
+  security_groups = {
+    masters = ["${module.kops_metadata.masters_security_group_id}"]
+    nodes   = ["${module.kops_metadata.nodes_security_group_id}"]
+    both    = ["${module.kops_metadata.masters_security_group_id}", "${module.kops_metadata.nodes_security_group_id}"]
+    any     = ["${module.kops_metadata.masters_security_group_id}", "${module.kops_metadata.nodes_security_group_id}"]
+  }
+}
+
+module "elasticsearch" {
+  source                  = "git::https://github.com/cloudposse/terraform-aws-elasticsearch.git?ref=xyz123"
+  namespace               = var.namespace
+  stage                   = var.stage
+  name                    = var.elasticsearch_name
+  dns_zone_id             = local.zone_id
+  security_groups         = ["${local.security_groups[var.elasticsearch_permitted_nodes]}"]
+  vpc_id                  = module.vpc.vpc_id
+  subnet_ids              = ["${slice(module.subnets.private_subnet_ids, 0, min(2, length(module.subnets.private_subnet_ids)))}"]
+  zone_awareness_enabled  = length(module.subnets.private_subnet_ids) > 1 ? "true" : "false"
+  elasticsearch_version   = var.elasticsearch_version
+  instance_type           = var.elasticsearch_instance_type
+  instance_count          = var.elasticsearch_instance_count
+  iam_role_arns           = ["${local.role_arns[var.elasticsearch_permitted_nodes]}"]
+  iam_actions             = ["${var.elasticsearch_iam_actions}"]
+  kibana_subdomain_name   = "kibana-elasticsearch"
+  ebs_volume_size         = var.elasticsearch_ebs_volume_size
+  encrypt_at_rest_enabled = var.elasticsearch_encrypt_at_rest_enabled
+  enabled                 = var.elasticsearch_enabled
+  node_to_node_encryption_enabled = true
+  enforce_https = true
+  tls_security_policy = "Policy-Min-TLS-1-2-2019-07"
+  log_publishing_enabled = true
+  log_publishing_types = ["ES_APPLICATION_LOGS", "SEARCH_SLOW_LOGS", "INDEX_SLOW_LOGS"]
+
+  advanced_options = {
+    "rest.action.multi.allow_explicit_index" = "true"
+  }
+}
+
+output "elasticsearch_security_group_id" {
+  value       = module.elasticsearch.security_group_id
+  description = "Security Group ID to control access to the Elasticsearch domain"
+}
+
+output "elasticsearch_domain_arn" {
+  value       = module.elasticsearch.domain_arn
+  description = "ARN of the Elasticsearch domain"
+}
+
+output "elasticsearch_domain_id" {
+  value       = module.elasticsearch.domain_id
+  description = "Unique identifier for the Elasticsearch domain"
+}
+
+output "elasticsearch_domain_endpoint" {
+  value       = module.elasticsearch.domain_endpoint
+  description = "Domain-specific endpoint used to submit index, search, and data upload requests"
+}
+
+output "elasticsearch_kibana_endpoint" {
+  value       = module.elasticsearch.kibana_endpoint
+  description = "Domain-specific endpoint for Kibana without https scheme"
+}
+
+output "elasticsearch_domain_hostname" {
+  value       = module.elasticsearch.domain_hostname
+  description = "Elasticsearch domain hostname to submit index, search, and data upload requests"
+}
+
+output "elasticsearch_kibana_hostname" {
+  value       = module.elasticsearch.kibana_hostname
+  description = "Kibana hostname"
+}
+
+variable "flow_logs_enabled" {
+  type    = string
+  default = "true"
+}
+
+module "flow_logs" {
+  source = "git::https://github.com/cloudposse/terraform-aws-vpc-flow-logs-s3-bucket.git?ref=xyz123"
+
+  name       = local.name
+  namespace  = var.namespace
+  stage      = var.stage
+  attributes = list("flow-logs")
+  region = var.region
+  enabled = var.flow_logs_enabled
+  vpc_id = module.vpc.vpc_id
+  block_public_acls = true
+  block_public_policy = true
+  ignore_public_acls = true
+  restrict_public_buckets = true
+  versioning_enabled = true
+  traffic_type = "REJECT"
+}
+
+output "flow_logs_kms_key_arn" {
+  value       = module.flow_logs.kms_key_arn
+  description = "Flow logs KMS Key ARN"
+}
+
+output "flow_logs_kms_key_id" {
+  value       = module.flow_logs.kms_key_id
+  description = "Flow logs KMS Key ID"
+}
+
+output "flow_logs_kms_alias_arn" {
+  value       = module.flow_logs.kms_alias_arn
+  description = "Flow logs KMS Alias ARN"
+}
+
+output "flow_logs_kms_alias_name" {
+  value       = module.flow_logs.kms_alias_name
+  description = "Flow logs KMS Alias name"
+}
+
+output "flow_logs_bucket_domain_name" {
+  value       = module.flow_logs.bucket_domain_name
+  description = "Flow logs FQDN of bucket"
+}
+
+output "flow_logs_bucket_id" {
+  value       = module.flow_logs.bucket_id
+  description = "Flow logs bucket Name (aka ID)"
+}
+
+output "flow_logs_bucket_arn" {
+  value       = module.flow_logs.bucket_arn
+  description = "Flow logs bucket ARN"
+}
+
+output "flow_logs_bucket_prefix" {
+  value       = module.flow_logs.bucket_prefix
+  description = "Flow logs bucket prefix configured for lifecycle rules"
+}
+
+output "flow_logs_id" {
+  value       = module.flow_logs.id
+  description = "Flow logs ID"
+}
+
+variable "kops_metadata_enabled" {
+  description = "Set to false to prevent the module from creating any resources"
+  type        = string
+  default     = "false"
+}
+
+module "kops_metadata" {
+  source   = "git::https://github.com/cloudposse/terraform-aws-kops-metadata.git?ref=xyz123"
+  dns_zone = "${var.region}.${var.zone_name}"
+  enabled  = var.kops_metadata_enabled
+}
+
+terraform {
+  required_version = ">= 0.11.2"
+
+  backend "s3" {}
+}
+
+variable "aws_assume_role_arn" {
+  type = string
+}
+
+variable "namespace" {
+  type        = string
+  description = "Namespace (e.g. `eg` or `cp`)"
+}
+
+variable "stage" {
+  type        = string
+  description = "Stage (e.g. `prod`, `dev`, `staging`)"
+}
+
+variable "region" {
+  type        = string
+  description = "AWS region"
+}
+
+variable "availability_zones" {
+  type        = list(string)
+  description = "AWS region availability zones to use (e.g.: ['us-west-2a', 'us-west-2b']). If empty will use all available zones"
+  default     = []
+}
+
+variable "zone_name" {
+  type        = string
+  description = "DNS zone name"
+}
+
+data "aws_availability_zones" "available" {
+  filter {
+    name   = "opt-in-status"
+    values = ["opt-in-not-required"]
+  }
+}
+
+data "aws_route53_zone" "default" {
+  name = var.zone_name
+}
+
+locals {
+  null               = ""
+  zone_id            = data.aws_route53_zone.default.zone_id
+  availability_zones = ["${split(",", length(var.availability_zones) == 0 ? join(",", data.aws_availability_zones.available.names) : join(",", var.availability_zones))}"]
+  chamber_service    = var.chamber_service == "" ? basename(pathexpand(path.module)) : var.chamber_service
+}
+
+provider "aws" {
+  assume_role {
+    role_arn = var.aws_assume_role_arn
+  }
+}
+
+variable "rds_replica_name" {
+  type        = string
+  default     = "rds-replica"
+  description = "RDS instance name"
+}
+
+variable "rds_replica_enabled" {
+  type        = string
+  default     = "false"
+  description = "Set to false to prevent the module from creating any resources"
+}
+
+variable "rds_replica_replicate_source_db" {
+  type        = string
+  description = "Specifies that this resource is a Replicate database, and to use this value as the source database. This correlates to the identifier of another Amazon RDS Database to replicate. Note that if you are creating a cross-region replica of an encrypted database you will also need to specify a `kms_key_id`."
+  default     = "changeme"
+}
+
+variable "rds_replica_kms_key_id" {
+  type        = string
+  description = "The ARN for the KMS encryption key. If creating an encrypted replica, set this to the destination KMS ARN."
+  default     = ""
+}
+
+variable "rds_replica_instance_type" {
+  type        = string
+  default     = "db.t2.micro"
+  description = "EC2 instance type for RDS DB"
+}
+
+variable "rds_replica_port" {
+  type        = string
+  default     = "3306"
+  description = "RDS DB port"
+}
+
+variable "rds_replica_snapshot" {
+  type        = string
+  default     = ""
+  description = "Set to a snapshot ID to restore from snapshot"
+}
+
+variable "rds_replica_multi_az" {
+  type        = string
+  default     = "false"
+  description = "Run instances in multiple az"
+}
+
+variable "rds_replica_storage_type" {
+  type        = string
+  default     = "gp2"
+  description = "Storage type"
+}
+
+variable "rds_replica_storage_size" {
+  type        = string
+  default     = "20"
+  description = "Storage size in Gb"
+}
+
+variable "rds_replica_storage_encrypted" {
+  type        = string
+  default     = "true"
+  description = "Set to true to encrypt storage"
+}
+
+variable "rds_replica_auto_minor_version_upgrade" {
+  type        = string
+  default     = "true"
+  description = "Allow automated minor version upgrade (e.g. from Postgres 9.5.3 to Postgres 9.5.4)"
+}
+
+variable "rds_replica_allow_major_version_upgrade" {
+  type        = string
+  default     = "false"
+  description = "Allow major version upgrade"
+}
+
+variable "rds_replica_apply_immediately" {
+  type        = string
+  default     = "true"
+  description = "Specifies whether any database modifications are applied immediately, or during the next maintenance window"
+}
+
+variable "rds_replica_skip_final_snapshot" {
+  type        = string
+  default     = "false"
+  description = "If true (default), no snapshot will be made before deleting DB"
+}
+
+variable "rds_replica_backup_retention_period" {
+  type        = string
+  default     = "7"
+  description = "Backup retention period in days. Must be > 0 to enable backups"
+}
+
+variable "rds_replica_backup_window" {
+  type        = string
+  default     = "22:00-03:00"
+  description = "When AWS can perform DB snapshots, can't overlap with maintenance window"
+}
+
+locals {
+  rds_replica_enabled = var.rds_replica_enabled == "true"
+}
+
+module "rds_replica" {
+  source                      = "git::https://github.com/cloudposse/terraform-aws-rds-replica.git?ref=xyz123"
+  enabled                     = var.rds_replica_enabled
+  namespace                   = var.namespace
+  stage                       = var.stage
+  name                        = var.rds_replica_name
+  kms_key_id                  = var.rds_replica_kms_key_id
+  replicate_source_db         = var.rds_replica_replicate_source_db
+  dns_zone_id                 = local.zone_id
+  host_name                   = var.rds_replica_name
+  security_group_ids          = ["${module.kops_metadata.nodes_security_group_id}"]
+  database_port               = var.rds_replica_port
+  multi_az                    = var.rds_replica_multi_az
+  storage_type                = var.rds_replica_storage_type
+  storage_encrypted           = var.rds_replica_storage_encrypted
+  instance_class              = var.rds_replica_instance_type
+  publicly_accessible         = "false"
+  subnet_ids                  = ["${module.subnets.private_subnet_ids}"]
+  vpc_id                      = module.vpc.vpc_id
+  snapshot_identifier         = var.rds_replica_snapshot
+  auto_minor_version_upgrade  = var.rds_replica_auto_minor_version_upgrade
+  allow_major_version_upgrade = var.rds_replica_allow_major_version_upgrade
+  apply_immediately           = var.rds_replica_apply_immediately
+  skip_final_snapshot         = var.rds_replica_skip_final_snapshot
+  copy_tags_to_snapshot       = "true"
+  backup_retention_period     = var.rds_replica_backup_retention_period
+  backup_window               = var.rds_replica_backup_window
+}
+
+resource "aws_ssm_parameter" "rds_replica_hostname" {
+  count       = local.rds_replica_enabled ? 1 : 0
+  name        = format(var.chamber_parameter_name, local.chamber_service, "rds_replica_hostname")
+  value       = module.rds_replica.hostname
+  description = "RDS replica hostname"
+  type        = "SecureString"
+  overwrite   = "true"
+}
+
+resource "aws_ssm_parameter" "rds_replica_port" {
+  count       = local.rds_replica_enabled ? 1 : 0
+  name        = format(var.chamber_parameter_name, local.chamber_service, "rds_replica_port")
+  value       = var.rds_replica_port
+  description = "RDS replica port"
+  type        = "SecureString"
+  overwrite   = "true"
+}
+
+output "rds_replica_instance_id" {
+  value       = module.rds_replica.instance_id
+  description = "RDS replica ID of the instance"
+}
+
+output "rds_replica_instance_address" {
+  value       = module.rds_replica.instance_address
+  description = "RDS replica address of the instance"
+}
+
+output "rds_replica_instance_endpoint" {
+  value       = module.rds_replica.instance_endpoint
+  description = "RDS replica DNS Endpoint of the instance"
+}
+
+output "rds_replica_port" {
+  value       = local.rds_replica_enabled ? var.rds_replica_port : local.null
+  description = "RDS replica port"
+}
+
+output "rds_replica_hostname" {
+  value       = module.rds_replica.hostname
+  description = "RDS replica host name of the instance"
+}
+
+variable "rds_name" {
+  type        = string
+  default     = "rds"
+  description = "RDS instance name"
+}
+
+variable "rds_enabled" {
+  type        = string
+  default     = "false"
+  description = "Set to false to prevent the module from creating any resources"
+}
+
+variable "rds_admin_user" {
+  type        = string
+  description = "RDS DB admin user name"
+  default     = ""
+}
+
+variable "rds_admin_password" {
+  type        = string
+  description = "RDS DB password for the admin user"
+  default     = ""
+}
+
+variable "rds_db_name" {
+  type        = string
+  description = "RDS DB database name"
+  default     = ""
+}
+
+variable "rds_instance_type" {
+  type        = string
+  default     = "db.t2.micro"
+  description = "EC2 instance type for RDS DB"
+}
+
+variable "rds_engine" {
+  type        = string
+  default     = "mysql"
+  description = "RDS DB engine"
+}
+
+variable "rds_engine_version" {
+  type        = string
+  default     = "5.6"
+  description = "RDS DB engine version"
+}
+
+variable "rds_port" {
+  type        = string
+  default     = "3306"
+  description = "RDS DB port"
+}
+
+variable "rds_db_parameter_group" {
+  type        = string
+  default     = "mysql5.6"
+  description = "RDS DB engine version"
+}
+
+variable "rds_snapshot" {
+  type        = string
+  default     = ""
+  description = "Set to a snapshot ID to restore from snapshot"
+}
+
+variable "rds_parameter_group_name" {
+  type        = string
+  default     = ""
+  description = "Existing parameter group name to use"
+}
+
+variable "rds_multi_az" {
+  type        = string
+  default     = "false"
+  description = "Run instances in multiple az"
+}
+
+variable "rds_storage_type" {
+  type        = string
+  default     = "gp2"
+  description = "Storage type"
+}
+
+variable "rds_storage_size" {
+  type        = string
+  default     = "20"
+  description = "Storage size"
+}
+
+variable "rds_storage_encrypted" {
+  type        = string
+  default     = "true"
+  description = "Set true to encrypt storage"
+}
+
+variable "rds_auto_minor_version_upgrade" {
+  type        = string
+  default     = "false"
+  description = "Allow automated minor version upgrade (e.g. from Postgres 9.5.3 to Postgres 9.5.4)"
+}
+
+variable "rds_allow_major_version_upgrade" {
+  type        = string
+  default     = "false"
+  description = "Allow major version upgrade"
+}
+
+variable "rds_apply_immediately" {
+  type        = string
+  default     = "true"
+  description = "Specifies whether any database modifications are applied immediately, or during the next maintenance window"
+}
+
+variable "rds_skip_final_snapshot" {
+  type        = string
+  default     = "false"
+  description = "If true (default), no snapshot will be made before deleting DB"
+}
+
+variable "rds_backup_retention_period" {
+  type        = string
+  default     = "7"
+  description = "Backup retention period in days. Must be > 0 to enable backups"
+}
+
+variable "rds_backup_window" {
+  type        = string
+  default     = "22:00-03:00"
+  description = "When AWS can perform DB snapshots, can't overlap with maintenance window"
+}
+
+resource "random_pet" "rds_db_name" {
+  count     = local.rds_enabled ? 1 : 0
+  separator = "_"
+}
+
+resource "random_string" "rds_admin_user" {
+  count   = local.rds_enabled ? 1 : 0
+  length  = 8
+  special = false
+  number  = false
+}
+
+resource "random_string" "rds_admin_password" {
+  count   = local.rds_enabled ? 1 : 0
+  length  = 16
+  special = true
+}
+
+locals {
+  rds_enabled        = var.rds_enabled == "true"
+  rds_admin_user     = length(var.rds_admin_user) > 0 ? var.rds_admin_user : join("", random_string.rds_admin_user.*.result)
+  rds_admin_password = length(var.rds_admin_password) > 0 ? var.rds_admin_password : join("", random_string.rds_admin_password.*.result)
+  rds_db_name        = join("", random_pet.rds_db_name.*.id)
+}
+
+module "rds" {
+  source                      = "git::https://github.com/cloudposse/terraform-aws-rds.git?ref=xyz123"
+  enabled                     = var.rds_enabled
+  namespace                   = var.namespace
+  stage                       = var.stage
+  name                        = var.rds_name
+  dns_zone_id                 = local.zone_id
+  host_name                   = var.rds_name
+  security_group_ids          = ["${module.kops_metadata.nodes_security_group_id}"]
+  database_name               = local.rds_db_name
+  database_user               = local.rds_admin_user
+  database_password           = local.rds_admin_password
+  database_port               = var.rds_port
+  multi_az                    = var.rds_multi_az
+  storage_type                = var.rds_storage_type
+  allocated_storage           = var.rds_storage_size
+  storage_encrypted           = var.rds_storage_encrypted
+  engine                      = var.rds_engine
+  engine_version              = var.rds_engine_version
+  instance_class              = var.rds_instance_type
+  db_parameter_group          = var.rds_db_parameter_group
+  parameter_group_name        = var.rds_parameter_group_name
+  publicly_accessible         = "false"
+  subnet_ids                  = ["${module.subnets.private_subnet_ids}"]
+  vpc_id                      = module.vpc.vpc_id
+  snapshot_identifier         = var.rds_snapshot
+  auto_minor_version_upgrade  = var.rds_auto_minor_version_upgrade
+  allow_major_version_upgrade = var.rds_allow_major_version_upgrade
+  apply_immediately           = var.rds_apply_immediately
+  skip_final_snapshot         = var.rds_skip_final_snapshot
+  copy_tags_to_snapshot       = "true"
+  backup_retention_period     = var.rds_backup_retention_period
+  backup_window               = var.rds_backup_window
+}
+
+resource "aws_ssm_parameter" "rds_db_name" {
+  count       = local.rds_enabled ? 1 : 0
+  name        = format(var.chamber_parameter_name, local.chamber_service, "rds_db_name")
+  value       = local.rds_db_name
+  description = "RDS Database Name"
+  type        = "SecureString"
+  overwrite   = "true"
+}
+
+resource "aws_ssm_parameter" "rds_admin_username" {
+  count       = local.rds_enabled ? 1 : 0
+  name        = format(var.chamber_parameter_name, local.chamber_service, "rds_admin_username")
+  value       = local.rds_admin_user
+  description = "RDS Username for the admin DB user"
+  type        = "SecureString"
+  overwrite   = "true"
+}
+
+resource "aws_ssm_parameter" "rds_admin_password" {
+  count       = local.rds_enabled ? 1 : 0
+  name        = format(var.chamber_parameter_name, local.chamber_service, "rds_admin_password")
+  value       = local.rds_admin_password
+  description = "RDS Password for the admin DB user"
+  type        = "SecureString"
+  overwrite   = "true"
+}
+
+resource "aws_ssm_parameter" "rds_hostname" {
+  count       = local.rds_enabled ? 1 : 0
+  name        = format(var.chamber_parameter_name, local.chamber_service, "rds_hostname")
+  value       = module.rds.hostname
+  description = "RDS hostname"
+  type        = "SecureString"
+  overwrite   = "true"
+}
+
+resource "aws_ssm_parameter" "rds_port" {
+  count       = local.rds_enabled ? 1 : 0
+  name        = format(var.chamber_parameter_name, local.chamber_service, "rds_port")
+  value       = var.rds_port
+  description = "RDS port"
+  type        = "SecureString"
+  overwrite   = "true"
+}
+
+output "rds_instance_id" {
+  value       = module.rds.instance_id
+  description = "RDS ID of the instance"
+}
+
+output "rds_instance_address" {
+  value       = module.rds.instance_address
+  description = "RDS address of the instance"
+}
+
+output "rds_instance_endpoint" {
+  value       = module.rds.instance_endpoint
+  description = "RDS DNS Endpoint of the instance"
+}
+
+output "rds_port" {
+  value       = local.rds_enabled ? var.rds_port : local.null
+  description = "RDS port"
+}
+
+output "rds_db_name" {
+  value       = local.rds_enabled ? local.rds_db_name : local.null
+  description = "RDS db name"
+}
+
+output "rds_admin_user" {
+  value       = local.rds_enabled ? local.rds_admin_user : local.null
+  description = "RDS admin user name"
+}
+
+output "rds_admin_password" {
+  value       = local.rds_enabled ? local.rds_admin_password : local.null
+  description = "RDS admin password"
+}
+
+output "rds_hostname" {
+  value       = module.rds.hostname
+  description = "RDS host name of the instance"
+}
+
+variable "chamber_service" {
+  default     = ""
+  description = "`chamber` service name. See [chamber usage](https://github.com/segmentio/chamber#usage) for more details"
+}
+
+variable "chamber_parameter_name" {
+  default = "/%s/%s"
+}
+
+locals {
+  name = "backing-services"
+}
+
+variable "vpc_cidr_block" {
+  default = "10.0.0.0/16"
+}
+
+variable "vpc_nat_gateway_enabled" {
+  default = "true"
+}
+
+variable "vpc_max_subnet_count" {
+  default     = 0
+  description = "The maximum count of subnets to provision. 0 will provision a subnet for each availability zone within the region"
+}
+
+data "aws_region" "current" {}
+
+module "vpc" {
+  source     = "git::https://github.com/cloudposse/terraform-aws-vpc.git?ref=xyz123"
+  namespace  = var.namespace
+  stage      = var.stage
+  name       = local.name
+  cidr_block = var.vpc_cidr_block
+}
+
+module "subnets" {
+  source              = "git::https://github.com/cloudposse/terraform-aws-dynamic-subnets.git?ref=xyz123"
+  availability_zones  = ["${local.availability_zones}"]
+  namespace           = var.namespace
+  stage               = var.stage
+  name                = local.name
+  region              = var.region
+  vpc_id              = module.vpc.vpc_id
+  igw_id              = module.vpc.igw_id
+  cidr_block          = module.vpc.vpc_cidr_block
+  nat_gateway_enabled = var.vpc_nat_gateway_enabled
+  max_subnet_count    = var.vpc_max_subnet_count
+  map_public_ip_on_launch = false
+}
+
+output "vpc_id" {
+  description = "VPC ID of backing services"
+  value       = module.vpc.vpc_id
+}
+
+output "public_subnet_ids" {
+  description = "Public subnet IDs of backing services"
+  value       = ["${module.subnets.public_subnet_ids}"]
+}
+
+output "private_subnet_ids" {
+  description = "Private subnet IDs of backing services"
+  value       = ["${module.subnets.private_subnet_ids}"]
+}
+
+output "region" {
+  description = "AWS region of backing services"
+  value       = data.aws_region.current.name
+}

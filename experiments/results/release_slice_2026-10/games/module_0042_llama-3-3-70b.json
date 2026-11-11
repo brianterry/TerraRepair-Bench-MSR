@@ -1,0 +1,560 @@
+{
+  "module_id": "module_0042",
+  "model_id": "llama-3-3-70b",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "aws_security_group.client_vpc_endpoint",
+      "resource_type": "aws_security_group",
+      "file_path": "privatelink.tf",
+      "start_line": 105,
+      "end_line": 105
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0124",
+      "title": "Missing description for security group rule.",
+      "severity": "LOW",
+      "resource_name": "aws_security_group.client_vpc_endpoint",
+      "resource_type": "aws_security_group",
+      "file_path": "privatelink.tf",
+      "start_line": 101,
+      "end_line": 107
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "module.client_ec2_instance",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/ec2-instance/aws/main.tf",
+      "start_line": 811,
+      "end_line": 811
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0131",
+      "title": "Instance with unencrypted block device.",
+      "severity": "HIGH",
+      "resource_name": "module.client_ec2_instance",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/ec2-instance/aws/main.tf",
+      "start_line": 41,
+      "end_line": 245
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0038",
+      "title": "EKS Clusters should have cluster control plane logging turned on",
+      "severity": "MEDIUM",
+      "resource_name": "module.eks",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/eks/aws/main.tf",
+      "start_line": 35,
+      "end_line": 188
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "module.eks",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/eks/aws/node_groups.tf",
+      "start_line": 247,
+      "end_line": 247
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0066",
+      "title": "Lambda functions should have X-Ray tracing enabled",
+      "severity": "LOW",
+      "resource_name": "module.create_eni_lambda",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/lambda/aws/main.tf",
+      "start_line": 24,
+      "end_line": 145
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0066",
+      "title": "Lambda functions should have X-Ray tracing enabled",
+      "severity": "LOW",
+      "resource_name": "module.delete_eni_lambda",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/lambda/aws/main.tf",
+      "start_line": 24,
+      "end_line": 145
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "module.client_security_group",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/security-group/aws/main.tf",
+      "start_line": 658,
+      "end_line": 665
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0178",
+      "title": "VPC Flow Logs is a feature that enables you to capture information about the IP traffic going to and from network interfaces in your VPC. After you've created a flow log, you can view and retrieve its data in Amazon CloudWatch Logs. It is recommended that VPC Flow Logs be enabled for packet \"Rejects\" for VPCs.",
+      "severity": "MEDIUM",
+      "resource_name": "module.client_vpc",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/vpc/aws/main.tf",
+      "start_line": 28,
+      "end_line": 51
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0178",
+      "title": "VPC Flow Logs is a feature that enables you to capture information about the IP traffic going to and from network interfaces in your VPC. After you've created a flow log, you can view and retrieve its data in Amazon CloudWatch Logs. It is recommended that VPC Flow Logs be enabled for packet \"Rejects\" for VPCs.",
+      "severity": "MEDIUM",
+      "resource_name": "module.vpc",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/vpc/aws/main.tf",
+      "start_line": 28,
+      "end_line": 51
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "client_vpc",
+      "resource_type": "client_vpc",
+      "file_path": "/client.tf",
+      "start_line": 12,
+      "end_line": 36
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "client_ec2_instance",
+      "resource_type": "client_ec2_instance",
+      "file_path": "/client.tf",
+      "start_line": 42,
+      "end_line": 73
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_2",
+      "title": "Ensure Terraform module sources use a tag with a version number",
+      "severity": "UNKNOWN",
+      "resource_name": "client_ec2_instance",
+      "resource_type": "client_ec2_instance",
+      "file_path": "/client.tf",
+      "start_line": 42,
+      "end_line": 73
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "client_security_group",
+      "resource_type": "client_security_group",
+      "file_path": "/client.tf",
+      "start_line": 95,
+      "end_line": 115
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "eks",
+      "resource_type": "eks",
+      "file_path": "/eks.tf",
+      "start_line": 17,
+      "end_line": 74
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "vpc",
+      "resource_type": "vpc",
+      "file_path": "/eks.tf",
+      "start_line": 80,
+      "end_line": 98
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "vpc_endpoints",
+      "resource_type": "vpc_endpoints",
+      "file_path": "/eks.tf",
+      "start_line": 113,
+      "end_line": 151
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_394",
+      "title": "Ensure aws_availability_zones data source pins zone identity so its result set does not silently expand when AWS adds an Availability Zone",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_availability_zones.available",
+      "resource_type": "aws_availability_zones",
+      "file_path": "/main.tf",
+      "start_line": 5,
+      "end_line": 11
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "nlb",
+      "resource_type": "nlb",
+      "file_path": "/privatelink.tf",
+      "start_line": 5,
+      "end_line": 35
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "create_eni_lambda",
+      "resource_type": "create_eni_lambda",
+      "file_path": "/privatelink.tf",
+      "start_line": 139,
+      "end_line": 178
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "delete_eni_lambda",
+      "resource_type": "delete_eni_lambda",
+      "file_path": "/privatelink.tf",
+      "start_line": 184,
+      "end_line": 234
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "eventbridge",
+      "resource_type": "eventbridge",
+      "file_path": "/privatelink.tf",
+      "start_line": 240,
+      "end_line": 288
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_382",
+      "title": "Ensure no security groups allow egress from 0.0.0.0:0 to port -1",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group.client_vpc_endpoint",
+      "resource_type": "aws_security_group",
+      "file_path": "/privatelink.tf",
+      "start_line": 88,
+      "end_line": 110
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "Ensure every security group and rule has a description",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group.client_vpc_endpoint",
+      "resource_type": "aws_security_group",
+      "file_path": "/privatelink.tf",
+      "start_line": 88,
+      "end_line": 110
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_5",
+      "title": "Ensure that Security Groups are attached to another resource",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group.client_vpc_endpoint",
+      "resource_type": "aws_security_group",
+      "file_path": "/privatelink.tf",
+      "start_line": 88,
+      "end_line": 110
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_23",
+      "title": "Route53 A Record has Attached Resource",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_route53_record.client",
+      "resource_type": "aws_route53_record",
+      "file_path": "/privatelink.tf",
+      "start_line": 123,
+      "end_line": 133
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0124",
+      "title": "Missing description for security group rule.",
+      "severity": "LOW",
+      "resource_name": "aws_security_group.client_vpc_endpoint",
+      "resource_type": "aws_security_group",
+      "file_path": "main.tf",
+      "start_line": 441,
+      "end_line": 446
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "module.client_ec2_instance",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/ec2-instance/aws/main.tf",
+      "start_line": 811,
+      "end_line": 811
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0131",
+      "title": "Instance with unencrypted block device.",
+      "severity": "HIGH",
+      "resource_name": "module.client_ec2_instance",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/ec2-instance/aws/main.tf",
+      "start_line": 41,
+      "end_line": 245
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0038",
+      "title": "EKS Clusters should have cluster control plane logging turned on",
+      "severity": "MEDIUM",
+      "resource_name": "module.eks",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/eks/aws/main.tf",
+      "start_line": 35,
+      "end_line": 188
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "module.eks",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/eks/aws/node_groups.tf",
+      "start_line": 247,
+      "end_line": 247
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "Ensure every security group and rule has a description",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group.client_vpc_endpoint",
+      "resource_type": "aws_security_group",
+      "file_path": "/main.tf",
+      "start_line": 428,
+      "end_line": 449
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_394",
+      "title": "Ensure aws_availability_zones data source pins zone identity so its result set does not silently expand when AWS adds an Availability Zone",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_availability_zones.available",
+      "resource_type": "aws_availability_zones",
+      "file_path": "/main.tf",
+      "start_line": 287,
+      "end_line": 297
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "client_vpc",
+      "resource_type": "client_vpc",
+      "file_path": "/main.tf",
+      "start_line": 9,
+      "end_line": 36
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "client_ec2_instance",
+      "resource_type": "client_ec2_instance",
+      "file_path": "/main.tf",
+      "start_line": 42,
+      "end_line": 78
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_2",
+      "title": "Ensure Terraform module sources use a tag with a version number",
+      "severity": "UNKNOWN",
+      "resource_name": "client_ec2_instance",
+      "resource_type": "client_ec2_instance",
+      "file_path": "/main.tf",
+      "start_line": 42,
+      "end_line": 78
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "client_security_group",
+      "resource_type": "client_security_group",
+      "file_path": "/main.tf",
+      "start_line": 100,
+      "end_line": 120
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "eks",
+      "resource_type": "eks",
+      "file_path": "/main.tf",
+      "start_line": 139,
+      "end_line": 199
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "vpc",
+      "resource_type": "vpc",
+      "file_path": "/main.tf",
+      "start_line": 205,
+      "end_line": 227
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "vpc_endpoints",
+      "resource_type": "vpc_endpoints",
+      "file_path": "/main.tf",
+      "start_line": 242,
+      "end_line": 280
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "nlb",
+      "resource_type": "nlb",
+      "file_path": "/main.tf",
+      "start_line": 345,
+      "end_line": 375
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "create_eni_lambda",
+      "resource_type": "create_eni_lambda",
+      "file_path": "/main.tf",
+      "start_line": 478,
+      "end_line": 519
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "delete_eni_lambda",
+      "resource_type": "delete_eni_lambda",
+      "file_path": "/main.tf",
+      "start_line": 525,
+      "end_line": 577
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "eventbridge",
+      "resource_type": "eventbridge",
+      "file_path": "/main.tf",
+      "start_line": 583,
+      "end_line": 631
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_5",
+      "title": "Ensure that Security Groups are attached to another resource",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group.client_vpc_endpoint",
+      "resource_type": "aws_security_group",
+      "file_path": "/main.tf",
+      "start_line": 428,
+      "end_line": 449
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_23",
+      "title": "Route53 A Record has Attached Resource",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_route53_record.client",
+      "resource_type": "aws_route53_record",
+      "file_path": "/main.tf",
+      "start_line": 462,
+      "end_line": 472
+    }
+  ],
+  "target_count": 27,
+  "resolved_count": 7,
+  "introduced_count": 0,
+  "unchanged_count": 20,
+  "repair_success_rate": 0.25925925925925924,
+  "regression_rate": 0.0,
+  "net_delta": 7,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 3,
+      "introduced": 0,
+      "unchanged": 2
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 1
+    },
+    "observability": {
+      "resolved": 2,
+      "introduced": 0,
+      "unchanged": 1
+    },
+    "other": {
+      "resolved": 2,
+      "introduced": 0,
+      "unchanged": 16
+    }
+  },
+  "repair_cost_usd": 0.0082208,
+  "repair_tokens": 10276,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0042_llama-3-3-70b.repaired.tf",
+  "raw_response_path": "module_0042_llama-3-3-70b.raw.txt",
+  "repaired_code_sha256": "6ca08940cc1b303501f1fbcbfc2b60106161cd28146f068cf30369c043e03cce"
+}

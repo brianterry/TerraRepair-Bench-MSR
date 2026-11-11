@@ -1,0 +1,107 @@
+{
+  "findings_count": 17,
+  "findings": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "acm"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "eventbridge"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_252",
+      "title": "",
+      "resource_name": "aws_cloudtrail.main"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_35",
+      "title": "",
+      "resource_name": "aws_cloudtrail.main"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "eks"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "vpc_cni_irsa"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "aws_ebs_csi_driver"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "r53_zone"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "vpc"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "vpc_gateway_endpoints"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_13",
+      "title": "",
+      "resource_name": "aws_iam_account_password_policy.default[0]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_62",
+      "title": "",
+      "resource_name": "aws_s3_bucket.cloudtrail"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_18",
+      "title": "",
+      "resource_name": "aws_s3_bucket.cloudtrail"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_10",
+      "title": "",
+      "resource_name": "aws_cloudtrail.main"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_144",
+      "title": "",
+      "resource_name": "aws_s3_bucket.cloudtrail"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_21",
+      "title": "",
+      "resource_name": "aws_s3_bucket.cloudtrail"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_145",
+      "title": "",
+      "resource_name": "aws_s3_bucket.cloudtrail"
+    }
+  ]
+}

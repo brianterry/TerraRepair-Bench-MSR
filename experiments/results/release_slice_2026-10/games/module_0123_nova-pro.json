@@ -1,0 +1,197 @@
+{
+  "module_id": "module_0123",
+  "model_id": "nova-pro",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0008",
+      "title": "Launch configuration with unencrypted block device.",
+      "severity": "HIGH",
+      "resource_name": "aws_launch_configuration.main",
+      "resource_type": "aws_launch_configuration",
+      "file_path": "main.tf",
+      "start_line": 212,
+      "end_line": 216
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0034",
+      "title": "ECS clusters should have container insights enabled",
+      "severity": "LOW",
+      "resource_name": "aws_ecs_cluster.main",
+      "resource_type": "aws_ecs_cluster",
+      "file_path": "main.tf",
+      "start_line": 158,
+      "end_line": 164
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "aws_security_group.cluster",
+      "resource_type": "aws_security_group",
+      "file_path": "main.tf",
+      "start_line": 145,
+      "end_line": 145
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0124",
+      "title": "Missing description for security group rule.",
+      "severity": "LOW",
+      "resource_name": "aws_security_group.cluster",
+      "resource_type": "aws_security_group",
+      "file_path": "main.tf",
+      "start_line": 134,
+      "end_line": 139
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0130",
+      "title": "aws_instance should activate session tokens for Instance Metadata Service.",
+      "severity": "HIGH",
+      "resource_name": "aws_launch_configuration.main",
+      "resource_type": "aws_launch_configuration",
+      "file_path": "main.tf",
+      "start_line": 193,
+      "end_line": 221
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "Ensure every security group and rule has a description",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group.cluster",
+      "resource_type": "aws_security_group",
+      "file_path": "/main.tf",
+      "start_line": 129,
+      "end_line": 156
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_65",
+      "title": "Ensure container insights are enabled on ECS cluster",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_ecs_cluster.main",
+      "resource_type": "aws_ecs_cluster",
+      "file_path": "/main.tf",
+      "start_line": 158,
+      "end_line": 164
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_79",
+      "title": "Ensure Instance Metadata Service Version 1 is not enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_launch_configuration.main",
+      "resource_type": "aws_launch_configuration",
+      "file_path": "/main.tf",
+      "start_line": 193,
+      "end_line": 221
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_315",
+      "title": "Ensure EC2 Auto Scaling groups use EC2 launch templates",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_autoscaling_group.main",
+      "resource_type": "aws_autoscaling_group",
+      "file_path": "/main.tf",
+      "start_line": 223,
+      "end_line": 255
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0034",
+      "title": "ECS clusters should have container insights enabled",
+      "severity": "LOW",
+      "resource_name": "aws_ecs_cluster.main",
+      "resource_type": "aws_ecs_cluster",
+      "file_path": "main.tf",
+      "start_line": 133,
+      "end_line": 143
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "aws_security_group.cluster",
+      "resource_type": "aws_security_group",
+      "file_path": "main.tf",
+      "start_line": 119,
+      "end_line": 119
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_65",
+      "title": "Ensure container insights are enabled on ECS cluster",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_ecs_cluster.main",
+      "resource_type": "aws_ecs_cluster",
+      "file_path": "/main.tf",
+      "start_line": 133,
+      "end_line": 143
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_341",
+      "title": "Ensure Launch template should not have a metadata response hop limit greater than 1",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_launch_configuration.main",
+      "resource_type": "aws_launch_configuration",
+      "file_path": "/main.tf",
+      "start_line": 172,
+      "end_line": 207
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_315",
+      "title": "Ensure EC2 Auto Scaling groups use EC2 launch templates",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_autoscaling_group.main",
+      "resource_type": "aws_autoscaling_group",
+      "file_path": "/main.tf",
+      "start_line": 209,
+      "end_line": 241
+    }
+  ],
+  "target_count": 9,
+  "resolved_count": 5,
+  "introduced_count": 1,
+  "unchanged_count": 4,
+  "repair_success_rate": 0.5555555555555556,
+  "regression_rate": 0.1111111111111111,
+  "net_delta": 4,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 1
+    },
+    "data_protection": {
+      "resolved": 2,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 2
+    },
+    "other": {
+      "resolved": 3,
+      "introduced": 1,
+      "unchanged": 1
+    }
+  },
+  "repair_cost_usd": 0.0061400000000000005,
+  "repair_tokens": 6140,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0123_nova-pro.repaired.tf",
+  "raw_response_path": "module_0123_nova-pro.raw.txt",
+  "repaired_code_sha256": "313419b7516be6febe196896010db667dbbd468a4e06e60950f864283a71e572"
+}

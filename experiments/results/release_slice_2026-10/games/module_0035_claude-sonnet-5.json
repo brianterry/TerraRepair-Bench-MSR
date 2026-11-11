@@ -1,0 +1,197 @@
+{
+  "module_id": "module_0035",
+  "model_id": "claude-sonnet-5",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0098",
+      "title": "Secrets Manager should use customer managed keys",
+      "severity": "LOW",
+      "resource_name": "aws_secretsmanager_secret.argocd",
+      "resource_type": "aws_secretsmanager_secret",
+      "file_path": "main.tf",
+      "start_line": 103,
+      "end_line": 106
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0178",
+      "title": "VPC Flow Logs is a feature that enables you to capture information about the IP traffic going to and from network interfaces in your VPC. After you've created a flow log, you can view and retrieve its data in Amazon CloudWatch Logs. It is recommended that VPC Flow Logs be enabled for packet \"Rejects\" for VPCs.",
+      "severity": "MEDIUM",
+      "resource_name": "module.vpc",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/vpc/aws/main.tf",
+      "start_line": 28,
+      "end_line": 51
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_394",
+      "title": "Ensure aws_availability_zones data source pins zone identity so its result set does not silently expand when AWS adds an Availability Zone",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_availability_zones.available",
+      "resource_type": "aws_availability_zones",
+      "file_path": "/main.tf",
+      "start_line": 23,
+      "end_line": 29
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_149",
+      "title": "Ensure that Secrets Manager secret is encrypted using KMS CMK",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_secretsmanager_secret.argocd",
+      "resource_type": "aws_secretsmanager_secret",
+      "file_path": "/main.tf",
+      "start_line": 103,
+      "end_line": 106
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "vpc",
+      "resource_type": "vpc",
+      "file_path": "/main.tf",
+      "start_line": 31,
+      "end_line": 54
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "acm",
+      "resource_type": "acm",
+      "file_path": "/main.tf",
+      "start_line": 75,
+      "end_line": 91
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_57",
+      "title": "Ensure Secrets Manager secrets should have automatic rotation enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_secretsmanager_secret.argocd",
+      "resource_type": "aws_secretsmanager_secret",
+      "file_path": "/main.tf",
+      "start_line": 103,
+      "end_line": 106
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_38",
+      "title": "Ensure Domain Name System Security Extensions (DNSSEC) signing is enabled for Amazon Route 53 public hosted zones",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_route53_zone.sub",
+      "resource_type": "aws_route53_zone",
+      "file_path": "/main.tf",
+      "start_line": 62,
+      "end_line": 64
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_39",
+      "title": "Ensure Domain Name System (DNS) query logging is enabled for Amazon Route 53 hosted zones",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_route53_zone.sub",
+      "resource_type": "aws_route53_zone",
+      "file_path": "/main.tf",
+      "start_line": 62,
+      "end_line": 64
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0017",
+      "title": "CloudWatch log groups should be encrypted using CMK",
+      "severity": "LOW",
+      "resource_name": "aws_cloudwatch_log_group.route53_query_log",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "main.tf",
+      "start_line": 134,
+      "end_line": 137
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_394",
+      "title": "Ensure aws_availability_zones data source pins zone identity so its result set does not silently expand when AWS adds an Availability Zone",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_availability_zones.available",
+      "resource_type": "aws_availability_zones",
+      "file_path": "/main.tf",
+      "start_line": 23,
+      "end_line": 34
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_33",
+      "title": "Ensure KMS key policy does not contain wildcard (*) principal",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_kms_key.route53_dnssec",
+      "resource_type": "aws_kms_key",
+      "file_path": "/main.tf",
+      "start_line": 77,
+      "end_line": 121
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_158",
+      "title": "Ensure that CloudWatch Log Group is encrypted by KMS",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.route53_query_log",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/main.tf",
+      "start_line": 134,
+      "end_line": 137
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_64",
+      "title": "Ensure KMS key Policy is defined",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_kms_key.secretsmanager",
+      "resource_type": "aws_kms_key",
+      "file_path": "/main.tf",
+      "start_line": 181,
+      "end_line": 185
+    }
+  ],
+  "target_count": 9,
+  "resolved_count": 8,
+  "introduced_count": 4,
+  "unchanged_count": 1,
+  "repair_success_rate": 0.8888888888888888,
+  "regression_rate": 0.4444444444444444,
+  "net_delta": 4,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 1,
+      "introduced": 2,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 3,
+      "introduced": 2,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 2,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 2,
+      "introduced": 0,
+      "unchanged": 1
+    }
+  },
+  "repair_cost_usd": 0.11540200000000002,
+  "repair_tokens": 13861,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0035_claude-sonnet-5.repaired.tf",
+  "raw_response_path": "module_0035_claude-sonnet-5.raw.txt",
+  "repaired_code_sha256": "f3a3a7bf1922ba703ac83d719479c5ff5ce15413e0b6338a645a3cc5f867af11"
+}

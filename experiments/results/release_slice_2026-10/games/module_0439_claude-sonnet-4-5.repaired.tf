@@ -1,0 +1,816 @@
+module "this" {
+  source = "git::https://github.com/cloudposse/terraform-null-label.git?ref=0.25.0"
+
+  enabled             = var.enabled
+  namespace           = var.namespace
+  tenant              = var.tenant
+  environment         = var.environment
+  stage               = var.stage
+  name                = var.name
+  delimiter           = var.delimiter
+  attributes          = var.attributes
+  tags                = var.tags
+  additional_tag_map  = var.additional_tag_map
+  label_order         = var.label_order
+  regex_replace_chars = var.regex_replace_chars
+  id_length_limit     = var.id_length_limit
+  label_key_case      = var.label_key_case
+  label_value_case    = var.label_value_case
+  descriptor_formats  = var.descriptor_formats
+  labels_as_tags      = var.labels_as_tags
+
+  context = var.context
+}
+
+variable "context" {
+  type = any
+  default = {
+    enabled             = true
+    namespace           = null
+    tenant              = null
+    environment         = null
+    stage               = null
+    name                = null
+    delimiter           = null
+    attributes          = []
+    tags                = {}
+    additional_tag_map  = {}
+    regex_replace_chars = null
+    label_order         = []
+    id_length_limit     = null
+    label_key_case      = null
+    label_value_case    = null
+    descriptor_formats  = {}
+    labels_as_tags      = ["unset"]
+  }
+  description = <<-EOT
+    Single object for setting entire context at once.
+    See description of individual variables for details.
+    Leave string and numeric variables as `null` to use default value.
+    Individual variable settings (non-null) override settings in context object,
+    except for attributes, tags, and additional_tag_map, which are merged.
+  EOT
+
+  validation {
+    condition     = lookup(var.context, "label_key_case", null) == null ? true : contains(["lower", "title", "upper"], var.context["label_key_case"])
+    error_message = "Allowed values: `lower`, `title`, `upper`."
+  }
+
+  validation {
+    condition     = lookup(var.context, "label_value_case", null) == null ? true : contains(["lower", "title", "upper", "none"], var.context["label_value_case"])
+    error_message = "Allowed values: `lower`, `title`, `upper`, `none`."
+  }
+}
+
+variable "enabled" {
+  type        = bool
+  default     = null
+  description = "Set to false to prevent the module from creating any resources"
+}
+
+variable "namespace" {
+  type        = string
+  default     = null
+  description = "ID element. Usually an abbreviation of your organization name, e.g. 'eg' or 'cp', to help ensure generated IDs are globally unique"
+}
+
+variable "tenant" {
+  type        = string
+  default     = null
+  description = "ID element _(Rarely used, not included by default)_. A customer identifier, indicating who this instance of a resource is for"
+}
+
+variable "environment" {
+  type        = string
+  default     = null
+  description = "ID element. Usually used for region e.g. 'uw2', 'us-west-2', OR role 'prod', 'staging', 'dev', 'UAT'"
+}
+
+variable "stage" {
+  type        = string
+  default     = null
+  description = "ID element. Usually used to indicate role, e.g. 'prod', 'staging', 'source', 'build', 'test', 'deploy', 'release'"
+}
+
+variable "name" {
+  type        = string
+  default     = null
+  description = <<-EOT
+    ID element. Usually the component or solution name, e.g. 'app' or 'jenkins'.
+    This is the only ID element not also included as a `tag`.
+    The "name" tag is set to the full `id` string. There is no tag with the value of the `name` input.
+    EOT
+}
+
+variable "delimiter" {
+  type        = string
+  default     = null
+  description = <<-EOT
+    Delimiter to be used between ID elements.
+    Defaults to `-` (hyphen). Set to `""` to use no delimiter at all.
+  EOT
+}
+
+variable "attributes" {
+  type        = list(string)
+  default     = []
+  description = <<-EOT
+    ID element. Additional attributes (e.g. `workers` or `cluster`) to add to `id`,
+    in the order they appear in the list. New attributes are appended to the
+    end of the list. The elements of the list are joined by the `delimiter`
+    and treated as a single ID element.
+    EOT
+}
+
+variable "labels_as_tags" {
+  type        = set(string)
+  default     = ["default"]
+  description = <<-EOT
+    Set of labels (ID elements) to include as tags in the `tags` output.
+    Default is to include all labels.
+    Tags with empty values will not be included in the `tags` output.
+    Set to `[]` to suppress all generated tags.
+    **Notes:**
+      The value of the `name` tag, if included, will be the `id`, not the `name`.
+      Unlike other `null-label` inputs, the initial setting of `labels_as_tags` cannot be
+      changed in later chained modules. Attempts to change it will be silently ignored.
+    EOT
+}
+
+variable "tags" {
+  type        = map(string)
+  default     = {}
+  description = <<-EOT
+    Additional tags (e.g. `{'BusinessUnit': 'XYZ'}`).
+    Neither the tag keys nor the tag values will be modified by this module.
+    EOT
+}
+
+variable "additional_tag_map" {
+  type        = map(string)
+  default     = {}
+  description = <<-EOT
+    Additional key-value pairs to add to each map in `tags_as_list_of_maps`. Not added to `tags` or `id`.
+    This is for some rare cases where resources want additional configuration of tags
+    and therefore take a list of maps with tag key, value, and additional configuration.
+    EOT
+}
+
+variable "label_order" {
+  type        = list(string)
+  default     = null
+  description = <<-EOT
+    The order in which the labels (ID elements) appear in the `id`.
+    Defaults to ["namespace", "environment", "stage", "name", "attributes"].
+    You can omit any of the 6 labels ("tenant" is the 6th), but at least one must be present.
+    EOT
+}
+
+variable "regex_replace_chars" {
+  type        = string
+  default     = null
+  description = <<-EOT
+    Terraform regular expression (regex) string.
+    Characters matching the regex will be removed from the ID elements.
+    If not set, `"/[^a-zA-Z0-9-]/"` is used to remove all characters other than hyphens, letters and digits.
+  EOT
+}
+
+variable "id_length_limit" {
+  type        = number
+  default     = null
+  description = <<-EOT
+    Limit `id` to this many characters (minimum 6).
+    Set to `0` for unlimited length.
+    Set to `null` for keep the existing setting, which defaults to `0`.
+    Does not affect `id_full`.
+  EOT
+  validation {
+    condition     = var.id_length_limit == null ? true : var.id_length_limit >= 6 || var.id_length_limit == 0
+    error_message = "The id_length_limit must be >= 6 if supplied (not null), or 0 for unlimited length."
+  }
+}
+
+variable "label_key_case" {
+  type        = string
+  default     = null
+  description = <<-EOT
+    Controls the letter case of the `tags` keys (label names) for tags generated by this module.
+    Does not affect keys of tags passed in via the `tags` input.
+    Possible values: `lower`, `title`, `upper`.
+    Default value: `title`.
+  EOT
+
+  validation {
+    condition     = var.label_key_case == null ? true : contains(["lower", "title", "upper"], var.label_key_case)
+    error_message = "Allowed values: `lower`, `title`, `upper`."
+  }
+}
+
+variable "label_value_case" {
+  type        = string
+  default     = null
+  description = <<-EOT
+    Controls the letter case of ID elements (labels) as included in `id`,
+    set as tag values, and output by this module individually.
+    Does not affect values of tags passed in via the `tags` input.
+    Possible values: `lower`, `title`, `upper` and `none` (no transformation).
+    Set this to `title` and set `delimiter` to `""` to yield Pascal Case IDs.
+    Default value: `lower`.
+  EOT
+
+  validation {
+    condition     = var.label_value_case == null ? true : contains(["lower", "title", "upper", "none"], var.label_value_case)
+    error_message = "Allowed values: `lower`, `title`, `upper`, `none`."
+  }
+}
+
+variable "descriptor_formats" {
+  type        = any
+  default     = {}
+  description = <<-EOT
+    Describe additional descriptors to be output in the `descriptors` output map.
+    Map of maps. Keys are names of descriptors. Values are maps of the form
+    `{
+       format = string
+       labels = list(string)
+    }`
+    (Type is `any` so the map values can later be enhanced to provide additional options.)
+    `format` is a Terraform format string to be passed to the `format()` function.
+    `labels` is a list of labels, in order, to pass to `format()` function.
+    Label values will be normalized before being passed to `format()` so they will be
+    identical to how they appear in `id`.
+    Default is `{}` (`descriptors` output will be empty).
+    EOT
+}
+
+locals {
+  aws_partition = join("", data.aws_partition.current[*].partition)
+}
+
+data "aws_partition" "current" {
+  count = local.enabled ? 1 : 0
+}
+
+data "aws_iam_policy_document" "instance_assume_role_policy" {
+  count = local.enabled ? 1 : 0
+
+  statement {
+    sid     = "AllowEC2AssumeRole"
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["ec2.amazonaws.com"]
+    }
+  }
+}
+
+data "aws_iam_policy_document" "github_action_runner" {
+  count = local.enabled ? 1 : 0
+
+  statement {
+    sid     = "AllowAssumeCICDRole"
+    actions = ["sts:AssumeRole"]
+    resources = [
+      format(
+        var.tenant != null ? (
+          "arn:${local.aws_partition}:iam::%[3]s:role/%[1]s-%[2]s-gbl-identity-cicd"
+        ) : "arn:${local.aws_partition}:iam::%[3]s:role/%[1]s-gbl-identity-cicd",
+        module.this.namespace,
+        module.this.tenant,
+      local.identity_account_id)
+    ]
+  }
+
+  statement {
+    sid = "AllowECRActions"
+    actions = [
+      "ecr:BatchCheckLayerAvailability",
+      "ecr:BatchDeleteImage",
+      "ecr:BatchGetImage",
+      "ecr:CompleteLayerUpload",
+      "ecr:DeleteLifecyclePolicy",
+      "ecr:DescribeImages",
+      "ecr:DescribeImageScanFindings",
+      "ecr:DescribeRepositories",
+      "ecr:GetDownloadUrlForLayer",
+      "ecr:GetLifecyclePolicy",
+      "ecr:GetLifecyclePolicyPreview",
+      "ecr:GetRepositoryPolicy",
+      "ecr:InitiateLayerUpload",
+      "ecr:ListImages",
+      "ecr:PutImage",
+      "ecr:PutImageScanningConfiguration",
+      "ecr:PutImageTagMutability",
+      "ecr:PutLifecyclePolicy",
+      "ecr:StartImageScan",
+      "ecr:StartLifecyclePolicyPreview",
+      "ecr:TagResource",
+      "ecr:UntagResource",
+      "ecr:UploadLayerPart",
+    ]
+    resources = [
+      "arn:${local.aws_partition}:ecr:*:${local.identity_account_id}:repository/*"
+    ]
+  }
+
+  statement {
+    sid = "AllowECRGetAuthorizationToken"
+    actions = [
+      "ecr:GetAuthorizationToken",
+    ]
+    resources = ["*"]
+  }
+
+  statement {
+    sid     = "AllowGetGitHubToken"
+    actions = ["ssm:GetParameters"]
+    resources = [
+      join("", data.aws_ssm_parameter.github_token.*.arn)
+    ]
+  }
+}
+
+resource "aws_iam_policy" "github_action_runner" {
+  count = local.enabled ? 1 : 0
+
+  name   = module.this.id
+  policy = data.aws_iam_policy_document.github_action_runner[0].json
+}
+
+resource "aws_iam_role" "github_action_runner" {
+  count = local.enabled ? 1 : 0
+
+  name                = module.this.id
+  tags                = module.this.tags
+  assume_role_policy  = data.aws_iam_policy_document.instance_assume_role_policy[0].json
+  managed_policy_arns = concat([join("", aws_iam_policy.github_action_runner.*.arn), "arn:${local.aws_partition}:iam::aws:policy/AmazonSSMManagedInstanceCore"], var.runner_role_additional_policy_arns)
+}
+
+resource "aws_iam_instance_profile" "github_action_runner" {
+  count = local.enabled ? 1 : 0
+
+  name = module.this.id
+  role = aws_iam_role.github_action_runner[0].name
+}
+
+locals {
+  enabled                = module.this.enabled
+  vpc_id                 = module.vpc.outputs.vpc_id
+  vpc_private_subnet_ids = module.vpc.outputs.private_subnet_ids
+  identity_account_name  = module.account_map.outputs.identity_account_account_name
+  identity_account_id    = module.account_map.outputs.full_account_map[local.identity_account_name]
+
+  userdata_template                 = "${path.module}/templates/user-data.sh"
+  create-latest-svc                 = "${path.module}/templates/create-latest-svc.sh"
+  deregister_runner_script_template = "${path.module}/templates/deregister-github-runner"
+
+  cloud_config = <<-END
+    #cloud-config
+    ${jsonencode({
+  write_files = [
+    {
+      path        = "/usr/local/bin/deregister-github-runner"
+      permissions = "0755"
+      owner       = "root:root"
+      encoding    = "b64"
+      content = base64encode(templatefile(local.deregister_runner_script_template, {
+        github_scope          = var.github_scope,
+        github_token_ssm_path = join("", data.aws_ssm_parameter.github_token.*.name),
+        runner_version        = var.runner_version
+      }))
+    },
+    {
+      path        = "/tmp/amazon-cloudwatch-agent.json"
+      permissions = "0644"
+      owner       = "root:root"
+      encoding    = "b64"
+      content     = filebase64("${path.module}/templates/amazon-cloudwatch-agent.json")
+    },
+    {
+      path        = "/tmp/create-latest-svc.sh"
+      permissions = "0755"
+      owner       = "root:root"
+      encoding    = "b64"
+      content     = filebase64(local.create-latest-svc)
+    },
+  ]
+})}
+  END
+}
+
+data "aws_ssm_parameter" "github_token" {
+  count = local.enabled ? 1 : 0
+
+  name            = format(var.ssm_parameter_name_format, var.ssm_path, var.ssm_path_key)
+  with_decryption = true
+}
+
+data "cloudinit_config" "config" {
+  count = local.enabled ? 1 : 0
+
+  gzip          = false
+  base64_encode = true
+
+  part {
+    content_type = "text/cloud-config"
+    filename     = "cloud-config.yaml"
+    content      = local.cloud_config
+  }
+
+  part {
+    content_type = "text/x-shellscript"
+    filename     = "user-data.sh"
+    content = templatefile(local.userdata_template, {
+      docker_compose_version = var.docker_compose_version
+      github_token_ssm_path  = join("", data.aws_ssm_parameter.github_token.*.name)
+      github_scope           = var.github_scope
+      labels                 = join(",", var.runner_labels)
+      pre_install            = var.userdata_pre_install
+      post_install           = var.userdata_post_install
+      runner_version         = var.runner_version
+      runner_group           = var.runner_group
+    })
+  }
+}
+
+data "aws_ami" "runner" {
+  count = local.enabled ? 1 : 0
+
+  most_recent = "true"
+
+  dynamic "filter" {
+    for_each = var.ami_filter
+    content {
+      name   = filter.key
+      values = filter.value
+    }
+  }
+
+  owners = var.ami_owners
+}
+
+module "sg" {
+  source = "git::https://github.com/cloudposse/terraform-aws-security-group.git?ref=1.0.1"
+
+  security_group_description = "Security group for GitHub runner"
+  allow_all_egress           = true
+  vpc_id                     = local.vpc_id
+
+  context = module.this.context
+}
+
+module "autoscale_group" {
+  source = "git::https://github.com/cloudposse/terraform-aws-ec2-autoscale-group.git?ref=0.35.1"
+
+  image_id                    = join("", data.aws_ami.runner.*.id)
+  instance_type               = var.instance_type
+  mixed_instances_policy      = var.mixed_instances_policy
+  subnet_ids                  = local.vpc_private_subnet_ids
+  health_check_type           = "EC2"
+  min_size                    = var.min_size
+  max_size                    = var.max_size
+  default_cooldown            = var.default_cooldown
+  scale_down_cooldown_seconds = var.scale_down_cooldown_seconds
+  wait_for_capacity_timeout   = var.wait_for_capacity_timeout
+  user_data_base64            = join("", data.cloudinit_config.config.*.rendered)
+  tags                        = module.this.tags
+  security_group_ids          = [module.sg.id]
+  iam_instance_profile_name   = join("", aws_iam_instance_profile.github_action_runner.*.name)
+  block_device_mappings       = var.block_device_mappings
+  associate_public_ip_address = false
+  max_instance_lifetime       = var.max_instance_lifetime
+
+  autoscaling_policies_enabled            = true
+  cpu_utilization_high_threshold_percent  = var.cpu_utilization_high_threshold_percent
+  cpu_utilization_high_period_seconds     = var.cpu_utilization_high_period_seconds
+  cpu_utilization_high_evaluation_periods = var.cpu_utilization_high_evaluation_periods
+  cpu_utilization_low_threshold_percent   = var.cpu_utilization_low_threshold_percent
+  cpu_utilization_low_period_seconds      = var.cpu_utilization_low_period_seconds
+  cpu_utilization_low_evaluation_periods  = var.cpu_utilization_low_evaluation_periods
+
+  context = module.this.context
+}
+
+module "graceful_scale_in" {
+  source = "./modules/graceful_scale_in"
+
+  autoscaling_group_name = module.autoscale_group.autoscaling_group_name
+  command                = "deregister-github-runner"
+
+  attributes = ["deregistration"]
+
+  context = module.this.context
+}
+
+output "autoscaling_group_arn" {
+  description = "The Amazon Resource Name (ARN) of the Auto Scaling Group."
+  value       = module.autoscale_group.autoscaling_group_arn
+}
+
+output "autoscaling_group_name" {
+  description = "The name of the Auto Scaling Group."
+  value       = module.autoscale_group.autoscaling_group_name
+}
+
+output "autoscaling_lifecycle_hook_name" {
+  description = "The name of the Lifecycle Hook for the Auto Scaling Group."
+  value       = module.graceful_scale_in.autoscaling_lifecycle_hook_name
+}
+
+output "eventbridge_rule_arn" {
+  description = "The ARN of the Eventbridge rule for the EC2 lifecycle transition."
+  value       = module.graceful_scale_in.eventbridge_rule_arn
+}
+
+output "eventbridge_target_arn" {
+  description = "The ARN of the Eventbridge target corresponding to the Eventbridge rule for the EC2 lifecycle transition."
+  value       = module.graceful_scale_in.eventbridge_target_arn
+}
+
+output "iam_role_arn" {
+  description = "The ARN of the IAM role associated with the Autoscaling Group"
+  value       = join("", aws_iam_role.github_action_runner[*].arn)
+}
+
+output "ssm_document_arn" {
+  description = "The ARN of the SSM document."
+  value       = module.graceful_scale_in.ssm_document_arn
+}
+
+provider "aws" {
+  region = var.region
+
+  profile = module.iam_roles.terraform_profile_name
+
+  dynamic "assume_role" {
+    for_each = compact([module.iam_roles.terraform_role_arn])
+    content {
+      role_arn = assume_role.value
+    }
+  }
+}
+
+module "iam_roles" {
+  source  = "../account-map/modules/iam-roles"
+  context = module.this.context
+}
+
+module "vpc" {
+  source = "git::https://github.com/cloudposse/terraform-yaml-stack-config.git//modules/remote-state?ref=1.5.0"
+
+  component = "vpc"
+
+  context = module.this.context
+}
+
+module "account_map" {
+  source = "git::https://github.com/cloudposse/terraform-yaml-stack-config.git//modules/remote-state?ref=1.5.0"
+
+  component   = "account-map"
+  environment = var.account_map_environment_name
+  stage       = var.account_map_stage_name
+  tenant      = var.account_map_tenant_name
+
+  context = module.this.context
+}
+
+variable "region" {
+  type        = string
+  description = "AWS Region"
+}
+
+variable "ami_filter" {
+  description = "Map of lists used to look up the AMI which will be used for the GitHub Actions Runner."
+  type        = map(list(string))
+
+  default = {
+    name = ["amzn2-ami-hvm-2.*-x86_64-ebs"]
+  }
+}
+
+variable "ami_owners" {
+  description = "The list of owners used to select the AMI of action runner instances."
+  type        = list(string)
+  default     = ["amazon"]
+}
+
+variable "docker_compose_version" {
+  description = "The version of docker-compose to install"
+  type        = string
+  default     = "1.29.2"
+}
+
+variable "instance_type" {
+  description = "Default instance type for the action runner."
+  type        = string
+  default     = "m5.large"
+}
+
+variable "mixed_instances_policy" {
+  description = "Policy to use a mixed group of on-demand/spot of differing types. Launch template is automatically generated. https://www.terraform.io/docs/providers/aws/r/autoscaling_group.html#mixed_instances_policy-1"
+
+  type = object({
+    instances_distribution = object({
+      on_demand_allocation_strategy            = string
+      on_demand_base_capacity                  = number
+      on_demand_percentage_above_base_capacity = number
+      spot_allocation_strategy                 = string
+      spot_instance_pools                      = number
+      spot_max_price                           = string
+    })
+    override = list(object({
+      instance_type     = string
+      weighted_capacity = number
+    }))
+  })
+  default = null
+}
+
+variable "max_size" {
+  type        = number
+  description = "The maximum size of the autoscale group"
+}
+
+variable "min_size" {
+  type        = number
+  description = "The minimum size of the autoscale group"
+}
+
+variable "github_scope" {
+  type        = string
+  description = "Scope of the runner (e.g. `cloudposse/example` for repo or `cloudposse` for org)"
+}
+
+variable "wait_for_capacity_timeout" {
+  type        = string
+  description = "A maximum duration that Terraform should wait for ASG instances to be healthy before timing out. (See also Waiting for Capacity below.) Setting this to '0' causes Terraform to skip all Capacity Waiting behavior"
+  default     = "10m"
+}
+
+variable "cpu_utilization_high_evaluation_periods" {
+  type        = number
+  default     = 2
+  description = "The number of periods over which data is compared to the specified threshold"
+}
+
+variable "cpu_utilization_high_period_seconds" {
+  type        = number
+  default     = 300
+  description = "The period in seconds over which the specified statistic is applied"
+}
+
+variable "cpu_utilization_high_threshold_percent" {
+  type        = number
+  default     = 90
+  description = "The value against which the specified statistic is compared"
+}
+
+variable "cpu_utilization_low_evaluation_periods" {
+  type        = number
+  default     = 2
+  description = "The number of periods over which data is compared to the specified threshold"
+}
+
+variable "cpu_utilization_low_period_seconds" {
+  type        = number
+  default     = 300
+  description = "The period in seconds over which the specified statistic is applied"
+}
+
+variable "cpu_utilization_low_threshold_percent" {
+  type        = number
+  default     = 10
+  description = "The value against which the specified statistic is compared"
+}
+
+variable "ssm_parameter_name_format" {
+  type        = string
+  default     = "/%s/%s"
+  description = "SSM parameter name format"
+}
+
+variable "ssm_path" {
+  type        = string
+  default     = "github"
+  description = "GitHub token SSM path"
+}
+
+variable "ssm_path_key" {
+  type        = string
+  default     = "registration-token"
+  description = "GitHub token SSM path key"
+}
+
+variable "runner_version" {
+  type        = string
+  default     = "2.288.1"
+  description = "GitHub runner release version"
+}
+
+variable "runner_labels" {
+  type        = list(string)
+  default     = []
+  description = "List of labels to add to the GitHub Runner (e.g. 'Amazon Linux 2')."
+}
+
+variable "runner_group" {
+  type        = string
+  default     = "default"
+  description = "GitHub runner group"
+}
+
+variable "runner_role_additional_policy_arns" {
+  type        = list(string)
+  default     = []
+  description = "List of policy ARNs that will be attached to the runners' default role on creation in addition to the defaults"
+}
+
+variable "default_cooldown" {
+  type        = number
+  description = "The amount of time, in seconds, after a scaling activity completes before another scaling activity can start"
+  default     = 300
+}
+
+variable "scale_down_cooldown_seconds" {
+  type        = number
+  default     = 300
+  description = "The amount of time, in seconds, after a scaling activity completes and before the next scaling activity can start"
+}
+
+variable "userdata_pre_install" {
+  type        = string
+  default     = ""
+  description = "Shell script to run before installation of github action runner"
+}
+
+variable "userdata_post_install" {
+  type        = string
+  default     = ""
+  description = "Shell script to run post installation of github action runner"
+}
+
+variable "account_map_environment_name" {
+  type        = string
+  description = "The name of the environment where `account_map` is provisioned"
+  default     = "gbl"
+}
+
+variable "account_map_stage_name" {
+  type        = string
+  description = "The name of the stage where `account_map` is provisioned"
+  default     = "root"
+}
+
+variable "account_map_tenant_name" {
+  type        = string
+  description = <<-EOT
+  The name of the tenant where `account_map` is provisioned.
+
+  If the `tenant` label is not used, leave this as `null`.
+  EOT
+  default     = null
+}
+
+variable "block_device_mappings" {
+  description = "Specify volumes to attach to the instance besides the volumes specified by the AMI"
+
+  type = list(object({
+    device_name  = string
+    no_device    = bool
+    virtual_name = string
+    ebs = object({
+      delete_on_termination = bool
+      encrypted             = bool
+      iops                  = number
+      kms_key_id            = string
+      snapshot_id           = string
+      volume_size           = number
+      volume_type           = string
+    })
+  }))
+
+  default = []
+}
+
+variable "max_instance_lifetime" {
+  type        = number
+  default     = null
+  description = "The maximum amount of time, in seconds, that an instance can be in service, values must be either equal to 0 or between 604800 and 31536000 seconds"
+}
+
+terraform {
+  required_version = ">= 1.0.0"
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 4.9.0"
+    }
+    cloudinit = {
+      source  = "hashicorp/cloudinit"
+      version = ">= 2.2"
+    }
+  }
+}

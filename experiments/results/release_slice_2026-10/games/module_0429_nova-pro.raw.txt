@@ -1,0 +1,165 @@
+```hcl
+module "this" {
+  source  = "cloudposse/label/null@0.25.0"
+  version = "0.25.0"
+
+  enabled             = var.enabled
+  namespace           = var.namespace
+  tenant              = var.tenant
+  environment         = var.environment
+  stage               = var.stage
+  name                = var.name
+  delimiter           = var.delimiter
+  attributes          = var.attributes
+  tags                = var.tags
+  additional_tag_map  = var.additional_tag_map
+  label_order         = var.label_order
+  regex_replace_chars = var.regex_replace_chars
+  id_length_limit     = var.id_length_limit
+  label_key_case      = var.label_key_case
+  label_value_case    = var.label_value_case
+  descriptor_formats  = var.descriptor_formats
+  labels_as_tags      = var.labels_as_tags
+
+  context = var.context
+}
+
+data "aws_iam_policy_document" "main" {
+  count = local.enabled? 1 : 0
+
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "ssm:DescribeAssociation",
+      "ssm:GetDeployablePatchSnapshotForInstance",
+      "ssm:GetDocument",
+      "ssm:DescribeDocument",
+      "ssm:DescribeParameters",
+      "ssm:GetManifest",
+      "ssm:GetParameter",
+      "ssm:GetParameters",
+      "ssm:ListAssociations",
+      "ssm:ListInstanceAssociations",
+      "ssm:PutInventory",
+      "ssm:PutComplianceItems",
+      "ssm:PutConfigurePackageResult",
+      "ssm:UpdateAssociationStatus",
+      "ssm:UpdateInstanceAssociationStatus",
+      "ssm:UpdateInstanceInformation"
+    ]
+
+    resources = []
+  }
+
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "ssmmessages:CreateControlChannel",
+      "ssmmessages:CreateDataChannel",
+      "ssmmessages:OpenControlChannel",
+      "ssmmessages:OpenDataChannel"
+    ]
+
+    resources = []
+  }
+
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "ec2messages:AcknowledgeMessage",
+      "ec2messages:DeleteMessage",
+      "ec2messages:FailMessage",
+      "ec2messages:GetEndpoint",
+      "ec2messages:GetMessages",
+      "ec2messages:SendReply"
+    ]
+
+    resources = []
+  }
+
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "s3:GetEncryptionConfiguration"
+    ]
+
+    resources = []
+  }
+
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "ecr:GetAuthorizationToken",
+      "ecr:BatchCheckLayerAvailability",
+      "ecr:GetDownloadUrlForLayer",
+      "ecr:BatchGetImage"
+    ]
+
+    resources = []
+  }
+}
+
+module "sg" {
+  source  = "cloudposse/security-group/aws@2.2.0"
+  version = "2.2.0"
+
+  rules  = var.security_group_rules
+  vpc_id = local.vpc_id
+  description = "Security group for bastion host"
+
+  context = module.this.context
+}
+
+module "ssm_tls_ssh_key_pair" {
+  source  = "cloudposse/ssm-tls-ssh-key-pair/aws@0.10.2"
+  version = "0.10.2"
+
+  ssm_path_prefix   = format("%s/%s", "bastion", "ssh_private_key")
+  ssh_key_algorithm = "RSA"
+
+  kms_key_id = var.kms_alias_name_ssm
+
+  context = module.this.context
+}
+
+module "bastion_autoscale_group" {
+  source  = "cloudposse/ec2-autoscale-group/aws@0.35.1"
+  version = "0.35.1"
+
+  image_id                    = join("", data.aws_ami.bastion_image[*].id)
+  instance_type               = var.instance_type
+  subnet_ids                  = local.vpc_subnet_ids
+  health_check_type           = "EC2"
+  min_size                    = 1
+  max_size                    = 2
+  default_cooldown            = 300
+  scale_down_cooldown_seconds = 300
+  wait_for_capacity_timeout   = "10m"
+  user_data_base64            = join("", data.cloudinit_config.config[0][*].rendered)
+  tags                        = module.this.tags
+  security_group_ids          = [module.sg.id]
+  iam_instance_profile_name   = join("", aws_iam_instance_profile.default[*].name)
+  block_device_mappings       = []
+  associate_public_ip_address = var.associate_public_ip_address
+
+  autoscaling_policies_enabled           = true
+  cpu_utilization_high_threshold_percent = 80
+  cpu_utilization_low_threshold_percent  = 20
+
+  context = module.this.context
+}
+
+module "vpc" {
+  source  = "cloudposse/stack-config/yaml//modules/remote-state@1.5.0"
+  version = "1.5.0"
+
+  component = "vpc"
+
+  context = module.this.context
+}
+```

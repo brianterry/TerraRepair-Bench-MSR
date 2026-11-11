@@ -1,0 +1,186 @@
+{
+  "module_id": "module_0099",
+  "model_id": "deepseek-r1",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0178",
+      "title": "VPC Flow Logs is a feature that enables you to capture information about the IP traffic going to and from network interfaces in your VPC. After you've created a flow log, you can view and retrieve its data in Amazon CloudWatch Logs. It is recommended that VPC Flow Logs be enabled for packet \"Rejects\" for VPCs.",
+      "severity": "MEDIUM",
+      "resource_name": "aws_vpc.main",
+      "resource_type": "aws_vpc",
+      "file_path": "1-vpc.tf",
+      "start_line": 1,
+      "end_line": 10
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0164",
+      "title": "Instances in a subnet should not receive a public IP address by default.",
+      "severity": "HIGH",
+      "resource_name": "aws_subnet.public_us_east_1a",
+      "resource_type": "aws_subnet",
+      "file_path": "3-subnets.tf",
+      "start_line": 29,
+      "end_line": 29
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0164",
+      "title": "Instances in a subnet should not receive a public IP address by default.",
+      "severity": "HIGH",
+      "resource_name": "aws_subnet.public_us_east_1b",
+      "resource_type": "aws_subnet",
+      "file_path": "3-subnets.tf",
+      "start_line": 42,
+      "end_line": 42
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_130",
+      "title": "Ensure VPC subnets do not assign public IP by default",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_subnet.public_us_east_1a",
+      "resource_type": "aws_subnet",
+      "file_path": "/3-subnets.tf",
+      "start_line": 25,
+      "end_line": 36
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_130",
+      "title": "Ensure VPC subnets do not assign public IP by default",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_subnet.public_us_east_1b",
+      "resource_type": "aws_subnet",
+      "file_path": "/3-subnets.tf",
+      "start_line": 38,
+      "end_line": 49
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_12",
+      "title": "Ensure the default security group of every VPC restricts all traffic",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_vpc.main",
+      "resource_type": "aws_vpc",
+      "file_path": "/1-vpc.tf",
+      "start_line": 1,
+      "end_line": 10
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_11",
+      "title": "Ensure VPC flow logging is enabled in all VPCs",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_vpc.main",
+      "resource_type": "aws_vpc",
+      "file_path": "/1-vpc.tf",
+      "start_line": 1,
+      "end_line": 10
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0017",
+      "title": "CloudWatch log groups should be encrypted using CMK",
+      "severity": "LOW",
+      "resource_name": "aws_cloudwatch_log_group.vpc_flow_log",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "main.tf",
+      "start_line": 31,
+      "end_line": 33
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_66",
+      "title": "Ensure that CloudWatch Log Group specifies retention days",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.vpc_flow_log",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/main.tf",
+      "start_line": 31,
+      "end_line": 33
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_158",
+      "title": "Ensure that CloudWatch Log Group is encrypted by KMS",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.vpc_flow_log",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/main.tf",
+      "start_line": 31,
+      "end_line": 33
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_338",
+      "title": "Ensure CloudWatch log groups retains logs for at least 1 year",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.vpc_flow_log",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/main.tf",
+      "start_line": 31,
+      "end_line": 33
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_290",
+      "title": "Ensure IAM policies does not allow write access without constraints",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_role_policy.vpc_flow_log_policy",
+      "resource_type": "aws_iam_role_policy",
+      "file_path": "/main.tf",
+      "start_line": 52,
+      "end_line": 72
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_355",
+      "title": "Ensure no IAM policies documents allow \"*\" as a statement's resource for restrictable actions",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_role_policy.vpc_flow_log_policy",
+      "resource_type": "aws_iam_role_policy",
+      "file_path": "/main.tf",
+      "start_line": 52,
+      "end_line": 72
+    }
+  ],
+  "target_count": 7,
+  "resolved_count": 7,
+  "introduced_count": 6,
+  "unchanged_count": 0,
+  "repair_success_rate": 1.0,
+  "regression_rate": 0.8571428571428571,
+  "net_delta": 1,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 4,
+      "introduced": 2,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 2,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 2,
+      "introduced": 2,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 1,
+      "introduced": 0,
+      "unchanged": 0
+    }
+  },
+  "repair_cost_usd": 0.022708,
+  "repair_tokens": 8984,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0099_deepseek-r1.repaired.tf",
+  "raw_response_path": "module_0099_deepseek-r1.raw.txt",
+  "repaired_code_sha256": "00efa0ee2766c9c7bd63e9e84e668836b8cd867efbe92f072727f82bd41903b4"
+}

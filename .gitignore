@@ -1,0 +1,30 @@
+__pycache__/
+*.py[cod]
+*$py.class
+.env
+.venv/
+venv/
+*.egg-info/
+dist/
+build/
+*.sqlite
+*.tar.gz
+
+# --- Experiment outputs & scratch (reproducible from S3 / not source) ---
+# Large per-game result trees recovered from S3; keep inputs/manifests out of git.
+experiments/results/full_refresh_2026-09/
+experiments/results/full_refresh_2026-09_analysis/
+experiments/results/full_corrected/
+# Retrieval ablation: keep the static INPUT artifacts (hardened_pool, targets,
+# embeddings) but never the generated games or throwaway smoke games.
+experiments/results/retrieval_ablation/games/
+experiments/results/retrieval_ablation/_phase1_smoke_games/
+
+# PoC / scratch tree (1.8GB: venvs, terraform providers, tf.zip, work dirs).
+data/poc_resolve_diff/
+
+# Generated, account-specific rendered task definitions.
+deploy/*.rendered.json
+
+# Generated, account-specific env files (written by setup scripts).
+deploy/*.env

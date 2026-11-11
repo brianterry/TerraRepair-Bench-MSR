@@ -1,0 +1,185 @@
+{
+  "module_id": "module_0327",
+  "model_id": "grok-4-6",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0017",
+      "title": "CloudWatch log groups should be encrypted using CMK",
+      "severity": "LOW",
+      "resource_name": "aws_cloudwatch_log_group.main",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "main.tf",
+      "start_line": 34,
+      "end_line": 37
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_318",
+      "title": "Ensure Elasticsearch domains are configured with at least three dedicated master nodes for HA",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_elasticsearch_domain.main[0]",
+      "resource_type": "aws_elasticsearch_domain",
+      "file_path": "/main.tf",
+      "start_line": 1,
+      "end_line": 32
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_317",
+      "title": "Ensure Elasticsearch Domain Audit Logging is enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_elasticsearch_domain.main[0]",
+      "resource_type": "aws_elasticsearch_domain",
+      "file_path": "/main.tf",
+      "start_line": 1,
+      "end_line": 32
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_247",
+      "title": "Ensure all data stored in the Elasticsearch is encrypted with a CMK",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_elasticsearch_domain.main[0]",
+      "resource_type": "aws_elasticsearch_domain",
+      "file_path": "/main.tf",
+      "start_line": 1,
+      "end_line": 32
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_5",
+      "title": "Ensure all data stored in the Elasticsearch is securely encrypted at rest",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_elasticsearch_domain.main[0]",
+      "resource_type": "aws_elasticsearch_domain",
+      "file_path": "/main.tf",
+      "start_line": 1,
+      "end_line": 32
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_228",
+      "title": "Verify Elasticsearch domain is using an up to date TLS policy",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_elasticsearch_domain.main[0]",
+      "resource_type": "aws_elasticsearch_domain",
+      "file_path": "/main.tf",
+      "start_line": 1,
+      "end_line": 32
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_248",
+      "title": "Ensure that Elasticsearch is not using the default Security Group",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_elasticsearch_domain.main[0]",
+      "resource_type": "aws_elasticsearch_domain",
+      "file_path": "/main.tf",
+      "start_line": 1,
+      "end_line": 32
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_137",
+      "title": "Ensure that Elasticsearch is configured inside a VPC",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_elasticsearch_domain.main[0]",
+      "resource_type": "aws_elasticsearch_domain",
+      "file_path": "/main.tf",
+      "start_line": 1,
+      "end_line": 32
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_66",
+      "title": "Ensure that CloudWatch Log Group specifies retention days",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.main",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/main.tf",
+      "start_line": 34,
+      "end_line": 37
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_158",
+      "title": "Ensure that CloudWatch Log Group is encrypted by KMS",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.main",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/main.tf",
+      "start_line": 34,
+      "end_line": 37
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_338",
+      "title": "Ensure CloudWatch log groups retains logs for at least 1 year",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.main",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/main.tf",
+      "start_line": 34,
+      "end_line": 37
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_52",
+      "title": "Ensure AWS ElasticSearch/OpenSearch Fine-grained access control is enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_elasticsearch_domain.main[0]",
+      "resource_type": "aws_elasticsearch_domain",
+      "file_path": "/main.tf",
+      "start_line": 1,
+      "end_line": 32
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_59",
+      "title": "Ensure ElasticSearch/OpenSearch has dedicated master node enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_elasticsearch_domain.main[0]",
+      "resource_type": "aws_elasticsearch_domain",
+      "file_path": "/main.tf",
+      "start_line": 1,
+      "end_line": 32
+    }
+  ],
+  "findings_after": [],
+  "target_count": 13,
+  "resolved_count": 13,
+  "introduced_count": 0,
+  "unchanged_count": 0,
+  "repair_success_rate": 1.0,
+  "regression_rate": 0.0,
+  "net_delta": 13,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 3,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 4,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 3,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 3,
+      "introduced": 0,
+      "unchanged": 0
+    }
+  },
+  "repair_cost_usd": 0.06966399999999999,
+  "repair_tokens": 12586,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0327_grok-4-6.repaired.tf",
+  "raw_response_path": "module_0327_grok-4-6.raw.txt",
+  "repaired_code_sha256": "e1287b9e30b71462eea2212ebd6da03d9b4e03946456e0ccbb081ce7ed833203"
+}

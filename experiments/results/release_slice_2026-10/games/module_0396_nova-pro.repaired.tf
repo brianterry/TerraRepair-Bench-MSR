@@ -1,0 +1,462 @@
+provider "aws" {
+  region = local.region
+
+  skip_metadata_api_check     = true
+  skip_region_validation      = true
+  skip_credentials_validation = true
+}
+
+locals {
+  bucket_name = "s3-bucket-${random_pet.this.id}"
+  region      = "eu-west-1"
+}
+
+data "aws_caller_identity" "current" {}
+
+data "aws_canonical_user_id" "current" {}
+
+data "aws_cloudfront_log_delivery_canonical_user_id" "cloudfront" {}
+
+resource "random_pet" "this" {
+  length = 2
+}
+
+resource "aws_kms_key" "objects" {
+  description             = "KMS key is used to encrypt bucket objects"
+  deletion_window_in_days = 7
+  enable_key_rotation     = true
+
+  key_policy = <<POLICY
+{
+  "Version": "2012-10-17",
+  "Id": "key-default-1",
+  "Statement": [
+    {
+      "Sid": "Enable IAM User Permissions",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
+      },
+      "Action": "kms:*",
+      "Resource": "*"
+    }
+  ]
+}
+POLICY
+}
+
+resource "aws_iam_role" "this" {
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "ec2.amazonaws.com"
+      },
+      "Effect": "Allow",
+      "Sid": ""
+    }
+  ]
+}
+EOF
+}
+
+data "aws_iam_policy_document" "bucket_policy" {
+  statement {
+    principals {
+      type        = "AWS"
+      identifiers = [aws_iam_role.this.arn]
+    }
+
+    actions = [
+      "s3:ListBucket",
+    ]
+
+    resources = [
+      "arn:aws:s3:::${local.bucket_name}",
+    ]
+  }
+
+  statement {
+    principals {
+      type        = "AWS"
+      identifiers = [aws_iam_role.this.arn]
+    }
+
+    actions = [
+      "s3:ListBucket",
+    ]
+
+    resources = [
+      "_S3_BUCKET_ARN_",
+    ]
+
+    condition {
+      test     = "StringNotEquals"
+      variable = "aws:PrincipalAccount"
+      values   = ["_AWS_ACCOUNT_ID_"]
+    }
+  }
+}
+
+module "log_bucket" {
+  source = "../../"
+
+  bucket        = "logs-${random_pet.this.id}"
+  force_destroy = true
+
+  control_object_ownership = true
+
+  attach_elb_log_delivery_policy        = true
+  attach_lb_log_delivery_policy         = true
+  attach_access_log_delivery_policy     = true
+  attach_cloudtrail_log_delivery_policy = true
+  attach_deny_insecure_transport_policy = true
+  attach_require_latest_tls_policy      = true
+  attach_waf_log_delivery_policy        = true
+
+  access_log_delivery_policy_source_accounts      = [data.aws_caller_identity.current.account_id]
+  access_log_delivery_policy_source_buckets       = ["arn:aws:s3:::${local.bucket_name}"]
+  access_log_delivery_policy_source_organizations = ["o-123456"]
+  lb_log_delivery_policy_source_organizations     = ["o-123456"]
+}
+
+module "cloudfront_log_bucket" {
+  source = "../../"
+
+  bucket                   = "cloudfront-logs-${random_pet.this.id}"
+  control_object_ownership = true
+  object_ownership         = "ObjectWriter"
+
+  grant = [{
+    type       = "CanonicalUser"
+    permission = "FULL_CONTROL"
+    id         = data.aws_canonical_user_id.current.id
+    }, {
+    type       = "CanonicalUser"
+    permission = "FULL_CONTROL"
+    id         = data.aws_cloudfront_log_delivery_canonical_user_id.cloudfront.id
+    }
+  ]
+
+  owner = {
+    id = data.aws_canonical_user_id.current.id
+  }
+
+  force_destroy = true
+}
+
+module "simple_bucket" {
+  source = "../../"
+
+  bucket = "simple-${random_pet.this.id}"
+
+  force_destroy = true
+}
+
+module "s3_bucket" {
+  source = "../../"
+
+  bucket = local.bucket_name
+
+  force_destroy       = true
+  acceleration_status = "Suspended"
+  request_payer       = "BucketOwner"
+
+  tags = {
+    Owner = "Anton"
+  }
+
+  object_lock_enabled = true
+  object_lock_configuration = {
+    rule = {
+      default_retention = {
+        mode = "GOVERNANCE"
+        days = 1
+      }
+    }
+  }
+
+  attach_policy                             = true
+  policy                                    = data.aws_iam_policy_document.bucket_policy.json
+  attach_deny_insecure_transport_policy     = true
+  attach_require_latest_tls_policy          = true
+  attach_deny_incorrect_encryption_headers  = true
+  attach_deny_incorrect_kms_key_sse         = true
+  allowed_kms_key_arn                       = aws_kms_key.objects.arn
+  attach_deny_unencrypted_object_uploads    = true
+  attach_deny_ssec_encrypted_object_uploads = true
+
+  control_object_ownership = true
+  object_ownership         = "BucketOwnerPreferred"
+
+  expected_bucket_owner                  = data.aws_caller_identity.current.account_id
+  transition_default_minimum_object_size = "varies_by_storage_class"
+
+  acl = "private"
+
+  logging = {
+    target_bucket = module.log_bucket.s3_bucket_id
+    target_prefix = "log/"
+    target_object_key_format = {
+      partitioned_prefix = {
+        partition_date_source = "DeliveryTime"
+      }
+    }
+  }
+
+  versioning = {
+    status     = true
+    mfa_delete = false
+  }
+
+  website = {
+    index_document = "index.html"
+    error_document = "error.html"
+    routing_rules = [{
+      condition = {
+        key_prefix_equals = "docs/"
+      },
+      redirect = {
+        replace_key_prefix_with = "documents/"
+      }
+      }, {
+      condition = {
+        http_error_code_returned_equals = 404
+        key_prefix_equals               = "archive/"
+      },
+      redirect = {
+        host_name          = "archive.myhost.com"
+        http_redirect_code = 301
+        protocol           = "https"
+        replace_key_with   = "not_found.html"
+      }
+    }]
+  }
+
+  server_side_encryption_configuration = {
+    rule = {
+      apply_server_side_encryption_by_default = {
+        kms_master_key_id = aws_kms_key.objects.arn
+        sse_algorithm     = "aws:kms"
+      }
+      blocked_encryption_types = ["SSE-C"]
+    }
+  }
+
+  cors_rule = [
+    {
+      allowed_methods = ["PUT", "POST"]
+      allowed_origins = ["https://modules.tf", "https://terraform-aws-modules.modules.tf"]
+      allowed_headers = ["*"]
+      expose_headers  = ["ETag"]
+      max_age_seconds = 3000
+      }, {
+      allowed_methods = ["PUT"]
+      allowed_origins = ["https://example.com"]
+      allowed_headers = ["*"]
+      expose_headers  = ["ETag"]
+      max_age_seconds = 3000
+    }
+  ]
+
+  lifecycle_rule = [
+    {
+      id      = "log"
+      enabled = true
+
+      filter = {
+        tags = {
+          some    = "value"
+          another = "value2"
+        }
+      }
+
+      transition = [
+        {
+          days          = 30
+          storage_class = "ONEZONE_IA"
+          }, {
+          days          = 60
+          storage_class = "GLACIER"
+        }
+      ]
+    },
+    {
+      id                                     = "log1"
+      enabled                                = true
+      abort_incomplete_multipart_upload_days = 7
+
+      noncurrent_version_transition = [
+        {
+          days          = 30
+          storage_class = "STANDARD_IA"
+        },
+        {
+          days          = 60
+          storage_class = "ONEZONE_IA"
+        },
+        {
+          days          = 90
+          storage_class = "GLACIER"
+        },
+      ]
+
+      noncurrent_version_expiration = {
+        days = 300
+      }
+    },
+    {
+      id      = "log2"
+      enabled = true
+
+      filter = {
+        prefix                   = "log1/"
+        object_size_greater_than = 200000
+        object_size_less_than    = 500000
+        tags = {
+          some    = "value"
+          another = "value2"
+        }
+      }
+
+      noncurrent_version_transition = [
+        {
+          days          = 30
+          storage_class = "STANDARD_IA"
+        },
+      ]
+
+      noncurrent_version_expiration = {
+        days = 300
+      }
+    },
+  ]
+
+  intelligent_tiering = {
+    general = {
+      status = "Enabled"
+      filter = {
+        prefix = "/"
+        tags = {
+          Environment = "dev"
+        }
+      }
+      tiering = {
+        ARCHIVE_ACCESS = {
+          days = 180
+        }
+      }
+    },
+    documents = {
+      status = false
+      filter = {
+        prefix = "documents/"
+      }
+      tiering = {
+        ARCHIVE_ACCESS = {
+          days = 125
+        }
+        DEEP_ARCHIVE_ACCESS = {
+          days = 200
+        }
+      }
+    }
+  }
+
+  metric_configuration = [
+    {
+      name = "documents"
+      filter = {
+        prefix = "documents/"
+        tags = {
+          priority = "high"
+        }
+      }
+    },
+    {
+      name = "other"
+      filter = {
+        tags = {
+          production = "true"
+        }
+      }
+    },
+    {
+      name = "all"
+    }
+  ]
+}
+
+module "disabled" {
+  source = "../../"
+
+  create_bucket = false
+}
+
+output "s3_bucket_id" {
+  description = "The name of the bucket."
+  value       = module.s3_bucket.s3_bucket_id
+}
+
+output "s3_bucket_arn" {
+  description = "The ARN of the bucket. Will be of format arn:aws:s3:::bucketname."
+  value       = module.s3_bucket.s3_bucket_arn
+}
+
+output "s3_bucket_bucket_domain_name" {
+  description = "The bucket domain name. Will be of format bucketname.s3.amazonaws.com."
+  value       = module.s3_bucket.s3_bucket_bucket_domain_name
+}
+
+output "s3_bucket_bucket_regional_domain_name" {
+  description = "The bucket region-specific domain name. The bucket domain name including the region name, please refer here for format. Note: The AWS CloudFront allows specifying S3 region-specific endpoint when creating S3 origin, it will prevent redirect issues from CloudFront to S3 Origin URL."
+  value       = module.s3_bucket.s3_bucket_bucket_regional_domain_name
+}
+
+output "s3_bucket_hosted_zone_id" {
+  description = "The Route 53 Hosted Zone ID for this bucket's region."
+  value       = module.s3_bucket.s3_bucket_hosted_zone_id
+}
+
+output "s3_bucket_lifecycle_configuration_rules" {
+  description = "The lifecycle rules of the bucket, if the bucket is configured with lifecycle rules. If not, this will be an empty string."
+  value       = module.s3_bucket.s3_bucket_lifecycle_configuration_rules
+}
+
+output "s3_bucket_policy" {
+  description = "The policy of the bucket, if the bucket is configured with a policy. If not, this will be an empty string."
+  value       = module.s3_bucket.s3_bucket_policy
+}
+
+output "s3_bucket_region" {
+  description = "The AWS region this bucket resides in."
+  value       = module.s3_bucket.s3_bucket_region
+}
+
+output "s3_bucket_website_endpoint" {
+  description = "The website endpoint, if the bucket is configured with a website. If not, this will be an empty string."
+  value       = module.s3_bucket.s3_bucket_website_endpoint
+}
+
+output "s3_bucket_website_domain" {
+  description = "The domain of the website endpoint, if the bucket is configured with a website. If not, this will be an empty string. This is used to create Route 53 alias records. "
+  value       = module.s3_bucket.s3_bucket_website_domain
+}
+
+terraform {
+  required_version = ">= 1.5.7"
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 6.28"
+    }
+    random = {
+      source  = "hashicorp/random"
+      version = ">= 2.0"
+    }
+  }
+}

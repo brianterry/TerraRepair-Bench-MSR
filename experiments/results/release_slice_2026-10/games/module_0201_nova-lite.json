@@ -1,0 +1,549 @@
+{
+  "module_id": "module_0201",
+  "model_id": "nova-lite",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0010",
+      "title": "Cloudfront distribution should have Access Logging configured",
+      "severity": "MEDIUM",
+      "resource_name": "aws_cloudfront_distribution.this",
+      "resource_type": "aws_cloudfront_distribution",
+      "file_path": "cloudfront.tf",
+      "start_line": 3,
+      "end_line": 139
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0011",
+      "title": "CloudFront distribution does not have a WAF in front.",
+      "severity": "HIGH",
+      "resource_name": "aws_cloudfront_distribution.this",
+      "resource_type": "aws_cloudfront_distribution",
+      "file_path": "cloudfront.tf",
+      "start_line": 3,
+      "end_line": 139
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0013",
+      "title": "CloudFront distribution uses outdated SSL/TLS protocols.",
+      "severity": "HIGH",
+      "resource_name": "aws_cloudfront_distribution.this",
+      "resource_type": "aws_cloudfront_distribution",
+      "file_path": "cloudfront.tf",
+      "start_line": 137,
+      "end_line": 137
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0066",
+      "title": "Lambda functions should have X-Ray tracing enabled",
+      "severity": "LOW",
+      "resource_name": "aws_lambda_function.viewer_request",
+      "resource_type": "aws_lambda_function",
+      "file_path": "lambda.tf",
+      "start_line": 35,
+      "end_line": 51
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0066",
+      "title": "Lambda functions should have X-Ray tracing enabled",
+      "severity": "LOW",
+      "resource_name": "aws_lambda_function.viewer_response",
+      "resource_type": "aws_lambda_function",
+      "file_path": "lambda.tf",
+      "start_line": 53,
+      "end_line": 69
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_233",
+      "title": "Ensure Create before destroy for ACM certificates",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_acm_certificate.this",
+      "resource_type": "aws_acm_certificate",
+      "file_path": "/certificate.tf",
+      "start_line": 3,
+      "end_line": 8
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_374",
+      "title": "Ensure AWS CloudFront web distribution has geo restriction enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudfront_distribution.this",
+      "resource_type": "aws_cloudfront_distribution",
+      "file_path": "/cloudfront.tf",
+      "start_line": 3,
+      "end_line": 139
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_305",
+      "title": "Ensure CloudFront distribution has a default root object configured",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudfront_distribution.this",
+      "resource_type": "aws_cloudfront_distribution",
+      "file_path": "/cloudfront.tf",
+      "start_line": 3,
+      "end_line": 139
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_310",
+      "title": "Ensure CloudFront distributions should have origin failover configured",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudfront_distribution.this",
+      "resource_type": "aws_cloudfront_distribution",
+      "file_path": "/cloudfront.tf",
+      "start_line": 3,
+      "end_line": 139
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_86",
+      "title": "Ensure CloudFront distribution has Access Logging enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudfront_distribution.this",
+      "resource_type": "aws_cloudfront_distribution",
+      "file_path": "/cloudfront.tf",
+      "start_line": 3,
+      "end_line": 139
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_68",
+      "title": "CloudFront Distribution should have WAF enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudfront_distribution.this",
+      "resource_type": "aws_cloudfront_distribution",
+      "file_path": "/cloudfront.tf",
+      "start_line": 3,
+      "end_line": 139
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_174",
+      "title": "Verify CloudFront Distribution Viewer Certificate is using TLS v1.2 or higher",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudfront_distribution.this",
+      "resource_type": "aws_cloudfront_distribution",
+      "file_path": "/cloudfront.tf",
+      "start_line": 3,
+      "end_line": 139
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_117",
+      "title": "Ensure that AWS Lambda function is configured inside a VPC",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.viewer_request",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/lambda.tf",
+      "start_line": 35,
+      "end_line": 51
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_363",
+      "title": "Ensure Lambda Runtime is not deprecated",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.viewer_request",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/lambda.tf",
+      "start_line": 35,
+      "end_line": 51
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_116",
+      "title": "Ensure that AWS Lambda function is configured for a Dead Letter Queue(DLQ)",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.viewer_request",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/lambda.tf",
+      "start_line": 35,
+      "end_line": 51
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_272",
+      "title": "Ensure AWS Lambda function is configured to validate code-signing",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.viewer_request",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/lambda.tf",
+      "start_line": 35,
+      "end_line": 51
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_115",
+      "title": "Ensure that AWS Lambda function is configured for function-level concurrent execution limit",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.viewer_request",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/lambda.tf",
+      "start_line": 35,
+      "end_line": 51
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_50",
+      "title": "X-Ray tracing is enabled for Lambda",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.viewer_request",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/lambda.tf",
+      "start_line": 35,
+      "end_line": 51
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_117",
+      "title": "Ensure that AWS Lambda function is configured inside a VPC",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.viewer_response",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/lambda.tf",
+      "start_line": 53,
+      "end_line": 69
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_363",
+      "title": "Ensure Lambda Runtime is not deprecated",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.viewer_response",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/lambda.tf",
+      "start_line": 53,
+      "end_line": 69
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_116",
+      "title": "Ensure that AWS Lambda function is configured for a Dead Letter Queue(DLQ)",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.viewer_response",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/lambda.tf",
+      "start_line": 53,
+      "end_line": 69
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_272",
+      "title": "Ensure AWS Lambda function is configured to validate code-signing",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.viewer_response",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/lambda.tf",
+      "start_line": 53,
+      "end_line": 69
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_115",
+      "title": "Ensure that AWS Lambda function is configured for function-level concurrent execution limit",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.viewer_response",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/lambda.tf",
+      "start_line": 53,
+      "end_line": 69
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_50",
+      "title": "X-Ray tracing is enabled for Lambda",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.viewer_response",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/lambda.tf",
+      "start_line": 53,
+      "end_line": 69
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_47",
+      "title": "Ensure AWS CloudFront attached WAFv2 WebACL is configured with AMR for Log4j Vulnerability",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudfront_distribution.this",
+      "resource_type": "aws_cloudfront_distribution",
+      "file_path": "/cloudfront.tf",
+      "start_line": 3,
+      "end_line": 139
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_32",
+      "title": "Ensure CloudFront distribution has a response headers policy attached",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudfront_distribution.this",
+      "resource_type": "aws_cloudfront_distribution",
+      "file_path": "/cloudfront.tf",
+      "start_line": 3,
+      "end_line": 139
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_233",
+      "title": "Ensure Create before destroy for ACM certificates",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_acm_certificate.this",
+      "resource_type": "aws_acm_certificate",
+      "file_path": "/main.tf",
+      "start_line": 3,
+      "end_line": 8
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_305",
+      "title": "Ensure CloudFront distribution has a default root object configured",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudfront_distribution.this",
+      "resource_type": "aws_cloudfront_distribution",
+      "file_path": "/main.tf",
+      "start_line": 28,
+      "end_line": 186
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_310",
+      "title": "Ensure CloudFront distributions should have origin failover configured",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudfront_distribution.this",
+      "resource_type": "aws_cloudfront_distribution",
+      "file_path": "/main.tf",
+      "start_line": 28,
+      "end_line": 186
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_86",
+      "title": "Ensure CloudFront distribution has Access Logging enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudfront_distribution.this",
+      "resource_type": "aws_cloudfront_distribution",
+      "file_path": "/main.tf",
+      "start_line": 28,
+      "end_line": 186
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_117",
+      "title": "Ensure that AWS Lambda function is configured inside a VPC",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.viewer_request",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/main.tf",
+      "start_line": 226,
+      "end_line": 250
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_363",
+      "title": "Ensure Lambda Runtime is not deprecated",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.viewer_request",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/main.tf",
+      "start_line": 226,
+      "end_line": 250
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_116",
+      "title": "Ensure that AWS Lambda function is configured for a Dead Letter Queue(DLQ)",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.viewer_request",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/main.tf",
+      "start_line": 226,
+      "end_line": 250
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_173",
+      "title": "Check encryption settings for Lambda environmental variable",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.viewer_request",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/main.tf",
+      "start_line": 226,
+      "end_line": 250
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_272",
+      "title": "Ensure AWS Lambda function is configured to validate code-signing",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.viewer_request",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/main.tf",
+      "start_line": 226,
+      "end_line": 250
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_115",
+      "title": "Ensure that AWS Lambda function is configured for function-level concurrent execution limit",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.viewer_request",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/main.tf",
+      "start_line": 226,
+      "end_line": 250
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_117",
+      "title": "Ensure that AWS Lambda function is configured inside a VPC",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.viewer_response",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/main.tf",
+      "start_line": 252,
+      "end_line": 276
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_363",
+      "title": "Ensure Lambda Runtime is not deprecated",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.viewer_response",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/main.tf",
+      "start_line": 252,
+      "end_line": 276
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_116",
+      "title": "Ensure that AWS Lambda function is configured for a Dead Letter Queue(DLQ)",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.viewer_response",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/main.tf",
+      "start_line": 252,
+      "end_line": 276
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_173",
+      "title": "Check encryption settings for Lambda environmental variable",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.viewer_response",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/main.tf",
+      "start_line": 252,
+      "end_line": 276
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_272",
+      "title": "Ensure AWS Lambda function is configured to validate code-signing",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.viewer_response",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/main.tf",
+      "start_line": 252,
+      "end_line": 276
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_115",
+      "title": "Ensure that AWS Lambda function is configured for function-level concurrent execution limit",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.viewer_response",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/main.tf",
+      "start_line": 252,
+      "end_line": 276
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_192",
+      "title": "Ensure WAF prevents message lookup in Log4j2. See CVE-2021-44228 aka log4jshell",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_wafv2_web_acl.this",
+      "resource_type": "aws_wafv2_web_acl",
+      "file_path": "/main.tf",
+      "start_line": 331,
+      "end_line": 370
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_259",
+      "title": "Ensure CloudFront response header policy enforces Strict Transport Security",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudfront_response_headers_policy.this",
+      "resource_type": "aws_cloudfront_response_headers_policy",
+      "file_path": "/main.tf",
+      "start_line": 372,
+      "end_line": 377
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_31",
+      "title": "Ensure WAF2 has a Logging Configuration",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_wafv2_web_acl.this",
+      "resource_type": "aws_wafv2_web_acl",
+      "file_path": "/main.tf",
+      "start_line": 331,
+      "end_line": 370
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_47",
+      "title": "Ensure AWS CloudFront attached WAFv2 WebACL is configured with AMR for Log4j Vulnerability",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudfront_distribution.this",
+      "resource_type": "aws_cloudfront_distribution",
+      "file_path": "/main.tf",
+      "start_line": 28,
+      "end_line": 186
+    }
+  ],
+  "target_count": 26,
+  "resolved_count": 11,
+  "introduced_count": 5,
+  "unchanged_count": 15,
+  "repair_success_rate": 0.4230769230769231,
+  "regression_rate": 0.19230769230769232,
+  "net_delta": 6,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 1,
+      "introduced": 1,
+      "unchanged": 1
+    },
+    "data_protection": {
+      "resolved": 2,
+      "introduced": 2,
+      "unchanged": 1
+    },
+    "observability": {
+      "resolved": 1,
+      "introduced": 2,
+      "unchanged": 1
+    },
+    "other": {
+      "resolved": 7,
+      "introduced": 0,
+      "unchanged": 12
+    }
+  },
+  "repair_cost_usd": 0.0017685,
+  "repair_tokens": 12150,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0201_nova-lite.repaired.tf",
+  "raw_response_path": "module_0201_nova-lite.raw.txt",
+  "repaired_code_sha256": "4b03ead82cb12c227cdf1dc8126e11925bb08aa521d16a73d86d579acdd5d576"
+}

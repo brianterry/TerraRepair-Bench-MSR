@@ -1,0 +1,86 @@
+{
+  "module_id": "module_0339",
+  "model_id": "deepseek-v3-2",
+  "findings_before": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_37",
+      "title": "Ensure CodeCommit associates an approval rule",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_codecommit_repository.global_customizations",
+      "resource_type": "aws_codecommit_repository",
+      "file_path": "/codecommit.tf",
+      "start_line": 4,
+      "end_line": 9
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_37",
+      "title": "Ensure CodeCommit associates an approval rule",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_codecommit_repository.account_customizations",
+      "resource_type": "aws_codecommit_repository",
+      "file_path": "/codecommit.tf",
+      "start_line": 11,
+      "end_line": 16
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_37",
+      "title": "Ensure CodeCommit associates an approval rule",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_codecommit_repository.account_request",
+      "resource_type": "aws_codecommit_repository",
+      "file_path": "/codecommit.tf",
+      "start_line": 18,
+      "end_line": 23
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_37",
+      "title": "Ensure CodeCommit associates an approval rule",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_codecommit_repository.account_provisioning_customizations",
+      "resource_type": "aws_codecommit_repository",
+      "file_path": "/codecommit.tf",
+      "start_line": 25,
+      "end_line": 30
+    }
+  ],
+  "findings_after": [],
+  "target_count": 4,
+  "resolved_count": 4,
+  "introduced_count": 0,
+  "unchanged_count": 0,
+  "repair_success_rate": 1.0,
+  "regression_rate": 0.0,
+  "net_delta": 4,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 4,
+      "introduced": 0,
+      "unchanged": 0
+    }
+  },
+  "repair_cost_usd": 0.025112640000000002,
+  "repair_tokens": 16934,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0339_deepseek-v3-2.repaired.tf",
+  "raw_response_path": "module_0339_deepseek-v3-2.raw.txt",
+  "repaired_code_sha256": "d7903403fdc65c0ca1961bbae049f1e33b6dcf2ae859da83bf730e0866b1842d"
+}

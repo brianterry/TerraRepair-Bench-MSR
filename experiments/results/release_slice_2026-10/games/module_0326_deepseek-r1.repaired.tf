@@ -1,0 +1,173 @@
+data "aws_caller_identity" "current" {}
+
+resource "aws_cloudtrail" "main" {
+  count = var.not_configured ? 0 : 1
+  depends_on = [aws_s3_bucket_policy.CloudTrailS3Bucket-Policy]
+
+  name                       = var.name
+  s3_bucket_name             = var.no_logging ? null : aws_s3_bucket.logging[0].bucket
+  is_multi_region_trail      = true
+  include_global_service_events = (var.duplicated_global_services_logging || !var.no_global_services_logging)
+  enable_logging             = !var.no_logging
+  enable_log_file_validation = true
+  kms_key_id                 = "arn:aws:kms:${data.aws_caller_identity.current.account_id}:key/alias/cloudtrail"
+  cloud_watch_logs_group_arn = "arn:aws:logs:::log-group:cloudtrail-logs"
+  cloud_watch_logs_role_arn  = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/CloudTrail-CloudWatch-Logs-Role"
+  sns_topic_name             = "arn:aws:sns:::cloudtrail-sns-topic"
+
+  dynamic "event_selector" {
+    for_each = var.no_data_logging == true ? [] : tolist([var.no_data_logging])
+
+    content {
+      read_write_type           = "All"
+      include_management_events = true
+
+      data_resource {
+        type   = "AWS::S3::Object"
+        values = ["arn:aws:s3:::"]
+      }
+    }
+  }
+}
+
+resource "aws_s3_bucket" "logging" {
+  bucket_prefix = var.name
+  force_destroy = true
+  count         = var.no_logging ? 0 : 1
+
+  versioning {
+    enabled = true
+  }
+
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        kms_master_key_id = "arn:aws:kms:${data.aws_caller_identity.current.account_id}:key/alias/s3-bucket-key"
+        sse_algorithm     = "aws:kms"
+      }
+    }
+  }
+
+  logging {
+    target_bucket = aws_s3_bucket.logging[0].bucket
+    target_prefix = "logs/"
+  }
+
+  lifecycle_rule {
+    id      = "auto-archive"
+    enabled = true
+
+    transition {
+      days          = 30
+      storage_class = "GLACIER"
+    }
+  }
+
+  replication_configuration {
+    role = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/s3-replication-role"
+
+    rules {
+      id     = "replicate-all"
+      status = "Enabled"
+
+      destination {
+        bucket        = "arn:aws:s3:::destination-bucket"
+        storage_class = "STANDARD"
+      }
+    }
+  }
+}
+
+resource "aws_s3_bucket_public_access_block" "logging" {
+  count  = var.no_logging ? 0 : 1
+  bucket = aws_s3_bucket.logging[0].id
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
+resource "aws_s3_bucket_policy" "CloudTrailS3Bucket-Policy" {
+  bucket     = aws_s3_bucket.logging[0].id
+  depends_on = [aws_s3_bucket.logging[0]]
+  count      = var.no_logging ? 0 : 1
+
+  policy = <<POLICY
+{
+    "Version": "2012-10-17",
+    "Statement": [{
+            "Sid": "AWSCloudTrailAclCheck",
+            "Effect": "Allow",
+            "Principal": { "Service": "cloudtrail.amazonaws.com" },
+            "Action": "s3:GetBucketAcl",
+            "Resource": "${aws_s3_bucket.logging[0].arn}"
+        },
+        {
+            "Sid": "AWSCloudTrailWrite",
+            "Effect": "Allow",
+            "Principal": { "Service": "cloudtrail.amazonaws.com" },
+            "Action": "s3:PutObject",
+            "Resource": ["${aws_s3_bucket.logging[0].arn}/AWSLogs/${data.aws_caller_identity.current.account_id}/*"],
+            "Condition": { "StringEquals": { "s3:x-amz-acl": "bucket-owner-full-control" } }
+        }]
+}
+POLICY
+}
+
+resource "aws_cloudtrail" "duplicate" {
+  depends_on = [aws_s3_bucket_policy.CloudTrailS3Bucket-Policy]
+  name                          = "duplicatesadcloud"
+  include_global_service_events = true
+  s3_bucket_name                = aws_s3_bucket.logging[0].bucket
+  is_multi_region_trail         = true
+  kms_key_id                    = "arn:aws:kms:${data.aws_caller_identity.current.account_id}:key/alias/cloudtrail"
+  cloud_watch_logs_group_arn    = "arn:aws:logs:::log-group:cloudtrail-logs"
+  cloud_watch_logs_role_arn     = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/CloudTrail-CloudWatch-Logs-Role"
+  sns_topic_name                = "arn:aws:sns:::cloudtrail-sns-topic"
+  enable_log_file_validation    = true
+
+  count = (var.duplicated_global_services_logging && !var.no_data_logging) ? 1 : 0
+}
+
+variable "name" {
+  description = "cloudtrail name"
+  type        = string
+  default     = "sadcloud"
+}
+
+variable "no_data_logging" {
+  description = "disable data logging"
+  type        = bool
+  default     = false
+}
+
+variable "no_global_services_logging" {
+  description = "disable global services logging"
+  type        = bool
+  default     = false
+}
+
+variable "no_log_file_validation" {
+  description = "disable log file validation"
+  type        = bool
+  default     = false
+}
+
+variable "no_logging" {
+  description = "disable logging"
+  type        = bool
+  default     = false
+}
+
+variable "duplicated_global_services_logging" {
+  description = "enable global services logging in second trail"
+  type        = bool
+  default     = false
+}
+
+variable "not_configured" {
+  description = "disable cloudtrail"
+  type        = bool
+  default     = false
+}

@@ -1,0 +1,197 @@
+{
+  "module_id": "module_0178",
+  "model_id": "nova-pro",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0086",
+      "title": "S3 Access block should block public ACL",
+      "severity": "HIGH",
+      "resource_name": "aws_s3_bucket.ph-bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "aws-s3.tf",
+      "start_line": 2,
+      "end_line": 5
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0087",
+      "title": "S3 Access block should block public policy",
+      "severity": "HIGH",
+      "resource_name": "aws_s3_bucket.ph-bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "aws-s3.tf",
+      "start_line": 2,
+      "end_line": 5
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "aws_s3_bucket.ph-bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "aws-s3.tf",
+      "start_line": 2,
+      "end_line": 5
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0091",
+      "title": "S3 Access Block should Ignore Public ACL",
+      "severity": "HIGH",
+      "resource_name": "aws_s3_bucket.ph-bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "aws-s3.tf",
+      "start_line": 2,
+      "end_line": 5
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0093",
+      "title": "S3 Access block should restrict public bucket to limit access",
+      "severity": "HIGH",
+      "resource_name": "aws_s3_bucket.ph-bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "aws-s3.tf",
+      "start_line": 2,
+      "end_line": 5
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0094",
+      "title": "S3 buckets should each define an aws_s3_bucket_public_access_block",
+      "severity": "LOW",
+      "resource_name": "aws_s3_bucket.ph-bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "aws-s3.tf",
+      "start_line": 2,
+      "end_line": 5
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_394",
+      "title": "Ensure aws_availability_zones data source pins zone identity so its result set does not silently expand when AWS adds an Availability Zone",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_availability_zones.ph-azs",
+      "resource_type": "aws_availability_zones",
+      "file_path": "/aws-generic.tf",
+      "start_line": 72,
+      "end_line": 74
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_62",
+      "title": "Ensure S3 buckets should have event notifications enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.ph-bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/aws-s3.tf",
+      "start_line": 2,
+      "end_line": 5
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_6",
+      "title": "Ensure that S3 bucket has a Public Access block",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.ph-bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/aws-s3.tf",
+      "start_line": 2,
+      "end_line": 5
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_18",
+      "title": "Ensure the S3 bucket has access logging enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.ph-bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/aws-s3.tf",
+      "start_line": 2,
+      "end_line": 5
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_61",
+      "title": "Ensure that an S3 bucket has a lifecycle configuration",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.ph-bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/aws-s3.tf",
+      "start_line": 2,
+      "end_line": 5
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_144",
+      "title": "Ensure that S3 bucket has cross-region replication enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.ph-bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/aws-s3.tf",
+      "start_line": 2,
+      "end_line": 5
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_394",
+      "title": "Ensure aws_availability_zones data source pins zone identity so its result set does not silently expand when AWS adds an Availability Zone",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_availability_zones.ph-azs",
+      "resource_type": "aws_availability_zones",
+      "file_path": "/main.tf",
+      "start_line": 72,
+      "end_line": 87
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_62",
+      "title": "Ensure S3 buckets should have event notifications enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.ph-bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 497,
+      "end_line": 543
+    }
+  ],
+  "target_count": 12,
+  "resolved_count": 10,
+  "introduced_count": 0,
+  "unchanged_count": 2,
+  "repair_success_rate": 0.8333333333333334,
+  "regression_rate": 0.0,
+  "net_delta": 10,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 6,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 2,
+      "introduced": 0,
+      "unchanged": 1
+    },
+    "other": {
+      "resolved": 2,
+      "introduced": 0,
+      "unchanged": 1
+    }
+  },
+  "repair_cost_usd": 0.015246,
+  "repair_tokens": 15246,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0178_nova-pro.repaired.tf",
+  "raw_response_path": "module_0178_nova-pro.raw.txt",
+  "repaired_code_sha256": "e80cff74f928fad8f3b39a6d8d91fa051c10462947a77b641e572406b7b1ad16"
+}

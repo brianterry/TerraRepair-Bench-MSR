@@ -1,0 +1,156 @@
+terraform {
+  required_version = ">= 1.0.0, < 2.0.0"
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 4.0"
+    }
+    wafv2 = {
+      source  = "hashicorp/wafv2"
+      version = "~> 3.0"
+    }
+  }
+}
+
+resource "aws_lb" "example" {
+  name               = var.alb_name
+  load_balancer_type = "application"
+  subnets            = var.subnet_ids
+  security_groups    = [aws_security_group.alb.id]
+  drop_invalid_header_fields = true
+  deletion_protection = true
+  enable_http2 = true
+  enable_tls12 = true
+  enable_tls13 = true
+}
+
+resource "aws_lb_listener" "http" {
+  load_balancer_arn = aws_lb.example.arn
+  port              = local.http_port
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-2016-08"
+  certificate_arn   = "arn:aws:acm:us-east-1:123456789012:certificate/12345678-1234-1234-1234-123456789012"
+
+  default_action {
+    type = "fixed-response"
+
+    fixed_response {
+      content_type = "text/plain"
+      message_body = "404: page not found"
+      status_code  = 404
+    }
+  }
+
+  # Redirect HTTP to HTTPS
+  default_action {
+    type = "redirect"
+
+    redirect {
+      port        = local.https_port
+      protocol    = "HTTPS"
+      status_code = "HTTP_301"
+    }
+  }
+}
+
+resource "aws_security_group" "alb" {
+  name        = var.alb_name
+  description = "Security group for ALB"
+}
+
+resource "aws_security_group_rule" "allow_http_inbound" {
+  type              = "ingress"
+  security_group_id = aws_security_group.alb.id
+  from_port         = local.http_port
+  to_port           = local.http_port
+  protocol          = local.tcp_protocol
+  cidr_blocks       = ["192.0.2.0/24"]
+  description       = "Allow HTTP traffic from specific CIDR"
+}
+
+resource "aws_security_group_rule" "allow_https_inbound" {
+  type              = "ingress"
+  security_group_id = aws_security_group.alb.id
+  from_port         = local.https_port
+  to_port           = local.https_port
+  protocol          = local.tcp_protocol
+  cidr_blocks       = ["192.0.2.0/24"]
+  description       = "Allow HTTPS traffic from specific CIDR"
+}
+
+resource "aws_security_group_rule" "allow_all_outbound" {
+  type              = "egress"
+  security_group_id = aws_security_group.alb.id
+  from_port         = local.any_port
+  to_port           = local.any_port
+  protocol          = local.any_protocol
+  cidr_blocks       = ["192.0.2.0/24"]
+  description       = "Allow outbound traffic to specific CIDR"
+}
+
+resource "aws_wafv2_web_acl" "alb_waf" {
+  name  = "alb-waf"
+  scope = "REGIONAL"
+
+  default_action {
+    allow {}
+  }
+
+  visibility_config {
+    cloud_watch_metrics_enabled = true
+    metric_name                 = "alb-waf"
+    sampled_requests_enabled    = true
+  }
+}
+
+resource "aws_wafv2_web_acl_association" "alb_waf_association" {
+  resource_arn = aws_lb.example.arn
+  web_acl_arn  = aws_wafv2_web_acl.alb_waf.arn
+}
+
+resource "aws_lb_access_logs" "example" {
+  lb_arn = aws_lb.example.arn
+  bucket = "my-alb-logs-bucket"
+  prefix = "alb-logs"
+  enabled = true
+}
+
+locals {
+  http_port    = 80
+  https_port   = 443
+  any_port     = 0
+  any_protocol = "-1"
+  tcp_protocol = "tcp"
+  all_ips      = ["0.0.0.0/0"]
+}
+
+output "alb_dns_name" {
+  value       = aws_lb.example.dns_name
+  description = "The domain name of the load balancer"
+}
+
+output "alb_http_listener_arn" {
+  value       = aws_lb_listener.http.arn
+  description = "The ARN of the HTTP listener"
+}
+
+output "alb_security_group_id" {
+  value       = aws_security_group.alb.id
+  description = "The ALB Security Group ID"
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
+# REQUIRED PARAMETERS
+# You must provide a value for each of these parameters.
+# ---------------------------------------------------------------------------------------------------------------------
+
+variable "alb_name" {
+  description = "The name to use for this ALB"
+  type        = string
+}
+
+variable "subnet_ids" {
+  description = "The subnet IDs to deploy to"
+  type        = list(string)
+}

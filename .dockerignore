@@ -1,0 +1,40 @@
+# Keep the image small and the build reproducible. The Dockerfile copies only
+# src/, scripts/, experiments/configs/, and data/terrads_sample explicitly, but
+# this belt-and-suspenders excludes the heavy / irrelevant trees from the build
+# context so `docker build` stays fast.
+
+# Heavy data (1.8GB): only data/terrads_sample is COPYed in the Dockerfile.
+data/poc_resolve_diff/
+data/terrads_corpus/
+data/**/.venv/
+data/**/.terraform/
+data/**/*.zip
+data/**/tfplan
+
+# Experiment outputs — never bake results into the image. The Dockerfile COPYs
+# the three retrieval-ablation INPUT artifacts (hardened_pool.json,
+# ablation_targets.json, embeddings_titan_v2.json) explicitly by path, so they
+# are not excluded here; everything else under results/ is excluded.
+experiments/results/full_refresh_2026-09/
+experiments/results/full_180_game/
+experiments/results/full_corrected/
+experiments/results/prompt_ablation/
+experiments/results/full_refresh_2026-09_analysis/
+experiments/results/retrieval_ablation/games/
+experiments/results/retrieval_ablation/_phase1_smoke_games/
+
+# VCS / caches / envs
+.git/
+.gitignore
+**/__pycache__/
+**/*.pyc
+.pytest_cache/
+*.venv/
+.venv/
+.DS_Store
+
+# Docs / papers / notebooks not needed at runtime
+*.pdf
+notebooks/
+paper/
+*.md

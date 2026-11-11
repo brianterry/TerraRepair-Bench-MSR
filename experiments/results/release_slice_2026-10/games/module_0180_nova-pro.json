@@ -1,0 +1,109 @@
+{
+  "module_id": "module_0180",
+  "model_id": "nova-pro",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0124",
+      "title": "Missing description for security group rule.",
+      "severity": "LOW",
+      "resource_name": "aws_security_group_rule.alb_to_ecs",
+      "resource_type": "aws_security_group_rule",
+      "file_path": "alb.tf",
+      "start_line": 10,
+      "end_line": 17
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0034",
+      "title": "ECS clusters should have container insights enabled",
+      "severity": "LOW",
+      "resource_name": "aws_ecs_cluster.cluster",
+      "resource_type": "aws_ecs_cluster",
+      "file_path": "main.tf",
+      "start_line": 32,
+      "end_line": 34
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "Ensure every security group and rule has a description",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group_rule.alb_to_ecs",
+      "resource_type": "aws_security_group_rule",
+      "file_path": "/alb.tf",
+      "start_line": 10,
+      "end_line": 17
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_65",
+      "title": "Ensure container insights are enabled on ECS cluster",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_ecs_cluster.cluster",
+      "resource_type": "aws_ecs_cluster",
+      "file_path": "/main.tf",
+      "start_line": 32,
+      "end_line": 34
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0034",
+      "title": "ECS clusters should have container insights enabled",
+      "severity": "LOW",
+      "resource_name": "aws_ecs_cluster.cluster",
+      "resource_type": "aws_ecs_cluster",
+      "file_path": "main.tf",
+      "start_line": 111,
+      "end_line": 119
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_65",
+      "title": "Ensure container insights are enabled on ECS cluster",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_ecs_cluster.cluster",
+      "resource_type": "aws_ecs_cluster",
+      "file_path": "/main.tf",
+      "start_line": 111,
+      "end_line": 119
+    }
+  ],
+  "target_count": 4,
+  "resolved_count": 2,
+  "introduced_count": 0,
+  "unchanged_count": 2,
+  "repair_success_rate": 0.5,
+  "regression_rate": 0.0,
+  "net_delta": 2,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 2
+    },
+    "other": {
+      "resolved": 2,
+      "introduced": 0,
+      "unchanged": 0
+    }
+  },
+  "repair_cost_usd": 0.003922,
+  "repair_tokens": 3922,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0180_nova-pro.repaired.tf",
+  "raw_response_path": "module_0180_nova-pro.raw.txt",
+  "repaired_code_sha256": "8eec79ecf9d74b7d8f99ce4b4c90049b2697813420f81ca4829fb0f82b5e958e"
+}

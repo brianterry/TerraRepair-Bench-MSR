@@ -1,0 +1,125 @@
+{
+  "findings_count": 42,
+  "findings": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_38",
+      "title": "",
+      "resource_name": "aws_route53_zone.modernisation-platform"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_38",
+      "title": "",
+      "resource_name": "aws_route53_zone.application_zones[\"ccms-ebs\"]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_38",
+      "title": "",
+      "resource_name": "aws_route53_zone.application_zones[\"cdpt-chaps\"]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_38",
+      "title": "",
+      "resource_name": "aws_route53_zone.application_zones[\"cdpt-chaps-dev\"]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_38",
+      "title": "",
+      "resource_name": "aws_route53_zone.application_zones[\"cdpt-chaps-preprod\"]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_38",
+      "title": "",
+      "resource_name": "aws_route53_zone.application_zones[\"cdpt-ifs\"]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_38",
+      "title": "",
+      "resource_name": "aws_route53_zone.application_zones[\"dacp\"]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_38",
+      "title": "",
+      "resource_name": "aws_route53_zone.application_zones[\"delius-jitbit\"]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_38",
+      "title": "",
+      "resource_name": "aws_route53_zone.application_zones[\"equip\"]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_38",
+      "title": "",
+      "resource_name": "aws_route53_zone.application_zones[\"laa\"]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_38",
+      "title": "",
+      "resource_name": "aws_route53_zone.application_zones[\"laa-apex\"]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_38",
+      "title": "",
+      "resource_name": "aws_route53_zone.application_zones[\"legalservices\"]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_38",
+      "title": "",
+      "resource_name": "aws_route53_zone.application_zones[\"maat\"]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_38",
+      "title": "",
+      "resource_name": "aws_route53_zone.application_zones[\"mlra\"]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_38",
+      "title": "",
+      "resource_name": "aws_route53_zone.application_zones[\"mojfin\"]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_38",
+      "title": "",
+      "resource_name": "aws_route53_zone.application_zones[\"ncas\"]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_38",
+      "title": "",
+      "resource_name": "aws_route53_zone.application_zones[\"ppud\"]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_38",
+      "title": "",
+      "resource_name": "aws_route53_zone.application_zones[\"pra-register\"]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_38",
+      "title": "",
+      "resource_name": "aws_route53_zone.application_zones[\"tipstaff\"]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_38",
+      "title": "",
+      "resource_name": "aws_route53_zone.application_zones[\"tribunals\"]"
+    }
+  ]
+}

@@ -1,0 +1,230 @@
+{
+  "module_id": "module_0321",
+  "model_id": "nova-lite",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0053",
+      "title": "Load balancer is exposed to the internet.",
+      "severity": "HIGH",
+      "resource_name": "aws_elb.vault",
+      "resource_type": "aws_elb",
+      "file_path": "main.tf",
+      "start_line": 18,
+      "end_line": 18
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "aws_security_group_rule.allow_all_outbound",
+      "resource_type": "aws_security_group_rule",
+      "file_path": "main.tf",
+      "start_line": 99,
+      "end_line": 99
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0124",
+      "title": "Missing description for security group rule.",
+      "severity": "LOW",
+      "resource_name": "aws_security_group_rule.allow_all_outbound",
+      "resource_type": "aws_security_group_rule",
+      "file_path": "main.tf",
+      "start_line": 94,
+      "end_line": 102
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0124",
+      "title": "Missing description for security group rule.",
+      "severity": "LOW",
+      "resource_name": "aws_security_group_rule.allow_inbound_api",
+      "resource_type": "aws_security_group_rule",
+      "file_path": "main.tf",
+      "start_line": 84,
+      "end_line": 92
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_376",
+      "title": "Ensure AWS Elastic Load Balancer listener uses TLS/SSL",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_elb.vault",
+      "resource_type": "aws_elb",
+      "file_path": "/main.tf",
+      "start_line": 15,
+      "end_line": 61
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_127",
+      "title": "Ensure that Elastic Load Balancer(s) uses SSL certificates provided by AWS Certificate Manager",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_elb.vault",
+      "resource_type": "aws_elb",
+      "file_path": "/main.tf",
+      "start_line": 15,
+      "end_line": 61
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_92",
+      "title": "Ensure the ELB has access logging enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_elb.vault",
+      "resource_type": "aws_elb",
+      "file_path": "/main.tf",
+      "start_line": 15,
+      "end_line": 61
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "Ensure every security group and rule has a description",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group_rule.allow_inbound_api",
+      "resource_type": "aws_security_group_rule",
+      "file_path": "/main.tf",
+      "start_line": 84,
+      "end_line": 92
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_382",
+      "title": "Ensure no security groups allow egress from 0.0.0.0:0 to port -1",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group_rule.allow_all_outbound",
+      "resource_type": "aws_security_group_rule",
+      "file_path": "/main.tf",
+      "start_line": 94,
+      "end_line": 102
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "Ensure every security group and rule has a description",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group_rule.allow_all_outbound",
+      "resource_type": "aws_security_group_rule",
+      "file_path": "/main.tf",
+      "start_line": 94,
+      "end_line": 102
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_15",
+      "title": "Ensure that auto Scaling groups that are associated with a load balancer are using Elastic Load Balancing health checks.",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_autoscaling_attachment.vault",
+      "resource_type": "aws_autoscaling_attachment",
+      "file_path": "/main.tf",
+      "start_line": 67,
+      "end_line": 70
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0053",
+      "title": "Load balancer is exposed to the internet.",
+      "severity": "HIGH",
+      "resource_name": "aws_elb.vault",
+      "resource_type": "aws_elb",
+      "file_path": "main.tf",
+      "start_line": 18,
+      "end_line": 18
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "aws_security_group_rule.allow_all_outbound",
+      "resource_type": "aws_security_group_rule",
+      "file_path": "main.tf",
+      "start_line": 118,
+      "end_line": 118
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_376",
+      "title": "Ensure AWS Elastic Load Balancer listener uses TLS/SSL",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_elb.vault",
+      "resource_type": "aws_elb",
+      "file_path": "/main.tf",
+      "start_line": 15,
+      "end_line": 70
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_92",
+      "title": "Ensure the ELB has access logging enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_elb.vault",
+      "resource_type": "aws_elb",
+      "file_path": "/main.tf",
+      "start_line": 15,
+      "end_line": 70
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_382",
+      "title": "Ensure no security groups allow egress from 0.0.0.0:0 to port -1",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group_rule.allow_all_outbound",
+      "resource_type": "aws_security_group_rule",
+      "file_path": "/main.tf",
+      "start_line": 113,
+      "end_line": 122
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_15",
+      "title": "Ensure that auto Scaling groups that are associated with a load balancer are using Elastic Load Balancing health checks.",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_autoscaling_attachment.vault",
+      "resource_type": "aws_autoscaling_attachment",
+      "file_path": "/main.tf",
+      "start_line": 76,
+      "end_line": 88
+    }
+  ],
+  "target_count": 11,
+  "resolved_count": 5,
+  "introduced_count": 0,
+  "unchanged_count": 6,
+  "repair_success_rate": 0.45454545454545453,
+  "regression_rate": 0.0,
+  "net_delta": 5,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 2
+    },
+    "data_protection": {
+      "resolved": 1,
+      "introduced": 0,
+      "unchanged": 1
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 1
+    },
+    "other": {
+      "resolved": 4,
+      "introduced": 0,
+      "unchanged": 2
+    }
+  },
+  "repair_cost_usd": 0.000896,
+  "repair_tokens": 6172,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0321_nova-lite.repaired.tf",
+  "raw_response_path": "module_0321_nova-lite.raw.txt",
+  "repaired_code_sha256": "9bd332a4a31ba5ec18829ad7c573b0c1a92eeb48a51ddc1596c8536fc061de77"
+}

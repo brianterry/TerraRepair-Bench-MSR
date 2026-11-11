@@ -1,0 +1,219 @@
+{
+  "module_id": "module_0352",
+  "model_id": "kimi-k2-5",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0008",
+      "title": "Launch configuration with unencrypted block device.",
+      "severity": "HIGH",
+      "resource_name": "aws_launch_configuration.master_conf",
+      "resource_type": "aws_launch_configuration",
+      "file_path": "master.tf",
+      "start_line": 81,
+      "end_line": 85
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0009",
+      "title": "Launch configuration should not have a public IP address.",
+      "severity": "HIGH",
+      "resource_name": "aws_launch_configuration.master_conf",
+      "resource_type": "aws_launch_configuration",
+      "file_path": "master.tf",
+      "start_line": 69,
+      "end_line": 69
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0130",
+      "title": "aws_instance should activate session tokens for Instance Metadata Service.",
+      "severity": "HIGH",
+      "resource_name": "aws_launch_configuration.master_conf",
+      "resource_type": "aws_launch_configuration",
+      "file_path": "master.tf",
+      "start_line": 62,
+      "end_line": 86
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0344",
+      "title": "AWS AMI data source should specify owners",
+      "severity": "LOW",
+      "resource_name": "data.aws_ami.coreos_ami",
+      "resource_type": "data",
+      "file_path": "master.tf",
+      "start_line": 6,
+      "end_line": 26
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_186",
+      "title": "Ensure S3 bucket Object is encrypted by KMS using a customer managed Key (CMK)",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket_object.ignition_master",
+      "resource_type": "aws_s3_bucket_object",
+      "file_path": "/ignition_s3.tf",
+      "start_line": 1,
+      "end_line": 14
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_315",
+      "title": "Ensure EC2 Auto Scaling groups use EC2 launch templates",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_autoscaling_group.masters",
+      "resource_type": "aws_autoscaling_group",
+      "file_path": "/master.tf",
+      "start_line": 28,
+      "end_line": 60
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_79",
+      "title": "Ensure Instance Metadata Service Version 1 is not enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_launch_configuration.master_conf",
+      "resource_type": "aws_launch_configuration",
+      "file_path": "/master.tf",
+      "start_line": 62,
+      "end_line": 86
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_389",
+      "title": "Ensure AWS Auto Scaling group launch configuration doesn't have public IP address assignment enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_launch_configuration.master_conf",
+      "resource_type": "aws_launch_configuration",
+      "file_path": "/master.tf",
+      "start_line": 62,
+      "end_line": 86
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_290",
+      "title": "Ensure IAM policies does not allow write access without constraints",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_role_policy.master_policy",
+      "resource_type": "aws_iam_role_policy",
+      "file_path": "/master.tf",
+      "start_line": 124,
+      "end_line": 164
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_289",
+      "title": "Ensure IAM policies does not allow permissions management / resource exposure without constraints",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_role_policy.master_policy",
+      "resource_type": "aws_iam_role_policy",
+      "file_path": "/master.tf",
+      "start_line": 124,
+      "end_line": 164
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_355",
+      "title": "Ensure no IAM policies documents allow \"*\" as a statement's resource for restrictable actions",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_role_policy.master_policy",
+      "resource_type": "aws_iam_role_policy",
+      "file_path": "/master.tf",
+      "start_line": 124,
+      "end_line": 164
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_287",
+      "title": "Ensure IAM policies does not allow credentials exposure",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_role_policy.master_policy",
+      "resource_type": "aws_iam_role_policy",
+      "file_path": "/master.tf",
+      "start_line": 124,
+      "end_line": 164
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_386",
+      "title": "Reduce potential for WhoAMI cloud image name confusion attack",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_ami.coreos_ami",
+      "resource_type": "aws_ami",
+      "file_path": "/master.tf",
+      "start_line": 6,
+      "end_line": 26
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_186",
+      "title": "Ensure S3 bucket Object is encrypted by KMS using a customer managed Key (CMK)",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket_object.ignition_master",
+      "resource_type": "aws_s3_bucket_object",
+      "file_path": "/main.tf",
+      "start_line": 114,
+      "end_line": 127
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_290",
+      "title": "Ensure IAM policies does not allow write access without constraints",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_role_policy.master_policy",
+      "resource_type": "aws_iam_role_policy",
+      "file_path": "/main.tf",
+      "start_line": 281,
+      "end_line": 362
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_355",
+      "title": "Ensure no IAM policies documents allow \"*\" as a statement's resource for restrictable actions",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_role_policy.master_policy",
+      "resource_type": "aws_iam_role_policy",
+      "file_path": "/main.tf",
+      "start_line": 281,
+      "end_line": 362
+    }
+  ],
+  "target_count": 13,
+  "resolved_count": 10,
+  "introduced_count": 0,
+  "unchanged_count": 3,
+  "repair_success_rate": 0.7692307692307693,
+  "regression_rate": 0.0,
+  "net_delta": 10,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 4,
+      "introduced": 0,
+      "unchanged": 2
+    },
+    "data_protection": {
+      "resolved": 2,
+      "introduced": 0,
+      "unchanged": 1
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 4,
+      "introduced": 0,
+      "unchanged": 0
+    }
+  },
+  "repair_cost_usd": 0.0110348,
+  "repair_tokens": 7327,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0352_kimi-k2-5.repaired.tf",
+  "raw_response_path": "module_0352_kimi-k2-5.raw.txt",
+  "repaired_code_sha256": "10c71ee8c73d9f1bcb293b107666cc547886e4a3712ed15c444218678ea3442d"
+}

@@ -1,0 +1,186 @@
+{
+  "module_id": "module_0400",
+  "model_id": "nova-pro",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0038",
+      "title": "EKS Clusters should have cluster control plane logging turned on",
+      "severity": "MEDIUM",
+      "resource_name": "aws_eks_cluster.default[0]",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "main.tf",
+      "start_line": 56,
+      "end_line": 160
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0040",
+      "title": "EKS Clusters should have the public access disabled",
+      "severity": "CRITICAL",
+      "resource_name": "aws_eks_cluster.default[0]",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "main.tf",
+      "start_line": 95,
+      "end_line": 95
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0041",
+      "title": "EKS cluster should not have open CIDR range for public access",
+      "severity": "CRITICAL",
+      "resource_name": "aws_eks_cluster.default[0]",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "main.tf",
+      "start_line": 96,
+      "end_line": 96
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "this",
+      "resource_type": "this",
+      "file_path": "/context.tf",
+      "start_line": 23,
+      "end_line": 46
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_356",
+      "title": "Ensure no IAM policies documents allow \"*\" as a statement's resource for restrictable actions",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.cluster_elb_service_role",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/iam.tf",
+      "start_line": 48,
+      "end_line": 74
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "label",
+      "resource_type": "label",
+      "file_path": "/main.tf",
+      "start_line": 19,
+      "end_line": 26
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_339",
+      "title": "Ensure EKS clusters run on a supported Kubernetes version",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_eks_cluster.default",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "/main.tf",
+      "start_line": 56,
+      "end_line": 160
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0038",
+      "title": "EKS Clusters should have cluster control plane logging turned on",
+      "severity": "MEDIUM",
+      "resource_name": "aws_eks_cluster.default[0]",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "main.tf",
+      "start_line": 140,
+      "end_line": 237
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_111",
+      "title": "Ensure IAM policies does not allow write access without constraints",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.cluster_elb_service_role",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/main.tf",
+      "start_line": 44,
+      "end_line": 67
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_356",
+      "title": "Ensure no IAM policies documents allow \"*\" as a statement's resource for restrictable actions",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.cluster_elb_service_role",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/main.tf",
+      "start_line": 44,
+      "end_line": 67
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "label",
+      "resource_type": "label",
+      "file_path": "/main.tf",
+      "start_line": 103,
+      "end_line": 110
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_339",
+      "title": "Ensure EKS clusters run on a supported Kubernetes version",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_eks_cluster.default",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "/main.tf",
+      "start_line": 140,
+      "end_line": 237
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_58",
+      "title": "Ensure EKS Cluster has Secrets Encryption Enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_eks_cluster.default",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "/main.tf",
+      "start_line": 140,
+      "end_line": 237
+    }
+  ],
+  "target_count": 7,
+  "resolved_count": 3,
+  "introduced_count": 2,
+  "unchanged_count": 4,
+  "repair_success_rate": 0.42857142857142855,
+  "regression_rate": 0.2857142857142857,
+  "net_delta": 1,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 2,
+      "introduced": 1,
+      "unchanged": 1
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 1,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 1
+    },
+    "other": {
+      "resolved": 1,
+      "introduced": 0,
+      "unchanged": 2
+    }
+  },
+  "repair_cost_usd": 0.021839,
+  "repair_tokens": 21839,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0400_nova-pro.repaired.tf",
+  "raw_response_path": "module_0400_nova-pro.raw.txt",
+  "repaired_code_sha256": "daec0869dc23c9f4e3123d6539a0d4c4e2845a5885bc49bb0016a2e022bec4b1"
+}

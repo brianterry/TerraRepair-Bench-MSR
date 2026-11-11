@@ -1,0 +1,207 @@
+{
+  "module_id": "module_0200",
+  "model_id": "claude-sonnet-4-5",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0066",
+      "title": "Lambda functions should have X-Ray tracing enabled",
+      "severity": "LOW",
+      "resource_name": "aws_lambda_function.local_zipfile[0]",
+      "resource_type": "aws_lambda_function",
+      "file_path": "main.tf",
+      "start_line": 2,
+      "end_line": 22
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_117",
+      "title": "Ensure that AWS Lambda function is configured inside a VPC",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.local_zipfile",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/main.tf",
+      "start_line": 2,
+      "end_line": 22
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_363",
+      "title": "Ensure Lambda Runtime is not deprecated",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.local_zipfile",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/main.tf",
+      "start_line": 2,
+      "end_line": 22
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_116",
+      "title": "Ensure that AWS Lambda function is configured for a Dead Letter Queue(DLQ)",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.local_zipfile",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/main.tf",
+      "start_line": 2,
+      "end_line": 22
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_173",
+      "title": "Check encryption settings for Lambda environmental variable",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.local_zipfile",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/main.tf",
+      "start_line": 2,
+      "end_line": 22
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_272",
+      "title": "Ensure AWS Lambda function is configured to validate code-signing",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.local_zipfile",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/main.tf",
+      "start_line": 2,
+      "end_line": 22
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_115",
+      "title": "Ensure that AWS Lambda function is configured for function-level concurrent execution limit",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.local_zipfile",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/main.tf",
+      "start_line": 2,
+      "end_line": 22
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_50",
+      "title": "X-Ray tracing is enabled for Lambda",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.local_zipfile",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/main.tf",
+      "start_line": 2,
+      "end_line": 22
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_117",
+      "title": "Ensure that AWS Lambda function is configured inside a VPC",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.s3_zipfile",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/main.tf",
+      "start_line": 25,
+      "end_line": 45
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_363",
+      "title": "Ensure Lambda Runtime is not deprecated",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.s3_zipfile",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/main.tf",
+      "start_line": 25,
+      "end_line": 45
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_116",
+      "title": "Ensure that AWS Lambda function is configured for a Dead Letter Queue(DLQ)",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.s3_zipfile",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/main.tf",
+      "start_line": 25,
+      "end_line": 45
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_173",
+      "title": "Check encryption settings for Lambda environmental variable",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.s3_zipfile",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/main.tf",
+      "start_line": 25,
+      "end_line": 45
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_272",
+      "title": "Ensure AWS Lambda function is configured to validate code-signing",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.s3_zipfile",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/main.tf",
+      "start_line": 25,
+      "end_line": 45
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_115",
+      "title": "Ensure that AWS Lambda function is configured for function-level concurrent execution limit",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.s3_zipfile",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/main.tf",
+      "start_line": 25,
+      "end_line": 45
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_50",
+      "title": "X-Ray tracing is enabled for Lambda",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.s3_zipfile",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/main.tf",
+      "start_line": 25,
+      "end_line": 45
+    }
+  ],
+  "findings_after": [],
+  "target_count": 15,
+  "resolved_count": 15,
+  "introduced_count": 0,
+  "unchanged_count": 0,
+  "repair_success_rate": 1.0,
+  "regression_rate": 0.0,
+  "net_delta": 15,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 2,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 13,
+      "introduced": 0,
+      "unchanged": 0
+    }
+  },
+  "repair_cost_usd": 0.046764,
+  "repair_tokens": 5668,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0200_claude-sonnet-4-5.repaired.tf",
+  "raw_response_path": "module_0200_claude-sonnet-4-5.raw.txt",
+  "repaired_code_sha256": "ca881e8d3846ff3b8a7576ab95b7fcb8e569a9998ed214f4c47e0c76a14c650c"
+}

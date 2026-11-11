@@ -1,0 +1,428 @@
+{
+  "module_id": "module_0319",
+  "model_id": "nova-lite",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0124",
+      "title": "Missing description for security group rule.",
+      "severity": "LOW",
+      "resource_name": "module.security_group_rules",
+      "resource_type": "module",
+      "file_path": "github.com/hashicorp/terraform-aws-consul.git/modules/consul-client-security-group-rules?ref=v0.8.0/modules/consul-client-security-group-rules/main.tf",
+      "start_line": 16,
+      "end_line": 25
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0124",
+      "title": "Missing description for security group rule.",
+      "severity": "LOW",
+      "resource_name": "module.consul_cluster",
+      "resource_type": "module",
+      "file_path": "github.com/hashicorp/terraform-aws-consul.git/modules/consul-cluster?ref=v0.8.0/modules/consul-client-security-group-rules/main.tf",
+      "start_line": 16,
+      "end_line": 25
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0008",
+      "title": "Launch configuration with unencrypted block device.",
+      "severity": "HIGH",
+      "resource_name": "module.consul_cluster",
+      "resource_type": "module",
+      "file_path": "github.com/hashicorp/terraform-aws-consul.git/modules/consul-cluster?ref=v0.8.0/modules/consul-cluster/main.tf",
+      "start_line": 94,
+      "end_line": 98
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "module.consul_cluster",
+      "resource_type": "module",
+      "file_path": "github.com/hashicorp/terraform-aws-consul.git/modules/consul-cluster?ref=v0.8.0/modules/consul-cluster/main.tf",
+      "start_line": 163,
+      "end_line": 163
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0107",
+      "title": "Security groups should not allow unrestricted ingress to SSH or RDP from any IP address.",
+      "severity": "HIGH",
+      "resource_name": "module.consul_cluster",
+      "resource_type": "module",
+      "file_path": "github.com/hashicorp/terraform-aws-consul.git/modules/consul-cluster?ref=v0.8.0/modules/consul-cluster/main.tf",
+      "start_line": 142,
+      "end_line": 142
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0130",
+      "title": "aws_instance should activate session tokens for Instance Metadata Service.",
+      "severity": "HIGH",
+      "resource_name": "module.consul_cluster",
+      "resource_type": "module",
+      "file_path": "github.com/hashicorp/terraform-aws-consul.git/modules/consul-cluster?ref=v0.8.0/modules/consul-cluster/main.tf",
+      "start_line": 72,
+      "end_line": 110
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "consul_iam_policies_servers",
+      "resource_type": "consul_iam_policies_servers",
+      "file_path": "/main.tf",
+      "start_line": 94,
+      "end_line": 98
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "security_group_rules",
+      "resource_type": "security_group_rules",
+      "file_path": "/main.tf",
+      "start_line": 121,
+      "end_line": 130
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "consul_cluster",
+      "resource_type": "consul_cluster",
+      "file_path": "/main.tf",
+      "start_line": 174,
+      "end_line": 197
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0124",
+      "title": "Missing description for security group rule.",
+      "severity": "LOW",
+      "resource_name": "module.security_group_rules",
+      "resource_type": "module",
+      "file_path": "github.com/hashicorp/terraform-aws-consul.git/modules/consul-client-security-group-rules?ref=v0.8.0/modules/consul-client-security-group-rules/main.tf",
+      "start_line": 16,
+      "end_line": 25
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0124",
+      "title": "Missing description for security group rule.",
+      "severity": "LOW",
+      "resource_name": "module.consul_cluster",
+      "resource_type": "module",
+      "file_path": "github.com/hashicorp/terraform-aws-consul.git/modules/consul-cluster?ref=v0.8.0/modules/consul-client-security-group-rules/main.tf",
+      "start_line": 16,
+      "end_line": 25
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0008",
+      "title": "Launch configuration with unencrypted block device.",
+      "severity": "HIGH",
+      "resource_name": "module.consul_cluster",
+      "resource_type": "module",
+      "file_path": "github.com/hashicorp/terraform-aws-consul.git/modules/consul-cluster?ref=v0.8.0/modules/consul-cluster/main.tf",
+      "start_line": 94,
+      "end_line": 98
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "module.consul_cluster",
+      "resource_type": "module",
+      "file_path": "github.com/hashicorp/terraform-aws-consul.git/modules/consul-cluster?ref=v0.8.0/modules/consul-cluster/main.tf",
+      "start_line": 163,
+      "end_line": 163
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0107",
+      "title": "Security groups should not allow unrestricted ingress to SSH or RDP from any IP address.",
+      "severity": "HIGH",
+      "resource_name": "module.consul_cluster",
+      "resource_type": "module",
+      "file_path": "github.com/hashicorp/terraform-aws-consul.git/modules/consul-cluster?ref=v0.8.0/modules/consul-cluster/main.tf",
+      "start_line": 142,
+      "end_line": 142
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0130",
+      "title": "aws_instance should activate session tokens for Instance Metadata Service.",
+      "severity": "HIGH",
+      "resource_name": "module.consul_cluster",
+      "resource_type": "module",
+      "file_path": "github.com/hashicorp/terraform-aws-consul.git/modules/consul-cluster?ref=v0.8.0/modules/consul-cluster/main.tf",
+      "start_line": 72,
+      "end_line": 110
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0008",
+      "title": "Launch configuration with unencrypted block device.",
+      "severity": "HIGH",
+      "resource_name": "module.vault_cluster",
+      "resource_type": "module",
+      "file_path": "github.com/hashicorp/terraform-aws-vault/modules/vault-cluster?ref=v0.0.1/modules/vault-cluster/main.tf",
+      "start_line": 56,
+      "end_line": 60
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0086",
+      "title": "S3 Access block should block public ACL",
+      "severity": "HIGH",
+      "resource_name": "module.vault_cluster",
+      "resource_type": "module",
+      "file_path": "github.com/hashicorp/terraform-aws-vault/modules/vault-cluster?ref=v0.0.1/modules/vault-cluster/main.tf",
+      "start_line": 185,
+      "end_line": 192
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0087",
+      "title": "S3 Access block should block public policy",
+      "severity": "HIGH",
+      "resource_name": "module.vault_cluster",
+      "resource_type": "module",
+      "file_path": "github.com/hashicorp/terraform-aws-vault/modules/vault-cluster?ref=v0.0.1/modules/vault-cluster/main.tf",
+      "start_line": 185,
+      "end_line": 192
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "module.vault_cluster",
+      "resource_type": "module",
+      "file_path": "github.com/hashicorp/terraform-aws-vault/modules/vault-cluster?ref=v0.0.1/modules/vault-cluster/main.tf",
+      "start_line": 185,
+      "end_line": 192
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0090",
+      "title": "S3 Data should be versioned",
+      "severity": "MEDIUM",
+      "resource_name": "module.vault_cluster",
+      "resource_type": "module",
+      "file_path": "github.com/hashicorp/terraform-aws-vault/modules/vault-cluster?ref=v0.0.1/modules/vault-cluster/main.tf",
+      "start_line": 185,
+      "end_line": 192
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0091",
+      "title": "S3 Access Block should Ignore Public ACL",
+      "severity": "HIGH",
+      "resource_name": "module.vault_cluster",
+      "resource_type": "module",
+      "file_path": "github.com/hashicorp/terraform-aws-vault/modules/vault-cluster?ref=v0.0.1/modules/vault-cluster/main.tf",
+      "start_line": 185,
+      "end_line": 192
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0093",
+      "title": "S3 Access block should restrict public bucket to limit access",
+      "severity": "HIGH",
+      "resource_name": "module.vault_cluster",
+      "resource_type": "module",
+      "file_path": "github.com/hashicorp/terraform-aws-vault/modules/vault-cluster?ref=v0.0.1/modules/vault-cluster/main.tf",
+      "start_line": 185,
+      "end_line": 192
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0094",
+      "title": "S3 buckets should each define an aws_s3_bucket_public_access_block",
+      "severity": "LOW",
+      "resource_name": "module.vault_cluster",
+      "resource_type": "module",
+      "file_path": "github.com/hashicorp/terraform-aws-vault/modules/vault-cluster?ref=v0.0.1/modules/vault-cluster/main.tf",
+      "start_line": 185,
+      "end_line": 192
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "module.vault_cluster",
+      "resource_type": "module",
+      "file_path": "github.com/hashicorp/terraform-aws-vault/modules/vault-cluster?ref=v0.0.1/modules/vault-cluster/main.tf",
+      "start_line": 117,
+      "end_line": 117
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0124",
+      "title": "Missing description for security group rule.",
+      "severity": "LOW",
+      "resource_name": "module.vault_cluster",
+      "resource_type": "module",
+      "file_path": "github.com/hashicorp/terraform-aws-vault/modules/vault-cluster?ref=v0.0.1/modules/vault-cluster/main.tf",
+      "start_line": 91,
+      "end_line": 99
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0130",
+      "title": "aws_instance should activate session tokens for Instance Metadata Service.",
+      "severity": "HIGH",
+      "resource_name": "module.vault_cluster",
+      "resource_type": "module",
+      "file_path": "github.com/hashicorp/terraform-aws-vault/modules/vault-cluster?ref=v0.0.1/modules/vault-cluster/main.tf",
+      "start_line": 42,
+      "end_line": 72
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0132",
+      "title": "S3 encryption should use Customer Managed Keys",
+      "severity": "HIGH",
+      "resource_name": "module.vault_cluster",
+      "resource_type": "module",
+      "file_path": "github.com/hashicorp/terraform-aws-vault/modules/vault-cluster?ref=v0.0.1/modules/vault-cluster/main.tf",
+      "start_line": 185,
+      "end_line": 192
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0053",
+      "title": "Load balancer is exposed to the internet.",
+      "severity": "HIGH",
+      "resource_name": "module.vault_elb",
+      "resource_type": "module",
+      "file_path": "github.com/hashicorp/terraform-aws-vault/modules/vault-elb?ref=v0.0.1/modules/vault-elb/main.tf",
+      "start_line": 16,
+      "end_line": 16
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "module.vault_elb",
+      "resource_type": "module",
+      "file_path": "github.com/hashicorp/terraform-aws-vault/modules/vault-elb?ref=v0.0.1/modules/vault-elb/main.tf",
+      "start_line": 72,
+      "end_line": 72
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0124",
+      "title": "Missing description for security group rule.",
+      "severity": "LOW",
+      "resource_name": "module.vault_elb",
+      "resource_type": "module",
+      "file_path": "github.com/hashicorp/terraform-aws-vault/modules/vault-elb?ref=v0.0.1/modules/vault-elb/main.tf",
+      "start_line": 57,
+      "end_line": 65
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "vault_cluster",
+      "resource_type": "vault_cluster",
+      "file_path": "/main.tf",
+      "start_line": 58,
+      "end_line": 86
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "consul_iam_policies_servers",
+      "resource_type": "consul_iam_policies_servers",
+      "file_path": "/main.tf",
+      "start_line": 94,
+      "end_line": 98
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "security_group_rules",
+      "resource_type": "security_group_rules",
+      "file_path": "/main.tf",
+      "start_line": 121,
+      "end_line": 130
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "vault_elb",
+      "resource_type": "vault_elb",
+      "file_path": "/main.tf",
+      "start_line": 136,
+      "end_line": 162
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "consul_cluster",
+      "resource_type": "consul_cluster",
+      "file_path": "/main.tf",
+      "start_line": 174,
+      "end_line": 197
+    }
+  ],
+  "target_count": 9,
+  "resolved_count": 0,
+  "introduced_count": 17,
+  "unchanged_count": 9,
+  "repair_success_rate": 0.0,
+  "regression_rate": 1.8888888888888888,
+  "net_delta": -17,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 0,
+      "introduced": 7,
+      "unchanged": 2
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 3,
+      "unchanged": 2
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 1,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 0,
+      "introduced": 6,
+      "unchanged": 5
+    }
+  },
+  "repair_cost_usd": 0.0012935000000000002,
+  "repair_tokens": 8886,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0319_nova-lite.repaired.tf",
+  "raw_response_path": "module_0319_nova-lite.raw.txt",
+  "repaired_code_sha256": "a36ce1694498eb5a6deb205a8ce37dde210a5f95642b09968a64f73db3fb3745"
+}

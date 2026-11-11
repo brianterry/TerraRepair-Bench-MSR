@@ -1,0 +1,213 @@
+"""
+TerraDS Sampler — query SQLite metadata to find suitable AWS Terraform modules.
+
+Selection criteria for the 200-module corpus:
+- Provider: AWS (resource types starting with 'aws_')
+- Complexity: >= 4 distinct resource types per module
+- Stars: >= 5 (filters out toy repos)
+- License: as recorded in TerraDS (mostly Apache-2.0/MIT, some copyleft; see THIRD_PARTY_LICENSES.md)
+- After selection: run Checkov + Trivy, keep only modules with >= 3 confirmed
+  findings across both tools combined
+
+Output: directory of 200 HCL modules, one subdirectory per module,
+with metadata.json per module recording repo name, star count,
+resource types, and initial scanner findings.
+"""
+from __future__ import annotations
+
+import json
+import sqlite3
+import subprocess
+import tempfile
+from pathlib import Path
+
+
+def verify_terrads_schema(sqlite_path: str) -> dict[str, list[str]]:
+    """
+    Print and return the column names for each TerraDS table.
+
+    Run this once against the downloaded TerraDS.sqlite to verify that
+    column names match what query_candidate_modules expects before
+    running the full sampling pipeline.
+
+    Expected columns:
+      repository: id, clone_url, stars, name, ...
+      module: id, repository_id, relative_path, providers, ...
+      resource: id, module_id, name, type, is_managed, ...
+
+    Usage:
+      python -c "
+      from src.sampling.terrads_sampler import verify_terrads_schema
+      verify_terrads_schema('/path/to/TerraDS.sqlite')
+      "
+    """
+    conn = sqlite3.connect(sqlite_path)
+    schema: dict[str, list[str]] = {}
+    for table in ["Repositories", "Modules", "Resources"]:
+        cols = conn.execute(f"PRAGMA table_info({table})").fetchall()
+        col_names = [c[1] for c in cols]
+        schema[table] = col_names
+        print(f"{table}: {col_names}")
+    conn.close()
+    return schema
+
+
+def query_candidate_modules(
+    sqlite_path: str,
+    min_resource_types: int = 4,
+    min_stars: int = 5,
+    provider: str = "aws",
+    limit: int = 1000,
+) -> list[dict]:
+    """
+    Query SQLite for modules meeting basic criteria.
+
+    Returns list of dicts with keys: repository_id, clone_url, stars,
+    relative_path, module_id, resource_types.
+    """
+    conn = sqlite3.connect(sqlite_path)
+    conn.row_factory = sqlite3.Row
+    cur = conn.cursor()
+
+    provider_prefix = f"{provider}_"
+    cur.execute(
+        """
+        SELECT r.Id AS repository_id, r.CloneUrl AS clone_url, r.StarCount AS stars, r.Name AS repo_name,
+               m.Id AS module_id, m.Path AS relative_path
+        FROM Repositories r
+        JOIN Modules m ON m.RepositoryId = r.Id
+        JOIN Resources res ON res.ModuleId = m.Id
+        WHERE res.Type LIKE ?
+          AND r.StarCount >= ?
+        GROUP BY r.Id, m.Id
+        HAVING COUNT(DISTINCT res.Type) >= ?
+        ORDER BY r.StarCount DESC
+        LIMIT ?
+        """,
+        (f"{provider_prefix}%", min_stars, min_resource_types, limit),
+    )
+
+    rows = cur.fetchall()
+    result = []
+
+    for row in rows:
+        cur.execute(
+            "SELECT DISTINCT Type FROM Resources WHERE ModuleId = ?",
+            (row["module_id"],),
+        )
+        resource_types = [r[0] for r in cur.fetchall()]
+        result.append(
+            {
+                "repository_id": row["repository_id"],
+                "clone_url": row["clone_url"],
+                "stars": row["stars"],
+                "repo_name": row["repo_name"],
+                "module_id": row["module_id"],
+                "relative_path": row["relative_path"],
+                "resource_types": resource_types,
+            }
+        )
+
+    conn.close()
+    return result
+
+
+def clone_and_extract_module(
+    repo_clone_url: str,
+    module_relative_path: str,
+    output_dir: str,
+) -> str:
+    """
+    Clone repo, extract the specific module directory, return path.
+
+    Uses git clone --depth 1 for efficiency. Creates output_dir/module_xxx/
+    with the module's .tf files.
+    """
+    Path(output_dir).parent.mkdir(parents=True, exist_ok=True)
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        tmp = Path(tmpdir)
+        subprocess.run(
+            ["git", "clone", "--depth", "1", "--quiet", repo_clone_url, str(tmp)],
+            check=True,
+            capture_output=True,
+        )
+
+        module_src = tmp / module_relative_path
+        if not module_src.exists():
+            raise FileNotFoundError(f"Module path not found: {module_relative_path}")
+
+        # output_dir is the target directory for this module
+        out_subdir = Path(output_dir)
+        out_subdir.mkdir(parents=True, exist_ok=True)
+
+        # Copy .tf files
+        for tf_file in module_src.glob("*.tf"):
+            (out_subdir / tf_file.name).write_text(tf_file.read_text())
+
+        return str(out_subdir)
+
+
+def select_final_corpus(
+    candidate_dirs: list[str],
+    min_findings: int = 3,
+    max_findings: int = 50,
+    target_count: int = 200,
+    skip_manifest_path: str | None = None,
+) -> list[str]:
+    """
+    Run scanners on candidates, select those in the §3.1 finding-count band.
+
+    Returns module directory paths whose combined Trivy + Checkov finding count
+    is in ``[min_findings, max_findings]`` (paper §3.1: 3..50), up to
+    ``target_count`` modules.
+
+    Every rejected/failed candidate is recorded with a reason (audit Claim 5):
+    scan failures, too-few findings, and too-many findings are no longer
+    silently dropped. If ``skip_manifest_path`` is given, one JSON object per
+    skipped candidate is appended there; the reasons are also returned via the
+    logger. Previously this used ``except Exception: continue`` with no record,
+    which is why the "~9% churn" figure could not be reproduced.
+    """
+    import json as _json
+    import logging
+
+    from src.scanning.trivy_runner import run_trivy
+    from src.scanning.checkov_runner import run_checkov
+    from src.scanning.scanner_normalizer import (
+        normalize_trivy_findings,
+        normalize_checkov_findings,
+    )
+
+    log = logging.getLogger(__name__)
+
+    def _record_skip(module_dir: str, reason: str) -> None:
+        log.warning("corpus skip %s: %s", module_dir, reason)
+        if skip_manifest_path:
+            with open(skip_manifest_path, "a") as fh:
+                fh.write(_json.dumps({"kind": "candidate", "id": module_dir,
+                                      "reason": reason}) + "\n")
+
+    selected = []
+    for module_dir in candidate_dirs:
+        if len(selected) >= target_count:
+            break
+        try:
+            trivy_raw = run_trivy(module_dir)
+            checkov_raw = run_checkov(module_dir)
+            trivy_findings = normalize_trivy_findings(trivy_raw)
+            checkov_findings = normalize_checkov_findings(checkov_raw)
+            total = len(trivy_findings) + len(checkov_findings)
+        except Exception as e:  # noqa: BLE001 - record the skip, don't swallow
+            _record_skip(module_dir, f"scan failed: {type(e).__name__}: {e}")
+            continue
+
+        if total < min_findings:
+            _record_skip(module_dir, f"below min findings ({total} < {min_findings})")
+            continue
+        if total > max_findings:
+            _record_skip(module_dir, f"above max findings ({total} > {max_findings})")
+            continue
+        selected.append(module_dir)
+
+    return selected

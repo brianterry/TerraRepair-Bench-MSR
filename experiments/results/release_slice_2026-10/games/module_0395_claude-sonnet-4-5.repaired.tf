@@ -1,0 +1,172 @@
+provider "aws" {
+  region = "us-east-1"
+}
+
+resource "aws_s3_bucket" "CreateBucket" {
+  force_destroy = true
+  bucket        = "hxseclab${random_string.random_suffix.result}"
+
+  tags = {
+    Name        = "HxCloudLab"
+    Environment = "Lab"
+  }
+}
+
+resource "aws_s3_bucket_acl" "CreateBucketAcl" {
+  bucket = aws_s3_bucket.CreateBucket.id
+  acl    = "private"
+}
+
+resource "aws_s3_bucket_policy" "CreateBucketPolicy" {
+  bucket = aws_s3_bucket.CreateBucket.id
+  policy = <<EOF
+{
+    "Version": "2012-10-17",
+    "Id": "HuoXian",
+    "Statement": [
+        {
+            "Sid": "SecurityLab",
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "${data.aws_caller_identity.current.account_id}"
+            },
+            "Action": [
+                "s3:GetObject",
+                "s3:PutObject"
+            ],
+            "Resource": "arn:aws:s3:::${aws_s3_bucket.CreateBucket.id}/*"
+        },
+        {
+            "Sid": "EnforceSSLOnly",
+            "Effect": "Deny",
+            "Principal": "*",
+            "Action": "s3:*",
+            "Resource": [
+                "arn:aws:s3:::${aws_s3_bucket.CreateBucket.id}",
+                "arn:aws:s3:::${aws_s3_bucket.CreateBucket.id}/*"
+            ],
+            "Condition": {
+                "Bool": {
+                    "aws:SecureTransport": "false"
+                }
+            }
+        }
+    ]
+}
+EOF
+}
+
+resource "aws_s3_bucket_object" "PutObject" {
+  bucket       = aws_s3_bucket.CreateBucket.id
+  key          = "hx.png"
+  source       = "./file/hx.png"
+  acl          = "private"
+  content_type = "image/png"
+  kms_key_id   = aws_kms_key.s3_key.arn
+}
+
+resource "aws_s3_bucket_versioning" "CreateBucket" {
+  bucket = aws_s3_bucket.CreateBucket.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+resource "aws_s3_bucket_public_access_block" "CreateBucket" {
+  bucket = aws_s3_bucket.CreateBucket.id
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
+resource "aws_s3_bucket_logging" "CreateBucket" {
+  bucket = aws_s3_bucket.CreateBucket.id
+
+  target_bucket = aws_s3_bucket.log_bucket.id
+  target_prefix = "log/"
+}
+
+resource "aws_s3_bucket" "log_bucket" {
+  bucket        = "hxseclab${random_string.random_suffix.result}-logs"
+  force_destroy = true
+
+  tags = {
+    Name        = "HxCloudLab-Logs"
+    Environment = "Lab"
+  }
+}
+
+resource "aws_s3_bucket_acl" "log_bucket" {
+  bucket = aws_s3_bucket.log_bucket.id
+  acl    = "log-delivery-write"
+}
+
+resource "aws_s3_bucket_public_access_block" "log_bucket" {
+  bucket = aws_s3_bucket.log_bucket.id
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
+resource "aws_kms_key" "s3_key" {
+  description             = "KMS key for S3 bucket encryption"
+  deletion_window_in_days = 10
+  enable_key_rotation     = true
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "CreateBucket" {
+  bucket = aws_s3_bucket.CreateBucket.id
+
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm     = "aws:kms"
+      kms_master_key_id = aws_kms_key.s3_key.arn
+    }
+  }
+}
+
+resource "aws_s3_bucket_notification" "CreateBucket" {
+  bucket = aws_s3_bucket.CreateBucket.id
+}
+
+resource "aws_s3_bucket_lifecycle_configuration" "CreateBucket" {
+  bucket = aws_s3_bucket.CreateBucket.id
+
+  rule {
+    id     = "default"
+    status = "Enabled"
+
+    transition {
+      days          = 30
+      storage_class = "STANDARD_IA"
+    }
+  }
+}
+
+data "aws_caller_identity" "current" {}
+
+resource "random_string" "random_suffix" {
+  length  = 5
+  special = false
+  upper   = false
+}
+
+
+output "AwsCloud_BucketName" {
+  description = "S3 Bucket Name"
+  value       = "${aws_s3_bucket.CreateBucket.bucket}.s3.us-east-1.amazonaws.com"
+
+}
+
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "4.10.0"
+    }
+  }
+}

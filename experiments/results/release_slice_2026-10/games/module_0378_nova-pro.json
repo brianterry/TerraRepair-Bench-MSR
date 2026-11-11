@@ -1,0 +1,329 @@
+{
+  "module_id": "module_0378",
+  "model_id": "nova-pro",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0028",
+      "title": "aws_instance should activate session tokens for Instance Metadata Service.",
+      "severity": "HIGH",
+      "resource_name": "aws_instance.nginx1",
+      "resource_type": "aws_instance",
+      "file_path": "main.tf",
+      "start_line": 93,
+      "end_line": 121
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0099",
+      "title": "Missing description for security group.",
+      "severity": "LOW",
+      "resource_name": "aws_security_group.nginx_sg",
+      "resource_type": "aws_security_group",
+      "file_path": "main.tf",
+      "start_line": 71,
+      "end_line": 90
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "aws_security_group.nginx_sg",
+      "resource_type": "aws_security_group",
+      "file_path": "main.tf",
+      "start_line": 88,
+      "end_line": 88
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0124",
+      "title": "Missing description for security group rule.",
+      "severity": "LOW",
+      "resource_name": "aws_security_group.nginx_sg",
+      "resource_type": "aws_security_group",
+      "file_path": "main.tf",
+      "start_line": 76,
+      "end_line": 81
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0131",
+      "title": "Instance with unencrypted block device.",
+      "severity": "HIGH",
+      "resource_name": "aws_instance.nginx1",
+      "resource_type": "aws_instance",
+      "file_path": "main.tf",
+      "start_line": 93,
+      "end_line": 121
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0164",
+      "title": "Instances in a subnet should not receive a public IP address by default.",
+      "severity": "HIGH",
+      "resource_name": "aws_subnet.public_subnet1",
+      "resource_type": "aws_subnet",
+      "file_path": "main.tf",
+      "start_line": 51,
+      "end_line": 51
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0178",
+      "title": "VPC Flow Logs is a feature that enables you to capture information about the IP traffic going to and from network interfaces in your VPC. After you've created a flow log, you can view and retrieve its data in Amazon CloudWatch Logs. It is recommended that VPC Flow Logs be enabled for packet \"Rejects\" for VPCs.",
+      "severity": "MEDIUM",
+      "resource_name": "aws_vpc.app",
+      "resource_type": "aws_vpc",
+      "file_path": "main.tf",
+      "start_line": 37,
+      "end_line": 41
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_130",
+      "title": "Ensure VPC subnets do not assign public IP by default",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_subnet.public_subnet1",
+      "resource_type": "aws_subnet",
+      "file_path": "/main.tf",
+      "start_line": 48,
+      "end_line": 52
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_382",
+      "title": "Ensure no security groups allow egress from 0.0.0.0:0 to port -1",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group.nginx_sg",
+      "resource_type": "aws_security_group",
+      "file_path": "/main.tf",
+      "start_line": 71,
+      "end_line": 90
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_260",
+      "title": "Ensure no security groups allow ingress from 0.0.0.0:0 to port 80",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group.nginx_sg",
+      "resource_type": "aws_security_group",
+      "file_path": "/main.tf",
+      "start_line": 71,
+      "end_line": 90
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "Ensure every security group and rule has a description",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group.nginx_sg",
+      "resource_type": "aws_security_group",
+      "file_path": "/main.tf",
+      "start_line": 71,
+      "end_line": 90
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_135",
+      "title": "Ensure that EC2 is EBS optimized",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_instance.nginx1",
+      "resource_type": "aws_instance",
+      "file_path": "/main.tf",
+      "start_line": 93,
+      "end_line": 121
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_79",
+      "title": "Ensure Instance Metadata Service Version 1 is not enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_instance.nginx1",
+      "resource_type": "aws_instance",
+      "file_path": "/main.tf",
+      "start_line": 93,
+      "end_line": 121
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_8",
+      "title": "Ensure all data stored in the Launch configuration or instance Elastic Blocks Store is securely encrypted",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_instance.nginx1",
+      "resource_type": "aws_instance",
+      "file_path": "/main.tf",
+      "start_line": 93,
+      "end_line": 121
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_126",
+      "title": "Ensure that detailed monitoring is enabled for EC2 instances",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_instance.nginx1",
+      "resource_type": "aws_instance",
+      "file_path": "/main.tf",
+      "start_line": 93,
+      "end_line": 121
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_12",
+      "title": "Ensure the default security group of every VPC restricts all traffic",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_vpc.app",
+      "resource_type": "aws_vpc",
+      "file_path": "/main.tf",
+      "start_line": 37,
+      "end_line": 41
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_11",
+      "title": "Ensure VPC flow logging is enabled in all VPCs",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_vpc.app",
+      "resource_type": "aws_vpc",
+      "file_path": "/main.tf",
+      "start_line": 37,
+      "end_line": 41
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_41",
+      "title": "Ensure an IAM role is attached to EC2 instance",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_instance.nginx1",
+      "resource_type": "aws_instance",
+      "file_path": "/main.tf",
+      "start_line": 93,
+      "end_line": 121
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0028",
+      "title": "aws_instance should activate session tokens for Instance Metadata Service.",
+      "severity": "HIGH",
+      "resource_name": "aws_instance.nginx1",
+      "resource_type": "aws_instance",
+      "file_path": "main.tf",
+      "start_line": 75,
+      "end_line": 115
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0131",
+      "title": "Instance with unencrypted block device.",
+      "severity": "HIGH",
+      "resource_name": "aws_instance.nginx1",
+      "resource_type": "aws_instance",
+      "file_path": "main.tf",
+      "start_line": 75,
+      "end_line": 115
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_260",
+      "title": "Ensure no security groups allow ingress from 0.0.0.0:0 to port 80",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group.nginx_sg",
+      "resource_type": "aws_security_group",
+      "file_path": "/main.tf",
+      "start_line": 53,
+      "end_line": 73
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_135",
+      "title": "Ensure that EC2 is EBS optimized",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_instance.nginx1",
+      "resource_type": "aws_instance",
+      "file_path": "/main.tf",
+      "start_line": 75,
+      "end_line": 115
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_290",
+      "title": "Ensure IAM policies does not allow write access without constraints",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_role_policy.flow_logs",
+      "resource_type": "aws_iam_role_policy",
+      "file_path": "/main.tf",
+      "start_line": 140,
+      "end_line": 158
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_355",
+      "title": "Ensure no IAM policies documents allow \"*\" as a statement's resource for restrictable actions",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_role_policy.flow_logs",
+      "resource_type": "aws_iam_role_policy",
+      "file_path": "/main.tf",
+      "start_line": 140,
+      "end_line": 158
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_12",
+      "title": "Ensure the default security group of every VPC restricts all traffic",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_vpc.app",
+      "resource_type": "aws_vpc",
+      "file_path": "/main.tf",
+      "start_line": 18,
+      "end_line": 24
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_41",
+      "title": "Ensure an IAM role is attached to EC2 instance",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_instance.nginx1",
+      "resource_type": "aws_instance",
+      "file_path": "/main.tf",
+      "start_line": 75,
+      "end_line": 115
+    }
+  ],
+  "target_count": 18,
+  "resolved_count": 12,
+  "introduced_count": 2,
+  "unchanged_count": 6,
+  "repair_success_rate": 0.6666666666666666,
+  "regression_rate": 0.1111111111111111,
+  "net_delta": 10,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 4,
+      "introduced": 2,
+      "unchanged": 2
+    },
+    "data_protection": {
+      "resolved": 1,
+      "introduced": 0,
+      "unchanged": 2
+    },
+    "observability": {
+      "resolved": 3,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 4,
+      "introduced": 0,
+      "unchanged": 2
+    }
+  },
+  "repair_cost_usd": 0.0033940000000000003,
+  "repair_tokens": 3394,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0378_nova-pro.repaired.tf",
+  "raw_response_path": "module_0378_nova-pro.raw.txt",
+  "repaired_code_sha256": "be5e502918e918bf56b08b969f75e302e7119882c09298b0a2846fb1ea26d8c6"
+}

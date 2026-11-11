@@ -1,0 +1,98 @@
+{
+  "module_id": "module_0122",
+  "model_id": "nova-lite",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0001",
+      "title": "API Gateway stages for V1 and V2 should have access logging enabled",
+      "severity": "MEDIUM",
+      "resource_name": "aws_apigatewayv2_stage.webhook",
+      "resource_type": "aws_apigatewayv2_stage",
+      "file_path": "main.tf",
+      "start_line": 28,
+      "end_line": 49
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_309",
+      "title": "Ensure API GatewayV2 routes specify an authorization type",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_apigatewayv2_route.webhook",
+      "resource_type": "aws_apigatewayv2_route",
+      "file_path": "/main.tf",
+      "start_line": 12,
+      "end_line": 26
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_34",
+      "title": "AWS SSM Parameter should be Encrypted",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_ssm_parameter.runner_matcher_config",
+      "resource_type": "aws_ssm_parameter",
+      "file_path": "/webhook.tf",
+      "start_line": 9,
+      "end_line": 14
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_309",
+      "title": "Ensure API GatewayV2 routes specify an authorization type",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_apigatewayv2_route.webhook",
+      "resource_type": "aws_apigatewayv2_route",
+      "file_path": "/main.tf",
+      "start_line": 12,
+      "end_line": 25
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_34",
+      "title": "AWS SSM Parameter should be Encrypted",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_ssm_parameter.runner_matcher_config",
+      "resource_type": "aws_ssm_parameter",
+      "file_path": "/main.tf",
+      "start_line": 341,
+      "end_line": 347
+    }
+  ],
+  "target_count": 3,
+  "resolved_count": 1,
+  "introduced_count": 0,
+  "unchanged_count": 2,
+  "repair_success_rate": 0.3333333333333333,
+  "regression_rate": 0.0,
+  "net_delta": 1,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 1
+    },
+    "observability": {
+      "resolved": 1,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 1
+    }
+  },
+  "repair_cost_usd": 0.0012581,
+  "repair_tokens": 8512,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0122_nova-lite.repaired.tf",
+  "raw_response_path": "module_0122_nova-lite.raw.txt",
+  "repaired_code_sha256": "039d3b19a1d97638d726f449fd0a9d7973c38ef0ef00cba224f4ed2566ae9057"
+}

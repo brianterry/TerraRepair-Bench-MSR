@@ -1,0 +1,23 @@
+{
+  "findings_count": 3,
+  "findings": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_3",
+      "title": "",
+      "resource_name": "aws_ebs_volume.this"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_5",
+      "title": "",
+      "resource_name": "aws_security_group.this"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_2",
+      "title": "",
+      "resource_name": "aws_ebs_volume.this"
+    }
+  ]
+}

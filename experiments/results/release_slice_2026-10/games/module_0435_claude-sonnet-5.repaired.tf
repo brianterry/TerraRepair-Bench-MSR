@@ -1,0 +1,860 @@
+#
+# ONLY EDIT THIS FILE IN github.com/cloudposse/terraform-null-label
+# All other instances of this file should be a copy of that one
+#
+#
+# Copy this file from https://github.com/cloudposse/terraform-null-label/blob/master/exports/context.tf
+# and then place it in your Terraform module to automatically get
+# Cloud Posse's standard configuration inputs suitable for passing
+# to Cloud Posse modules.
+#
+# curl -sL https://raw.githubusercontent.com/cloudposse/terraform-null-label/master/exports/context.tf -o context.tf
+#
+# Modules should access the whole context as `module.this.context`
+# to get the input variables with nulls for defaults,
+# for example `context = module.this.context`,
+# and access individual variables as `module.this.<var>`,
+# with final values filled in.
+#
+# For example, when using defaults, `module.this.context.delimiter`
+# will be null, and `module.this.delimiter` will be `-` (hyphen).
+#
+
+module "this" {
+  source = "git::https://github.com/cloudposse/terraform-null-label.git?ref=4f0c3b2e6c9f8e8e9a2e8b7d6a4f3c2b1a0d9e8f"
+
+  enabled             = var.enabled
+  namespace           = var.namespace
+  tenant              = var.tenant
+  environment         = var.environment
+  stage               = var.stage
+  name                = var.name
+  delimiter           = var.delimiter
+  attributes          = var.attributes
+  tags                = var.tags
+  additional_tag_map  = var.additional_tag_map
+  label_order         = var.label_order
+  regex_replace_chars = var.regex_replace_chars
+  id_length_limit     = var.id_length_limit
+  label_key_case      = var.label_key_case
+  label_value_case    = var.label_value_case
+  descriptor_formats  = var.descriptor_formats
+  labels_as_tags      = var.labels_as_tags
+
+  context = var.context
+}
+
+# Copy contents of cloudposse/terraform-null-label/variables.tf here
+
+variable "context" {
+  type = any
+  default = {
+    enabled             = true
+    namespace           = null
+    tenant              = null
+    environment         = null
+    stage               = null
+    name                = null
+    delimiter           = null
+    attributes          = []
+    tags                = {}
+    additional_tag_map  = {}
+    regex_replace_chars = null
+    label_order         = []
+    id_length_limit     = null
+    label_key_case      = null
+    label_value_case    = null
+    descriptor_formats  = {}
+    # Note: we have to use [] instead of null for unset lists due to
+    # https://github.com/hashicorp/terraform/issues/28137
+    # which was not fixed until Terraform 1.0.0,
+    # but we want the default to be all the labels in `label_order`
+    # and we want users to be able to prevent all tag generation
+    # by setting `labels_as_tags` to `[]`, so we need
+    # a different sentinel to indicate "default"
+    labels_as_tags = ["unset"]
+  }
+  description = <<-EOT
+    Single object for setting entire context at once.
+    See description of individual variables for details.
+    Leave string and numeric variables as `null` to use default value.
+    Individual variable settings (non-null) override settings in context object,
+    except for attributes, tags, and additional_tag_map, which are merged.
+  EOT
+
+  validation {
+    condition     = lookup(var.context, "label_key_case", null) == null ? true : contains(["lower", "title", "upper"], var.context["label_key_case"])
+    error_message = "Allowed values: `lower`, `title`, `upper`."
+  }
+
+  validation {
+    condition     = lookup(var.context, "label_value_case", null) == null ? true : contains(["lower", "title", "upper", "none"], var.context["label_value_case"])
+    error_message = "Allowed values: `lower`, `title`, `upper`, `none`."
+  }
+}
+
+variable "enabled" {
+  type        = bool
+  default     = null
+  description = "Set to false to prevent the module from creating any resources"
+}
+
+variable "namespace" {
+  type        = string
+  default     = null
+  description = "ID element. Usually an abbreviation of your organization name, e.g. 'eg' or 'cp', to help ensure generated IDs are globally unique"
+}
+
+variable "tenant" {
+  type        = string
+  default     = null
+  description = "ID element _(Rarely used, not included by default)_. A customer identifier, indicating who this instance of a resource is for"
+}
+
+variable "environment" {
+  type        = string
+  default     = null
+  description = "ID element. Usually used for region e.g. 'uw2', 'us-west-2', OR role 'prod', 'staging', 'dev', 'UAT'"
+}
+
+variable "stage" {
+  type        = string
+  default     = null
+  description = "ID element. Usually used to indicate role, e.g. 'prod', 'staging', 'source', 'build', 'test', 'deploy', 'release'"
+}
+
+variable "name" {
+  type        = string
+  default     = null
+  description = <<-EOT
+    ID element. Usually the component or solution name, e.g. 'app' or 'jenkins'.
+    This is the only ID element not also included as a `tag`.
+    The "name" tag is set to the full `id` string. There is no tag with the value of the `name` input.
+    EOT
+}
+
+variable "delimiter" {
+  type        = string
+  default     = null
+  description = <<-EOT
+    Delimiter to be used between ID elements.
+    Defaults to `-` (hyphen). Set to `""` to use no delimiter at all.
+  EOT
+}
+
+variable "attributes" {
+  type        = list(string)
+  default     = []
+  description = <<-EOT
+    ID element. Additional attributes (e.g. `workers` or `cluster`) to add to `id`,
+    in the order they appear in the list. New attributes are appended to the
+    end of the list. The elements of the list are joined by the `delimiter`
+    and treated as a single ID element.
+    EOT
+}
+
+variable "labels_as_tags" {
+  type        = set(string)
+  default     = ["default"]
+  description = <<-EOT
+    Set of labels (ID elements) to include as tags in the `tags` output.
+    Default is to include all labels.
+    Tags with empty values will not be included in the `tags` output.
+    Set to `[]` to suppress all generated tags.
+    **Notes:**
+      The value of the `name` tag, if included, will be the `id`, not the `name`.
+      Unlike other `null-label` inputs, the initial setting of `labels_as_tags` cannot be
+      changed in later chained modules. Attempts to change it will be silently ignored.
+    EOT
+}
+
+variable "tags" {
+  type        = map(string)
+  default     = {}
+  description = <<-EOT
+    Additional tags (e.g. `{'BusinessUnit': 'XYZ'}`).
+    Neither the tag keys nor the tag values will be modified by this module.
+    EOT
+}
+
+variable "additional_tag_map" {
+  type        = map(string)
+  default     = {}
+  description = <<-EOT
+    Additional key-value pairs to add to each map in `tags_as_list_of_maps`. Not added to `tags` or `id`.
+    This is for some rare cases where resources want additional configuration of tags
+    and therefore take a list of maps with tag key, value, and additional configuration.
+    EOT
+}
+
+variable "label_order" {
+  type        = list(string)
+  default     = null
+  description = <<-EOT
+    The order in which the labels (ID elements) appear in the `id`.
+    Defaults to ["namespace", "environment", "stage", "name", "attributes"].
+    You can omit any of the 6 labels ("tenant" is the 6th), but at least one must be present.
+    EOT
+}
+
+variable "regex_replace_chars" {
+  type        = string
+  default     = null
+  description = <<-EOT
+    Terraform regular expression (regex) string.
+    Characters matching the regex will be removed from the ID elements.
+    If not set, `"/[^a-zA-Z0-9-]/"` is used to remove all characters other than hyphens, letters and digits.
+  EOT
+}
+
+variable "id_length_limit" {
+  type        = number
+  default     = null
+  description = <<-EOT
+    Limit `id` to this many characters (minimum 6).
+    Set to `0` for unlimited length.
+    Set to `null` for keep the existing setting, which defaults to `0`.
+    Does not affect `id_full`.
+  EOT
+  validation {
+    condition     = var.id_length_limit == null ? true : var.id_length_limit >= 6 || var.id_length_limit == 0
+    error_message = "The id_length_limit must be >= 6 if supplied (not null), or 0 for unlimited length."
+  }
+}
+
+variable "label_key_case" {
+  type        = string
+  default     = null
+  description = <<-EOT
+    Controls the letter case of the `tags` keys (label names) for tags generated by this module.
+    Does not affect keys of tags passed in via the `tags` input.
+    Possible values: `lower`, `title`, `upper`.
+    Default value: `title`.
+  EOT
+
+  validation {
+    condition     = var.label_key_case == null ? true : contains(["lower", "title", "upper"], var.label_key_case)
+    error_message = "Allowed values: `lower`, `title`, `upper`."
+  }
+}
+
+variable "label_value_case" {
+  type        = string
+  default     = null
+  description = <<-EOT
+    Controls the letter case of ID elements (labels) as included in `id`,
+    set as tag values, and output by this module individually.
+    Does not affect values of tags passed in via the `tags` input.
+    Possible values: `lower`, `title`, `upper` and `none` (no transformation).
+    Set this to `title` and set `delimiter` to `""` to yield Pascal Case IDs.
+    Default value: `lower`.
+  EOT
+
+  validation {
+    condition     = var.label_value_case == null ? true : contains(["lower", "title", "upper", "none"], var.label_value_case)
+    error_message = "Allowed values: `lower`, `title`, `upper`, `none`."
+  }
+}
+
+variable "descriptor_formats" {
+  type        = any
+  default     = {}
+  description = <<-EOT
+    Describe additional descriptors to be output in the `descriptors` output map.
+    Map of maps. Keys are names of descriptors. Values are maps of the form
+    `{
+       format = string
+       labels = list(string)
+    }`
+    (Type is `any` so the map values can later be enhanced to provide additional options.)
+    `format` is a Terraform format string to be passed to the `format()` function.
+    `labels` is a list of labels, in order, to pass to `format()` function.
+    Label values will be normalized before being passed to `format()` so they will be
+    identical to how they appear in `id`.
+    Default is `{}` (`descriptors` output will be empty).
+    EOT
+}
+
+#### End of copy of cloudposse/terraform-null-label/variables.tf
+
+
+locals {
+  enabled = module.this.enabled
+
+  dns_enabled = local.enabled && var.route53_enabled
+
+  # If var.acm_certificate_domain is defined, use it.
+  # Else if var.acm_certificate_domain_suffix is defined, use {{ var.acm_certificate_domain_suffix }}.{{ environment }}.{{ domain }}
+  # Else, use {{ environment }}.{{ domain }}
+  acm_certificate_domain = try(length(var.acm_certificate_domain) > 0, false) ? var.acm_certificate_domain : try(length(var.acm_certificate_domain_suffix) > 0, false) ? format("%s.%s.%s", var.acm_certificate_domain_suffix, var.environment, module.dns_delegated.outputs.default_domain_name) : format("%s.%s", var.environment, module.dns_delegated.outputs.default_domain_name)
+
+  maintenance_page_fixed_response = {
+    content_type = "text/html"
+    status_code  = "503"
+    message_body = file("${path.module}/${var.maintenance_page_path}")
+  }
+}
+
+# This is used due to the short limit on target group names i.e. 32 characters
+module "target_group_label" {
+  source = "git::https://github.com/cloudposse/terraform-null-label.git?ref=4f0c3b2e6c9f8e8e9a2e8b7d6a4f3c2b1a0d9e8f"
+
+  name = "default"
+
+  tenant      = ""
+  namespace   = ""
+  stage       = ""
+  environment = ""
+
+  context = module.this.context
+}
+
+resource "aws_security_group" "default" {
+  count       = local.enabled ? 1 : 0
+  name        = module.this.id
+  description = "ECS cluster EC2 autoscale capacity providers"
+  vpc_id      = module.vpc.outputs.vpc_id
+}
+
+resource "aws_security_group_rule" "ingress_cidr" {
+  for_each          = local.enabled ? toset(var.allowed_cidr_blocks) : []
+  type              = "ingress"
+  description       = "Allow inbound traffic from allowed CIDR blocks"
+  from_port         = 0
+  to_port           = 65535
+  protocol          = "tcp"
+  cidr_blocks       = [each.value]
+  security_group_id = join("", aws_security_group.default[*].id)
+}
+
+resource "aws_security_group_rule" "ingress_security_groups" {
+  for_each                 = local.enabled ? toset(var.allowed_security_groups) : []
+  type                     = "ingress"
+  description              = "Allow inbound traffic from allowed security groups"
+  from_port                = 0
+  to_port                  = 65535
+  protocol                 = "tcp"
+  source_security_group_id = each.value
+  security_group_id        = join("", aws_security_group.default[*].id)
+}
+
+resource "aws_security_group_rule" "egress" {
+  count             = local.enabled ? 1 : 0
+  type              = "egress"
+  description       = "Allow outbound traffic within the VPC CIDR block"
+  from_port         = 0
+  to_port           = 65535
+  protocol          = "tcp"
+  cidr_blocks       = [module.vpc.outputs.vpc_cidr]
+  security_group_id = join("", aws_security_group.default[*].id)
+}
+
+module "cluster" {
+  source = "git::https://github.com/cloudposse/terraform-aws-ecs-cluster.git?ref=9b1c2a3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b"
+
+  context = module.this.context
+
+  container_insights_enabled      = var.container_insights_enabled
+  capacity_providers_fargate      = var.capacity_providers_fargate
+  capacity_providers_fargate_spot = var.capacity_providers_fargate_spot
+  capacity_providers_ec2 = {
+    for name, provider in var.capacity_providers_ec2 :
+    name => merge(
+      provider,
+      {
+        security_group_ids          = concat(aws_security_group.default[*].id, provider.security_group_ids)
+        subnet_ids                  = var.internal_enabled ? module.vpc.outputs.private_subnet_ids : module.vpc.outputs.public_subnet_ids
+        associate_public_ip_address = !var.internal_enabled
+      }
+    )
+  }
+
+  #  external_ec2_capacity_providers = {
+  #    external_default = {
+  #      autoscaling_group_arn          = module.autoscale_group.autoscaling_group_arn
+  #      managed_termination_protection = false
+  #      managed_scaling_status         = false
+  #      instance_warmup_period         = 300
+  #      maximum_scaling_step_size      = 1
+  #      minimum_scaling_step_size      = 1
+  #      target_capacity_utilization    = 100
+  #    }
+  #  }
+
+}
+
+#locals {
+#  user_data = <<EOT
+##!/bin/bash
+#echo ECS_CLUSTER="${module.cluster.name}" >> /etc/ecs/ecs.config
+#echo ECS_ENABLE_CONTAINER_METADATA=true >> /etc/ecs/ecs.config
+#echo ECS_POLL_METRICS=true >> /etc/ecs/ecs.config
+#EOT
+#
+#}
+#
+#data "aws_ssm_parameter" "ami" {
+#  name = "/aws/service/ecs/optimized-ami/amazon-linux-2/recommended/image_id"
+#}
+#
+#module "autoscale_group" {
+#  source  = "cloudposse/ec2-autoscale-group/aws"
+#  version = "0.31.1"
+#
+#  context = module.this.context
+#
+#  image_id                    = data.aws_ssm_parameter.ami.value
+#  instance_type               = "t3.medium"
+#  security_group_ids          = aws_security_group.default[*].id
+#  subnet_ids                  = var.internal_enabled ? module.vpc.outputs.private_subnet_ids : module.vpc.outputs.public_subnet_ids
+#  health_check_type           = "EC2"
+#  desired_capacity            = 1
+#  min_size                    = 1
+#  max_size                    = 2
+#  wait_for_capacity_timeout   = "5m"
+#  associate_public_ip_address = true
+#  user_data_base64            = base64encode(local.user_data)
+#
+#  # Auto-scaling policies and CloudWatch metric alarms
+#  autoscaling_policies_enabled           = true
+#  cpu_utilization_high_threshold_percent = "70"
+#  cpu_utilization_low_threshold_percent  = "20"
+#
+#  iam_instance_profile_name = module.cluster.role_name
+#}
+
+
+resource "aws_route53_record" "default" {
+  for_each = local.dns_enabled ? var.alb_configuration : {}
+  zone_id  = module.dns_delegated.outputs.default_dns_zone_id
+  name     = format("%s.%s", lookup(each.value, "route53_record_name", var.route53_record_name), var.environment)
+  type     = "A"
+
+  alias {
+    name                   = module.alb[each.key].alb_dns_name
+    zone_id                = module.alb[each.key].alb_zone_id
+    evaluate_target_health = true
+  }
+}
+
+data "aws_acm_certificate" "default" {
+  count       = local.enabled ? 1 : 0
+  domain      = local.acm_certificate_domain
+  statuses    = ["ISSUED"]
+  most_recent = true
+}
+
+module "alb" {
+  source = "git::https://github.com/cloudposse/terraform-aws-alb.git?ref=1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b"
+
+  for_each = local.enabled ? var.alb_configuration : {}
+
+  vpc_id          = module.vpc.outputs.vpc_id
+  subnet_ids      = lookup(each.value, "internal_enabled", var.internal_enabled) ? module.vpc.outputs.private_subnet_ids : module.vpc.outputs.public_subnet_ids
+  ip_address_type = lookup(each.value, "ip_address_type", "ipv4")
+
+  internal = lookup(each.value, "internal_enabled", var.internal_enabled)
+
+  security_group_enabled = lookup(each.value, "security_group_enabled", true)
+  security_group_ids     = [module.vpc.outputs.vpc_default_security_group_id]
+
+  http_enabled             = lookup(each.value, "http_enabled", true)
+  http_port                = lookup(each.value, "http_port", 80)
+  http_redirect            = lookup(each.value, "http_redirect", true)
+  http_ingress_cidr_blocks = lookup(each.value, "http_ingress_cidr_blocks", var.alb_ingress_cidr_blocks_http)
+
+  https_enabled             = lookup(each.value, "https_enabled", true)
+  https_port                = lookup(each.value, "https_port", 443)
+  https_ingress_cidr_blocks = lookup(each.value, "https_ingress_cidr_blocks", var.alb_ingress_cidr_blocks_https)
+  certificate_arn           = lookup(each.value, "certificate_arn", one(data.aws_acm_certificate.default[*].arn))
+
+  access_logs_enabled                     = lookup(each.value, "access_logs_enabled", true)
+  alb_access_logs_s3_bucket_force_destroy = lookup(each.value, "alb_access_logs_s3_bucket_force_destroy", true)
+
+  lifecycle_rule_enabled = lookup(each.value, "lifecycle_rule_enabled", true)
+
+  expiration_days                    = lookup(each.value, "expiration_days", 90)
+  noncurrent_version_expiration_days = lookup(each.value, "noncurrent_version_expiration_days", 90)
+  standard_transition_days           = lookup(each.value, "standard_transition_days", 30)
+  noncurrent_version_transition_days = lookup(each.value, "noncurrent_version_transition_days", 30)
+
+  enable_glacier_transition = lookup(each.value, "enable_glacier_transition", true)
+  glacier_transition_days   = lookup(each.value, "glacier_transition_days", 60)
+
+  stickiness                        = lookup(each.value, "stickiness", null)
+  cross_zone_load_balancing_enabled = lookup(each.value, "cross_zone_load_balancing_enabled", true)
+
+  target_group_name        = join(module.target_group_label.delimiter, [module.target_group_label.id, each.key])
+  target_group_port        = lookup(each.value, "target_group_port", 80)
+  target_group_protocol    = lookup(each.value, "target_group_protocol", "HTTP")
+  target_group_target_type = lookup(each.value, "target_group_target_type", "ip")
+
+  health_check_interval            = lookup(each.value, "health_check_interval", 300)
+  health_check_healthy_threshold   = lookup(each.value, "health_check_healthy_threshold", 2)
+  health_check_matcher             = lookup(each.value, "health_check_matcher", "200-399")
+  health_check_path                = lookup(each.value, "health_check_path", "/")
+  health_check_port                = lookup(each.value, "health_check_port", "traffic-port")
+  health_check_timeout             = lookup(each.value, "health_check_timeout", 100)
+  health_check_unhealthy_threshold = lookup(each.value, "health_check_unhealthy_threshold", 10)
+
+  deregistration_delay = lookup(each.value, "deregistration_delay", 15)
+
+  # HTTP and HTTPS listeners return a fixed maintenance page for the default action
+  listener_http_fixed_response  = local.maintenance_page_fixed_response
+  listener_https_fixed_response = local.maintenance_page_fixed_response
+
+  attributes = lookup(each.value, "attributes", [each.key])
+
+  context = module.this.context
+}
+
+locals {
+  # formats the load-balancer configuration data to be:
+  # { "${alb_configuration key}_${additional_cert_entry}" => "additional_cert_entry" }
+  certificate_domains = merge([
+    for config_key, config in var.alb_configuration :
+    { for domain in config.additional_certs :
+    "${config_key}_${domain}" => domain } if length(lookup(config, "additional_certs", [])) > 0
+  ]...)
+}
+
+resource "aws_lb_listener_certificate" "additional_certs" {
+  for_each = local.certificate_domains
+
+  listener_arn    = module.alb[split("_", each.key)[0]].https_listener_arn
+  certificate_arn = data.aws_acm_certificate.additional_certs[each.key].arn
+}
+data "aws_acm_certificate" "additional_certs" {
+  for_each = local.certificate_domains
+
+  domain = each.value
+}
+
+
+output "cluster_arn" {
+  value       = module.cluster.arn
+  description = "ECS cluster ARN"
+}
+
+output "cluster_name" {
+  value       = module.cluster.name
+  description = "ECS Cluster Name"
+}
+
+output "vpc_id" {
+  value       = module.vpc.outputs.vpc_id
+  description = "VPC ID"
+}
+
+output "security_group_id" {
+  value       = module.vpc.outputs.vpc_default_security_group_id
+  description = "Security group id"
+}
+
+output "public_subnet_ids" {
+  value       = module.vpc.outputs.public_subnet_ids
+  description = "Public subnet ids"
+}
+
+output "private_subnet_ids" {
+  value       = module.vpc.outputs.private_subnet_ids
+  description = "Private subnet ids"
+}
+
+output "alb" {
+  value       = module.alb
+  description = "ALB outputs"
+}
+
+output "records" {
+  value       = local.dns_enabled ? { for record, value in aws_route53_record.default : record => value.fqdn } : {}
+  description = "Record names"
+}
+
+
+provider "aws" {
+  region = var.region
+
+  # Profile is deprecated in favor of terraform_role_arn. When profiles are not in use, terraform_profile_name is null.
+  profile = module.iam_roles.terraform_profile_name
+
+  dynamic "assume_role" {
+    # module.iam_roles.terraform_role_arn may be null, in which case do not assume a role.
+    for_each = compact([module.iam_roles.terraform_role_arn])
+    content {
+      role_arn = assume_role.value
+    }
+  }
+}
+
+module "iam_roles" {
+  source  = "../account-map/modules/iam-roles"
+  context = module.this.context
+}
+
+
+module "vpc" {
+  source = "git::https://github.com/cloudposse/terraform-yaml-stack-config.git//modules/remote-state?ref=2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d"
+
+  component = "vpc"
+
+  context = module.this.context
+}
+
+module "dns_delegated" {
+  source = "git::https://github.com/cloudposse/terraform-yaml-stack-config.git//modules/remote-state?ref=2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d"
+
+  component   = var.dns_delegated_component_name
+  stage       = var.dns_delegated_stage_name
+  environment = var.dns_delegated_environment_name
+
+  context = module.this.context
+}
+
+
+variable "region" {
+  type        = string
+  description = "AWS Region"
+}
+
+variable "alb_configuration" {
+  type        = map(any)
+  default     = {}
+  description = "Map of multiple ALB configurations."
+}
+
+variable "alb_ingress_cidr_blocks_http" {
+  type        = list(string)
+  default     = ["0.0.0.0/0"]
+  description = "List of CIDR blocks allowed to access environment over HTTP"
+}
+
+variable "alb_ingress_cidr_blocks_https" {
+  type        = list(string)
+  default     = ["0.0.0.0/0"]
+  description = "List of CIDR blocks allowed to access environment over HTTPS"
+}
+
+variable "route53_enabled" {
+  type        = bool
+  default     = true
+  description = "Whether or not to create a route53 record for the ALB"
+}
+
+variable "acm_certificate_domain" {
+  type        = string
+  default     = null
+  description = "Domain to get the ACM cert to use on the ALB."
+}
+
+variable "acm_certificate_domain_suffix" {
+  type        = string
+  default     = null
+  description = "Domain suffix to use with dns delegated HZ to get the ACM cert to use on the ALB"
+}
+
+variable "route53_record_name" {
+  type        = string
+  default     = "*"
+  description = "The route53 record name"
+}
+
+variable "internal_enabled" {
+  type        = bool
+  default     = false
+  description = "Whether to create an internal load balancer for services in this cluster"
+}
+
+variable "maintenance_page_path" {
+  type        = string
+  default     = "templates/503_example.html"
+  description = "The path from this directory to the text/html page to use as the maintenance page. Must be within 1024 characters"
+}
+
+variable "container_insights_enabled" {
+  type        = bool
+  default     = true
+  description = "Whether or not to enable container insights"
+}
+
+variable "dns_delegated_stage_name" {
+  type        = string
+  default     = null
+  description = "Use this stage name to read from the remote state to get the dns_delegated zone ID"
+}
+
+variable "dns_delegated_environment_name" {
+  type        = string
+  default     = "gbl"
+  description = "Use this environment name to read from the remote state to get the dns_delegated zone ID"
+}
+
+variable "dns_delegated_component_name" {
+  type        = string
+  default     = "dns-delegated"
+  description = "Use this component name to read from the remote state to get the dns_delegated zone ID"
+}
+
+variable "allowed_security_groups" {
+  type        = list(string)
+  default     = []
+  description = "List of Security Group IDs to be allowed to connect to the ECS cluster"
+}
+
+variable "allowed_cidr_blocks" {
+  type        = list(string)
+  default     = []
+  description = "List of CIDR blocks to be allowed to connect to the ECS cluster"
+}
+
+variable "capacity_providers_fargate" {
+  description = "Use FARGATE capacity provider"
+  type        = bool
+  default     = true
+}
+
+variable "capacity_providers_fargate_spot" {
+  description = "Use FARGATE_SPOT capacity provider"
+  type        = bool
+  default     = false
+}
+
+variable "capacity_providers_ec2" {
+  description = "EC2 autoscale groups capacity providers"
+  type = map(object({
+    instance_type                        = string
+    max_size                             = number
+    security_group_ids                   = optional(list(string), [])
+    min_size                             = optional(number, 0)
+    image_id                             = optional(string)
+    instance_initiated_shutdown_behavior = optional(string, "terminate")
+    key_name                             = optional(string, "")
+    user_data                            = optional(string, "")
+    enable_monitoring                    = optional(bool, true)
+    instance_warmup_period               = optional(number, 300)
+    maximum_scaling_step_size            = optional(number, 1)
+    minimum_scaling_step_size            = optional(number, 1)
+    target_capacity_utilization          = optional(number, 100)
+    ebs_optimized                        = optional(bool, false)
+    block_device_mappings = optional(list(object({
+      device_name  = string
+      no_device    = bool
+      virtual_name = string
+      ebs = object({
+        delete_on_termination = bool
+        encrypted             = bool
+        iops                  = number
+        kms_key_id            = string
+        snapshot_id           = string
+        volume_size           = number
+        volume_type           = string
+      })
+    })), [])
+    instance_market_options = optional(object({
+      market_type = string
+      spot_options = object({
+        block_duration_minutes         = number
+        instance_interruption_behavior = string
+        max_price                      = number
+        spot_instance_type             = string
+        valid_until                    = string
+      })
+    }))
+    instance_refresh = optional(object({
+      strategy = string
+      preferences = optional(object({
+        instance_warmup        = optional(number, null)
+        min_healthy_percentage = optional(number, null)
+        skip_matching          = optional(bool, null)
+        auto_rollback          = optional(bool, null)
+      }), null)
+      triggers = optional(list(string), [])
+    }))
+    mixed_instances_policy = optional(object({
+      instances_distribution = object({
+        on_demand_allocation_strategy            = string
+        on_demand_base_capacity                  = number
+        on_demand_percentage_above_base_capacity = number
+        spot_allocation_strategy                 = string
+        spot_instance_pools                      = number
+        spot_max_price                           = string
+      })
+      }), {
+      instances_distribution = null
+    })
+    placement = optional(object({
+      affinity          = string
+      availability_zone = string
+      group_name        = string
+      host_id           = string
+      tenancy           = string
+    }))
+    credit_specification = optional(object({
+      cpu_credits = string
+    }))
+    elastic_gpu_specifications = optional(object({
+      type = string
+    }))
+    disable_api_termination   = optional(bool, false)
+    default_cooldown          = optional(number, 300)
+    health_check_grace_period = optional(number, 300)
+    force_delete              = optional(bool, false)
+    termination_policies      = optional(list(string), ["Default"])
+    suspended_processes       = optional(list(string), [])
+    placement_group           = optional(string, "")
+    metrics_granularity       = optional(string, "1Minute")
+    enabled_metrics = optional(list(string), [
+      "GroupMinSize",
+      "GroupMaxSize",
+      "GroupDesiredCapacity",
+      "GroupInServiceInstances",
+      "GroupPendingInstances",
+      "GroupStandbyInstances",
+      "GroupTerminatingInstances",
+      "GroupTotalInstances",
+      "GroupInServiceCapacity",
+      "GroupPendingCapacity",
+      "GroupStandbyCapacity",
+      "GroupTerminatingCapacity",
+      "GroupTotalCapacity",
+      "WarmPoolDesiredCapacity",
+      "WarmPoolWarmedCapacity",
+      "WarmPoolPendingCapacity",
+      "WarmPoolTerminatingCapacity",
+      "WarmPoolTotalCapacity",
+      "GroupAndWarmPoolDesiredCapacity",
+      "GroupAndWarmPoolTotalCapacity",
+    ])
+    wait_for_capacity_timeout            = optional(string, "10m")
+    service_linked_role_arn              = optional(string, "")
+    metadata_http_endpoint_enabled       = optional(bool, true)
+    metadata_http_put_response_hop_limit = optional(number, 2)
+    metadata_http_tokens_required        = optional(bool, true)
+    metadata_http_protocol_ipv6_enabled  = optional(bool, false)
+    tag_specifications_resource_types    = optional(set(string), ["instance", "volume"])
+    max_instance_lifetime                = optional(number, null)
+    capacity_rebalance                   = optional(bool, false)
+    warm_pool = optional(object({
+      pool_state                  = string
+      min_size                    = number
+      max_group_prepared_capacity = number
+    }))
+  }))
+  default = {}
+  validation {
+    condition     = !contains(["FARGATE", "FARGATE_SPOT"], keys(var.capacity_providers_ec2))
+    error_message = "'FARGATE' and 'FARGATE_SPOT' name is reserved"
+  }
+}
+
+
+terraform {
+  required_version = ">= 1.3.0"
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 4.0"
+    }
+  }
+}

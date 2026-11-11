@@ -1,0 +1,120 @@
+{
+  "module_id": "module_0197",
+  "model_id": "grok-4-6",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "aws_vpc_security_group_egress_rule.this[\"ipv4_default\"]",
+      "resource_type": "aws_vpc_security_group_egress_rule",
+      "file_path": "main.tf",
+      "start_line": 779,
+      "end_line": 779
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "aws_vpc_security_group_egress_rule.this[\"ipv6_default\"]",
+      "resource_type": "aws_vpc_security_group_egress_rule",
+      "file_path": "main.tf",
+      "start_line": 780,
+      "end_line": 780
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0131",
+      "title": "Instance with unencrypted block device.",
+      "severity": "HIGH",
+      "resource_name": "aws_instance.this[0]",
+      "resource_type": "aws_instance",
+      "file_path": "main.tf",
+      "start_line": 41,
+      "end_line": 229
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_3",
+      "title": "Ensure all data stored in the EBS is securely encrypted",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_ebs_volume.this",
+      "resource_type": "aws_ebs_volume",
+      "file_path": "/main.tf",
+      "start_line": 633,
+      "end_line": 659
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_5",
+      "title": "Ensure that Security Groups are attached to another resource",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group.this",
+      "resource_type": "aws_security_group",
+      "file_path": "/main.tf",
+      "start_line": 753,
+      "end_line": 772
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_2",
+      "title": "Ensure that only encrypted EBS volumes are attached to EC2 instances",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_ebs_volume.this",
+      "resource_type": "aws_ebs_volume",
+      "file_path": "/main.tf",
+      "start_line": 633,
+      "end_line": 659
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0131",
+      "title": "Instance with unencrypted block device.",
+      "severity": "HIGH",
+      "resource_name": "aws_instance.this[0]",
+      "resource_type": "aws_instance",
+      "file_path": "main.tf",
+      "start_line": 41,
+      "end_line": 229
+    }
+  ],
+  "target_count": 6,
+  "resolved_count": 5,
+  "introduced_count": 0,
+  "unchanged_count": 1,
+  "repair_success_rate": 0.8333333333333334,
+  "regression_rate": 0.0,
+  "net_delta": 5,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 2,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 2,
+      "introduced": 0,
+      "unchanged": 1
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 1,
+      "introduced": 0,
+      "unchanged": 0
+    }
+  },
+  "repair_cost_usd": 0.17916600000000002,
+  "repair_tokens": 39939,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0197_grok-4-6.repaired.tf",
+  "raw_response_path": "module_0197_grok-4-6.raw.txt",
+  "repaired_code_sha256": "329e8ce1d1015cbe740dcbf4b9fcfd5d67ecde30f3b06a4dc1b7fbd418cb6f81"
+}

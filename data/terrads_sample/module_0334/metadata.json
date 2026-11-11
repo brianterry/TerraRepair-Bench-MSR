@@ -1,0 +1,59 @@
+{
+  "findings_count": 9,
+  "findings": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_166",
+      "title": "",
+      "resource_name": "aws_backup_vault.this"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "iam_policy"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "this_role"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "backup_role"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_79",
+      "title": "",
+      "resource_name": "aws_launch_template.this"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_341",
+      "title": "",
+      "resource_name": "aws_launch_template.this"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "ec2_sg"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "efs_sg"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_19",
+      "title": "",
+      "resource_name": "aws_eip.this"
+    }
+  ]
+}

@@ -1,0 +1,175 @@
+{
+  "module_id": "module_0385",
+  "model_id": "claude-sonnet-4-5",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "aws_vpc_security_group_egress_rule.docker_machine[\"allow_http_ipv4\"]",
+      "resource_type": "aws_vpc_security_group_egress_rule",
+      "file_path": "docker_machine_security_group.tf",
+      "start_line": 53,
+      "end_line": 53
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "aws_vpc_security_group_egress_rule.docker_machine[\"allow_http_ipv6\"]",
+      "resource_type": "aws_vpc_security_group_egress_rule",
+      "file_path": "docker_machine_security_group.tf",
+      "start_line": 54,
+      "end_line": 54
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "aws_vpc_security_group_egress_rule.docker_machine[\"allow_https_ipv4\"]",
+      "resource_type": "aws_vpc_security_group_egress_rule",
+      "file_path": "docker_machine_security_group.tf",
+      "start_line": 53,
+      "end_line": 53
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "aws_vpc_security_group_egress_rule.docker_machine[\"allow_https_ipv6\"]",
+      "resource_type": "aws_vpc_security_group_egress_rule",
+      "file_path": "docker_machine_security_group.tf",
+      "start_line": 54,
+      "end_line": 54
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "aws_vpc_security_group_egress_rule.docker_machine[\"allow_ssh_ipv4\"]",
+      "resource_type": "aws_vpc_security_group_egress_rule",
+      "file_path": "docker_machine_security_group.tf",
+      "start_line": 53,
+      "end_line": 53
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "aws_vpc_security_group_egress_rule.docker_machine[\"allow_ssh_ipv6\"]",
+      "resource_type": "aws_vpc_security_group_egress_rule",
+      "file_path": "docker_machine_security_group.tf",
+      "start_line": 54,
+      "end_line": 54
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "aws_vpc_security_group_egress_rule.runner[\"allow_https_ipv4\"]",
+      "resource_type": "aws_vpc_security_group_egress_rule",
+      "file_path": "runner_security_group.tf",
+      "start_line": 49,
+      "end_line": 49
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "aws_vpc_security_group_egress_rule.runner[\"allow_https_ipv6\"]",
+      "resource_type": "aws_vpc_security_group_egress_rule",
+      "file_path": "runner_security_group.tf",
+      "start_line": 50,
+      "end_line": 50
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0017",
+      "title": "CloudWatch log groups should be encrypted using CMK",
+      "severity": "LOW",
+      "resource_name": "aws_cloudwatch_log_group.environment[0]",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "main.tf",
+      "start_line": 847,
+      "end_line": 847
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_341",
+      "title": "Ensure Launch template should not have a metadata response hop limit greater than 1",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_launch_template.fleet_gitlab_runner[0]",
+      "resource_type": "aws_launch_template",
+      "file_path": "/main.tf",
+      "start_line": 423,
+      "end_line": 482
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_341",
+      "title": "Ensure Launch template should not have a metadata response hop limit greater than 1",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_launch_template.gitlab_runner_instance",
+      "resource_type": "aws_launch_template",
+      "file_path": "/main.tf",
+      "start_line": 1071,
+      "end_line": 1150
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_19",
+      "title": "Ensure that all EIP addresses allocated to a VPC are attached to EC2 instances",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_eip.gitlab_runner",
+      "resource_type": "aws_eip",
+      "file_path": "/main.tf",
+      "start_line": 1189,
+      "end_line": 1193
+    }
+  ],
+  "target_count": 8,
+  "resolved_count": 8,
+  "introduced_count": 4,
+  "unchanged_count": 0,
+  "repair_success_rate": 1.0,
+  "regression_rate": 0.5,
+  "net_delta": 4,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 8,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 1,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 0,
+      "introduced": 3,
+      "unchanged": 0
+    }
+  },
+  "repair_cost_usd": 0.643893,
+  "repair_tokens": 74219,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0385_claude-sonnet-4-5.repaired.tf",
+  "raw_response_path": "module_0385_claude-sonnet-4-5.raw.txt",
+  "repaired_code_sha256": "6e6ae6a3fd41369481f6175cf8fd0f4457c3601db2701d5e57261718ba1c9cf2"
+}

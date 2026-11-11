@@ -1,0 +1,86 @@
+{
+  "module_id": "module_0405",
+  "model_id": "grok-4-6",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0143",
+      "title": "IAM policies should not be granted directly to users.",
+      "severity": "LOW",
+      "resource_name": "module.user",
+      "resource_type": "module",
+      "file_path": "git::https:/github.com/cloudposse/terraform-aws-iam-system-user.git?ref=tags/0.3.2/main.tf",
+      "start_line": 13,
+      "end_line": 18
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "user",
+      "resource_type": "user",
+      "file_path": "/main.tf",
+      "start_line": 14,
+      "end_line": 20
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "organization_account_access_role_arns",
+      "resource_type": "organization_account_access_role_arns",
+      "file_path": "/main.tf",
+      "start_line": 37,
+      "end_line": 40
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_274",
+      "title": "Disallow IAM roles, users, and groups from using the AWS AdministratorAccess policy",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_role_policy_attachment.administrator_access",
+      "resource_type": "aws_iam_role_policy_attachment",
+      "file_path": "/main.tf",
+      "start_line": 49,
+      "end_line": 52
+    }
+  ],
+  "findings_after": [],
+  "target_count": 4,
+  "resolved_count": 4,
+  "introduced_count": 0,
+  "unchanged_count": 0,
+  "repair_success_rate": 1.0,
+  "regression_rate": 0.0,
+  "net_delta": 4,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 2,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 2,
+      "introduced": 0,
+      "unchanged": 0
+    }
+  },
+  "repair_cost_usd": 0.243922,
+  "repair_tokens": 41961,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0405_grok-4-6.repaired.tf",
+  "raw_response_path": "module_0405_grok-4-6.raw.txt",
+  "repaired_code_sha256": "71dd3f57fc0e3902488daa75c2017f48e35c775920a46007c0c2d6337a54c59a"
+}

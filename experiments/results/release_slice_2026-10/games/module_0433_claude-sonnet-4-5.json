@@ -1,0 +1,197 @@
+{
+  "module_id": "module_0433",
+  "model_id": "claude-sonnet-4-5",
+  "findings_before": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "acm",
+      "resource_type": "acm",
+      "file_path": "/acm.tf",
+      "start_line": 14,
+      "end_line": 34
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "this",
+      "resource_type": "this",
+      "file_path": "/context.tf",
+      "start_line": 23,
+      "end_line": 46
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "utils",
+      "resource_type": "utils",
+      "file_path": "/main.tf",
+      "start_line": 56,
+      "end_line": 59
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "vpc",
+      "resource_type": "vpc",
+      "file_path": "/remote-state.tf",
+      "start_line": 1,
+      "end_line": 11
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "private_ca[0]",
+      "resource_type": "private_ca[0]",
+      "file_path": "/remote-state.tf",
+      "start_line": 13,
+      "end_line": 24
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_34",
+      "title": "AWS SSM Parameter should be Encrypted",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_ssm_parameter.acm_arn",
+      "resource_type": "aws_ssm_parameter",
+      "file_path": "/acm.tf",
+      "start_line": 36,
+      "end_line": 46
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_39",
+      "title": "Ensure Domain Name System (DNS) query logging is enabled for Amazon Route 53 hosted zones",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_route53_zone.default",
+      "resource_type": "aws_route53_zone",
+      "file_path": "/main.tf",
+      "start_line": 17,
+      "end_line": 25
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_337",
+      "title": "Ensure SSM parameters are using KMS CMK",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_ssm_parameter.acm_arn",
+      "resource_type": "aws_ssm_parameter",
+      "file_path": "/main.tf",
+      "start_line": 34,
+      "end_line": 44
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_158",
+      "title": "Ensure that CloudWatch Log Group is encrypted by KMS",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.route53_query_log",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/main.tf",
+      "start_line": 335,
+      "end_line": 342
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_338",
+      "title": "Ensure CloudWatch log groups retains logs for at least 1 year",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.route53_query_log",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/main.tf",
+      "start_line": 335,
+      "end_line": 342
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "this",
+      "resource_type": "this",
+      "file_path": "/main.tf",
+      "start_line": 57,
+      "end_line": 79
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "utils",
+      "resource_type": "utils",
+      "file_path": "/main.tf",
+      "start_line": 365,
+      "end_line": 367
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "vpc",
+      "resource_type": "vpc",
+      "file_path": "/main.tf",
+      "start_line": 476,
+      "end_line": 485
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "private_ca[0]",
+      "resource_type": "private_ca[0]",
+      "file_path": "/main.tf",
+      "start_line": 487,
+      "end_line": 497
+    }
+  ],
+  "target_count": 7,
+  "resolved_count": 3,
+  "introduced_count": 3,
+  "unchanged_count": 4,
+  "repair_success_rate": 0.42857142857142855,
+  "regression_rate": 0.42857142857142855,
+  "net_delta": 0,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 1,
+      "introduced": 2,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 1,
+      "introduced": 1,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 1,
+      "introduced": 0,
+      "unchanged": 4
+    }
+  },
+  "repair_cost_usd": 0.11205599999999999,
+  "repair_tokens": 13108,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0433_claude-sonnet-4-5.repaired.tf",
+  "raw_response_path": "module_0433_claude-sonnet-4-5.raw.txt",
+  "repaired_code_sha256": "5f825766d910d206f874a501dbacd814b4b47387331ca1d8f94a4043392d8bb4"
+}

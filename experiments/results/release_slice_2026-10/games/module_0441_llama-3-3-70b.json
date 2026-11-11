@@ -1,0 +1,142 @@
+{
+  "module_id": "module_0441",
+  "model_id": "llama-3-3-70b",
+  "findings_before": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "this",
+      "resource_type": "this",
+      "file_path": "/context.tf",
+      "start_line": 23,
+      "end_line": 46
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "guardduty",
+      "resource_type": "guardduty",
+      "file_path": "/main.tf",
+      "start_line": 32,
+      "end_line": 46
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "account_map",
+      "resource_type": "account_map",
+      "file_path": "/remote-state.tf",
+      "start_line": 1,
+      "end_line": 12
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "guardduty_delegated_detector",
+      "resource_type": "guardduty_delegated_detector",
+      "file_path": "/remote-state.tf",
+      "start_line": 14,
+      "end_line": 27
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "this",
+      "resource_type": "this",
+      "file_path": "/main.tf",
+      "start_line": 1,
+      "end_line": 24
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "guardduty",
+      "resource_type": "guardduty",
+      "file_path": "/main.tf",
+      "start_line": 275,
+      "end_line": 288
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_2",
+      "title": "Ensure Terraform module sources use a tag with a version number",
+      "severity": "UNKNOWN",
+      "resource_name": "guardduty",
+      "resource_type": "guardduty",
+      "file_path": "/main.tf",
+      "start_line": 275,
+      "end_line": 288
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "account_map",
+      "resource_type": "account_map",
+      "file_path": "/main.tf",
+      "start_line": 394,
+      "end_line": 405
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "guardduty_delegated_detector",
+      "resource_type": "guardduty_delegated_detector",
+      "file_path": "/main.tf",
+      "start_line": 407,
+      "end_line": 418
+    }
+  ],
+  "target_count": 4,
+  "resolved_count": 0,
+  "introduced_count": 1,
+  "unchanged_count": 4,
+  "repair_success_rate": 0.0,
+  "regression_rate": 0.25,
+  "net_delta": -1,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 0,
+      "introduced": 1,
+      "unchanged": 4
+    }
+  },
+  "repair_cost_usd": 0.009872800000000001,
+  "repair_tokens": 12341,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0441_llama-3-3-70b.repaired.tf",
+  "raw_response_path": "module_0441_llama-3-3-70b.raw.txt",
+  "repaired_code_sha256": "393e1ba58bd122d10277a8a3ae9f69153fad7b8f9832f9170ba7c181124c2f19"
+}

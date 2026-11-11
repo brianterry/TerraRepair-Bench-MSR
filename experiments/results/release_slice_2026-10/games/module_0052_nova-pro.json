@@ -1,0 +1,373 @@
+{
+  "module_id": "module_0052",
+  "model_id": "nova-pro",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0178",
+      "title": "VPC Flow Logs is a feature that enables you to capture information about the IP traffic going to and from network interfaces in your VPC. After you've created a flow log, you can view and retrieve its data in Amazon CloudWatch Logs. It is recommended that VPC Flow Logs be enabled for packet \"Rejects\" for VPCs.",
+      "severity": "MEDIUM",
+      "resource_name": "aws_vpc.main",
+      "resource_type": "aws_vpc",
+      "file_path": "1-vpc.tf",
+      "start_line": 3,
+      "end_line": 9
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0038",
+      "title": "EKS Clusters should have cluster control plane logging turned on",
+      "severity": "MEDIUM",
+      "resource_name": "aws_eks_cluster.demo",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "6-eks.tf",
+      "start_line": 31,
+      "end_line": 47
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0039",
+      "title": "EKS should have the encryption of secrets enabled",
+      "severity": "HIGH",
+      "resource_name": "aws_eks_cluster.demo",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "6-eks.tf",
+      "start_line": 31,
+      "end_line": 47
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0040",
+      "title": "EKS Clusters should have the public access disabled",
+      "severity": "CRITICAL",
+      "resource_name": "aws_eks_cluster.demo",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "6-eks.tf",
+      "start_line": 35,
+      "end_line": 42
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0041",
+      "title": "EKS cluster should not have open CIDR range for public access",
+      "severity": "CRITICAL",
+      "resource_name": "aws_eks_cluster.demo",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "6-eks.tf",
+      "start_line": 35,
+      "end_line": 42
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_37",
+      "title": "Ensure Amazon EKS control plane logging is enabled for all log types",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_eks_cluster.demo",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "/6-eks.tf",
+      "start_line": 31,
+      "end_line": 47
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_38",
+      "title": "Ensure Amazon EKS public endpoint not accessible to 0.0.0.0/0",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_eks_cluster.demo",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "/6-eks.tf",
+      "start_line": 31,
+      "end_line": 47
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_39",
+      "title": "Ensure Amazon EKS public endpoint disabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_eks_cluster.demo",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "/6-eks.tf",
+      "start_line": 31,
+      "end_line": 47
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_58",
+      "title": "Ensure EKS Cluster has Secrets Encryption Enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_eks_cluster.demo",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "/6-eks.tf",
+      "start_line": 31,
+      "end_line": 47
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_12",
+      "title": "Ensure the default security group of every VPC restricts all traffic",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_vpc.main",
+      "resource_type": "aws_vpc",
+      "file_path": "/1-vpc.tf",
+      "start_line": 3,
+      "end_line": 9
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_11",
+      "title": "Ensure VPC flow logging is enabled in all VPCs",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_vpc.main",
+      "resource_type": "aws_vpc",
+      "file_path": "/1-vpc.tf",
+      "start_line": 3,
+      "end_line": 9
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0038",
+      "title": "EKS Clusters should have cluster control plane logging turned on",
+      "severity": "MEDIUM",
+      "resource_name": "aws_eks_cluster.demo",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "main.tf",
+      "start_line": 193,
+      "end_line": 227
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0039",
+      "title": "EKS should have the encryption of secrets enabled",
+      "severity": "HIGH",
+      "resource_name": "aws_eks_cluster.demo",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "main.tf",
+      "start_line": 193,
+      "end_line": 227
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0040",
+      "title": "EKS Clusters should have the public access disabled",
+      "severity": "CRITICAL",
+      "resource_name": "aws_eks_cluster.demo",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "main.tf",
+      "start_line": 197,
+      "end_line": 204
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0041",
+      "title": "EKS cluster should not have open CIDR range for public access",
+      "severity": "CRITICAL",
+      "resource_name": "aws_eks_cluster.demo",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "main.tf",
+      "start_line": 197,
+      "end_line": 204
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0099",
+      "title": "Missing description for security group.",
+      "severity": "LOW",
+      "resource_name": "aws_security_group.default",
+      "resource_type": "aws_security_group",
+      "file_path": "main.tf",
+      "start_line": 289,
+      "end_line": 305
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "aws_security_group.default",
+      "resource_type": "aws_security_group",
+      "file_path": "main.tf",
+      "start_line": 303,
+      "end_line": 303
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0107",
+      "title": "Security groups should not allow unrestricted ingress to SSH or RDP from any IP address.",
+      "severity": "HIGH",
+      "resource_name": "aws_security_group.default",
+      "resource_type": "aws_security_group",
+      "file_path": "main.tf",
+      "start_line": 296,
+      "end_line": 296
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0124",
+      "title": "Missing description for security group rule.",
+      "severity": "LOW",
+      "resource_name": "aws_security_group.default",
+      "resource_type": "aws_security_group",
+      "file_path": "main.tf",
+      "start_line": 299,
+      "end_line": 304
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_37",
+      "title": "Ensure Amazon EKS control plane logging is enabled for all log types",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_eks_cluster.demo",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "/main.tf",
+      "start_line": 193,
+      "end_line": 227
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_38",
+      "title": "Ensure Amazon EKS public endpoint not accessible to 0.0.0.0/0",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_eks_cluster.demo",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "/main.tf",
+      "start_line": 193,
+      "end_line": 227
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_39",
+      "title": "Ensure Amazon EKS public endpoint disabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_eks_cluster.demo",
+      "resource_type": "aws_eks_cluster",
+      "file_path": "/main.tf",
+      "start_line": 193,
+      "end_line": 227
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_382",
+      "title": "Ensure no security groups allow egress from 0.0.0.0:0 to port -1",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group.default",
+      "resource_type": "aws_security_group",
+      "file_path": "/main.tf",
+      "start_line": 289,
+      "end_line": 305
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_260",
+      "title": "Ensure no security groups allow ingress from 0.0.0.0:0 to port 80",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group.default",
+      "resource_type": "aws_security_group",
+      "file_path": "/main.tf",
+      "start_line": 289,
+      "end_line": 305
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_25",
+      "title": "Ensure no security groups allow ingress from 0.0.0.0:0 to port 3389",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group.default",
+      "resource_type": "aws_security_group",
+      "file_path": "/main.tf",
+      "start_line": 289,
+      "end_line": 305
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_277",
+      "title": "Ensure no security groups allow ingress from 0.0.0.0:0 to port -1",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group.default",
+      "resource_type": "aws_security_group",
+      "file_path": "/main.tf",
+      "start_line": 289,
+      "end_line": 305
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_24",
+      "title": "Ensure no security groups allow ingress from 0.0.0.0:0 to port 22",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group.default",
+      "resource_type": "aws_security_group",
+      "file_path": "/main.tf",
+      "start_line": 289,
+      "end_line": 305
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "Ensure every security group and rule has a description",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group.default",
+      "resource_type": "aws_security_group",
+      "file_path": "/main.tf",
+      "start_line": 289,
+      "end_line": 305
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_5",
+      "title": "Ensure that Security Groups are attached to another resource",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_security_group.default",
+      "resource_type": "aws_security_group",
+      "file_path": "/main.tf",
+      "start_line": 289,
+      "end_line": 305
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_12",
+      "title": "Ensure the default security group of every VPC restricts all traffic",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_vpc.main",
+      "resource_type": "aws_vpc",
+      "file_path": "/main.tf",
+      "start_line": 14,
+      "end_line": 20
+    }
+  ],
+  "target_count": 11,
+  "resolved_count": 3,
+  "introduced_count": 11,
+  "unchanged_count": 8,
+  "repair_success_rate": 0.2727272727272727,
+  "regression_rate": 1.0,
+  "net_delta": -8,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 0,
+      "introduced": 7,
+      "unchanged": 4
+    },
+    "data_protection": {
+      "resolved": 1,
+      "introduced": 0,
+      "unchanged": 1
+    },
+    "observability": {
+      "resolved": 2,
+      "introduced": 0,
+      "unchanged": 2
+    },
+    "other": {
+      "resolved": 0,
+      "introduced": 4,
+      "unchanged": 1
+    }
+  },
+  "repair_cost_usd": 0.006076,
+  "repair_tokens": 6076,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0052_nova-pro.repaired.tf",
+  "raw_response_path": "module_0052_nova-pro.raw.txt",
+  "repaired_code_sha256": "5b52d58ef7cfc0061c00ac111be856a586beefa02143f822d6a72be98e8ebab1"
+}

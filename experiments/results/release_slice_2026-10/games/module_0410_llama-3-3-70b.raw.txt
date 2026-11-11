@@ -1,0 +1,418 @@
+terraform {
+  required_version = ">= 0.11.2"
+
+  backend "s3" {}
+}
+
+provider "aws" {
+  assume_role {
+    role_arn = var.aws_assume_role_arn
+  }
+}
+
+module "teleport_backend" {
+  source                   = "git::https://github.com/cloudposse/terraform-aws-teleport-storage.git?ref=0.4.0"
+  namespace                = var.namespace
+  stage                    = var.stage
+  name                     = var.name
+  attributes               = []
+  tags                     = var.tags
+  prefix                   = var.s3_prefix
+  standard_transition_days = var.s3_standard_transition_days
+  glacier_transition_days  = var.s3_glacier_transition_days
+  expiration_days          = var.s3_expiration_days
+
+  iam_role_max_session_duration = var.iam_role_max_session_duration
+
+  # Autoscale min_read and min_write capacity will set the provisioned capacity for both cluster state and audit events
+  autoscale_min_read_capacity  = var.autoscale_min_read_capacity
+  autoscale_min_write_capacity = var.autoscale_min_write_capacity
+
+  # Currently the autoscalers for the cluster state and the audit events share the same settings
+  autoscale_read_target        = var.autoscale_read_target
+  autoscale_write_target       = var.autoscale_write_target
+  autoscale_max_read_capacity  = var.autoscale_max_read_capacity
+  autoscale_max_write_capacity = var.autoscale_max_write_capacity
+
+  versioning = {
+    enabled = true
+  }
+
+  public_access_block = {
+    block_public_acls   = true
+    block_public_policy = true
+    ignore_public_acls  = true
+    restrict_public_buckets = true
+  }
+}
+
+module "teleport_role_name" {
+  source     = "git::https://github.com/cloudposse/terraform-null-label.git?ref=0.3.3"
+  namespace  = var.namespace
+  stage      = var.stage
+  name       = var.name
+  delimiter  = var.delimiter
+  attributes = ["auth"]
+  tags       = var.tags
+}
+
+module "kops_metadata" {
+  source       = "git::https://github.com/cloudposse/terraform-aws-kops-data-iam.git?ref=0.1.0"
+  cluster_name = var.cluster_name
+}
+
+locals {
+  chamber_service = var.chamber_service == "" ? basename(pathexpand(path.module)) : var.chamber_service
+
+  kops_arns = {
+    masters = ["${module.kops_metadata.masters_role_arn}"]
+    nodes   = ["${module.kops_metadata.nodes_role_arn}"]
+    both    = ["${module.kops_metadata.masters_role_arn}", "${module.kops_metadata.nodes_role_arn}"]
+    any     = ["*"]
+  }
+}
+
+data "aws_iam_policy_document" "assume_role" {
+  statement {
+    actions = [
+      "sts:AssumeRole",
+    ]
+
+    principals {
+      type        = "Service"
+      identifiers = ["ec2.amazonaws.com"]
+    }
+
+    principals {
+      type        = "AWS"
+      identifiers = ["${local.kops_arns[var.permitted_nodes]}"]
+    }
+
+    effect = "Allow"
+  }
+}
+
+resource "aws_iam_role" "teleport" {
+  name                 = module.teleport_role_name.id
+  assume_role_policy   = data.aws_iam_policy_document.assume_role.json
+  max_session_duration = var.iam_role_max_session_duration
+  description          = "The Teleport role to access teleport backend"
+}
+
+data "aws_iam_policy_document" "teleport" {
+  // Teleport can use LetsEncrypt to get TLS certificates. For this  // it needs additional permissions which are not included here.
+
+  // Teleport can use SSM to publish "join tokens" and retrieve the enterprise  // license, but that is not fully documented, so permissions to access SSM  // are not included at this time.
+
+  // S3 permissions are needed to save and replay SSH sessions
+  statement {
+    sid       = "ListTeleportSessionData"
+    effect    = "Allow"
+    actions   = ["s3:ListBucket", "s3:ListBucketVersions"]
+    resources = ["arn:aws:s3:::${module.teleport_backend.s3_bucket_id}"]
+  }
+
+  statement {
+    sid    = "GetTeleportSessionData"
+    effect = "Allow"
+
+    actions = [
+      "s3:PutObject",
+      "s3:GetObjectVersion",
+      "s3:GetObject",
+    ]
+
+    resources = ["arn:aws:s3:::${module.teleport_backend.s3_bucket_id}/*"]
+  }
+
+  // DynamoDB permissions are needed to save configuration and event data
+  statement {
+    sid     = "ReadWriteTeleportEventAndConfigData"
+    effect  = "Allow"
+    actions = ["dynamodb:*"]
+
+    resources = [
+      "${module.teleport_backend.dynamodb_audit_table_arn}",
+      "${module.teleport_backend.dynamodb_audit_table_arn}/index/*",
+      "${module.teleport_backend.dynamodb_state_table_arn}",
+      "${module.teleport_backend.dynamodb_state_table_arn}/index/*",
+      "${module.teleport_backend.dynamodb_state_table_arn}/stream/*",
+    ]
+  }
+}
+
+resource "aws_iam_policy" "teleport" {
+  name        = module.teleport_role_name.id
+  description = "Grant permissions for teleport"
+  policy      = data.aws_iam_policy_document.teleport.json
+}
+
+resource "aws_iam_role_policy_attachment" "teleport" {
+  role       = aws_iam_role.teleport.name
+  policy_arn = aws_iam_policy.teleport.arn
+}
+
+resource "aws_ssm_parameter" "teleport_audit_sessions_uri" {
+  name        = format(var.chamber_parameter_name, local.chamber_service, "teleport_audit_sessions_uri")
+  value       = "s3://${module.teleport_backend.s3_bucket_id}"
+  description = "Teleport session logs storage URI"
+  type        = "SecureString"
+  overwrite   = "true"
+}
+
+resource "aws_ssm_parameter" "teleport_audit_events_uri" {
+  name        = format(var.chamber_parameter_name, local.chamber_service, "teleport_audit_events_uri")
+  value       = "dynamodb://${module.teleport_backend.dynamodb_audit_table_id}"
+  description = "Teleport audite events storage URI"
+  type        = "SecureString"
+  overwrite   = "true"
+}
+
+resource "aws_ssm_parameter" "teleport_cluster_state_dynamodb_table" {
+  name        = format(var.chamber_parameter_name, local.chamber_service, "teleport_cluster_state_dynamodb_table")
+  value       = module.teleport_backend.dynamodb_state_table_id
+  description = "Teleport cluster state storage dynamodb table"
+  type        = "SecureString"
+  overwrite   = "true"
+}
+
+resource "aws_ssm_parameter" "teleport_auth_iam_role" {
+  name        = format(var.chamber_parameter_name, local.chamber_service, "teleport_auth_iam_role")
+  value       = aws_iam_role.teleport.name
+  description = "Teleport auth IAM role"
+  type        = "SecureString"
+  overwrite   = "true"
+}
+
+resource "aws_ssm_parameter" "teleport_kubernetes_namespace" {
+  name        = format(var.chamber_parameter_name, local.chamber_service, "teleport_kubernetes_namespace")
+  value       = var.kubernetes_namespace
+  description = "Teleport auth IAM role"
+  type        = "SecureString"
+  overwrite   = "true"
+}
+
+locals {
+  token_names = ["teleport_auth_token", "teleport_node_token", "teleport_proxy_token"]
+}
+
+resource "random_string" "tokens" {
+  count   = length(local.token_names)
+  length  = 32
+  special = false
+
+  keepers {
+    cluster_name = var.cluster_name
+  }
+}
+
+resource "aws_ssm_parameter" "teleport_tokens" {
+  count       = length(local.token_names)
+  name        = format(var.chamber_parameter_name, local.chamber_service, "${element(local.token_names, count.index)}")
+  value       = element(random_string.tokens.*.result, count.index)
+  description = "Teleport join token: ${element(local.token_names, count.index)}"
+  type        = "SecureString"
+  overwrite   = "true"
+}
+
+resource "aws_ssm_parameter" "teleport_proxy_domain_name" {
+  name        = format(var.chamber_parameter_name, local.chamber_service, "teleport_proxy_domain_name")
+  value       = var.teleport_proxy_domain_name
+  description = "Teleport Proxy domain name"
+  type        = "SecureString"
+  overwrite   = "true"
+}
+
+resource "aws_ssm_parameter" "teleport_version" {
+  name        = format(var.chamber_parameter_name, local.chamber_service, "teleport_version")
+  value       = var.teleport_version
+  description = "Teleport version to install"
+  type        = "SecureString"
+  overwrite   = "true"
+}
+
+resource "kubernetes_namespace" "default" {
+  metadata {
+    annotations = {
+      "iam.amazonaws.com/permitted" = "${aws_iam_role.teleport.name}"
+    }
+
+    labels = {
+      name = "${var.kubernetes_namespace}"
+    }
+
+    name = var.kubernetes_namespace
+  }
+}
+
+
+output "teleport_version" {
+  value = var.teleport_version
+}
+
+output "teleport_proxy_domain_name" {
+  value = var.teleport_proxy_domain_name
+}
+
+output "parameter_store_prefix" {
+  value = format(var.chamber_parameter_name, local.chamber_service, "")
+}
+
+output "teleport_kubernetes_namespace" {
+  value = var.kubernetes_namespace
+}
+
+output "teleport_auth_iam_role" {
+  value = aws_iam_role.teleport.name
+}
+
+output "teleport_cluster_state_dynamodb_table" {
+  value = module.teleport_backend.dynamodb_state_table_id
+}
+
+output "teleport_audit_sessions_uri" {
+  value = "s3://${module.teleport_backend.s3_bucket_id}"
+}
+
+output "teleport_audit_events_uri" {
+  value = "dynamodb://${module.teleport_backend.dynamodb_audit_table_id}"
+}
+
+
+variable "permitted_nodes" {
+  type = string
+
+  # Set to 'masters' if using kiam to control roles
+  default     = "both"
+  description = "Kops kubernetes nodes that are permitted to assume IAM roles (e.g. 'nodes', 'masters', 'both' or 'any')"
+}
+
+variable "cluster_name" {
+  type        = string
+  description = "Kops cluster name (e.g. `us-east-1.prod.cloudposse.co` or `cluster-1.cloudposse.co`)"
+}
+
+variable "aws_assume_role_arn" {
+  type        = string
+  description = "AWS IAM Role for Terraform to assume during operation"
+}
+
+variable "namespace" {
+  type        = string
+  description = "Namespace (e.g. `cp` or `cloudposse`)"
+}
+
+variable "kubernetes_namespace" {
+  type        = string
+  description = "Kubernetes namespace in which to place Teleport resources"
+  default     = "teleport"
+}
+
+variable "stage" {
+  type        = string
+  description = "Stage, e.g. 'prod', 'staging', 'dev', or 'test'"
+}
+
+variable "name" {
+  type        = string
+  description = "The name of the app"
+  default     = "teleport"
+}
+
+variable "delimiter" {
+  type        = string
+  default     = "-"
+  description = "Delimiter to be used between `namespace`, `stage`, `name` and `attributes`"
+}
+
+variable "tags" {
+  type        = map(string)
+  default     = {}
+  description = "Additional tags (e.g. map('BusinessUnit`,`XYZ`)"
+}
+
+variable "teleport_version" {
+  type        = string
+  description = "Version number of Teleport to install (e.g. \"4.0.9\")"
+}
+
+variable "teleport_proxy_domain_name" {
+  type        = string
+  description = "Domain name to use for Teleport Proxy"
+}
+
+variable "masters_name" {
+  type        = string
+  default     = "masters"
+  description = "Kops masters subdomain name in the cluster DNS zone"
+}
+
+variable "nodes_name" {
+  type        = string
+  default     = "nodes"
+  description = "Kops nodes subdomain name in the cluster DNS zone"
+}
+
+variable "chamber_service" {
+  default     = ""
+  description = "`chamber` service name. See [chamber usage](https://github.com/segmentio/chamber#usage) for more details"
+}
+
+variable "chamber_parameter_name" {
+  default = "/%s/%s"
+}
+
+variable "s3_prefix" {
+  type        = string
+  description = "S3 bucket prefix"
+  default     = ""
+}
+
+variable "s3_standard_transition_days" {
+  type        = string
+  description = "Number of days to persist in the standard storage tier before moving to the glacier tier"
+  default     = "30"
+}
+
+variable "s3_glacier_transition_days" {
+  type        = string
+  description = "Number of days after which to move the data to the glacier storage tier"
+  default     = "60"
+}
+
+variable "s3_expiration_days" {
+  type        = string
+  description = "Number of days after which to expunge the objects"
+  default     = "90"
+}
+
+# Autoscale min_read and min_write capacity will set the provisioned capacity for both cluster state and audit events
+variable "autoscale_min_read_capacity" {
+  default = 10
+}
+
+variable "autoscale_min_write_capacity" {
+  default = 10
+}
+
+# Currently the autoscalers for the cluster state and the audit events share the same settings
+variable "autoscale_write_target" {
+  default = 50
+}
+
+variable "autoscale_read_target" {
+  default = 50
+}
+
+variable "autoscale_max_read_capacity" {
+  default = 100
+}
+
+variable "autoscale_max_write_capacity" {
+  default = 100
+}
+
+variable "iam_role_max_session_duration" {
+  default     = 3600
+  description = "The maximum session duration (in seconds) for the role. Can have a value from 1 hour to 12 hours"
+}

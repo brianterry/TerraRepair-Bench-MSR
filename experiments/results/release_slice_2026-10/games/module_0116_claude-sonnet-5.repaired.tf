@@ -1,0 +1,623 @@
+data "aws_iam_policy_document" "lambda_xray" {
+  count = var.tracing_config.mode != null ? 1 : 0
+  statement {
+    actions = [
+      "xray:BatchGetTraces",
+      "xray:GetTraceSummaries",
+      "xray:PutTelemetryRecords",
+      "xray:PutTraceSegments"
+    ]
+    effect = "Allow"
+    resources = [
+      "*"
+    ]
+    sid = "AllowXRay"
+  }
+}
+
+
+locals {
+  action_runner_distribution_object_key = "actions-runner-${var.runner_os}.${var.runner_os == "linux" ? "tar.gz" : "zip"}"
+}
+
+resource "aws_s3_bucket" "action_dist" {
+  bucket        = var.distribution_bucket_name
+  force_destroy = true
+  tags          = var.tags
+}
+
+resource "aws_s3_bucket_ownership_controls" "this" {
+  bucket = aws_s3_bucket.action_dist.id
+  rule {
+    object_ownership = "BucketOwnerEnforced"
+  }
+}
+
+resource "aws_s3_bucket_lifecycle_configuration" "bucket_config" {
+  bucket = aws_s3_bucket.action_dist.id
+
+  rule {
+    id     = "lifecycle_config"
+    status = "Enabled"
+
+    abort_incomplete_multipart_upload {
+      days_after_initiation = 7
+    }
+
+    transition {
+      days          = 35
+      storage_class = "INTELLIGENT_TIERING"
+    }
+  }
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "action_dist" {
+  bucket = aws_s3_bucket.action_dist.id
+  count  = try(var.server_side_encryption_configuration, null) != null ? 1 : 0
+
+  dynamic "rule" {
+    for_each = [lookup(var.server_side_encryption_configuration, "rule", {})]
+
+    content {
+      bucket_key_enabled = lookup(rule.value, "bucket_key_enabled", null)
+
+      dynamic "apply_server_side_encryption_by_default" {
+        for_each = length(keys(lookup(rule.value, "apply_server_side_encryption_by_default", {}))) == 0 ? [] : [
+        lookup(rule.value, "apply_server_side_encryption_by_default", {})]
+
+        content {
+          sse_algorithm     = apply_server_side_encryption_by_default.value.sse_algorithm
+          kms_master_key_id = lookup(apply_server_side_encryption_by_default.value, "kms_master_key_id", null)
+        }
+      }
+    }
+  }
+}
+
+resource "aws_s3_bucket_public_access_block" "action_dist" {
+  bucket                  = aws_s3_bucket.action_dist.id
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
+resource "aws_s3_bucket_logging" "action_dist_logging" {
+  bucket        = aws_s3_bucket.action_dist.id
+  target_bucket = coalesce(var.s3_logging_bucket, aws_s3_bucket.action_dist.id)
+  target_prefix = var.s3_logging_bucket_prefix != null ? var.s3_logging_bucket_prefix : var.distribution_bucket_name
+}
+
+resource "aws_s3_bucket_versioning" "action_dist" {
+  bucket = aws_s3_bucket.action_dist.id
+  versioning_configuration {
+    status = var.s3_versioning
+  }
+}
+
+data "aws_iam_policy_document" "action_dist_bucket_policy" {
+  statement {
+    sid       = "ForceSSLOnlyAccess"
+    effect    = "Deny"
+    actions   = ["s3:*"]
+    resources = [aws_s3_bucket.action_dist.arn, "${aws_s3_bucket.action_dist.arn}/*"]
+
+    principals {
+      identifiers = ["*"]
+      type        = "*"
+    }
+
+    condition {
+      test     = "Bool"
+      values   = ["false"]
+      variable = "aws:SecureTransport"
+    }
+  }
+
+  dynamic "statement" {
+    for_each = try(var.server_side_encryption_configuration.rule.apply_server_side_encryption_by_default, null) != null ? [true] : []
+
+    content {
+      sid       = "ForceSSE"
+      effect    = "Deny"
+      actions   = ["s3:PutObject"]
+      resources = ["${aws_s3_bucket.action_dist.arn}/*"]
+
+      principals {
+        type = "AWS"
+
+        identifiers = [
+          "*",
+        ]
+      }
+
+      condition {
+        test     = "StringNotEquals"
+        variable = "s3:x-amz-server-side-encryption"
+        values   = [var.server_side_encryption_configuration.rule.apply_server_side_encryption_by_default.sse_algorithm]
+      }
+    }
+  }
+}
+
+resource "aws_s3_bucket_policy" "action_dist_bucket_policy" {
+  bucket = aws_s3_bucket.action_dist.id
+  policy = data.aws_iam_policy_document.action_dist_bucket_policy.json
+}
+
+
+output "bucket" {
+  value = aws_s3_bucket.action_dist
+}
+
+output "runner_distribution_object_key" {
+  value = local.action_runner_distribution_object_key
+}
+
+output "lambda" {
+  value = aws_lambda_function.syncer
+}
+
+output "lambda_log_group" {
+  value = aws_cloudwatch_log_group.syncer
+}
+
+output "lambda_role" {
+  value = aws_iam_role.syncer_lambda
+}
+
+
+locals {
+  lambda_zip = var.lambda_zip == null ? "${path.module}/../../lambdas/functions/gh-agent-syncer/runner-binaries-syncer.zip" : var.lambda_zip
+  role_path  = var.role_path == null ? "/${var.prefix}/" : var.role_path
+  gh_binary_os_label = {
+    windows = "win",
+    linux   = "linux"
+  }
+}
+
+resource "aws_lambda_function" "syncer" {
+  s3_bucket                     = var.lambda_s3_bucket != null ? var.lambda_s3_bucket : null
+  s3_key                        = var.syncer_lambda_s3_key != null ? var.syncer_lambda_s3_key : null
+  s3_object_version              = var.syncer_lambda_s3_object_version != null ? var.syncer_lambda_s3_object_version : null
+  filename                       = var.lambda_s3_bucket == null ? local.lambda_zip : null
+  source_code_hash               = var.lambda_s3_bucket == null ? filebase64sha256(local.lambda_zip) : null
+  function_name                  = "${var.prefix}-syncer"
+  role                           = aws_iam_role.syncer_lambda.arn
+  handler                        = "index.handler"
+  runtime                        = var.lambda_runtime
+  timeout                        = var.lambda_timeout
+  memory_size                    = var.lambda_memory_size
+  architectures                  = [var.lambda_architecture]
+  reserved_concurrent_executions = 10
+  kms_key_arn                    = try(var.server_side_encryption_configuration.rule.apply_server_side_encryption_by_default.kms_master_key_id, null)
+
+  environment {
+    variables = {
+      ENVIRONMENT                              = var.prefix
+      GITHUB_RUNNER_ARCHITECTURE               = var.runner_architecture
+      GITHUB_RUNNER_OS                         = local.gh_binary_os_label[var.runner_os]
+      LOG_LEVEL                                = var.log_level
+      POWERTOOLS_LOGGER_LOG_EVENT              = var.log_level == "debug" ? "true" : "false"
+      POWERTOOLS_TRACE_ENABLED                 = var.tracing_config.mode != null ? true : false
+      POWERTOOLS_TRACER_CAPTURE_HTTPS_REQUESTS = var.tracing_config.capture_http_requests
+      POWERTOOLS_TRACER_CAPTURE_ERROR          = var.tracing_config.capture_error
+      S3_BUCKET_NAME                           = aws_s3_bucket.action_dist.id
+      S3_OBJECT_KEY                            = local.action_runner_distribution_object_key
+      S3_SSE_ALGORITHM                         = try(var.server_side_encryption_configuration.rule.apply_server_side_encryption_by_default.sse_algorithm, null)
+      S3_SSE_KMS_KEY_ID                        = try(var.server_side_encryption_configuration.rule.apply_server_side_encryption_by_default.kms_master_key_id, null)
+    }
+  }
+
+  dynamic "vpc_config" {
+    for_each = var.lambda_subnet_ids != null && var.lambda_security_group_ids != null ? [true] : []
+    content {
+      security_group_ids = var.lambda_security_group_ids
+      subnet_ids         = var.lambda_subnet_ids
+    }
+  }
+
+  tags = merge(var.tags, var.lambda_tags)
+
+  dynamic "tracing_config" {
+    for_each = var.tracing_config.mode != null ? [true] : []
+    content {
+      mode = var.tracing_config.mode
+    }
+  }
+}
+
+resource "aws_iam_role_policy" "lambda_kms" {
+  count = try(var.server_side_encryption_configuration.rule.apply_server_side_encryption_by_default.kms_master_key_id, null) != null ? 1 : 0
+  name  = "${var.prefix}-lambda-kms-policy-syncer"
+  role  = aws_iam_role.syncer_lambda.id
+
+  policy = templatefile("${path.module}/policies/lambda-kms.json", {
+    kms_key_arn = var.server_side_encryption_configuration.rule.apply_server_side_encryption_by_default.kms_master_key_id
+  })
+}
+
+resource "aws_cloudwatch_log_group" "syncer" {
+  name              = "/aws/lambda/${aws_lambda_function.syncer.function_name}"
+  retention_in_days = var.logging_retention_in_days
+  kms_key_id        = var.logging_kms_key_id
+  tags              = var.tags
+}
+
+resource "aws_iam_role" "syncer_lambda" {
+  name                 = "${var.prefix}-action-syncer-lambda-role"
+  assume_role_policy   = data.aws_iam_policy_document.lambda_assume_role_policy.json
+  path                 = local.role_path
+  permissions_boundary = var.role_permissions_boundary
+
+  tags = var.tags
+}
+
+data "aws_iam_policy_document" "lambda_assume_role_policy" {
+  statement {
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["lambda.amazonaws.com"]
+    }
+
+    dynamic "principals" {
+      for_each = var.lambda_principals
+
+      content {
+        type        = principals.value.type
+        identifiers = principals.value.identifiers
+      }
+    }
+  }
+}
+
+resource "aws_iam_role_policy" "lambda_logging" {
+  name = "logging-policys"
+  role = aws_iam_role.syncer_lambda.id
+
+  policy = templatefile("${path.module}/policies/lambda-cloudwatch.json", {
+    log_group_arn = aws_cloudwatch_log_group.syncer.arn
+  })
+}
+
+resource "aws_iam_role_policy" "syncer" {
+  name = "s3-policy"
+  role = aws_iam_role.syncer_lambda.id
+
+  policy = templatefile("${path.module}/policies/lambda-syncer.json", {
+    s3_resource_arn = "${aws_s3_bucket.action_dist.arn}/${local.action_runner_distribution_object_key}"
+  })
+}
+
+resource "aws_cloudwatch_event_rule" "syncer" {
+  name                = "${var.prefix}-syncer-rule"
+  schedule_expression = var.lambda_schedule_expression
+  tags                = var.tags
+  state               = var.state_event_rule_binaries_syncer
+}
+
+resource "aws_cloudwatch_event_target" "syncer" {
+  rule = aws_cloudwatch_event_rule.syncer.name
+  arn  = aws_lambda_function.syncer.arn
+}
+
+resource "aws_iam_role_policy_attachment" "syncer_vpc_execution_role" {
+  count      = length(var.lambda_subnet_ids) > 0 ? 1 : 0
+  role       = aws_iam_role.syncer_lambda.name
+  policy_arn = "arn:${var.aws_partition}:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
+}
+
+resource "aws_lambda_permission" "syncer" {
+  statement_id  = "AllowExecutionFromCloudWatch"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.syncer.function_name
+  principal     = "events.amazonaws.com"
+  source_arn    = aws_cloudwatch_event_rule.syncer.arn
+}
+
+###################################################################################
+### Extra trigger to trigger from S3 to execute the lambda after first deployment
+###################################################################################
+
+resource "aws_s3_object" "trigger" {
+  bucket                 = aws_s3_bucket.action_dist.id
+  key                    = "triggers/${aws_lambda_function.syncer.id}-trigger.json"
+  source                 = "${path.module}/trigger.json"
+  etag                   = try(var.server_side_encryption_configuration.rule.apply_server_side_encryption_by_default.kms_master_key_id, null) == null ? filemd5("${path.module}/trigger.json") : null
+  kms_key_id             = try(var.server_side_encryption_configuration.rule.apply_server_side_encryption_by_default.kms_master_key_id, null)
+  server_side_encryption = try(var.server_side_encryption_configuration.rule.apply_server_side_encryption_by_default.sse_algorithm, null)
+  depends_on             = [aws_s3_bucket_notification.on_deploy]
+}
+
+resource "aws_s3_bucket_notification" "on_deploy" {
+  bucket = aws_s3_bucket.action_dist.id
+
+  lambda_function {
+    lambda_function_arn = aws_lambda_function.syncer.arn
+    events              = ["s3:ObjectCreated:*"]
+    filter_prefix       = "triggers/"
+    filter_suffix       = ".json"
+  }
+
+  depends_on = [aws_lambda_permission.on_deploy]
+}
+
+data "aws_caller_identity" "current" {}
+
+resource "aws_lambda_permission" "on_deploy" {
+  statement_id   = "AllowExecutionFromS3Bucket"
+  action         = "lambda:InvokeFunction"
+  function_name  = aws_lambda_function.syncer.arn
+  principal      = "s3.amazonaws.com"
+  source_account = data.aws_caller_identity.current.account_id
+  source_arn     = aws_s3_bucket.action_dist.arn
+}
+
+resource "aws_iam_role_policy" "syncer_lambda_xray" {
+  count  = var.tracing_config.mode != null ? 1 : 0
+  name   = "xray-policy"
+  policy = data.aws_iam_policy_document.lambda_xray[0].json
+  role   = aws_iam_role.syncer_lambda.name
+}
+
+
+variable "tags" {
+  description = "Map of tags that will be added to created resources. By default resources will be tagged with name and environment."
+  type        = map(string)
+  default     = {}
+}
+
+variable "prefix" {
+  description = "The prefix used for naming resources"
+  type        = string
+  default     = "github-actions"
+}
+
+variable "distribution_bucket_name" {
+  description = "Bucket for storing the action runner distribution."
+  type        = string
+
+  # Make sure the bucket name only contains legal characters
+  validation {
+    error_message = "Only lowercase alphanumeric characters and hyphens allowed in the bucket name."
+    condition     = can(regex("^[a-z0-9-]*$", var.distribution_bucket_name))
+  }
+}
+
+variable "s3_logging_bucket" {
+  description = "Bucket for action runner distribution bucket access logging."
+  type        = string
+  default     = null
+
+  # Make sure the bucket name only contains legal characters
+  validation {
+    error_message = "Only lowercase alphanumeric characters and hyphens allowed in the bucket name."
+    condition     = var.s3_logging_bucket == null || can(regex("^[a-z0-9-]*$", var.s3_logging_bucket))
+  }
+}
+
+variable "s3_logging_bucket_prefix" {
+  description = "Bucket prefix for action runner distribution bucket access logging."
+  type        = string
+  default     = null
+
+  # Make sure the bucket prefix only contains legal characters
+  validation {
+    error_message = "Only alphanumeric characters, hyphens followed by single slashes allowed in the bucket prefix."
+    condition     = var.s3_logging_bucket_prefix == null || can(regex("^(([a-zA-Z0-9-])+(\\/?))*$", var.s3_logging_bucket_prefix))
+  }
+}
+
+variable "state_event_rule_binaries_syncer" {
+  type        = string
+  description = "Option to disable EventBridge Lambda trigger for the binary syncer, useful to stop automatic updates of binary distribution"
+  default     = "ENABLED"
+
+  validation {
+    condition     = contains(["ENABLED", "DISABLED", "ENABLED_WITH_ALL_CLOUDTRAIL_MANAGEMENT_EVENTS"], var.state_event_rule_binaries_syncer)
+    error_message = "`state_event_rule_binaries_syncer` value is not valid, valid values are: `ENABLED`, `DISABLED`, `ENABLED_WITH_ALL_CLOUDTRAIL_MANAGEMENT_EVENTS`."
+  }
+}
+
+variable "lambda_schedule_expression" {
+  description = "Scheduler expression for action runner binary syncer."
+  type        = string
+  default     = "cron(27 * * * ? *)"
+}
+
+variable "lambda_zip" {
+  description = "File location of the lambda zip file."
+  type        = string
+  default     = null
+}
+
+variable "lambda_timeout" {
+  description = "Time out of the lambda in seconds."
+  type        = number
+  default     = 300
+}
+
+variable "lambda_memory_size" {
+  description = "Memory size of the lambda."
+  type        = number
+  default     = 256
+}
+
+variable "role_permissions_boundary" {
+  description = "Permissions boundary that will be added to the created role for the lambda."
+  type        = string
+  default     = null
+}
+
+variable "role_path" {
+  description = "The path that will be added to the role, if not set the environment name will be used."
+  type        = string
+  default     = null
+}
+
+variable "runner_os" {
+  description = "The EC2 Operating System type to use for action runner instances (linux,windows)."
+  type        = string
+  default     = "linux"
+
+  validation {
+    condition     = contains(["linux", "windows"], var.runner_os)
+    error_message = "Valid values for runner_os are (linux, windows)."
+  }
+}
+
+variable "runner_architecture" {
+  description = "The platform architecture of the runner instance_type."
+  type        = string
+  default     = "x64"
+  validation {
+    condition = anytrue([
+      var.runner_architecture == "x64",
+      var.runner_architecture == "arm64",
+    ])
+    error_message = "`runner_architecture` value not valid, valid values are: `x64` and `arm64`."
+  }
+}
+
+variable "logging_retention_in_days" {
+  description = "Specifies the number of days you want to retain log events for the lambda log group. Possible values are: 0, 1, 3, 5, 7, 14, 30, 60, 90, 120, 150, 180, 365, 400, 545, 731, 1827, and 3653."
+  type        = number
+  default     = 365
+}
+
+variable "logging_kms_key_id" {
+  description = "Specifies the kms key id to encrypt the logs with"
+  type        = string
+  default     = null
+}
+
+variable "lambda_s3_bucket" {
+  description = "S3 bucket from which to specify lambda functions. This is an alternative to providing local files directly."
+  type        = string
+  default     = null
+}
+
+variable "syncer_lambda_s3_key" {
+  description = "S3 key for syncer lambda function. Required if using S3 bucket to specify lambdas."
+  type        = string
+  default     = null
+}
+
+variable "syncer_lambda_s3_object_version" {
+  description = "S3 object version for syncer lambda function. Useful if S3 versioning is enabled on source bucket."
+  type        = string
+  default     = null
+}
+
+variable "lambda_subnet_ids" {
+  description = "List of subnets in which the action runners will be launched, the subnets needs to be subnets in the `vpc_id`."
+  type        = list(string)
+  default     = []
+}
+
+variable "lambda_security_group_ids" {
+  description = "List of security group IDs associated with the Lambda function."
+  type        = list(string)
+  default     = []
+}
+
+variable "aws_partition" {
+  description = "(optional) partition for the base arn if not 'aws'"
+  type        = string
+  default     = "aws"
+}
+
+variable "log_level" {
+  description = "Logging level for lambda logging. Valid values are  'silly', 'trace', 'debug', 'info', 'warn', 'error', 'fatal'."
+  type        = string
+  default     = "info"
+  validation {
+    condition = anytrue([
+      var.log_level == "debug",
+      var.log_level == "info",
+      var.log_level == "warn",
+      var.log_level == "error",
+    ])
+    error_message = "`log_level` value not valid. Valid values are 'debug', 'info', 'warn', 'error'."
+  }
+  validation {
+    condition     = !contains(["silly", "trace", "fatal"], var.log_level)
+    error_message = "PLEASE MIGRATE: The following log levels: 'silly', 'trace' and 'fatal' are not longer supported."
+  }
+
+}
+
+variable "server_side_encryption_configuration" {
+  description = "Map containing server-side encryption configuration for runner-binaries S3 bucket."
+  type        = any
+  default = {
+    rule = {
+      apply_server_side_encryption_by_default = {
+        sse_algorithm = "aws:kms"
+      }
+    }
+  }
+}
+
+variable "s3_versioning" {
+  description = "Status of S3 versioning for runner-binaries S3 bucket."
+  type        = string
+  default     = "Enabled"
+}
+
+variable "lambda_principals" {
+  description = "(Optional) add extra principals to the role created for execution of the lambda, e.g. for local testing."
+  type = list(object({
+    type        = string
+    identifiers = list(string)
+  }))
+  default = []
+}
+
+variable "lambda_runtime" {
+  description = "AWS Lambda runtime."
+  type        = string
+  default     = "nodejs22.x"
+}
+
+variable "lambda_architecture" {
+  description = "AWS Lambda architecture. Lambda functions using Graviton processors ('arm64') tend to have better price/performance than 'x86_64' functions. "
+  type        = string
+  default     = "arm64"
+  validation {
+    condition     = contains(["arm64", "x86_64"], var.lambda_architecture)
+    error_message = "`lambda_architecture` value is not valid, valid values are: `arm64` and `x86_64`."
+  }
+}
+
+variable "tracing_config" {
+  description = "Configuration for lambda tracing."
+  type = object({
+    mode                  = optional(string, null)
+    capture_http_requests = optional(bool, false)
+    capture_error         = optional(bool, false)
+  })
+  default = {
+    mode = "Active"
+  }
+}
+
+variable "lambda_tags" {
+  description = "Map of tags that will be added to all the lambda function resources. Note these are additional tags to the default tags."
+  type        = map(string)
+  default     = {}
+}
+
+
+terraform {
+  required_version = ">= 1.3.0"
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.27"
+    }
+  }
+}

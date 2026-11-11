@@ -1,0 +1,109 @@
+{
+  "module_id": "module_0427",
+  "model_id": "qwen3-32b",
+  "findings_before": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "this",
+      "resource_type": "this",
+      "file_path": "/context.tf",
+      "start_line": 23,
+      "end_line": 46
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_356",
+      "title": "Ensure no IAM policies documents allow \"*\" as a statement's resource for restrictable actions",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.eks_view_access",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/policy-eks-viewer.tf",
+      "start_line": 5,
+      "end_line": 22
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_356",
+      "title": "Ensure no IAM policies documents allow \"*\" as a statement's resource for restrictable actions",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.vpn_planner_access",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/policy-vpn-planner.tf",
+      "start_line": 5,
+      "end_line": 19
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_saml",
+      "resource_type": "aws_saml",
+      "file_path": "/remote-state.tf",
+      "start_line": 1,
+      "end_line": 15
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "this",
+      "resource_type": "this",
+      "file_path": "/main.tf",
+      "start_line": 35,
+      "end_line": 58
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_saml",
+      "resource_type": "aws_saml",
+      "file_path": "/main.tf",
+      "start_line": 554,
+      "end_line": 568
+    }
+  ],
+  "target_count": 4,
+  "resolved_count": 2,
+  "introduced_count": 0,
+  "unchanged_count": 2,
+  "repair_success_rate": 0.5,
+  "regression_rate": 0.0,
+  "net_delta": 2,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 2,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 2
+    }
+  },
+  "repair_cost_usd": 0.004370799999999999,
+  "repair_tokens": 10927,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0427_qwen3-32b.repaired.tf",
+  "raw_response_path": "module_0427_qwen3-32b.raw.txt",
+  "repaired_code_sha256": "e8619e3f44a60410857bd21e7e4fa81ddd1a5f72c981713e27d7062ce3615131"
+}

@@ -1,0 +1,131 @@
+{
+  "module_id": "module_0405",
+  "model_id": "llama-3-3-70b",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0143",
+      "title": "IAM policies should not be granted directly to users.",
+      "severity": "LOW",
+      "resource_name": "module.user",
+      "resource_type": "module",
+      "file_path": "git::https:/github.com/cloudposse/terraform-aws-iam-system-user.git?ref=tags/0.3.2/main.tf",
+      "start_line": 13,
+      "end_line": 18
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "user",
+      "resource_type": "user",
+      "file_path": "/main.tf",
+      "start_line": 14,
+      "end_line": 20
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "organization_account_access_role_arns",
+      "resource_type": "organization_account_access_role_arns",
+      "file_path": "/main.tf",
+      "start_line": 37,
+      "end_line": 40
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_274",
+      "title": "Disallow IAM roles, users, and groups from using the AWS AdministratorAccess policy",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_role_policy_attachment.administrator_access",
+      "resource_type": "aws_iam_role_policy_attachment",
+      "file_path": "/main.tf",
+      "start_line": 49,
+      "end_line": 52
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_288",
+      "title": "Ensure IAM policies does not allow data exfiltration",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy.custom_access",
+      "resource_type": "aws_iam_policy",
+      "file_path": "/main.tf",
+      "start_line": 54,
+      "end_line": 74
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_355",
+      "title": "Ensure no IAM policies documents allow \"*\" as a statement's resource for restrictable actions",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy.custom_access",
+      "resource_type": "aws_iam_policy",
+      "file_path": "/main.tf",
+      "start_line": 54,
+      "end_line": 74
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "user",
+      "resource_type": "user",
+      "file_path": "/main.tf",
+      "start_line": 14,
+      "end_line": 20
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "organization_account_access_role_arns",
+      "resource_type": "organization_account_access_role_arns",
+      "file_path": "/main.tf",
+      "start_line": 37,
+      "end_line": 40
+    }
+  ],
+  "target_count": 4,
+  "resolved_count": 2,
+  "introduced_count": 2,
+  "unchanged_count": 2,
+  "repair_success_rate": 0.5,
+  "regression_rate": 0.5,
+  "net_delta": 0,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 2,
+      "introduced": 2,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 2
+    }
+  },
+  "repair_cost_usd": 0.00258,
+  "repair_tokens": 3225,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0405_llama-3-3-70b.repaired.tf",
+  "raw_response_path": "module_0405_llama-3-3-70b.raw.txt",
+  "repaired_code_sha256": "644b2ead020d9e5c9a05974eaefbc7e6ce3d0c3b038abc81a3b902df805971e9"
+}

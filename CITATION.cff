@@ -1,0 +1,48 @@
+cff-version: 1.2.0
+message: "If you use this dataset or harness, please cite it as below."
+title: "TerraRepair-Bench: A Judge-Free Harness and Dataset for LLM Repair of Terraform Security Misconfigurations"
+type: dataset
+authors:
+  - family-names: Terry
+    given-names: Brian
+    affiliation: "School of EECS, University of North Dakota; Amazon Web Services"
+  - family-names: Shi
+    given-names: Qinxuan
+    affiliation: "School of EECS, University of North Dakota"
+  - family-names: Yang
+    given-names: Zhanglong
+    affiliation: "School of EECS, University of North Dakota"
+  - family-names: Haidar
+    given-names: Ali
+    affiliation: "School of EECS, University of North Dakota"
+  - family-names: Choubey
+    given-names: Preeti
+    affiliation: "School of EECS, University of North Dakota"
+  - family-names: Amadigwe
+    given-names: Desmond
+    affiliation: "School of EECS, University of North Dakota"
+  - family-names: Shao
+    given-names: Sicong
+    affiliation: "School of EECS, University of North Dakota"
+version: "release_slice_2026-10"
+date-released: "2026-11-10"
+license: MIT
+repository-code: "https://github.com/brianterry/TerraRepair-Bench-MSR"
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.24115285"
+    description: "Archived release on Zenodo"
+keywords:
+  - infrastructure as code
+  - Terraform
+  - automated program repair
+  - large language models
+  - security misconfiguration
+  - dataset
+references:
+  - type: dataset
+    title: "TerraDS: A Dataset for Terraform HCL Programs"
+    doi: "10.5281/zenodo.14217386"
+    authors:
+      - family-names: "Bühler"
+        given-names: Christoph

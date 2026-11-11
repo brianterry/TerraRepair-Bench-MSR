@@ -1,0 +1,77 @@
+{
+  "findings_count": 12,
+  "findings": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_137",
+      "title": "",
+      "resource_name": "aws_elasticsearch_domain.main[0]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_317",
+      "title": "",
+      "resource_name": "aws_elasticsearch_domain.main[0]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_228",
+      "title": "",
+      "resource_name": "aws_elasticsearch_domain.main[0]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_5",
+      "title": "",
+      "resource_name": "aws_elasticsearch_domain.main[0]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_247",
+      "title": "",
+      "resource_name": "aws_elasticsearch_domain.main[0]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_248",
+      "title": "",
+      "resource_name": "aws_elasticsearch_domain.main[0]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_318",
+      "title": "",
+      "resource_name": "aws_elasticsearch_domain.main[0]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_66",
+      "title": "",
+      "resource_name": "aws_cloudwatch_log_group.main"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_338",
+      "title": "",
+      "resource_name": "aws_cloudwatch_log_group.main"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_158",
+      "title": "",
+      "resource_name": "aws_cloudwatch_log_group.main"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_52",
+      "title": "",
+      "resource_name": "aws_elasticsearch_domain.main[0]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_59",
+      "title": "",
+      "resource_name": "aws_elasticsearch_domain.main[0]"
+    }
+  ]
+}

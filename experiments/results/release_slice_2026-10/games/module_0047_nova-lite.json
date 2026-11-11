@@ -1,0 +1,131 @@
+{
+  "module_id": "module_0047",
+  "model_id": "nova-lite",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0178",
+      "title": "VPC Flow Logs is a feature that enables you to capture information about the IP traffic going to and from network interfaces in your VPC. After you've created a flow log, you can view and retrieve its data in Amazon CloudWatch Logs. It is recommended that VPC Flow Logs be enabled for packet \"Rejects\" for VPCs.",
+      "severity": "MEDIUM",
+      "resource_name": "aws_vpc.example",
+      "resource_type": "aws_vpc",
+      "file_path": "main.tf",
+      "start_line": 40,
+      "end_line": 46
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_234",
+      "title": "Verify logging preference for ACM certificates",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_acm_certificate.private_domain_cert",
+      "resource_type": "aws_acm_certificate",
+      "file_path": "/pca.tf",
+      "start_line": 52,
+      "end_line": 67
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_233",
+      "title": "Ensure Create before destroy for ACM certificates",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_acm_certificate.private_domain_cert",
+      "resource_type": "aws_acm_certificate",
+      "file_path": "/pca.tf",
+      "start_line": 52,
+      "end_line": 67
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_12",
+      "title": "Ensure the default security group of every VPC restricts all traffic",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_vpc.example",
+      "resource_type": "aws_vpc",
+      "file_path": "/main.tf",
+      "start_line": 40,
+      "end_line": 46
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_11",
+      "title": "Ensure VPC flow logging is enabled in all VPCs",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_vpc.example",
+      "resource_type": "aws_vpc",
+      "file_path": "/main.tf",
+      "start_line": 40,
+      "end_line": 46
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0178",
+      "title": "VPC Flow Logs is a feature that enables you to capture information about the IP traffic going to and from network interfaces in your VPC. After you've created a flow log, you can view and retrieve its data in Amazon CloudWatch Logs. It is recommended that VPC Flow Logs be enabled for packet \"Rejects\" for VPCs.",
+      "severity": "MEDIUM",
+      "resource_name": "aws_vpc.example",
+      "resource_type": "aws_vpc",
+      "file_path": "main.tf",
+      "start_line": 40,
+      "end_line": 53
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_12",
+      "title": "Ensure the default security group of every VPC restricts all traffic",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_vpc.example",
+      "resource_type": "aws_vpc",
+      "file_path": "/main.tf",
+      "start_line": 40,
+      "end_line": 53
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_11",
+      "title": "Ensure VPC flow logging is enabled in all VPCs",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_vpc.example",
+      "resource_type": "aws_vpc",
+      "file_path": "/main.tf",
+      "start_line": 40,
+      "end_line": 53
+    }
+  ],
+  "target_count": 5,
+  "resolved_count": 2,
+  "introduced_count": 0,
+  "unchanged_count": 3,
+  "repair_success_rate": 0.4,
+  "regression_rate": 0.0,
+  "net_delta": 2,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 2,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 2
+    },
+    "other": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 1
+    }
+  },
+  "repair_cost_usd": 0.0005102,
+  "repair_tokens": 3541,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0047_nova-lite.repaired.tf",
+  "raw_response_path": "module_0047_nova-lite.raw.txt",
+  "repaired_code_sha256": "bc20477a711088a49dabc5595376d66f6fffedf3dd15b7c3d8a319f6c8bcad5b"
+}

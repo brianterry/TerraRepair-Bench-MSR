@@ -1,0 +1,1129 @@
+ provider "aws" {
+  region = "us-east-1"
+}
+
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 4.51"
+    }
+  }
+}
+
+
+resource "aws_vpc" "main" {
+  cidr_block = "10.0.0.0/16"
+
+  enable_dns_support   = true
+  enable_dns_hostnames = true
+
+  tags = {
+    Name = "main"
+  }
+}
+
+resource "aws_default_security_group" "default" {
+  vpc_id = aws_vpc.main.id
+
+  ingress {
+    description = "Deny all ingress"
+    protocol    = "-1"
+    self        = true
+    from_port   = 0
+    to_port     = 0
+  }
+
+  egress {
+    description = "Deny all egress"
+    protocol    = "-1"
+    self        = true
+    from_port   = 0
+    to_port     = 0
+  }
+}
+
+resource "aws_flow_log" "main" {
+  vpc_id                   = aws_vpc.main.id
+  traffic_type             = "REJECT"
+  log_destination_type     = "cloud-watch-logs"
+  log_destination          = aws_cloudwatch_log_group.vpc_flow_logs.arn
+  iam_role_arn             = aws_iam_role.vpc_flow_logs.arn
+  max_aggregation_interval = 600
+
+  tags = {
+    Name = "main-vpc-flow-logs"
+  }
+}
+
+resource "aws_cloudwatch_log_group" "vpc_flow_logs" {
+  name              = "/aws/vpc/main-flow-logs"
+  retention_in_days = 30
+}
+
+resource "aws_iam_role" "vpc_flow_logs" {
+  name = "vpc-flow-logs-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "vpc-flow-logs.amazonaws.com"
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy" "vpc_flow_logs" {
+  name = "vpc-flow-logs-policy"
+  role = aws_iam_role.vpc_flow_logs.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents",
+          "logs:DescribeLogGroups",
+          "logs:DescribeLogStreams"
+        ]
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+
+resource "aws_eks_addon" "demo_arm64_csi_driver" {
+  cluster_name             = aws_eks_cluster.demo_arm64.name
+  addon_name               = "aws-ebs-csi-driver"
+  addon_version            = "v1.15.0-eksbuild.1"
+  service_account_role_arn = aws_iam_role.demo_arm64_eks_ebs_csi_driver.arn
+}
+
+resource "aws_eks_addon" "demo_amd64_csi_driver" {
+  cluster_name             = aws_eks_cluster.demo_amd64.name
+  addon_name               = "aws-ebs-csi-driver"
+  addon_version            = "v1.15.0-eksbuild.1"
+  service_account_role_arn = aws_iam_role.demo_amd64_eks_ebs_csi_driver.arn
+}
+
+
+provider "helm" {
+  alias = "demo_arm64"
+  kubernetes {
+    host                   = aws_eks_cluster.demo_arm64.endpoint
+    cluster_ca_certificate = base64decode(aws_eks_cluster.demo_arm64.certificate_authority[0].data)
+    exec {
+      api_version = "client.authentication.k8s.io/v1beta1"
+      args        = ["eks", "get-token", "--cluster-name", aws_eks_cluster.demo_arm64.id]
+      command     = "aws"
+    }
+  }
+}
+
+provider "helm" {
+  alias = "demo_amd64"
+  kubernetes {
+    host                   = aws_eks_cluster.demo_amd64.endpoint
+    cluster_ca_certificate = base64decode(aws_eks_cluster.demo_amd64.certificate_authority[0].data)
+    exec {
+      api_version = "client.authentication.k8s.io/v1beta1"
+      args        = ["eks", "get-token", "--cluster-name", aws_eks_cluster.demo_amd64.id]
+      command     = "aws"
+    }
+  }
+}
+
+resource "helm_release" "internal_ingress_nginx_arm64" {
+  name     = "internal"
+  provider = helm.demo_arm64
+
+  repository       = "https://kubernetes.github.io/ingress-nginx"
+  chart            = "ingress-nginx"
+  namespace        = "ingress-nginx"
+  create_namespace = true
+  version          = "4.4.2"
+
+  set {
+    name  = "controller.ingressClassResource.name"
+    value = "internal-ingress-nginx"
+  }
+
+  set {
+    name  = "controller.metrics.enabled"
+    value = "true"
+  }
+
+  set {
+    name  = "controller.service.annotations.service\\.beta\\.kubernetes\\.io/aws-load-balancer-type"
+    value = "nlb"
+  }
+
+  set {
+    name  = "controller.service.annotations.service\\.beta\\.kubernetes\\.io/aws-load-balancer-internal"
+    value = "true"
+  }
+
+  set {
+    name  = "controller.replicaCount"
+    value = "1"
+  }
+
+  # set {
+  #   name  = "controller.nodeSelector.role"
+  #   value = "ingress-nodes"
+  # }
+
+  # set {
+  #   name  = "controller.tolerations[0].key"
+  #   value = "service"
+  # }
+
+  # set {
+  #   name  = "controller.tolerations[0].value"
+  #   value = "ingress"
+  # }
+
+  # set {
+  #   name  = "controller.tolerations[0].operator"
+  #   value = "Equal"
+  # }
+
+  # set {
+  #   name  = "controller.tolerations[0].effect"
+  #   value = "NoExecute"
+  # }
+}
+
+
+resource "helm_release" "internal_ingress_nginx_amd64" {
+  name     = "internal"
+  provider = helm.demo_amd64
+
+  repository       = "https://kubernetes.github.io/ingress-nginx"
+  chart            = "ingress-nginx"
+  namespace        = "ingress-nginx"
+  create_namespace = true
+  version          = "4.4.2"
+
+  set {
+    name  = "controller.ingressClassResource.name"
+    value = "internal-ingress-nginx"
+  }
+
+  set {
+    name  = "controller.metrics.enabled"
+    value = "true"
+  }
+
+  set {
+    name  = "controller.service.annotations.service\\.beta\\.kubernetes\\.io/aws-load-balancer-type"
+    value = "nlb"
+  }
+
+  set {
+    name  = "controller.service.annotations.service\\.beta\\.kubernetes\\.io/aws-load-balancer-internal"
+    value = "true"
+  }
+
+  set {
+    name  = "controller.replicaCount"
+    value = "1"
+  }
+
+  # set {
+  #   name  = "controller.nodeSelector.role"
+  #   value = "ingress-nodes"
+  # }
+
+  # set {
+  #   name  = "controller.tolerations[0].key"
+  #   value = "service"
+  # }
+
+  # set {
+  #   name  = "controller.tolerations[0].value"
+  #   value = "ingress"
+  # }
+
+  # set {
+  #   name  = "controller.tolerations[0].operator"
+  #   value = "Equal"
+  # }
+
+  # set {
+  #   name  = "controller.tolerations[0].effect"
+  #   value = "NoExecute"
+  # }
+}
+
+
+resource "helm_release" "external_ingress_nginx_arm64" {
+  name = "external"
+
+  provider = helm.demo_arm64
+
+  repository       = "https://kubernetes.github.io/ingress-nginx"
+  chart            = "ingress-nginx"
+  namespace        = "ingress-nginx"
+  create_namespace = true
+  version          = "4.4.2"
+
+  set {
+    name  = "controller.ingressClassResource.name"
+    value = "external-ingress-nginx"
+  }
+
+  set {
+    name  = "controller.metrics.enabled"
+    value = "true"
+  }
+
+  set {
+    name  = "controller.service.annotations.service\\.beta\\.kubernetes\\.io/aws-load-balancer-type"
+    value = "nlb"
+  }
+
+  set {
+    name  = "controller.service.annotations.service\\.beta\\.kubernetes\\.io/aws-load-balancer-internal"
+    value = "false"
+  }
+
+  set {
+    name  = "controller.replicaCount"
+    value = "1"
+  }
+
+  # set {
+  #   name  = "controller.nodeSelector.role"
+  #   value = "ingress-nodes"
+  # }
+
+  # set {
+  #   name  = "controller.tolerations[0].key"
+  #   value = "service"
+  # }
+
+  # set {
+  #   name  = "controller.tolerations[0].value"
+  #   value = "ingress"
+  # }
+
+  # set {
+  #   name  = "controller.tolerations[0].operator"
+  #   value = "Equal"
+  # }
+
+  # set {
+  #   name  = "controller.tolerations[0].effect"
+  #   value = "NoExecute"
+  # }
+}
+
+
+resource "helm_release" "external_ingress_nginx_amd64" {
+  name = "external"
+
+  provider = helm.demo_amd64
+
+  repository       = "https://kubernetes.github.io/ingress-nginx"
+  chart            = "ingress-nginx"
+  namespace        = "ingress-nginx"
+  create_namespace = true
+  version          = "4.4.2"
+
+  set {
+    name  = "controller.ingressClassResource.name"
+    value = "external-ingress-nginx"
+  }
+
+  set {
+    name  = "controller.metrics.enabled"
+    value = "true"
+  }
+
+  set {
+    name  = "controller.service.annotations.service\\.beta\\.kubernetes\\.io/aws-load-balancer-type"
+    value = "nlb"
+  }
+
+  set {
+    name  = "controller.service.annotations.service\\.beta\\.kubernetes\\.io/aws-load-balancer-internal"
+    value = "false"
+  }
+
+  set {
+    name  = "controller.replicaCount"
+    value = "1"
+  }
+
+  # set {
+  #   name  = "controller.nodeSelector.role"
+  #   value = "ingress-nodes"
+  # }
+
+  # set {
+  #   name  = "controller.tolerations[0].key"
+  #   value = "service"
+  # }
+
+  # set {
+  #   name  = "controller.tolerations[0].value"
+  #   value = "ingress"
+  # }
+
+  # set {
+  #   name  = "controller.tolerations[0].operator"
+  #   value = "Equal"
+  # }
+
+  # set {
+  #   name  = "controller.tolerations[0].effect"
+  #   value = "NoExecute"
+  # }
+}
+
+
+locals {
+  private_route53_zone = "antonputra.pvt"
+}
+
+resource "aws_route53_zone" "private" {
+  name = local.private_route53_zone
+
+  vpc {
+    vpc_id = aws_vpc.main.id
+  }
+}
+
+#arm64
+provider "kubernetes" {
+  alias                  = "k8s-arm64"
+  host                   = aws_eks_cluster.demo_arm64.endpoint
+  cluster_ca_certificate = base64decode(aws_eks_cluster.demo_arm64.certificate_authority[0].data)
+  exec {
+    api_version = "client.authentication.k8s.io/v1beta1"
+    args        = ["eks", "get-token", "--cluster-name", aws_eks_cluster.demo_arm64.id]
+    command     = "aws"
+  }
+}
+
+data "kubernetes_service" "internal-ingress-arm64" {
+  provider = kubernetes.k8s-arm64
+  metadata {
+    name      = "internal-ingress-nginx-controller"
+    namespace = "ingress-nginx"
+  }
+  depends_on = [helm_release.internal_ingress_nginx_arm64]
+}
+
+resource "aws_route53_record" "api_arm64" {
+  zone_id    = aws_route53_zone.private.zone_id
+  name       = "api.arm64"
+  type       = "CNAME"
+  ttl        = 300
+  records    = [data.kubernetes_service.internal-ingress-arm64.status.0.load_balancer.0.ingress.0.hostname]
+  depends_on = [helm_release.internal_ingress_nginx_arm64]
+}
+
+#amd64
+provider "kubernetes" {
+  alias                  = "k8s-amd64"
+  host                   = aws_eks_cluster.demo_amd64.endpoint
+  cluster_ca_certificate = base64decode(aws_eks_cluster.demo_amd64.certificate_authority[0].data)
+  exec {
+    api_version = "client.authentication.k8s.io/v1beta1"
+    args        = ["eks", "get-token", "--cluster-name", aws_eks_cluster.demo_amd64.id]
+    command     = "aws"
+  }
+}
+
+data "kubernetes_service" "internal-ingress-amd64" {
+  provider = kubernetes.k8s-amd64
+  metadata {
+    name      = "internal-ingress-nginx-controller"
+    namespace = "ingress-nginx"
+  }
+  depends_on = [helm_release.internal_ingress_nginx_amd64]
+}
+
+resource "aws_route53_record" "api_amd64" {
+  zone_id    = aws_route53_zone.private.zone_id
+  name       = "api.amd64"
+  type       = "CNAME"
+  ttl        = 300
+  records    = [data.kubernetes_service.internal-ingress-amd64.status.0.load_balancer.0.ingress.0.hostname]
+  depends_on = [helm_release.internal_ingress_nginx_amd64]
+}
+
+
+locals {
+  public_route53_zone = "antonputra.com"
+}
+
+data "aws_route53_zone" "public" {
+  name         = local.public_route53_zone
+  private_zone = false
+}
+
+# Do NOT expose Prometheus to Internet (demo only)
+#arm64
+data "kubernetes_service" "external-ingress-arm64" {
+  provider = kubernetes.k8s-arm64
+  metadata {
+    name      = "external-ingress-nginx-controller"
+    namespace = "ingress-nginx"
+  }
+  depends_on = [helm_release.external_ingress_nginx_arm64]
+}
+resource "aws_route53_record" "arm64_prometheus" {
+  zone_id    = data.aws_route53_zone.public.zone_id
+  name       = "prometheus.arm64"
+  type       = "CNAME"
+  ttl        = 300
+  records    = [data.kubernetes_service.external-ingress-arm64.status.0.load_balancer.0.ingress.0.hostname]
+  depends_on = [helm_release.external_ingress_nginx_arm64]
+}
+
+#amd64
+data "kubernetes_service" "external-ingress-amd64" {
+  provider = kubernetes.k8s-amd64
+  metadata {
+    name      = "external-ingress-nginx-controller"
+    namespace = "ingress-nginx"
+  }
+  depends_on = [helm_release.external_ingress_nginx_amd64]
+}
+resource "aws_route53_record" "amd64_prometheus" {
+  zone_id    = data.aws_route53_zone.public.zone_id
+  name       = "prometheus.amd64"
+  type       = "CNAME"
+  ttl        = 300
+  records    = [data.kubernetes_service.external-ingress-amd64.status.0.load_balancer.0.ingress.0.hostname]
+  depends_on = [helm_release.external_ingress_nginx_amd64]
+}
+
+
+data "aws_ami" "ubuntu_jammy" {
+  most_recent = true
+
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"]
+  }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+
+  owners = ["099720109477"]
+}
+
+resource "aws_security_group" "client" {
+  name        = "client"
+  description = "Security group for client instance"
+  vpc_id      = aws_vpc.main.id
+
+  ingress {
+    description = "Allow SSH access from specific CIDR"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["10.0.0.0/16"]
+  }
+
+  egress {
+    description = "Allow HTTPS outbound traffic"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    description = "Allow HTTP outbound traffic"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_iam_role" "client" {
+  name = "client-ec2-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "ec2.amazonaws.com"
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "client_ssm" {
+  role       = aws_iam_role.client.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+}
+
+resource "aws_iam_instance_profile" "client" {
+  name = "client-instance-profile"
+  role = aws_iam_role.client.name
+}
+
+resource "aws_instance" "client" {
+  ami                    = data.aws_ami.ubuntu_jammy.id
+  key_name               = "devops"
+  instance_type          = "t3a.xlarge"
+  subnet_id              = aws_subnet.public_us_east_1a.id
+  iam_instance_profile   = aws_iam_instance_profile.client.name
+  ebs_optimized          = true
+  monitoring             = true
+
+  vpc_security_group_ids = [
+    aws_security_group.client.id
+  ]
+
+  root_block_device {
+    encrypted = true
+  }
+
+  metadata_options {
+    http_endpoint               = "enabled"
+    http_tokens                 = "required"
+    http_put_response_hop_limit = 1
+  }
+
+  tags = {
+    Name          = "client.antonputra.pvt"
+    service       = "client"
+    node-exporter = "true"
+  }
+}
+
+
+data "aws_iam_policy_document" "demo_arm64_prometheus" {
+  statement {
+    actions = ["sts:AssumeRoleWithWebIdentity"]
+    effect  = "Allow"
+
+    condition {
+      test     = "StringEquals"
+      variable = "${replace(aws_iam_openid_connect_provider.demo_arm64.url, "https://", "")}:sub"
+      values   = ["system:serviceaccount:monitoring:prometheus"]
+    }
+
+    principals {
+      identifiers = [aws_iam_openid_connect_provider.demo_arm64.arn]
+      type        = "Federated"
+    }
+  }
+}
+
+resource "aws_iam_role" "demo_arm64_prometheus" {
+  assume_role_policy = data.aws_iam_policy_document.demo_arm64_prometheus.json
+  name               = "arm64-prometheus-demo"
+}
+
+# OPTIONAL: only if you have standalone EC2 instances to scare
+resource "aws_iam_role_policy_attachment" "demo_arm64_prometheus_ec2_access" {
+  role       = aws_iam_role.demo_arm64_prometheus.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ReadOnlyAccess"
+}
+
+data "aws_iam_policy_document" "demo_amd64_prometheus" {
+  statement {
+    actions = ["sts:AssumeRoleWithWebIdentity"]
+    effect  = "Allow"
+
+    condition {
+      test     = "StringEquals"
+      variable = "${replace(aws_iam_openid_connect_provider.demo_amd64.url, "https://", "")}:sub"
+      values   = ["system:serviceaccount:monitoring:prometheus"]
+    }
+
+    principals {
+      identifiers = [aws_iam_openid_connect_provider.demo_amd64.arn]
+      type        = "Federated"
+    }
+  }
+}
+
+resource "aws_iam_role" "demo_amd64_prometheus" {
+  assume_role_policy = data.aws_iam_policy_document.demo_amd64_prometheus.json
+  name               = "amd64-prometheus-demo"
+}
+
+# OPTIONAL: only if you have standalone EC2 instances to scare
+resource "aws_iam_role_policy_attachment" "demo_amd64_prometheus_ec2_access" {
+  role       = aws_iam_role.demo_amd64_prometheus.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ReadOnlyAccess"
+}
+
+
+resource "aws_internet_gateway" "igw" {
+  vpc_id = aws_vpc.main.id
+
+  tags = {
+    Name = "igw"
+  }
+}
+
+
+resource "aws_subnet" "private_us_east_1a" {
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = "10.0.0.0/19"
+  availability_zone = "us-east-1a"
+
+  tags = {
+    "Name"                             = "private-us-east-1a"
+    "kubernetes.io/role/internal-elb"  = "1"
+    "kubernetes.io/cluster/demo-arm64" = "shared"
+    "kubernetes.io/cluster/demo-amd64" = "shared"
+  }
+}
+
+resource "aws_subnet" "private_us_east_1b" {
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = "10.0.32.0/19"
+  availability_zone = "us-east-1b"
+
+  tags = {
+    "Name"                             = "private-us-east-1b"
+    "kubernetes.io/role/internal-elb"  = "1"
+    "kubernetes.io/cluster/demo-arm64" = "shared"
+    "kubernetes.io/cluster/demo-amd64" = "shared"
+  }
+}
+
+resource "aws_subnet" "public_us_east_1a" {
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = "10.0.64.0/19"
+  availability_zone       = "us-east-1a"
+  map_public_ip_on_launch = false
+
+  tags = {
+    "Name"                             = "public-us-east-1a"
+    "kubernetes.io/role/elb"           = "1"
+    "kubernetes.io/cluster/demo-arm64" = "shared"
+    "kubernetes.io/cluster/demo-amd64" = "shared"
+  }
+}
+
+resource "aws_subnet" "public_us_east_1b" {
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = "10.0.96.0/19"
+  availability_zone       = "us-east-1b"
+  map_public_ip_on_launch = false
+
+  tags = {
+    "Name"                             = "public-us-east-1b"
+    "kubernetes.io/role/elb"           = "1"
+    "kubernetes.io/cluster/demo-arm64" = "shared"
+    "kubernetes.io/cluster/demo-amd64" = "shared"
+  }
+}
+
+
+resource "aws_eip" "nat" {
+  vpc = true
+
+  tags = {
+    Name = "nat"
+  }
+}
+
+resource "aws_nat_gateway" "nat" {
+  allocation_id = aws_eip.nat.id
+  subnet_id     = aws_subnet.public_us_east_1a.id
+
+  tags = {
+    Name = "nat"
+  }
+
+  depends_on = [aws_internet_gateway.igw]
+}
+
+
+resource "aws_route_table" "private" {
+  vpc_id = aws_vpc.main.id
+
+  route {
+    cidr_block     = "0.0.0.0/0"
+    nat_gateway_id = aws_nat_gateway.nat.id
+  }
+
+  tags = {
+    Name = "private"
+  }
+}
+
+resource "aws_route_table" "public" {
+  vpc_id = aws_vpc.main.id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.igw.id
+  }
+
+  tags = {
+    Name = "public"
+  }
+}
+
+resource "aws_route_table_association" "private_us_east_1a" {
+  subnet_id      = aws_subnet.private_us_east_1a.id
+  route_table_id = aws_route_table.private.id
+}
+
+resource "aws_route_table_association" "private_us_east_1b" {
+  subnet_id      = aws_subnet.private_us_east_1b.id
+  route_table_id = aws_route_table.private.id
+}
+
+resource "aws_route_table_association" "public_us_east_1a" {
+  subnet_id      = aws_subnet.public_us_east_1a.id
+  route_table_id = aws_route_table.public.id
+}
+
+resource "aws_route_table_association" "public_us_east_1b" {
+  subnet_id      = aws_subnet.public_us_east_1b.id
+  route_table_id = aws_route_table.public.id
+}
+
+
+resource "aws_iam_role" "demo" {
+  name = "eks-cluster-demo"
+
+  assume_role_policy = <<POLICY
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "eks.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+POLICY
+}
+
+resource "aws_iam_role_policy_attachment" "demo_amazon_eks_cluster_policy" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
+  role       = aws_iam_role.demo.name
+}
+
+resource "aws_kms_key" "eks_secrets" {
+  description             = "KMS key for EKS secrets encryption"
+  deletion_window_in_days = 7
+  enable_key_rotation     = true
+}
+
+resource "aws_kms_alias" "eks_secrets" {
+  name          = "alias/eks-secrets"
+  target_key_id = aws_kms_key.eks_secrets.key_id
+}
+
+resource "aws_eks_cluster" "demo_arm64" {
+  name     = "demo-arm64"
+  version  = "1.28"
+  role_arn = aws_iam_role.demo.arn
+
+  enabled_cluster_log_types = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
+
+  encryption_config {
+    provider {
+      key_arn = aws_kms_key.eks_secrets.arn
+    }
+    resources = ["secrets"]
+  }
+
+  vpc_config {
+    subnet_ids = [
+      aws_subnet.private_us_east_1a.id,
+      aws_subnet.private_us_east_1b.id,
+      aws_subnet.public_us_east_1a.id,
+      aws_subnet.public_us_east_1b.id
+    ]
+    endpoint_public_access  = false
+    endpoint_private_access = true
+  }
+
+  depends_on = [aws_iam_role_policy_attachment.demo_amazon_eks_cluster_policy]
+}
+
+resource "aws_eks_cluster" "demo_amd64" {
+  name     = "demo-amd64"
+  version  = "1.28"
+  role_arn = aws_iam_role.demo.arn
+
+  enabled_cluster_log_types = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
+
+  encryption_config {
+    provider {
+      key_arn = aws_kms_key.eks_secrets.arn
+    }
+    resources = ["secrets"]
+  }
+
+  vpc_config {
+    subnet_ids = [
+      aws_subnet.private_us_east_1a.id,
+      aws_subnet.private_us_east_1b.id,
+      aws_subnet.public_us_east_1a.id,
+      aws_subnet.public_us_east_1b.id
+    ]
+    endpoint_public_access  = false
+    endpoint_private_access = true
+  }
+
+  depends_on = [aws_iam_role_policy_attachment.demo_amazon_eks_cluster_policy]
+}
+
+
+resource "aws_iam_role" "nodes" {
+  name = "eks-node-group-nodes"
+
+  assume_role_policy = jsonencode({
+    Statement = [{
+      Action = "sts:AssumeRole"
+      Effect = "Allow"
+      Principal = {
+        Service = "ec2.amazonaws.com"
+      }
+    }]
+    Version = "2012-10-17"
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "nodes_amazon_eks_worker_node_policy" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
+  role       = aws_iam_role.nodes.name
+}
+
+resource "aws_iam_role_policy_attachment" "nodes_amazon_eks_cni_policy" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
+  role       = aws_iam_role.nodes.name
+}
+
+resource "aws_iam_role_policy_attachment" "nodes_amazon_ec2_container_registry_read_only" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+  role       = aws_iam_role.nodes.name
+}
+
+# Optional: only if you want to "SSH" to your EKS nodes.
+resource "aws_iam_role_policy_attachment" "amazon_ssm_managed_instance_core" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+  role       = aws_iam_role.nodes.name
+}
+
+resource "aws_eks_node_group" "demo_arm64_private_nodes" {
+  cluster_name    = aws_eks_cluster.demo_arm64.name
+  node_group_name = "private-nodes"
+  node_role_arn   = aws_iam_role.nodes.arn
+
+  # Single subnet to avoid data transfer charges while testing.
+  subnet_ids = [
+    aws_subnet.private_us_east_1a.id
+  ]
+
+  capacity_type  = "ON_DEMAND"
+  ami_type       = "AL2_ARM_64"
+  instance_types = ["m6g.xlarge"]
+
+  scaling_config {
+    desired_size = 2
+    max_size     = 6
+    min_size     = 0
+  }
+
+  update_config {
+    max_unavailable = 1
+  }
+
+  labels = {
+    role = "general"
+  }
+
+  launch_template {
+    name    = aws_launch_template.demo_arm64_eks_private_nodes.name
+    version = aws_launch_template.demo_arm64_eks_private_nodes.latest_version
+  }
+
+  depends_on = [
+    aws_iam_role_policy_attachment.nodes_amazon_eks_worker_node_policy,
+    aws_iam_role_policy_attachment.nodes_amazon_eks_cni_policy,
+    aws_iam_role_policy_attachment.nodes_amazon_ec2_container_registry_read_only,
+  ]
+}
+
+resource "aws_launch_template" "demo_arm64_eks_private_nodes" {
+  name = "demo-arm64-eks-private-nodes"
+
+  metadata_options {
+    http_endpoint               = "enabled"
+    http_tokens                 = "required"
+    http_put_response_hop_limit = 1
+  }
+
+  tag_specifications {
+    resource_type = "instance"
+
+    tags = {
+      "ec2-instance-type" = "m6g.xlarge"
+    }
+  }
+}
+
+resource "aws_eks_node_group" "demo_amd64_private_nodes" {
+  cluster_name    = aws_eks_cluster.demo_amd64.name
+  node_group_name = "private-nodes"
+  node_role_arn   = aws_iam_role.nodes.arn
+
+  # Single subnet to avoid data transfer charges while testing.
+  subnet_ids = [
+    aws_subnet.private_us_east_1a.id
+  ]
+
+  capacity_type  = "ON_DEMAND"
+  ami_type       = "AL2_x86_64"
+  instance_types = ["m6a.xlarge"]
+
+  scaling_config {
+    desired_size = 2
+    max_size     = 6
+    min_size     = 0
+  }
+
+  update_config {
+    max_unavailable = 1
+  }
+
+  labels = {
+    role = "general"
+  }
+
+  launch_template {
+    name    = aws_launch_template.demo_amd64_eks_private_nodes.name
+    version = aws_launch_template.demo_amd64_eks_private_nodes.latest_version
+  }
+
+  depends_on = [
+    aws_iam_role_policy_attachment.nodes_amazon_eks_worker_node_policy,
+    aws_iam_role_policy_attachment.nodes_amazon_eks_cni_policy,
+    aws_iam_role_policy_attachment.nodes_amazon_ec2_container_registry_read_only,
+  ]
+}
+
+resource "aws_launch_template" "demo_amd64_eks_private_nodes" {
+  name = "demo-amd64-eks-private-nodes"
+
+  metadata_options {
+    http_endpoint               = "enabled"
+    http_tokens                 = "required"
+    http_put_response_hop_limit = 1
+  }
+
+  tag_specifications {
+    resource_type = "instance"
+
+    tags = {
+      "ec2-instance-type" = "m6a.xlarge"
+    }
+  }
+}
+
+
+data "tls_certificate" "demo_arm64" {
+  url = aws_eks_cluster.demo_arm64.identity[0].oidc[0].issuer
+}
+
+resource "aws_iam_openid_connect_provider" "demo_arm64" {
+  client_id_list  = ["sts.amazonaws.com"]
+  thumbprint_list = [data.tls_certificate.demo_arm64.certificates[0].sha1_fingerprint]
+  url             = aws_eks_cluster.demo_arm64.identity[0].oidc[0].issuer
+}
+
+data "tls_certificate" "demo_amd64" {
+  url = aws_eks_cluster.demo_amd64.identity[0].oidc[0].issuer
+}
+
+resource "aws_iam_openid_connect_provider" "demo_amd64" {
+  client_id_list  = ["sts.amazonaws.com"]
+  thumbprint_list = [data.tls_certificate.demo_amd64.certificates[0].sha1_fingerprint]
+  url             = aws_eks_cluster.demo_amd64.identity[0].oidc[0].issuer
+}
+
+
+data "aws_iam_policy_document" "demo_arm64_csi" {
+  statement {
+    actions = ["sts:AssumeRoleWithWebIdentity"]
+    effect  = "Allow"
+
+    condition {
+      test     = "StringEquals"
+      variable = "${replace(aws_iam_openid_connect_provider.demo_arm64.url, "https://", "")}:sub"
+      values   = ["system:serviceaccount:kube-system:ebs-csi-controller-sa"]
+    }
+
+    principals {
+      identifiers = [aws_iam_openid_connect_provider.demo_arm64.arn]
+      type        = "Federated"
+    }
+  }
+}
+
+resource "aws_iam_role" "demo_arm64_eks_ebs_csi_driver" {
+  assume_role_policy = data.aws_iam_policy_document.demo_arm64_csi.json
+  name               = "eks-ebs-csi-driver"
+}
+
+resource "aws_iam_role_policy_attachment" "amazon_ebs_csi_driver" {
+  role       = aws_iam_role.demo_arm64_eks_ebs_csi_driver.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
+}
+
+data "aws_iam_policy_document" "demo_amd64_csi" {
+  statement {
+    actions = ["sts:AssumeRoleWithWebIdentity"]
+    effect  = "Allow"
+
+    condition {
+      test     = "StringEquals"
+      variable = "${replace(aws_iam_openid_connect_provider.demo_amd64.url, "https://", "")}:sub"
+      values   = ["system:serviceaccount:kube-system:ebs-csi-controller-sa"]
+    }
+
+    principals {
+      identifiers = [aws_iam_openid_connect_provider.demo_amd64.arn]
+      type        = "Federated"
+    }
+  }
+}
+
+resource "aws_iam_role" "demo_amd64_eks_ebs_csi_driver" {
+  assume_role_policy = data.aws_iam_policy_document.demo_amd64_csi.json
+  name               = "amd-eks-ebs-csi-driver"
+}
+
+resource "aws_iam_role_policy_attachment" "demo_amd64_amazon_ebs_csi_driver" {
+  role       = aws_iam_role.demo_amd64_eks_ebs_csi_driver.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
+}

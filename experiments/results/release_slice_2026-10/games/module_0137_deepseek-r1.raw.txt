@@ -1,0 +1,609 @@
+
+variable "region" {
+  description = "The region to deploy the cluster in, e.g: us-east-1."
+}
+
+variable "amisize" {
+  description = "The size of the cluster nodes, e.g: t2.large. Note that OpenShift will not run on anything smaller than t2.large"
+}
+
+variable "vpc_cidr" {
+  description = "The CIDR block for the VPC, e.g: 10.0.0.0/16"
+}
+
+variable "subnetaz" {
+  description = "The AZ for the public subnet, e.g: us-east-1a"
+  type = "map"
+}
+
+variable "subnet_cidr" {
+  description = "The CIDR block for the public subnet, e.g: 10.0.1.0/24"
+}
+
+variable "key_name" {
+  description = "The name of the key to user for ssh access"
+}
+
+variable "private_key_data" {
+  description = "contents of the private key"
+}
+
+variable "name_tag_prefix" {
+  description = "prefixed to Name tag added to EC2 instances and other AWS resources"
+}
+
+variable "owner" {
+  description = "value set on EC2 owner tag"
+}
+
+variable "ttl" {
+  description = "value set on EC2 TTL tag. -1 means forever. Measured in hours."
+}
+
+
+data "aws_ami" "rhel7_5" {
+  most_recent = true
+
+  owners = ["309956199498"]
+
+  filter {
+    name   = "architecture"
+    values = ["x86_64"]
+  }
+
+  filter {
+    name   = "root-device-type"
+    values = ["ebs"]
+  }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+
+  filter {
+    name   = "name"
+    values = ["RHEL-7.5*"]
+  }
+}
+
+data "aws_ami" "amazonlinux" {
+  most_recent = true
+
+  owners = ["137112412989"]
+
+  filter {
+    name   = "architecture"
+    values = ["x86_64"]
+  }
+
+  filter {
+    name   = "root-device-type"
+    values = ["ebs"]
+  }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+
+  filter {
+    name   = "name"
+    values = ["amzn-ami-hvm-2018.03.0.20190611-x86_64-gp2"]
+  }
+}
+
+
+resource "aws_vpc" "openshift" {
+  cidr_block           = "${var.vpc_cidr}"
+  enable_dns_hostnames = true
+
+  tags {
+    Name    = "${var.name_tag_prefix}-openshift VPC"
+    Project = "openshift"
+  }
+}
+
+resource "aws_flow_log" "openshift_vpc_flow_log" {
+  log_destination      = aws_cloudwatch_log_group.vpc_flow_logs.arn
+  iam_role_arn         = aws_iam_role.vpc_flow_logs_role.arn
+  vpc_id               = aws_vpc.openshift.id
+  traffic_type         = "REJECT"
+}
+
+resource "aws_cloudwatch_log_group" "vpc_flow_logs" {
+  name = "vpc-flow-logs"
+}
+
+resource "aws_iam_role" "vpc_flow_logs_role" {
+  name = "vpc-flow-logs-role"
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "vpc-flow-logs.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy" "vpc_flow_logs_policy" {
+  name = "vpc-flow-logs-policy"
+  role = aws_iam_role.vpc_flow_logs_role.id
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents",
+        "logs:DescribeLogStreams"
+      ],
+      "Resource": "*"
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_internet_gateway" "openshift" {
+  vpc_id = "${aws_vpc.openshift.id}"
+
+  tags {
+    Name    = "${var.name_tag_prefix}-openshift IGW"
+    Project = "openshift"
+  }
+}
+
+resource "aws_subnet" "public-subnet" {
+  vpc_id                  = "${aws_vpc.openshift.id}"
+  cidr_block              = "${var.subnet_cidr}"
+  availability_zone       = "${lookup(var.subnetaz, var.region)}"
+  map_public_ip_on_launch = false
+  depends_on              = ["aws_internet_gateway.openshift"]
+
+  tags {
+    Name    = "${var.name_tag_prefix}-openshift Public Subnet"
+    Project = "openshift"
+  }
+}
+
+resource "aws_route_table" "public" {
+  vpc_id = "${aws_vpc.openshift.id}"
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = "${aws_internet_gateway.openshift.id}"
+  }
+
+  tags {
+    Name    = "${var.name_tag_prefix}-openshift Public Route Table"
+    Project = "openshift"
+  }
+}
+
+resource "aws_route_table_association" "public-subnet" {
+  subnet_id      = "${aws_subnet.public-subnet.id}"
+  route_table_id = "${aws_route_table.public.id}"
+}
+
+
+resource "aws_security_group" "openshift-vpc" {
+  name        = "${var.name_tag_prefix}-openshift-vpc"
+  description = "Default security group that allows all instances in the VPC to talk to each other over any port and protocol."
+  vpc_id      = "${aws_vpc.openshift.id}"
+
+  ingress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    self        = true
+    description = "Allow all ingress within VPC"
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    self        = true
+    description = "Allow all egress within VPC"
+  }
+
+  tags {
+    Name    = "OpenShift Internal VPC"
+    Project = "openshift"
+  }
+}
+
+resource "aws_security_group" "openshift-public-ingress" {
+  name        = "${var.name_tag_prefix}-openshift-public-ingress"
+  description = "Security group that allows public ingress to instances, HTTP, HTTPS and more."
+  vpc_id      = "${aws_vpc.openshift.id}"
+
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow HTTP"
+  }
+
+  ingress {
+    from_port   = 8080
+    to_port     = 8080
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow HTTP Proxy"
+  }
+
+  ingress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow HTTPS"
+  }
+
+  ingress {
+    from_port   = 8443
+    to_port     = 8443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow HTTPS Proxy"
+  }
+
+  tags {
+    Name    = "OpenShift Public Access"
+    Project = "openshift"
+  }
+}
+
+resource "aws_security_group" "openshift-public-egress" {
+  name        = "${var.name_tag_prefix}-openshift-public-egress"
+  description = "Security group that allows egress to the internet for instances over HTTP and HTTPS."
+  vpc_id      = "${aws_vpc.openshift.id}"
+
+  egress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow HTTP egress"
+  }
+
+  egress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow HTTPS egress"
+  }
+
+  egress {
+    from_port   = 8200
+    to_port     = 8200
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow Vault egress"
+  }
+
+  tags {
+    Name    = "OpenShift Public Access"
+    Project = "openshift"
+  }
+}
+
+resource "aws_security_group" "openshift-ssh" {
+  name        = "${var.name_tag_prefix}-openshift-ssh"
+  description = "Security group that allows public ingress over SSH."
+  vpc_id      = "${aws_vpc.openshift.id}"
+
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow SSH"
+  }
+
+  tags {
+    Name    = "OpenShift SSH Access"
+    Project = "openshift"
+  }
+}
+
+
+resource "aws_iam_role" "openshift-instance-role" {
+  name = "${var.name_tag_prefix}-openshift-instance-role"
+
+  assume_role_policy = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Action": "sts:AssumeRole",
+            "Principal": {
+                "Service": "ec2.amazonaws.com"
+            },
+            "Effect": "Allow",
+            "Sid": ""
+        }
+    ]
+}
+EOF
+}
+
+resource "aws_iam_policy" "openshift-policy-forward-logs" {
+  name        = "${var.name_tag_prefix}-openshift-instance-forward-logs"
+  path        = "/"
+  description = "Allows an instance to forward logs to CloudWatch"
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents",
+        "logs:DescribeLogStreams"
+    ],
+      "Resource": [
+        "arn:aws:logs:*:*:*"
+    ]
+  }
+ ]
+}
+EOF
+}
+
+
+resource "aws_iam_policy_attachment" "openshift-attachment-forward-logs" {
+  name       = "${var.name_tag_prefix}-openshift-attachment-forward-logs"
+  roles      = ["${aws_iam_role.openshift-instance-role.name}"]
+  policy_arn = "${aws_iam_policy.openshift-policy-forward-logs.arn}"
+}
+
+resource "aws_iam_instance_profile" "openshift-instance-profile" {
+  name  = "${var.name_tag_prefix}-openshift-instance-profile"
+  role = "${aws_iam_role.openshift-instance-role.name}"
+}
+
+
+data "template_file" "setup-master" {
+  template = "${file("${path.module}/files/setup-master.sh")}"
+}
+
+resource "aws_instance" "master" {
+  ami                  = "${data.aws_ami.rhel7_5.id}"
+  instance_type        = "m4.xlarge"
+  subnet_id            = "${aws_subnet.public-subnet.id}"
+  iam_instance_profile = "${aws_iam_instance_profile.openshift-instance-profile.id}"
+  user_data            = "${data.template_file.setup-master.rendered}"
+  monitoring           = true
+  ebs_optimized        = true
+
+  metadata_options {
+    http_tokens = "required"
+  }
+
+  vpc_security_group_ids = [
+    "${aws_security_group.openshift-vpc.id}",
+    "${aws_security_group.openshift-public-ingress.id}",
+    "${aws_security_group.openshift-public-egress.id}",
+  ]
+
+  root_block_device {
+    volume_size = 50
+    encrypted   = true
+  }
+
+  ebs_block_device {
+    device_name = "/dev/sdf"
+    volume_size = 80
+    encrypted   = true
+  }
+
+  key_name = "${var.key_name}"
+
+  tags {
+    Name    = "${var.name_tag_prefix} OpenShift Master"
+    Project = "openshift"
+    owner = "${var.owner}"
+    TTL = "${var.ttl}"
+  }
+}
+
+data "template_file" "setup-node" {
+  template = "${file("${path.module}/files/setup-node.sh")}"
+}
+
+resource "aws_instance" "node1" {
+  ami                  = "${data.aws_ami.rhel7_5.id}"
+  instance_type        = "${var.amisize}"
+  subnet_id            = "${aws_subnet.public-subnet.id}"
+  iam_instance_profile = "${aws_iam_instance_profile.openshift-instance-profile.id}"
+  user_data            = "${data.template_file.setup-node.rendered}"
+  monitoring           = true
+  ebs_optimized        = true
+
+  metadata_options {
+    http_tokens = "required"
+  }
+
+  vpc_security_group_ids = [
+    "${aws_security_group.openshift-vpc.id}",
+    "${aws_security_group.openshift-public-ingress.id}",
+    "${aws_security_group.openshift-public-egress.id}",
+  ]
+
+  root_block_device {
+    volume_size = 50
+    encrypted   = true
+  }
+
+  ebs_block_device {
+    device_name = "/dev/sdf"
+    volume_size = 80
+    encrypted   = true
+  }
+
+  key_name = "${var.key_name}"
+
+  tags {
+    Name    = "${var.name_tag_prefix} OpenShift Node 1"
+    Project = "openshift"
+    owner = "${var.owner}"
+    TTL = "${var.ttl}"
+  }
+}
+
+
+resource "aws_route53_zone" "internal" {
+  name = "${var.name_tag_prefix}-openshift.local"
+  comment = "OpenShift Cluster Internal DNS"
+  vpc {
+    vpc_id = "${aws_vpc.openshift.id}"
+  }
+  tags {
+    Name    = "OpenShift Internal DNS"
+    Project = "openshift"
+  }
+}
+
+resource "aws_route53_record" "master-a-record" {
+    zone_id = "${aws_route53_zone.internal.zone_id}"
+    name = "master.${var.name_tag_prefix}-openshift.local"
+    type = "A"
+    ttl  = 300
+    records = [
+        "${aws_instance.master.private_ip}"
+    ]
+}
+resource "aws_route53_record" "node1-a-record" {
+    zone_id = "${aws_route53_zone.internal.zone_id}"
+    name = "node1.${var.name_tag_prefix}-openshift.local"
+    type = "A"
+    ttl  = 300
+    records = [
+        "${aws_instance.node1.private_ip}"
+    ]
+}
+
+
+data "external" "delay" {
+  program = ["./modules/openshift/delay-aws"]
+
+  depends_on = ["aws_instance.master", "aws_instance.node1"]
+}
+
+data "template_file" "inventory" {
+  template = "${file("${path.module}/files/install-from-bastion.sh")}"
+
+  vars {
+    wait = "${data.external.delay.result["wait"]}"
+    master_ip = "${aws_instance.master.public_ip}"
+    private_key = "${var.private_key_data}"
+    name_tag_prefix = "${var.name_tag_prefix}"
+    region = "${var.region}"
+  }
+}
+
+resource "local_file" "inventory" {
+  content = "${data.template_file.inventory.rendered}"
+  filename = "${path.module}/files/install-openshift.sh"
+}
+
+resource "aws_instance" "bastion" {
+  ami                  = "${data.aws_ami.amazonlinux.id}"
+  instance_type        = "t2.micro"
+  subnet_id            = "${aws_subnet.public-subnet.id}"
+  iam_instance_profile = "${aws_iam_instance_profile.openshift-instance-profile.id}"
+  monitoring           = true
+
+  metadata_options {
+    http_tokens = "required"
+  }
+
+  vpc_security_group_ids = [
+    "${aws_security_group.openshift-vpc.id}",
+    "${aws_security_group.openshift-ssh.id}",
+    "${aws_security_group.openshift-public-egress.id}",
+  ]
+
+  root_block_device {
+    encrypted = true
+  }
+
+  key_name = "${var.key_name}"
+
+  tags {
+    Name    = "${var.name_tag_prefix} OpenShift Bastion"
+    Project = "openshift"
+    owner = "${var.owner}"
+    TTL = "${var.ttl}"
+  }
+
+  provisioner "remote-exec" {
+    script = "${local_file.inventory.filename}"
+    on_failure = "continue"
+    connection {
+      type     = "ssh"
+      user     = "ec2-user"
+      private_key = "${var.private_key_data}"
+    }
+  }
+}
+
+
+output "master_public_dns" {
+  value = "${aws_instance.master.public_dns}"
+}
+output "master_public_ip" {
+  value = "${aws_instance.master.public_ip}"
+}
+output "master_private_dns" {
+  value = "${aws_instance.master.private_dns}"
+}
+output "master_private_ip" {
+  value = "${aws_instance.master.private_ip}"
+}
+
+output "node1_public_dns" {
+  value = "${aws_instance.node1.public_dns}"
+}
+output "node1_public_ip" {
+  value = "${aws_instance.node1.public_ip}"
+}
+output "node1_private_dns" {
+  value = "${aws_instance.node1.private_dns}"
+}
+output "node1_private_ip" {
+  value = "${aws_instance.node1.private_ip}"
+}
+
+output "bastion_public_dns" {
+  value = "${aws_instance.bastion.public_dns}"
+}
+output "bastion_public_ip" {
+  value = "${aws_instance.bastion.public_ip}"
+}
+output "bastion_private_dns" {
+  value = "${aws_instance.bastion.private_dns}"
+}
+output "bastion_private_ip" {
+  value = "${aws_instance.bastion.private_ip}"
+}

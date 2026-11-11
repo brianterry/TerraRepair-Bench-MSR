@@ -1,0 +1,241 @@
+{
+  "module_id": "module_0334",
+  "model_id": "qwen3-32b",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0130",
+      "title": "aws_instance should activate session tokens for Instance Metadata Service.",
+      "severity": "HIGH",
+      "resource_name": "aws_launch_template.this",
+      "resource_type": "aws_launch_template",
+      "file_path": "main.tf",
+      "start_line": 23,
+      "end_line": 23
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "module.ec2_sg",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/security-group/aws/main.tf",
+      "start_line": 571,
+      "end_line": 578
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_166",
+      "title": "Ensure Backup Vault is encrypted at rest using KMS CMK",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_backup_vault.this",
+      "resource_type": "aws_backup_vault",
+      "file_path": "/backup.tf",
+      "start_line": 1,
+      "end_line": 3
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "iam_policy",
+      "resource_type": "iam_policy",
+      "file_path": "/iam.tf",
+      "start_line": 57,
+      "end_line": 66
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "this_role",
+      "resource_type": "this_role",
+      "file_path": "/iam.tf",
+      "start_line": 68,
+      "end_line": 85
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "backup_role",
+      "resource_type": "backup_role",
+      "file_path": "/iam.tf",
+      "start_line": 92,
+      "end_line": 108
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_79",
+      "title": "Ensure Instance Metadata Service Version 1 is not enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_launch_template.this",
+      "resource_type": "aws_launch_template",
+      "file_path": "/main.tf",
+      "start_line": 10,
+      "end_line": 49
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_341",
+      "title": "Ensure Launch template should not have a metadata response hop limit greater than 1",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_launch_template.this",
+      "resource_type": "aws_launch_template",
+      "file_path": "/main.tf",
+      "start_line": 10,
+      "end_line": 49
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "ec2_sg",
+      "resource_type": "ec2_sg",
+      "file_path": "/security_groups.tf",
+      "start_line": 1,
+      "end_line": 21
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "efs_sg",
+      "resource_type": "efs_sg",
+      "file_path": "/security_groups.tf",
+      "start_line": 23,
+      "end_line": 39
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_19",
+      "title": "Ensure that all EIP addresses allocated to a VPC are attached to EC2 instances",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_eip.this",
+      "resource_type": "aws_eip",
+      "file_path": "/main.tf",
+      "start_line": 2,
+      "end_line": 8
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_166",
+      "title": "Ensure Backup Vault is encrypted at rest using KMS CMK",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_backup_vault.this",
+      "resource_type": "aws_backup_vault",
+      "file_path": "/main.tf",
+      "start_line": 16,
+      "end_line": 21
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "iam_policy",
+      "resource_type": "iam_policy",
+      "file_path": "/main.tf",
+      "start_line": 127,
+      "end_line": 136
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "this_role",
+      "resource_type": "this_role",
+      "file_path": "/main.tf",
+      "start_line": 138,
+      "end_line": 155
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "backup_role",
+      "resource_type": "backup_role",
+      "file_path": "/main.tf",
+      "start_line": 162,
+      "end_line": 178
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "ec2_sg",
+      "resource_type": "ec2_sg",
+      "file_path": "/main.tf",
+      "start_line": 269,
+      "end_line": 289
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "efs_sg",
+      "resource_type": "efs_sg",
+      "file_path": "/main.tf",
+      "start_line": 291,
+      "end_line": 307
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_19",
+      "title": "Ensure that all EIP addresses allocated to a VPC are attached to EC2 instances",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_eip.this",
+      "resource_type": "aws_eip",
+      "file_path": "/main.tf",
+      "start_line": 181,
+      "end_line": 187
+    }
+  ],
+  "target_count": 11,
+  "resolved_count": 4,
+  "introduced_count": 0,
+  "unchanged_count": 7,
+  "repair_success_rate": 0.36363636363636365,
+  "regression_rate": 0.0,
+  "net_delta": 4,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 1,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 1,
+      "introduced": 0,
+      "unchanged": 1
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 2,
+      "introduced": 0,
+      "unchanged": 6
+    }
+  },
+  "repair_cost_usd": 0.0020248,
+  "repair_tokens": 5062,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0334_qwen3-32b.repaired.tf",
+  "raw_response_path": "module_0334_qwen3-32b.raw.txt",
+  "repaired_code_sha256": "91f06149424ab567e912e9654955f98cb0d495050597530224a0fa2f95110996"
+}

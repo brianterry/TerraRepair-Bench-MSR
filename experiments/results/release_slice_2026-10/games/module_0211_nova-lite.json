@@ -1,0 +1,226 @@
+{
+  "module_id": "module_0211",
+  "model_id": "nova-lite",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "module.cur_reports_integration_athena_s3_bucket",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/s3-bucket/aws/main.tf",
+      "start_line": 77,
+      "end_line": 89
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "module.cur_reports_s3_bucket",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/s3-bucket/aws/main.tf",
+      "start_line": 77,
+      "end_line": 89
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0132",
+      "title": "S3 encryption should use Customer Managed Keys",
+      "severity": "HIGH",
+      "resource_name": "module.cur_reports_integration_athena_s3_bucket",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/s3-bucket/aws/main.tf",
+      "start_line": 77,
+      "end_line": 89
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0132",
+      "title": "S3 encryption should use Customer Managed Keys",
+      "severity": "HIGH",
+      "resource_name": "module.cur_reports_s3_bucket",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/s3-bucket/aws/main.tf",
+      "start_line": 77,
+      "end_line": 89
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_274",
+      "title": "Disallow IAM roles, users, and groups from using the AWS AdministratorAccess policy",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_role_policy_attachment.atlantis",
+      "resource_type": "aws_iam_role_policy_attachment",
+      "file_path": "/iam.tf",
+      "start_line": 59,
+      "end_line": 62
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "cur_reports_s3_bucket",
+      "resource_type": "cur_reports_s3_bucket",
+      "file_path": "/s3.tf",
+      "start_line": 19,
+      "end_line": 43
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "cur_reports_integration_athena_s3_bucket",
+      "resource_type": "cur_reports_integration_athena_s3_bucket",
+      "file_path": "/s3.tf",
+      "start_line": 45,
+      "end_line": 69
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_274",
+      "title": "Disallow IAM roles, users, and groups from using the AWS AdministratorAccess policy",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_ssoadmin_managed_policy_attachment.this[\"AdministratorAccess\"]",
+      "resource_type": "aws_ssoadmin_managed_policy_attachment",
+      "file_path": "/sso.tf",
+      "start_line": 43,
+      "end_line": 48
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "module.cur_reports_integration_athena_s3_bucket",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/s3-bucket/aws/main.tf",
+      "start_line": 77,
+      "end_line": 89
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "module.cur_reports_s3_bucket",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/s3-bucket/aws/main.tf",
+      "start_line": 77,
+      "end_line": 89
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0132",
+      "title": "S3 encryption should use Customer Managed Keys",
+      "severity": "HIGH",
+      "resource_name": "module.cur_reports_integration_athena_s3_bucket",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/s3-bucket/aws/main.tf",
+      "start_line": 77,
+      "end_line": 89
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0132",
+      "title": "S3 encryption should use Customer Managed Keys",
+      "severity": "HIGH",
+      "resource_name": "module.cur_reports_s3_bucket",
+      "resource_type": "module",
+      "file_path": "terraform-aws-modules/s3-bucket/aws/main.tf",
+      "start_line": 77,
+      "end_line": 89
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_274",
+      "title": "Disallow IAM roles, users, and groups from using the AWS AdministratorAccess policy",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_role_policy_attachment.atlantis",
+      "resource_type": "aws_iam_role_policy_attachment",
+      "file_path": "/iam.tf",
+      "start_line": 59,
+      "end_line": 62
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "cur_reports_s3_bucket",
+      "resource_type": "cur_reports_s3_bucket",
+      "file_path": "/s3.tf",
+      "start_line": 19,
+      "end_line": 43
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "cur_reports_integration_athena_s3_bucket",
+      "resource_type": "cur_reports_integration_athena_s3_bucket",
+      "file_path": "/s3.tf",
+      "start_line": 45,
+      "end_line": 69
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_274",
+      "title": "Disallow IAM roles, users, and groups from using the AWS AdministratorAccess policy",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_ssoadmin_managed_policy_attachment.this[\"AdministratorAccess\"]",
+      "resource_type": "aws_ssoadmin_managed_policy_attachment",
+      "file_path": "/sso.tf",
+      "start_line": 43,
+      "end_line": 48
+    }
+  ],
+  "target_count": 8,
+  "resolved_count": 0,
+  "introduced_count": 0,
+  "unchanged_count": 8,
+  "repair_success_rate": 0.0,
+  "regression_rate": 0.0,
+  "net_delta": 0,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 2
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 2
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 2
+    },
+    "other": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 2
+    }
+  },
+  "repair_cost_usd": 0.0033452,
+  "repair_tokens": 23452,
+  "hcl_valid": false,
+  "failure_metadata": {
+    "source_chars": 43962,
+    "est_input_tokens": 10990,
+    "max_tokens": 40000,
+    "size_driven_failure": false,
+    "repair_error": "Repaired code failed HCL validation"
+  },
+  "repaired_code_path": "module_0211_nova-lite.repaired.tf",
+  "raw_response_path": "module_0211_nova-lite.raw.txt",
+  "repaired_code_sha256": "a2218ed86371f914437c6fe64fca925aeac9ae80879d50591032ed21fbb11a58"
+}

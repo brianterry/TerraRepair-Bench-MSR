@@ -1,0 +1,197 @@
+{
+  "module_id": "module_0047",
+  "model_id": "deepseek-v3-2",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0178",
+      "title": "VPC Flow Logs is a feature that enables you to capture information about the IP traffic going to and from network interfaces in your VPC. After you've created a flow log, you can view and retrieve its data in Amazon CloudWatch Logs. It is recommended that VPC Flow Logs be enabled for packet \"Rejects\" for VPCs.",
+      "severity": "MEDIUM",
+      "resource_name": "aws_vpc.example",
+      "resource_type": "aws_vpc",
+      "file_path": "main.tf",
+      "start_line": 40,
+      "end_line": 46
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_234",
+      "title": "Verify logging preference for ACM certificates",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_acm_certificate.private_domain_cert",
+      "resource_type": "aws_acm_certificate",
+      "file_path": "/pca.tf",
+      "start_line": 52,
+      "end_line": 67
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_233",
+      "title": "Ensure Create before destroy for ACM certificates",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_acm_certificate.private_domain_cert",
+      "resource_type": "aws_acm_certificate",
+      "file_path": "/pca.tf",
+      "start_line": 52,
+      "end_line": 67
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_12",
+      "title": "Ensure the default security group of every VPC restricts all traffic",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_vpc.example",
+      "resource_type": "aws_vpc",
+      "file_path": "/main.tf",
+      "start_line": 40,
+      "end_line": 46
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_11",
+      "title": "Ensure VPC flow logging is enabled in all VPCs",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_vpc.example",
+      "resource_type": "aws_vpc",
+      "file_path": "/main.tf",
+      "start_line": 40,
+      "end_line": 46
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0017",
+      "title": "CloudWatch log groups should be encrypted using CMK",
+      "severity": "LOW",
+      "resource_name": "aws_cloudwatch_log_group.vpc_flow_log",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "main.tf",
+      "start_line": 76,
+      "end_line": 78
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "aws_default_security_group.default",
+      "resource_type": "aws_default_security_group",
+      "file_path": "main.tf",
+      "start_line": 63,
+      "end_line": 63
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0124",
+      "title": "Missing description for security group rule.",
+      "severity": "LOW",
+      "resource_name": "aws_default_security_group.default",
+      "resource_type": "aws_default_security_group",
+      "file_path": "main.tf",
+      "start_line": 54,
+      "end_line": 59
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_111",
+      "title": "Ensure IAM policies does not allow write access without constraints",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.vpc_flow_log_policy",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/main.tf",
+      "start_line": 91,
+      "end_line": 103
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_356",
+      "title": "Ensure no IAM policies documents allow \"*\" as a statement's resource for restrictable actions",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.vpc_flow_log_policy",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/main.tf",
+      "start_line": 91,
+      "end_line": 103
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_66",
+      "title": "Ensure that CloudWatch Log Group specifies retention days",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.vpc_flow_log",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/main.tf",
+      "start_line": 76,
+      "end_line": 78
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_158",
+      "title": "Ensure that CloudWatch Log Group is encrypted by KMS",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.vpc_flow_log",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/main.tf",
+      "start_line": 76,
+      "end_line": 78
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_338",
+      "title": "Ensure CloudWatch log groups retains logs for at least 1 year",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.vpc_flow_log",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/main.tf",
+      "start_line": 76,
+      "end_line": 78
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_12",
+      "title": "Ensure the default security group of every VPC restricts all traffic",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_vpc.example",
+      "resource_type": "aws_vpc",
+      "file_path": "/main.tf",
+      "start_line": 40,
+      "end_line": 49
+    }
+  ],
+  "target_count": 5,
+  "resolved_count": 4,
+  "introduced_count": 8,
+  "unchanged_count": 1,
+  "repair_success_rate": 0.8,
+  "regression_rate": 1.6,
+  "net_delta": -4,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 0,
+      "introduced": 3,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 2,
+      "introduced": 2,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 2,
+      "introduced": 2,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 0,
+      "introduced": 1,
+      "unchanged": 1
+    }
+  },
+  "repair_cost_usd": 0.0058127000000000005,
+  "repair_tokens": 3895,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0047_deepseek-v3-2.repaired.tf",
+  "raw_response_path": "module_0047_deepseek-v3-2.raw.txt",
+  "repaired_code_sha256": "474006378cfa465b68b575a3688bf23b64e8a99b20d81c2f754c3b7c6d577e0c"
+}

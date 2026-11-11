@@ -1,0 +1,59 @@
+{
+  "findings_count": 9,
+  "findings": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_186",
+      "title": "",
+      "resource_name": "aws_s3_bucket_object.ignition_master"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_315",
+      "title": "",
+      "resource_name": "aws_autoscaling_group.masters"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_79",
+      "title": "",
+      "resource_name": "aws_launch_configuration.master_conf"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_389",
+      "title": "",
+      "resource_name": "aws_launch_configuration.master_conf"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_290",
+      "title": "",
+      "resource_name": "aws_iam_role_policy.master_policy"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_287",
+      "title": "",
+      "resource_name": "aws_iam_role_policy.master_policy"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_289",
+      "title": "",
+      "resource_name": "aws_iam_role_policy.master_policy"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_355",
+      "title": "",
+      "resource_name": "aws_iam_role_policy.master_policy"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_386",
+      "title": "",
+      "resource_name": "aws_ami.coreos_ami"
+    }
+  ]
+}

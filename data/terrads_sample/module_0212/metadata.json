@@ -1,0 +1,107 @@
+{
+  "findings_count": 17,
+  "findings": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_108",
+      "title": "",
+      "resource_name": "aws_iam_policy_document.eks_resources_permission_boundary_doc"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_111",
+      "title": "",
+      "resource_name": "aws_iam_policy_document.eks_resources_permission_boundary_doc"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_107",
+      "title": "",
+      "resource_name": "aws_iam_policy_document.eks_resources_permission_boundary_doc"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_356",
+      "title": "",
+      "resource_name": "aws_iam_policy_document.eks_resources_permission_boundary_doc"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_109",
+      "title": "",
+      "resource_name": "aws_iam_policy_document.eks_resources_permission_boundary_doc"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_110",
+      "title": "",
+      "resource_name": "aws_iam_policy_document.eks_resources_permission_boundary_doc"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_111",
+      "title": "",
+      "resource_name": "aws_iam_policy_document.eks_apply"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_107",
+      "title": "",
+      "resource_name": "aws_iam_policy_document.eks_apply"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_356",
+      "title": "",
+      "resource_name": "aws_iam_policy_document.eks_apply"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_109",
+      "title": "",
+      "resource_name": "aws_iam_policy_document.eks_apply"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_110",
+      "title": "",
+      "resource_name": "aws_iam_policy_document.eks_apply"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_111",
+      "title": "",
+      "resource_name": "aws_iam_policy_document.eks_destroy"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_356",
+      "title": "",
+      "resource_name": "aws_iam_policy_document.eks_destroy"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_109",
+      "title": "",
+      "resource_name": "aws_iam_policy_document.eks_destroy"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_108",
+      "title": "",
+      "resource_name": "aws_iam_policy_document.eks_plan"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_356",
+      "title": "",
+      "resource_name": "aws_iam_policy_document.eks_plan"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_40",
+      "title": "",
+      "resource_name": "aws_iam_policy_document.eks_resources_permission_boundary_doc"
+    }
+  ]
+}

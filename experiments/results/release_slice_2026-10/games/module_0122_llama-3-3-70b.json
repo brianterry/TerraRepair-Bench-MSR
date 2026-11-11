@@ -1,0 +1,98 @@
+{
+  "module_id": "module_0122",
+  "model_id": "llama-3-3-70b",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0001",
+      "title": "API Gateway stages for V1 and V2 should have access logging enabled",
+      "severity": "MEDIUM",
+      "resource_name": "aws_apigatewayv2_stage.webhook",
+      "resource_type": "aws_apigatewayv2_stage",
+      "file_path": "main.tf",
+      "start_line": 28,
+      "end_line": 49
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_309",
+      "title": "Ensure API GatewayV2 routes specify an authorization type",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_apigatewayv2_route.webhook",
+      "resource_type": "aws_apigatewayv2_route",
+      "file_path": "/main.tf",
+      "start_line": 12,
+      "end_line": 26
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_34",
+      "title": "AWS SSM Parameter should be Encrypted",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_ssm_parameter.runner_matcher_config",
+      "resource_type": "aws_ssm_parameter",
+      "file_path": "/webhook.tf",
+      "start_line": 9,
+      "end_line": 14
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_309",
+      "title": "Ensure API GatewayV2 routes specify an authorization type",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_apigatewayv2_route.webhook",
+      "resource_type": "aws_apigatewayv2_route",
+      "file_path": "/main.tf",
+      "start_line": 12,
+      "end_line": 26
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_337",
+      "title": "Ensure SSM parameters are using KMS CMK",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_ssm_parameter.runner_matcher_config",
+      "resource_type": "aws_ssm_parameter",
+      "file_path": "/main.tf",
+      "start_line": 364,
+      "end_line": 369
+    }
+  ],
+  "target_count": 3,
+  "resolved_count": 2,
+  "introduced_count": 1,
+  "unchanged_count": 1,
+  "repair_success_rate": 0.6666666666666666,
+  "regression_rate": 0.3333333333333333,
+  "net_delta": 1,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 1,
+      "introduced": 1,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 1,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 1
+    }
+  },
+  "repair_cost_usd": 0.0059407999999999996,
+  "repair_tokens": 7426,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0122_llama-3-3-70b.repaired.tf",
+  "raw_response_path": "module_0122_llama-3-3-70b.raw.txt",
+  "repaired_code_sha256": "f07854c90cce9166eee583ddc8acf8ec7b2e6854fc60560b2471db270e10d4f9"
+}

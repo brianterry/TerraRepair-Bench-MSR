@@ -1,0 +1,96 @@
+resource "aws_cloudwatch_log_group" "eks" {
+  name              = "/aws/eks/${local.prefix}-eks/cluster"
+  retention_in_days = var.eks.cloudwatch_retention_in_days
+  kms_key_id        = "alias/aws/CloudWatch"
+}
+
+resource "aws_iam_policy" "ClusterAutoScaler" {
+  name        = "${local.prefix}-eks"
+  path        = "/"
+  description = ""
+  policy      = <<POLICY
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "autoscaling:DescribeAutoScalingGroups",
+                "autoscaling:DescribeAutoScalingInstances",
+                "autoscaling:DescribeLaunchConfigurations",
+                "autoscaling:DescribeTags",
+                "autoscaling:SetDesiredCapacity",
+                "autoscaling:TerminateInstanceInAutoScalingGroup",
+                "ec2:DescribeLaunchTemplateVersions"
+            ],
+            "Resource": [
+                "arn:aws:autoscaling:*:*:autoScalingGroup:*:autoScalingGroupName/eks-*"
+            ]
+        }
+    ]
+}
+POLICY
+}
+
+resource "aws_security_group" "eks_master" {
+  name        = "${local.prefix}-eks"
+  description = "communication with worker nodes"
+  vpc_id      = var.vpc_id
+  ingress {
+    from_port   = 443
+    protocol    = "tcp"
+    to_port     = 443
+    cidr_blocks = var.eks.allow_cidrs
+    description = "Allow HTTPS from specific CIDRs"
+  }
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "TCP"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow all outbound TCP traffic"
+  }
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "UDP"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow all outbound UDP traffic"
+  }
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "ICMP"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow all outbound ICMP traffic"
+  }
+
+  tags = {
+    Name = "${local.prefix}-eks"
+  }
+}
+
+resource "aws_eks_cluster" "eks-cluster" {
+  name                      = "${local.prefix}-eks"
+  role_arn                  = aws_iam_role.eks-cluster.arn
+  enabled_cluster_log_types = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
+  version                   = var.eks.version
+  vpc_config {
+    security_group_ids = [aws_security_group.eks_master.id]
+    subnet_ids         = local.subnets
+  }
+  encryption_config {
+    resources = ["secrets"]
+  }
+  endpoint_public_access = false
+  depends_on = [
+    aws_iam_role_policy_attachment.eks-cluster-policy,
+    aws_iam_role_policy_attachment.eks-server-policy,
+    aws_cloudwatch_log_group.eks
+  ]
+}
+
+data "aws_availability_zones" "available" {
+  state = "available"
+  names = ["us-west-2a", "us-west-2b", "us-west-2c"]
+}

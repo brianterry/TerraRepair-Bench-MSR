@@ -1,0 +1,1092 @@
+/*
+Copyright 2023 The Kubernetes Authors.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+locals {
+  eks_resource_pb_name = "EKSResourcesPermissionBoundary"
+}
+
+// Bondary imposed on all IAM roles provisioned by EKSInfraAdmin role.
+resource "aws_iam_policy" "eks_resources_permission_boundary" {
+  name        = local.eks_resource_pb_name
+  path        = "/boundary/"
+  description = "Permission boundary for roles created by EKSInfraAdmin."
+  policy      = data.aws_iam_policy_document.eks_resources_permission_boundary_doc.json
+  tags        = var.tags
+}
+
+data "aws_iam_policy_document" "eks_resources_permission_boundary_doc" {
+  statement {
+    sid = "AllowMany"
+
+    effect = "Allow"
+
+    actions = [
+      "autoscaling:*",
+      "ec2:*",
+      "ecr:BatchCheckLayerAvailability",
+      "ecr:BatchGetImage",
+      "ecr:CompleteLayerUpload",
+      "ecr:DescribeImages",
+      "ecr:DescribeRepositories",
+      "ecr:GetDownloadUrlForLayer",
+      "ecr:InitiateLayerUpload",
+      "ecr:ListImages",
+      "ecr:PutImage",
+      "ecr:UploadLayerPart",
+      "eks:*",
+      "eks-auth:AssumeRoleForPodIdentity",
+      "elasticloadbalancing:*",
+      "kms:CreateAlias",
+      "kms:CreateGrant",
+      "kms:Decrypt",
+      "kms:DescribeKey",
+      "kms:Encrypt",
+      "kms:GenerateDataKey",
+      "kms:GenerateDataKeyWithoutPlaintext",
+      "kms:ListAliases",
+      "kms:ListGrants",
+      "kms:ListKeys",
+      "kms:ListResourceTags",
+      "kms:ReEncryptFrom",
+      "kms:ReEncryptTo",
+      "kms:RetireGrant",
+      "kms:RevokeGrant",
+      "logs:CreateLogGroup",
+      "logs:CreateLogStream",
+      "logs:DescribeLogGroups",
+      "logs:DescribeLogStreams",
+      "logs:PutLogEvents",
+      "logs:PutRetentionPolicy",
+      "logs:TagLogGroup",
+      # TODO(xmudrii-ubuntu): remove after removing ECR repo
+      "ecr-public:BatchCheckLayerAvailability",
+      "ecr-public:BatchGetImage",
+      "ecr-public:DescribeImages",
+      "ecr-public:DescribeRegistries",
+      "ecr-public:DescribeRepositories",
+      "ecr-public:GetRepositoryCatalogData",
+      "ecr-public:GetRepositoryPolicy",
+      "ecr-public:ListTagsForResource"
+    ]
+
+    resources = [
+      "arn:aws:autoscaling:*:${local.account_id}:*",
+      "arn:aws:ec2:*:${local.account_id}:*",
+      "arn:aws:ecr:*:${local.account_id}:repository/*",
+      "arn:aws:eks:*:${local.account_id}:*",
+      "arn:aws:elasticloadbalancing:*:${local.account_id}:*",
+      "arn:aws:kms:*:${local.account_id}:key/*",
+      "arn:aws:kms:*:${local.account_id}:alias/*",
+      "arn:aws:logs:*:${local.account_id}:log-group:*",
+      "arn:aws:logs:*:${local.account_id}:log-group:*:log-stream:*",
+      "arn:aws:ecr-public::${local.account_id}:registry/*",
+      "arn:aws:ecr-public::${local.account_id}:repository/*"
+    ]
+  }
+
+  statement {
+    sid = "AllowIAM"
+
+    effect = "Allow"
+
+    actions = [
+      "iam:AddRoleToInstanceProfile",
+      "iam:AttachRolePolicy",
+      "iam:AttachUserPolicy",
+      "iam:CreateInstanceProfile",
+      "iam:CreateOpenIDConnectProvider",
+      "iam:CreatePolicy",
+      "iam:CreatePolicyVersion",
+      "iam:CreateRole",
+      "iam:CreateServiceLinkedRole",
+      "iam:CreateUser",
+      "iam:DeleteInstanceProfile",
+      "iam:DeleteOpenIDConnectProvider",
+      "iam:DeletePolicy",
+      "iam:DeletePolicyVersion",
+      "iam:DeleteRole",
+      "iam:DeleteRolePermissionsBoundary",
+      "iam:DeleteRolePolicy",
+      "iam:DeleteServiceLinkedRole",
+      "iam:DeleteUser",
+      "iam:DeleteUserPolicy",
+      "iam:DetachRolePolicy",
+      "iam:DetachUserPolicy",
+      "iam:GetInstanceProfile",
+      "iam:GetOpenIDConnectProvider",
+      "iam:GetPolicy",
+      "iam:GetPolicyVersion",
+      "iam:GetRole",
+      "iam:GetRolePolicy",
+      "iam:GetServiceLinkedRoleDeletionStatus",
+      "iam:GetUser",
+      "iam:GetUserPolicy",
+      "iam:ListAttachedRolePolicies",
+      "iam:ListAttachedUserPolicies",
+      "iam:ListInstanceProfiles",
+      "iam:ListInstanceProfilesForRole",
+      "iam:ListOpenIDConnectProviders",
+      "iam:ListPolicies",
+      "iam:ListPolicyVersions",
+      "iam:ListRolePolicies",
+      "iam:ListRoles",
+      "iam:ListRoleTags",
+      "iam:ListUserPolicies",
+      "iam:ListUsers",
+      "iam:ListUserTags",
+      "iam:PutRolePermissionsBoundary",
+      "iam:PutRolePolicy",
+      "iam:PutUserPermissionsBoundary",
+      "iam:PutUserPolicy",
+      "iam:RemoveRoleFromInstanceProfile",
+      "iam:TagInstanceProfile",
+      "iam:TagOpenIDConnectProvider",
+      "iam:TagPolicy",
+      "iam:TagRole",
+      "iam:TagUser",
+      "iam:UntagInstanceProfile",
+      "iam:UntagOpenIDConnectProvider",
+      "iam:UntagPolicy",
+      "iam:UntagRole",
+      "iam:UntagUser",
+      "iam:UpdateAssumeRolePolicy",
+      "iam:UpdateOpenIDConnectProviderThumbprint",
+      "iam:UpdateRole",
+      "iam:UpdateRoleDescription"
+    ]
+
+    resources = [
+      "arn:aws:iam::${local.account_id}:role/*",
+      "arn:aws:iam::${local.account_id}:policy/*",
+      "arn:aws:iam::${local.account_id}:instance-profile/*",
+      "arn:aws:iam::${local.account_id}:oidc-provider/*",
+      "arn:aws:iam::${local.account_id}:user/*"
+    ]
+  }
+
+  statement {
+    sid = "AllowPassRole"
+
+    effect = "Allow"
+
+    actions = [
+      "iam:PassRole"
+    ]
+
+    resources = [
+      "arn:aws:iam::${local.account_id}:role/*"
+    ]
+
+    condition {
+      test     = "StringEquals"
+      variable = "iam:PassedToService"
+      values = [
+        "eks.amazonaws.com",
+        "eks-fargate-pods.amazonaws.com",
+        "ec2.amazonaws.com",
+        "autoscaling.amazonaws.com",
+        "elasticloadbalancing.amazonaws.com"
+      ]
+    }
+  }
+
+  statement {
+    sid = "AllowS3"
+
+    effect = "Allow"
+
+    actions = [
+      "s3:AbortMultipartUpload",
+      "s3:CreateBucket",
+      "s3:DeleteObject",
+      "s3:GetBucketLocation",
+      "s3:GetObject",
+      "s3:ListBucket",
+      "s3:PutObject"
+    ]
+
+    resources = [
+      "arn:aws:s3:::eks-*",
+      "arn:aws:s3:::eks-*/*",
+      "arn:aws:s3:::k8s-*",
+      "arn:aws:s3:::k8s-*/*",
+      "arn:aws:s3:::terraform-*",
+      "arn:aws:s3:::terraform-*/*"
+    ]
+
+    condition {
+      test     = "StringEquals"
+      variable = "aws:ResourceAccount"
+      values = [
+        local.account_id
+      ]
+    }
+  }
+
+  statement {
+    sid = "AllowSecretsManager"
+
+    effect = "Allow"
+
+    actions = [
+      "secretsmanager:GetSecretValue",
+      "secretsmanager:DescribeSecret"
+    ]
+
+    resources = [
+      "arn:aws:secretsmanager:*:${local.account_id}:secret:*"
+    ]
+  }
+
+  statement {
+    sid = "AllowSTS"
+
+    effect = "Allow"
+
+    actions = [
+      "sts:AssumeRole",
+      "sts:AssumeRoleWithWebIdentity",
+      "sts:TagSession"
+    ]
+
+    resources = [
+      "arn:aws:iam::${local.account_id}:role/*"
+    ]
+  }
+
+  statement {
+    sid = "DenyCreateWithoutBoundary"
+
+    effect = "Deny"
+
+    actions = [
+      "iam:CreateRole",
+      "iam:CreateUser",
+    ]
+
+    resources = ["*"]
+
+    condition {
+      test     = "StringNotEquals"
+      variable = "iam:PermissionsBoundary"
+      values = [
+        "arn:aws:iam::${local.account_id}:policy/boundary/${local.eks_resource_pb_name}"
+      ]
+    }
+  }
+
+  statement {
+    sid       = "DenyChangeWithoutBoundary"
+    effect    = "Deny"
+    resources = ["*"]
+
+    actions = [
+      "iam:AttachRolePolicy",
+      "iam:DeleteRolePolicy",
+      "iam:PutRolePolicy",
+      "iam:PutRolePermissionsBoundary",
+      "iam:AttachUserPolicy",
+      "iam:DeleteUserPolicy",
+      "iam:DetachUserPolicy",
+      "iam:PutUserPolicy",
+      "iam:PutUserPermissionsBoundary",
+    ]
+
+    condition {
+      test     = "StringNotEquals"
+      variable = "iam:PermissionsBoundary"
+      values = [
+        "arn:aws:iam::${local.account_id}:policy/boundary/${local.eks_resource_pb_name}"
+      ]
+    }
+  }
+
+  statement {
+    sid = "DenyEditBoundaries"
+
+    effect = "Deny"
+
+    actions = [
+      "iam:DeletePolicy",
+      "iam:CreatePolicyVersion",
+      "iam:DeletePolicyVersion",
+      "iam:SetDefaultPolicyVersion"
+    ]
+
+    resources = [
+      "arn:aws:iam::${local.account_id}:policy/boundary/*"
+    ]
+  }
+
+  statement {
+    sid = "DenyLeaveOrganisation"
+
+    effect = "Deny"
+
+    actions = [
+      "organizations:LeaveOrganization"
+    ]
+
+    resources = ["*"]
+  }
+}
+
+
+/*
+Copyright 2023 The Kubernetes Authors.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+data "aws_caller_identity" "current" {}
+
+data "aws_iam_user" "eks_infra_admins" {
+  count     = length(var.eks_infra_admins)
+  user_name = var.eks_infra_admins[count.index]
+}
+
+data "aws_iam_user" "eks_infra_viewers" {
+  count     = length(var.eks_infra_viewers)
+  user_name = var.eks_infra_viewers[count.index]
+}
+
+locals {
+  account_id = data.aws_caller_identity.current.account_id
+}
+
+
+/*
+Copyright 2023 The Kubernetes Authors.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+output "eks_infra_admin_role_arn" {
+  description = "ARN of the EKS admin role."
+  value       = aws_iam_role.eks_infra_admin.arn
+}
+
+output "eks_infra_viewer_role_arn" {
+  description = "ARN of the EKS viewer role."
+  value       = aws_iam_role.eks_viewer.arn
+}
+
+output "eks_infra_admin_permission_boundary" {
+  description = "ARN of the permission boundary enforcing EKSResourcePermissionBounday on EKS IAM resources."
+  value       = aws_iam_role.eks_infra_admin.arn
+}
+
+output "eks_resources_permission_boundary" {
+  description = "ARN of the permission boundary enfored on EKS IAM resources."
+  value       = aws_iam_policy.eks_resources_permission_boundary.arn
+}
+
+
+/*
+Copyright 2023 The Kubernetes Authors.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+resource "aws_iam_policy" "eks_apply" {
+  name_prefix = "EKSClusterApplier"
+  path        = "/terraform/eks/"
+  policy      = data.aws_iam_policy_document.eks_apply.json
+  tags        = var.tags
+}
+
+# WARNING/TODO: This policy can allow escalating priviliges and removing deny rules!!!
+# See the following comments for more details:
+# - https://github.com/kubernetes/k8s.io/pull/5113#discussion_r1164205616
+# - https://github.com/kubernetes/k8s.io/pull/5113#discussion_r1164206798
+data "aws_iam_policy_document" "eks_apply" {
+  statement {
+    sid    = "AllowEKSCreateOrUpadate"
+    effect = "Allow"
+    resources = [
+      "arn:aws:acm:*:${local.account_id}:certificate/*",
+      "arn:aws:autoscaling:*:${local.account_id}:autoScalingGroup:*:autoScalingGroupName/*",
+      "arn:aws:ec2:*:${local.account_id}:*",
+      "arn:aws:eks:*:${local.account_id}:cluster/*",
+      "arn:aws:eks:*:${local.account_id}:addon/*/*",
+      "arn:aws:eks:*:${local.account_id}:nodegroup/*/*/*",
+      "arn:aws:eks:*:${local.account_id}:access-entry/*/*",
+      "arn:aws:eks:*:${local.account_id}:podidentityassociation/*/*",
+      "arn:aws:events:*:${local.account_id}:rule/*",
+      "arn:aws:kms:*:${local.account_id}:key/*",
+      "arn:aws:kms:*:${local.account_id}:alias/*",
+      "arn:aws:logs:*:${local.account_id}:log-group:*",
+      "arn:aws:logs:*:${local.account_id}:log-group:*:*",
+      "arn:aws:sqs:*:${local.account_id}:*",
+      "arn:aws:ecr-public::${local.account_id}:repository/*",
+      "arn:aws:ecr-public::${local.account_id}:registry/*"
+    ]
+
+    actions = [
+      "acm:AddTagsToCertificate",
+      "acm:RequestCertificate",
+      "autoscaling:CreateOrUpdateTags",
+      "ec2:AllocateAddress",
+      "ec2:AssociateRouteTable",
+      "ec2:AssociateVpcCidrBlock",
+      "ec2:AttachInternetGateway",
+      "ec2:AuthorizeSecurityGroupEgress",
+      "ec2:AuthorizeSecurityGroupIngress",
+      "ec2:CreateEgressOnlyInternetGateway",
+      "ec2:CreateInternetGateway",
+      "ec2:CreateLaunchTemplate",
+      "ec2:CreateLaunchTemplateVersion",
+      "ec2:ModifyLaunchTemplate",
+      "ec2:CreateNatGateway",
+      "ec2:CreateRoute",
+      "ec2:CreateRouteTable",
+      "ec2:CreateSecurityGroup",
+      "ec2:CreateSubnet",
+      "ec2:CreateTags",
+      "ec2:CreateVpc",
+      "ec2:ModifySubnetAttribute",
+      "ec2:ModifyVpcAttribute",
+      "ec2:RevokeSecurityGroupEgress",
+      "ec2:RunInstances",
+      "ec2:ModifyInstanceAttribute",
+      "ec2:TerminateInstances",
+      "ec2:ImportKeyPair",
+      "eks:CreateAccessEntry",
+      "eks:CreateAddon",
+      "eks:CreateCluster",
+      "eks:CreateNodegroup",
+      "eks:CreatePodIdentityAssociation",
+      "eks:TagResource",
+      "eks:UpdateAccessEntry",
+      "eks:UpdateAddon",
+      "eks:UpdateClusterConfig",
+      "eks:UpdateClusterVersion",
+      "eks:UpdateNodegroupConfig",
+      "eks:UpdateNodegroupVersion",
+      "events:DeleteRule",
+      "events:PutRule",
+      "events:PutTargets",
+      "events:RemoveTargets",
+      "events:TagResource",
+      "kms:CreateAlias",
+      "kms:CreateGrant",
+      "kms:CreateKey",
+      "kms:EnableKeyRotation",
+      "kms:PutKeyPolicy",
+      "kms:TagResource",
+      "logs:CreateLogGroup",
+      "logs:PutRetentionPolicy",
+      "logs:TagLogGroup",
+      "sqs:CreateQueue",
+      "sqs:DeleteQueue",
+      "sqs:SetQueueAttributes",
+      "sqs:TagQueue",
+      # TODO(xmudrii-ubuntu): remove after removing ECR repo
+      "ecr-public:CreateRepository",
+      "ecr-public:TagResource",
+      "ecr-public:PutRepositoryCatalogData"
+    ]
+  }
+
+  statement {
+    sid    = "AllowApplyS3"
+    effect = "Allow"
+    actions = [
+      "s3:PutObject"
+    ]
+    resources = [
+      "arn:aws:s3:::eks-*/*",
+      "arn:aws:s3:::k8s-*/*",
+      "arn:aws:s3:::terraform-*/*"
+    ]
+    condition {
+      test     = "StringEquals"
+      variable = "aws:ResourceAccount"
+      values = [
+        local.account_id
+      ]
+    }
+  }
+
+  statement {
+    sid    = "AllowIAMSupporting"
+    effect = "Allow"
+    actions = [
+      "iam:CreateOpenIDConnectProvider",
+      "iam:CreatePolicy",
+      "iam:CreatePolicyVersion",
+      "iam:TagOpenIDConnectProvider",
+      "iam:TagPolicy",
+      "iam:TagRole",
+      "iam:UpdateOpenIDConnectProviderThumbprint",
+      "iam:UpdateAssumeRolePolicy"
+    ]
+    resources = [
+      "arn:aws:iam::${local.account_id}:oidc-provider/*",
+      "arn:aws:iam::${local.account_id}:policy/*",
+      "arn:aws:iam::${local.account_id}:role/*"
+    ]
+  }
+
+  statement {
+    sid    = "AllowPassRole"
+    effect = "Allow"
+    actions = [
+      "iam:PassRole"
+    ]
+    resources = [
+      "arn:aws:iam::${local.account_id}:role/*"
+    ]
+    condition {
+      test     = "StringEquals"
+      variable = "iam:PassedToService"
+      values = [
+        "eks.amazonaws.com",
+        "eks-fargate-pods.amazonaws.com",
+        "ec2.amazonaws.com",
+        "autoscaling.amazonaws.com",
+        "elasticloadbalancing.amazonaws.com"
+      ]
+    }
+  }
+
+  // This statement effectively enforces EKSResourcesPermissionBoundary on IAM resources
+  // created with this policy.
+  statement {
+    sid = "AllowCreateOnlyWithBoundary"
+
+    effect = "Allow"
+
+    actions = [
+      "iam:CreateRole",
+      "iam:CreateUser",
+    ]
+
+    resources = [
+      "arn:aws:iam::${local.account_id}:role/*",
+      "arn:aws:iam::${local.account_id}:user/*"
+    ]
+
+    condition {
+      test     = "StringEquals"
+      variable = "iam:PermissionsBoundary"
+      values = [
+        aws_iam_policy.eks_resources_permission_boundary.arn
+      ]
+    }
+  }
+
+  statement {
+    sid    = "AllowChangeOnlyWithEKSResourceBoundary"
+    effect = "Allow"
+    resources = [
+      "arn:aws:iam::${local.account_id}:role/*",
+      "arn:aws:iam::${local.account_id}:user/*"
+    ]
+
+    actions = [
+      "iam:AttachRolePolicy",
+      "iam:DeleteRolePolicy",
+      "iam:PutRolePolicy",
+      "iam:PutRolePermissionsBoundary",
+      "iam:AttachUserPolicy",
+      "iam:DeleteUserPolicy",
+      "iam:DetachUserPolicy",
+      "iam:PutUserPolicy",
+      "iam:PutUserPermissionsBoundary",
+    ]
+
+    condition {
+      test     = "StringEquals"
+      variable = "iam:PermissionsBoundary"
+      values = [
+        aws_iam_policy.eks_resources_permission_boundary.arn
+      ]
+    }
+  }
+
+  statement {
+    sid = "DenyEditBoundaries"
+
+    effect = "Deny"
+
+    actions = [
+      "iam:DeletePolicy",
+      "iam:CreatePolicyVersion",
+      "iam:DeletePolicyVersion",
+      "iam:SetDefaultPolicyVersion"
+    ]
+
+    resources = [
+      "arn:aws:iam::${local.account_id}:policy/boundary/*"
+    ]
+  }
+
+  statement {
+    sid = "DenyLeaveOrganisation"
+
+    effect = "Deny"
+
+    actions = [
+      "organizations:LeaveOrganization"
+    ]
+
+    resources = ["*"]
+  }
+}
+
+
+/*
+Copyright 2023 The Kubernetes Authors.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+resource "aws_iam_policy" "eks_destroy" {
+  name_prefix = "EKSClusterDestroyer"
+  path        = "/terraform/eks/"
+  policy      = data.aws_iam_policy_document.eks_destroy.json
+  tags        = var.tags
+}
+
+data "aws_iam_policy_document" "eks_destroy" {
+  statement {
+    sid    = "AllowEKSDelete"
+    effect = "Allow"
+    resources = [
+      "arn:aws:acm:*:${local.account_id}:certificate/*",
+      "arn:aws:autoscaling:*:${local.account_id}:autoScalingGroup:*:autoScalingGroupName/*",
+      "arn:aws:ec2:*:${local.account_id}:*",
+      "arn:aws:eks:*:${local.account_id}:cluster/*",
+      "arn:aws:eks:*:${local.account_id}:addon/*/*",
+      "arn:aws:eks:*:${local.account_id}:nodegroup/*/*/*",
+      "arn:aws:eks:*:${local.account_id}:access-entry/*/*",
+      "arn:aws:eks:*:${local.account_id}:podidentityassociation/*/*",
+      "arn:aws:events:*:${local.account_id}:rule/*",
+      "arn:aws:kms:*:${local.account_id}:key/*",
+      "arn:aws:kms:*:${local.account_id}:alias/*",
+      "arn:aws:logs:*:${local.account_id}:log-group:*",
+      "arn:aws:logs:*:${local.account_id}:log-group:*:*",
+      "arn:aws:sqs:*:${local.account_id}:*"
+    ]
+
+    actions = [
+      "acm:DeleteCertificate",
+      "autoscaling:DeleteTags",
+      "ec2:DeleteEgressOnlyInternetGateway",
+      "ec2:DeleteInternetGateway",
+      "ec2:DeleteLaunchTemplate",
+      "ec2:DeleteLaunchTemplateVersion",
+      "ec2:DeleteNatGateway",
+      "ec2:DeleteRoute",
+      "ec2:DeleteRouteTable",
+      "ec2:DeleteSecurityGroup",
+      "ec2:DeleteSubnet",
+      "ec2:DeleteVpc",
+      "ec2:DeleteTags",
+      "ec2:DetachInternetGateway",
+      "ec2:DisassociateAddress",
+      "ec2:DisassociateRouteTable",
+      "ec2:DisassociateVpcCidrBlock",
+      "ec2:ReleaseAddress",
+      "ec2:RevokeSecurityGroupEgress",
+      "ec2:RevokeSecurityGroupIngress",
+      "ec2:DeleteKeyPair",
+      "ec2:TerminateInstances",
+      "eks:DeleteAddon",
+      "eks:DeleteAccessEntry",
+      "eks:DeleteCluster",
+      "eks:DeleteNodegroup",
+      "eks:DeletePodIdentityAssociation",
+      "eks:UntagResource",
+      "events:UntagResource",
+      "kms:DeleteAlias",
+      "kms:ScheduleKeyDeletion",
+      "logs:DeleteLogGroup",
+      "sqs:UntagQueue"
+    ]
+  }
+
+  statement {
+    sid    = "AllowDestroyIAM"
+    effect = "Allow"
+    resources = [
+      "arn:aws:iam::${local.account_id}:oidc-provider/*",
+      "arn:aws:iam::${local.account_id}:policy/*",
+      "arn:aws:iam::${local.account_id}:role/*",
+      "arn:aws:iam::${local.account_id}:instance-profile/*"
+    ]
+
+    actions = [
+      "iam:DeleteOpenIDConnectProvider",
+      "iam:DeletePolicy",
+      "iam:DeleteRole",
+      "iam:DeleteRolePolicy",
+      "iam:DeleteRolePermissionsBoundary",
+      "iam:DetachRolePolicy",
+      "iam:DeletePolicyVersion",
+      "iam:RemoveRoleFromInstanceProfile",
+      "iam:UntagPolicy",
+      "iam:UntagRole"
+    ]
+  }
+
+  statement {
+    sid = "DenyDeleteBoundary"
+
+    effect = "Deny"
+
+    actions = [
+      "iam:DeletePolicy",
+      "iam:DeletePolicyVersion",
+      "iam:DeleteRolePermissionsBoundary",
+      "iam:DetachRolePolicy",
+    ]
+
+    resources = [
+      aws_iam_policy.eks_resources_permission_boundary.arn
+    ]
+  }
+}
+
+
+/*
+Copyright 2023 The Kubernetes Authors.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+resource "aws_iam_policy" "eks_plan" {
+  name_prefix = "EKSClusterPlanner"
+  path        = "/terraform/eks/"
+  policy      = data.aws_iam_policy_document.eks_plan.json
+  tags        = var.tags
+}
+
+data "aws_iam_policy_document" "eks_plan" {
+  statement {
+    sid    = "AllowReadEKSSupportingInfra"
+    effect = "Allow"
+    resources = [
+      "arn:aws:acm:*:${local.account_id}:certificate/*",
+      "arn:aws:ec2:*:${local.account_id}:*",
+      "arn:aws:eks:*:${local.account_id}:cluster/*",
+      "arn:aws:eks:*:${local.account_id}:addon/*/*",
+      "arn:aws:eks:*:${local.account_id}:nodegroup/*/*/*",
+      "arn:aws:eks:*:${local.account_id}:access-entry/*/*",
+      "arn:aws:eks:*:${local.account_id}:podidentityassociation/*/*",
+      "arn:aws:eks:*:${local.account_id}:identityproviderconfig/*/*/*",
+      "arn:aws:eks:*:${local.account_id}:update/*/*",
+      "arn:aws:events:*:${local.account_id}:rule/*",
+      "arn:aws:iam::${local.account_id}:oidc-provider/*",
+      "arn:aws:iam::${local.account_id}:policy/*",
+      "arn:aws:iam::${local.account_id}:role/*",
+      "arn:aws:iam::${local.account_id}:user/*",
+      "arn:aws:iam::${local.account_id}:instance-profile/*",
+      "arn:aws:kms:*:${local.account_id}:key/*",
+      "arn:aws:kms:*:${local.account_id}:alias/*",
+      "arn:aws:logs:*:${local.account_id}:log-group:*",
+      "arn:aws:sqs:*:${local.account_id}:*"
+    ]
+
+    actions = [
+      "acm:DescribeCertificate",
+      "acm:ListTagsForCertificate",
+      "ec2:DescribeAddresses",
+      "ec2:DescribeAddressesAttribute",
+      "ec2:DescribeAvailabilityZones",
+      "ec2:DescribeEgressOnlyInternetGateways",
+      "ec2:DescribeInternetGateways",
+      "ec2:DescribeImages",
+      "ec2:DescribeInstanceAttribute",
+      "ec2:DescribeInstanceCreditSpecifications",
+      "ec2:DescribeInstanceTypes",
+      "ec2:DescribeInstances",
+      "ec2:DescribeLaunchTemplateVersions",
+      "ec2:DescribeLaunchTemplates",
+      "ec2:DescribeNatGateways",
+      "ec2:DescribeNetworkInterfaces",
+      "ec2:DescribeNetworkAcls",
+      "ec2:DescribeRouteTables",
+      "ec2:DescribeSecurityGroupRules",
+      "ec2:DescribeSecurityGroups",
+      "ec2:DescribeSecurityGroupReferences",
+      "ec2:DescribeSubnets",
+      "ec2:DescribeVpcAttribute",
+      "ec2:DescribeVpcClassicLink",
+      "ec2:DescribeVpcClassicLinkDnsSupport",
+      "ec2:DescribeVpcs",
+      "ec2:DescribeVolumes",
+      "ec2:DescribeKeyPairs",
+      "ec2:DescribeTags",
+      "eks:DescribeAccessEntry",
+      "eks:DescribeAddon",
+      "eks:DescribeAddonVersions",
+      "eks:DescribeCluster",
+      "eks:DescribeNodegroup",
+      "eks:DescribePodIdentityAssociation",
+      "eks:DescribeUpdate",
+      "eks:ListAddons",
+      "eks:ListClusters",
+      "eks:ListIdentityProviderConfigs",
+      "eks:ListNodegroups",
+      "eks:ListUpdates",
+      "eks:ListTagsForResource",
+      "events:DescribeRule",
+      "events:ListTagsForResource",
+      "events:ListTargetsByRule",
+      "iam:GetOpenIDConnectProvider",
+      "iam:GetPolicy",
+      "iam:GetPolicyVersion",
+      "iam:GetRole",
+      "iam:GetRolePolicy",
+      "iam:GetUser",
+      "iam:ListAttachedRolePolicies",
+      "iam:ListRoles",
+      "iam:ListRolePolicies",
+      "iam:ListPolicies",
+      "iam:ListInstanceProfilesForRole",
+      "iam:ListPolicyVersions",
+      "kms:DescribeKey",
+      "kms:GetKeyPolicy",
+      "kms:GetKeyRotationStatus",
+      "kms:ListAliases",
+      "kms:ListResourceTags",
+      "logs:DescribeLogGroups",
+      "logs:ListTagsForResource",
+      "logs:ListTagsLogGroup",
+      "sqs:GetQueueAttributes",
+      "sqs:ListQueueTags"
+    ]
+  }
+
+  statement {
+    sid    = "AllowPlanS3"
+    effect = "Allow"
+    actions = [
+      "s3:GetObject",
+      "s3:ListBucket"
+    ]
+    resources = [
+      "arn:aws:s3:::eks-*",
+      "arn:aws:s3:::eks-*/*",
+      "arn:aws:s3:::k8s-*",
+      "arn:aws:s3:::k8s-*/*",
+      "arn:aws:s3:::terraform-*",
+      "arn:aws:s3:::terraform-*/*"
+    ]
+    condition {
+      test     = "StringEquals"
+      variable = "aws:ResourceAccount"
+      values = [
+        local.account_id
+      ]
+    }
+  }
+
+  statement {
+    sid    = "AllowPlanSSM"
+    effect = "Allow"
+    actions = [
+      "ssm:GetParameter"
+    ]
+    resources = [
+      "arn:aws:ssm:*:${local.account_id}:parameter/*"
+    ]
+  }
+}
+
+
+/*
+Copyright 2023 The Kubernetes Authors.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+resource "aws_iam_role" "eks_infra_admin" {
+  name        = "EKSInfraAdmin"
+  description = "IAM role used for planning/applying/destroying infrastructure."
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        "Effect" : "Allow",
+        "Principal" : {
+          "AWS" : data.aws_iam_user.eks_infra_admins[*].arn
+        },
+        "Action" : "sts:AssumeRole",
+        "Condition" : {}
+      }
+    ]
+  })
+
+  tags = var.tags
+}
+
+resource "aws_iam_role_policy_attachment" "admin_eks_plan" {
+  role       = aws_iam_role.eks_infra_admin.name
+  policy_arn = aws_iam_policy.eks_plan.arn
+}
+
+resource "aws_iam_role_policy_attachment" "admin_eks_apply" {
+  role       = aws_iam_role.eks_infra_admin.name
+  policy_arn = aws_iam_policy.eks_apply.arn
+}
+
+resource "aws_iam_role_policy_attachment" "admin_eks_destroy" {
+  role       = aws_iam_role.eks_infra_admin.name
+  policy_arn = aws_iam_policy.eks_destroy.arn
+}
+
+
+/*
+Copyright 2023 The Kubernetes Authors.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+resource "aws_iam_role" "eks_viewer" {
+  name        = "EKSInfraViewer"
+  description = "IAM read role."
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        "Effect" : "Allow",
+        "Principal" : {
+          "AWS" : data.aws_iam_user.eks_infra_viewers[*].arn
+        },
+        "Action" : "sts:AssumeRole",
+        "Condition" : {}
+      }
+    ]
+  })
+
+  tags = var.tags
+}
+
+resource "aws_iam_role_policy_attachment" "viewer_eks_plan" {
+  role       = aws_iam_role.eks_viewer.name
+  policy_arn = aws_iam_policy.eks_plan.arn
+}
+
+
+/*
+Copyright 2023 The Kubernetes Authors.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+variable "eks_infra_admins" {
+  type        = list(string)
+  description = "List of maintainers that have permissions to run apply/destory."
+  default     = []
+}
+
+variable "eks_infra_viewers" {
+  type        = list(string)
+  description = "List of maintainers that have permissions to run plan."
+  default     = []
+}
+
+variable "tags" {
+  type = map(string)
+  default = {
+    Terraform = true
+  }
+}

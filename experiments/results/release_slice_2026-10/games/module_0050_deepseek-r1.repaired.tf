@@ -1,0 +1,165 @@
+resource "aws_instance" "blue" {
+  count = var.enable_blue_env ? var.blue_instance_count : 0
+
+  ami                    = local.ubuntu_ami
+  instance_type          = "t2.micro"
+  subnet_id              = local.private_a_subnet_id
+  vpc_security_group_ids = [aws_security_group.web.id]
+  ebs_optimized          = true
+  monitoring             = true
+  iam_instance_profile   = "existing-instance-profile"
+
+  metadata_options {
+    http_endpoint = "enabled"
+    http_tokens   = "required"
+  }
+
+  root_block_device {
+    encrypted = true
+  }
+
+  user_data = templatefile("./init-script.sh", {
+    file_content = "blue version 1.2 - ${count.index}"
+  })
+
+  tags = {
+    Name = "blue version 1.2 - ${count.index}"
+  }
+}
+
+resource "aws_lb_target_group" "blue" {
+  name     = "blue-tg-blue-lb"
+  port     = 80
+  protocol = "HTTPS"
+  vpc_id   = local.vpc_id
+
+  health_check {
+    path     = "/"
+    port     = 80
+    protocol = "HTTP"
+    timeout  = 5
+    interval = 10
+  }
+}
+
+resource "aws_instance" "green" {
+  count = var.enable_green_env ? var.green_instance_count : 0
+
+  ami                    = local.ubuntu_ami
+  instance_type          = "t2.micro"
+  subnet_id              = local.private_a_subnet_id
+  vpc_security_group_ids = [aws_security_group.web.id]
+  ebs_optimized          = true
+  monitoring             = true
+  iam_instance_profile   = "existing-instance-profile"
+
+  metadata_options {
+    http_endpoint = "enabled"
+    http_tokens   = "required"
+  }
+
+  root_block_device {
+    encrypted = true
+  }
+
+  user_data = templatefile("./init-script.sh", {
+    file_content = "green version 1.1 - ${count.index}"
+  })
+
+  tags = {
+    Name = "green version 1.1 - ${count.index}"
+  }
+}
+
+resource "aws_lb_target_group" "green" {
+  name     = "green-tg-green-lb"
+  port     = 80
+  protocol = "HTTPS"
+  vpc_id   = local.vpc_id
+
+  health_check {
+    path     = "/"
+    port     = 80
+    protocol = "HTTP"
+    timeout  = 5
+    interval = 10
+  }
+}
+
+resource "aws_security_group" "web" {
+  name        = "web-sg"
+  description = "Security group for web-servers with HTTP ports open within VPC"
+  vpc_id      = local.vpc_id
+
+  ingress {
+    description = "Allow HTTP inbound"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["10.0.0.0/8"]
+  }
+
+  egress {
+    description     = "Allow HTTP outbound"
+    from_port       = 80
+    to_port         = 80
+    protocol        = "tcp"
+    cidr_blocks     = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = []
+  }
+
+  egress {
+    description     = "Allow HTTPS outbound"
+    from_port       = 443
+    to_port         = 443
+    protocol        = "tcp"
+    cidr_blocks     = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = []
+  }
+}
+
+resource "aws_lb" "app" {
+  name               = "app-lb"
+  internal           = true
+  load_balancer_type = "application"
+  subnets = [
+    local.public_a_subnet_id,
+    local.public_b_subnet_id
+  ]
+  security_groups = [aws_security_group.web.id]
+  drop_invalid_header_fields = true
+  enable_deletion_protection = true
+
+  access_logs {
+    bucket  = "existing-access-logs-bucket"
+    enabled = true
+  }
+}
+
+resource "aws_lb_listener" "app" {
+  load_balancer_arn = aws_lb.app.arn
+  port              = "443"
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-TLS-1-2-2017-01"
+  certificate_arn   = "arn:aws:acm:us-east-1:123456789012:certificate/12345678-1234-1234-1234-123456789012"
+
+  default_action {
+    type = "forward"
+    forward {
+      target_group {
+        arn    = aws_lb_target_group.blue.arn
+        weight = lookup(local.traffic_dist_map[var.traffic_distribution], "blue", 100)
+      }
+
+      target_group {
+        arn    = aws_lb_target_group.green.arn
+        weight = lookup(local.traffic_dist_map[var.traffic_distribution], "green", 0)
+      }
+
+      stickiness {
+        enabled  = false
+        duration = 1
+      }
+    }
+  }
+}

@@ -1,0 +1,98 @@
+{
+  "module_id": "module_0418",
+  "model_id": "claude-sonnet-5",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0143",
+      "title": "IAM policies should not be granted directly to users.",
+      "severity": "LOW",
+      "resource_name": "aws_iam_user.default",
+      "resource_type": "aws_iam_user",
+      "file_path": "main.tf",
+      "start_line": 1,
+      "end_line": 5
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "this",
+      "resource_type": "this",
+      "file_path": "/context.tf",
+      "start_line": 23,
+      "end_line": 46
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_273",
+      "title": "Ensure access is controlled through SSO and not AWS IAM defined users",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_user.default",
+      "resource_type": "aws_iam_user",
+      "file_path": "/main.tf",
+      "start_line": 1,
+      "end_line": 5
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0123",
+      "title": "IAM groups should have MFA enforcement activated.",
+      "severity": "MEDIUM",
+      "resource_name": "aws_iam_group.default",
+      "resource_type": "aws_iam_group",
+      "file_path": "main.tf",
+      "start_line": 306,
+      "end_line": 308
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_273",
+      "title": "Ensure access is controlled through SSO and not AWS IAM defined users",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_user.default",
+      "resource_type": "aws_iam_user",
+      "file_path": "/main.tf",
+      "start_line": 281,
+      "end_line": 285
+    }
+  ],
+  "target_count": 3,
+  "resolved_count": 2,
+  "introduced_count": 1,
+  "unchanged_count": 1,
+  "repair_success_rate": 0.6666666666666666,
+  "regression_rate": 0.3333333333333333,
+  "net_delta": 1,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 1,
+      "introduced": 1,
+      "unchanged": 1
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 1,
+      "introduced": 0,
+      "unchanged": 0
+    }
+  },
+  "repair_cost_usd": 0.076434,
+  "repair_tokens": 11673,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0418_claude-sonnet-5.repaired.tf",
+  "raw_response_path": "module_0418_claude-sonnet-5.raw.txt",
+  "repaired_code_sha256": "4a5f6362266ead13c583ef93a94138354121825152762e5a1ce32e2746dbf0f4"
+}

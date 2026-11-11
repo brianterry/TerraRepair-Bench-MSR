@@ -1,0 +1,164 @@
+{
+  "module_id": "module_0163",
+  "model_id": "deepseek-r1",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0133",
+      "title": "Enable Performance Insights to detect potential problems",
+      "severity": "LOW",
+      "resource_name": "aws_db_instance.this[0]",
+      "resource_type": "aws_db_instance",
+      "file_path": "main.tf",
+      "start_line": 96,
+      "end_line": 96
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0177",
+      "title": "RDS Deletion Protection Disabled",
+      "severity": "MEDIUM",
+      "resource_name": "aws_db_instance.this[0]",
+      "resource_type": "aws_db_instance",
+      "file_path": "main.tf",
+      "start_line": 114,
+      "end_line": 114
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_353",
+      "title": "Ensure that RDS instances have performance insights enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_db_instance.this[0]",
+      "resource_type": "aws_db_instance",
+      "file_path": "/main.tf",
+      "start_line": 30,
+      "end_line": 159
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_118",
+      "title": "Ensure that enhanced monitoring is enabled for Amazon RDS instances",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_db_instance.this[0]",
+      "resource_type": "aws_db_instance",
+      "file_path": "/main.tf",
+      "start_line": 30,
+      "end_line": 159
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_129",
+      "title": "Ensure that respective logs of Amazon Relational Database Service (Amazon RDS) are enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_db_instance.this[0]",
+      "resource_type": "aws_db_instance",
+      "file_path": "/main.tf",
+      "start_line": 30,
+      "end_line": 159
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_157",
+      "title": "Ensure that RDS instances have Multi-AZ enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_db_instance.this[0]",
+      "resource_type": "aws_db_instance",
+      "file_path": "/main.tf",
+      "start_line": 30,
+      "end_line": 159
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_293",
+      "title": "Ensure that AWS database instances have deletion protection enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_db_instance.this[0]",
+      "resource_type": "aws_db_instance",
+      "file_path": "/main.tf",
+      "start_line": 30,
+      "end_line": 159
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_133",
+      "title": "Ensure that RDS instances has backup policy",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_db_instance.this[0]",
+      "resource_type": "aws_db_instance",
+      "file_path": "/main.tf",
+      "start_line": 30,
+      "end_line": 159
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_338",
+      "title": "Ensure CloudWatch log groups retains logs for at least 1 year",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.this",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/main.tf",
+      "start_line": 166,
+      "end_line": 177
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_304",
+      "title": "Ensure Secrets Manager secrets should be rotated within 90 days",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_secretsmanager_secret_rotation.this[0]",
+      "resource_type": "aws_secretsmanager_secret_rotation",
+      "file_path": "/main.tf",
+      "start_line": 229,
+      "end_line": 241
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_133",
+      "title": "Ensure that RDS instances has backup policy",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_db_instance.this[0]",
+      "resource_type": "aws_db_instance",
+      "file_path": "/main.tf",
+      "start_line": 28,
+      "end_line": 153
+    }
+  ],
+  "target_count": 10,
+  "resolved_count": 9,
+  "introduced_count": 0,
+  "unchanged_count": 1,
+  "repair_success_rate": 0.9,
+  "regression_rate": 0.0,
+  "net_delta": 9,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 1
+    },
+    "data_protection": {
+      "resolved": 1,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 5,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 3,
+      "introduced": 0,
+      "unchanged": 0
+    }
+  },
+  "repair_cost_usd": 0.045805200000000004,
+  "repair_tokens": 20984,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0163_deepseek-r1.repaired.tf",
+  "raw_response_path": "module_0163_deepseek-r1.raw.txt",
+  "repaired_code_sha256": "7a54b77e1eb408fa1fe62ac12ddecae7ed1de8b0f4326ea3fe22887e6d7b6639"
+}

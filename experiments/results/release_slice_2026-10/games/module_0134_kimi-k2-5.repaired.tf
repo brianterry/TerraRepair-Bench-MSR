@@ -1,0 +1,312 @@
+#--------------------------------------------------------------
+# This module is used to create an S3 bucket website
+#--------------------------------------------------------------
+
+variable "fqdn"          { }
+variable "sub_domain"    { }
+variable "route_zone_id" { }
+variable "index_page"    { default = "index.html" }
+variable "error_page"    { default = "error.html" }
+
+resource "aws_kms_key" "website" {
+  description             = "KMS key for S3 bucket ${var.fqdn}"
+  deletion_window_in_days = 7
+  enable_key_rotation     = true
+}
+
+resource "aws_s3_bucket" "website" {
+  bucket        = "${var.fqdn}"
+  force_destroy = true
+}
+
+resource "aws_s3_bucket_website_configuration" "website" {
+  bucket = aws_s3_bucket.website.id
+
+  index_document {
+    suffix = "${var.index_page}"
+  }
+
+  error_document {
+    key = "${var.error_page}"
+  }
+}
+
+resource "aws_s3_bucket_versioning" "website" {
+  bucket = aws_s3_bucket.website.id
+
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "website" {
+  bucket = aws_s3_bucket.website.id
+
+  rule {
+    apply_server_side_encryption_by_default {
+      kms_master_key_id = aws_kms_key.website.arn
+      sse_algorithm     = "aws:kms"
+    }
+  }
+}
+
+resource "aws_s3_bucket_public_access_block" "website" {
+  bucket = aws_s3_bucket.website.id
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
+resource "aws_s3_bucket_policy" "website" {
+  bucket = aws_s3_bucket.website.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid       = "AllowCloudFrontAccess"
+        Effect    = "Allow"
+        Principal = {
+          Service = "cloudfront.amazonaws.com"
+        }
+        Action    = "s3:GetObject"
+        Resource  = "arn:aws:s3:::${var.fqdn}/*"
+        Condition = {
+          StringEquals = {
+            "AWS:SourceArn" = "arn:aws:cloudfront::${data.aws_caller_identity.current.account_id}:distribution/*"
+          }
+        }
+      }
+    ]
+  })
+
+  depends_on = [aws_s3_bucket_public_access_block.website]
+}
+
+resource "aws_s3_bucket_logging" "website" {
+  bucket = aws_s3_bucket.website.id
+
+  target_bucket = aws_s3_bucket.website.id
+  target_prefix = "logs/"
+}
+
+resource "aws_s3_bucket_lifecycle_configuration" "website" {
+  bucket = aws_s3_bucket.website.id
+
+  rule {
+    id     = "log-lifecycle"
+    status = "Enabled"
+
+    filter {
+      prefix = "logs/"
+    }
+
+    expiration {
+      days = 90
+    }
+
+    noncurrent_version_expiration {
+      noncurrent_days = 30
+    }
+  }
+
+  rule {
+    id     = "versioning-lifecycle"
+    status = "Enabled"
+
+    noncurrent_version_transition {
+      noncurrent_days = 30
+      storage_class   = "STANDARD_IA"
+    }
+
+    noncurrent_version_transition {
+      noncurrent_days = 60
+      storage_class   = "GLACIER"
+    }
+
+    noncurrent_version_expiration {
+      noncurrent_days = 365
+    }
+  }
+}
+
+resource "aws_s3_bucket_notification" "website" {
+  bucket = aws_s3_bucket.website.id
+
+  eventbridge = true
+}
+
+resource "aws_s3_bucket_replication_configuration" "website" {
+  bucket = aws_s3_bucket.website.id
+  role   = aws_iam_role.replication.arn
+
+  rule {
+    id     = "replication-rule"
+    status = "Enabled"
+
+    destination {
+      bucket        = aws_s3_bucket.website_replica.arn
+      storage_class = "STANDARD"
+
+      encryption_configuration {
+        replica_kms_key_id = aws_kms_key.website.arn
+      }
+    }
+
+    source_selection_criteria {
+      sse_kms_encrypted_objects {
+        status = "Enabled"
+      }
+    }
+  }
+
+  depends_on = [aws_s3_bucket_versioning.website]
+}
+
+resource "aws_s3_bucket" "website_replica" {
+  bucket = "${var.fqdn}-replica"
+}
+
+resource "aws_s3_bucket_versioning" "website_replica" {
+  bucket = aws_s3_bucket.website_replica.id
+
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "website_replica" {
+  bucket = aws_s3_bucket.website_replica.id
+
+  rule {
+    apply_server_side_encryption_by_default {
+      kms_master_key_id = aws_kms_key.website.arn
+      sse_algorithm     = "aws:kms"
+    }
+  }
+}
+
+resource "aws_iam_role" "replication" {
+  name = "${var.fqdn}-replication-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "s3.amazonaws.com"
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy" "replication" {
+  name = "${var.fqdn}-replication-policy"
+  role = aws_iam_role.replication.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = [
+          "s3:GetReplicationConfiguration",
+          "s3:ListBucket"
+        ]
+        Effect   = "Allow"
+        Resource = aws_s3_bucket.website.arn
+      },
+      {
+        Action = [
+          "s3:GetObjectVersionForReplication",
+          "s3:GetObjectVersionAcl",
+          "s3:GetObjectVersionTagging"
+        ]
+        Effect   = "Allow"
+        Resource = "${aws_s3_bucket.website.arn}/*"
+      },
+      {
+        Action = [
+          "s3:ReplicateObject",
+          "s3:ReplicateDelete",
+          "s3:ReplicateTags"
+        ]
+        Effect   = "Allow"
+        Resource = "${aws_s3_bucket.website_replica.arn}/*"
+      },
+      {
+        Action = [
+          "kms:Decrypt"
+        ]
+        Effect   = "Allow"
+        Resource = aws_kms_key.website.arn
+        Condition = {
+          StringEquals = {
+            "kms:ViaService" = "s3.${data.aws_region.current.name}.amazonaws.com"
+            "kms:CallerContext" = aws_s3_bucket.website.id
+          }
+        }
+      },
+      {
+        Action = [
+          "kms:Encrypt"
+        ]
+        Effect   = "Allow"
+        Resource = aws_kms_key.website.arn
+        Condition = {
+          StringEquals = {
+            "kms:ViaService" = "s3.${data.aws_region.current.name}.amazonaws.com"
+            "kms:CallerContext" = aws_s3_bucket.website_replica.id
+          }
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_s3_bucket_object" "index" {
+  bucket  = "${aws_s3_bucket.website.id}"
+  key     = "${var.index_page}"
+  content =  <<EOF
+You've reached the ${var.fqdn} index page
+EOF
+
+  content_type = "text/plain"
+  kms_key_id   = aws_kms_key.website.arn
+}
+
+resource "aws_s3_bucket_object" "error" {
+  bucket  = "${aws_s3_bucket.website.id}"
+  key     = "${var.error_page}"
+  content =  <<EOF
+You've reached the ${var.fqdn} error page
+EOF
+
+  content_type = "text/plain"
+  kms_key_id   = aws_kms_key.website.arn
+}
+
+data "aws_caller_identity" "current" {}
+
+data "aws_region" "current" {}
+
+resource "aws_route53_record" "website" {
+  zone_id = "${var.route_zone_id}"
+  name    = "${var.sub_domain}"
+  type    = "A"
+
+  alias {
+    name                   = "${aws_s3_bucket_website_configuration.website.website_domain}"
+    zone_id                = "${aws_s3_bucket.website.hosted_zone_id}"
+    evaluate_target_health = false
+  }
+}
+
+output "domain"         { value = "${aws_s3_bucket_website_configuration.website.website_domain}" }
+output "hosted_zone_id" { value = "${aws_s3_bucket.website.hosted_zone_id}" }
+output "endpoint"       { value = "${aws_s3_bucket_website_configuration.website.website_endpoint}" }
+output "fqdn"           { value = "${aws_route53_record.website.fqdn}" }

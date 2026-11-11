@@ -1,0 +1,42 @@
+{
+  "_comment": "Fargate task definition for the TerraRepair-Bench RETRIEVAL ABLATION. Same image as the main run, but command overrides the entrypoint to the ablation one. Placeholders filled by deploy/setup_ablation.sh.",
+  "family": "terrarepair-ablation",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "4096",
+  "memory": "8192",
+  "runtimePlatform": {
+    "cpuArchitecture": "X86_64",
+    "operatingSystemFamily": "LINUX"
+  },
+  "executionRoleArn": "arn:aws:iam::<ACCOUNT_ID>:role/<ECS_EXECUTION_ROLE>",
+  "taskRoleArn": "arn:aws:iam::<ACCOUNT_ID>:role/<TERRAREPAIR_TASK_ROLE>",
+  "containerDefinitions": [
+    {
+      "name": "runner",
+      "image": "<ACCOUNT_ID>.dkr.ecr.<REGION>.amazonaws.com/terrarepair-bench:latest",
+      "essential": true,
+      "entryPoint": ["/usr/local/bin/container_entrypoint_ablation.sh"],
+      "environment": [
+        { "name": "RESULTS_S3_URI", "value": "s3://<RESULTS_BUCKET>/terrarepair/retrieval_ablation" },
+        { "name": "REGION", "value": "<REGION>" },
+        { "name": "AWS_REGION", "value": "<REGION>" },
+        { "name": "MODELS", "value": "grok-4-6,claude-sonnet-5,deepseek-r1,claude-sonnet-4-5,kimi-k2-5,deepseek-v3-2" },
+        { "name": "ARMS", "value": "none,random,similarity,oracle" },
+        { "name": "DRAWS", "value": "3" },
+        { "name": "CONCURRENCY", "value": "4" },
+        { "name": "MAX_TOKENS", "value": "40000" },
+        { "name": "SYNC_INTERVAL", "value": "120" }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/terrarepair-ablation",
+          "awslogs-region": "<REGION>",
+          "awslogs-stream-prefix": "runner",
+          "awslogs-create-group": "true"
+        }
+      }
+    }
+  ]
+}

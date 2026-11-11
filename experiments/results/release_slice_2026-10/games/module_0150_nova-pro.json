@@ -1,0 +1,142 @@
+{
+  "module_id": "module_0150",
+  "model_id": "nova-pro",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0017",
+      "title": "CloudWatch log groups should be encrypted using CMK",
+      "severity": "LOW",
+      "resource_name": "aws_cloudwatch_log_group.default_vpc_flow_logs[0]",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "main.tf",
+      "start_line": 21,
+      "end_line": 28
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0101",
+      "title": "AWS best practice to not use the default VPC for workflows",
+      "severity": "HIGH",
+      "resource_name": "aws_default_vpc.default",
+      "resource_type": "aws_default_vpc",
+      "file_path": "main.tf",
+      "start_line": 46,
+      "end_line": 51
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_158",
+      "title": "Ensure that CloudWatch Log Group is encrypted by KMS",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.default_vpc_flow_logs[0]",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/main.tf",
+      "start_line": 21,
+      "end_line": 28
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_148",
+      "title": "Ensure no default VPC is planned to be provisioned",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_default_vpc.default",
+      "resource_type": "aws_default_vpc",
+      "file_path": "/main.tf",
+      "start_line": 46,
+      "end_line": 51
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0065",
+      "title": "A KMS key is not configured to auto-rotate.",
+      "severity": "MEDIUM",
+      "resource_name": "aws_kms_key.cloudwatch_logs_key[0]",
+      "resource_type": "aws_kms_key",
+      "file_path": "main.tf",
+      "start_line": 17,
+      "end_line": 22
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0101",
+      "title": "AWS best practice to not use the default VPC for workflows",
+      "severity": "HIGH",
+      "resource_name": "aws_default_vpc.default",
+      "resource_type": "aws_default_vpc",
+      "file_path": "main.tf",
+      "start_line": 46,
+      "end_line": 51
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_7",
+      "title": "Ensure rotation for customer created CMKs is enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_kms_key.cloudwatch_logs_key[0]",
+      "resource_type": "aws_kms_key",
+      "file_path": "/main.tf",
+      "start_line": 17,
+      "end_line": 22
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_148",
+      "title": "Ensure no default VPC is planned to be provisioned",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_default_vpc.default",
+      "resource_type": "aws_default_vpc",
+      "file_path": "/main.tf",
+      "start_line": 46,
+      "end_line": 51
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_64",
+      "title": "Ensure KMS key Policy is defined",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_kms_key.cloudwatch_logs_key[0]",
+      "resource_type": "aws_kms_key",
+      "file_path": "/main.tf",
+      "start_line": 17,
+      "end_line": 22
+    }
+  ],
+  "target_count": 4,
+  "resolved_count": 2,
+  "introduced_count": 3,
+  "unchanged_count": 2,
+  "repair_success_rate": 0.5,
+  "regression_rate": 0.75,
+  "net_delta": -1,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 0,
+      "introduced": 1,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 2,
+      "introduced": 1,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 0,
+      "introduced": 1,
+      "unchanged": 2
+    }
+  },
+  "repair_cost_usd": 0.004064,
+  "repair_tokens": 4064,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0150_nova-pro.repaired.tf",
+  "raw_response_path": "module_0150_nova-pro.raw.txt",
+  "repaired_code_sha256": "3911aeb77dcee53bb1f820a211fd020846f2ca69883be42113be68376a36d302"
+}

@@ -1,0 +1,21 @@
+# Pinned (not an open >= range): the Converse response shape for reasoning
+# models (grok-4-6, deepseek-r1, claude-sonnet-5) varies by botocore version —
+# an unpinned range let the container build with a different SDK than was
+# tested, which mis-routed grok's answer vs. reasoning blocks and inflated its
+# failure rate. The extractor is now robust to both block shapes, but pinning
+# keeps the container's Bedrock behavior reproducible. Bump deliberately, retest.
+# boto3/botocore are effectively pinned by checkov==3.3.20 (Dockerfile), which
+# hard-requires boto3==1.35.49 (-> botocore 1.35.99). We pin to that exact pair
+# here so the version is EXPLICIT and reproducible rather than silently resolved
+# via checkov, and so `pip install -r requirements.txt` alone (no checkov, e.g.
+# local dev) matches the container. This is the SDK the Converse extractor is
+# tested against. If you bump checkov, re-derive this pin from its boto3
+# requirement and re-run tests/test_converse_extractor.py.
+boto3==1.35.49
+botocore==1.35.99
+pyyaml>=6.0
+tqdm>=4.66.0
+scipy>=1.12.0
+numpy>=1.26.0
+rich>=13.0.0
+python-hcl2>=4.3.0

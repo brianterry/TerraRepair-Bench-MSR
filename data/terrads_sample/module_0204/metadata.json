@@ -1,0 +1,101 @@
+{
+  "findings_count": 16,
+  "findings": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_55",
+      "title": "",
+      "resource_name": "aws_s3_bucket_public_access_block.website_bucket"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_56",
+      "title": "",
+      "resource_name": "aws_s3_bucket_public_access_block.website_bucket"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_86",
+      "title": "",
+      "resource_name": "aws_cloudfront_distribution.this"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_174",
+      "title": "",
+      "resource_name": "aws_cloudfront_distribution.this"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_68",
+      "title": "",
+      "resource_name": "aws_cloudfront_distribution.this"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_310",
+      "title": "",
+      "resource_name": "aws_cloudfront_distribution.this"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_374",
+      "title": "",
+      "resource_name": "aws_cloudfront_distribution.this"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "acm"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_32",
+      "title": "",
+      "resource_name": "aws_cloudfront_distribution.this"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_62",
+      "title": "",
+      "resource_name": "aws_s3_bucket.this"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_47",
+      "title": "",
+      "resource_name": "aws_cloudfront_distribution.this"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_18",
+      "title": "",
+      "resource_name": "aws_s3_bucket.this"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_61",
+      "title": "",
+      "resource_name": "aws_s3_bucket.this"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_145",
+      "title": "",
+      "resource_name": "aws_s3_bucket.this"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_144",
+      "title": "",
+      "resource_name": "aws_s3_bucket.this"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_21",
+      "title": "",
+      "resource_name": "aws_s3_bucket.this"
+    }
+  ]
+}

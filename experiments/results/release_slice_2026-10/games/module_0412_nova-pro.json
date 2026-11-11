@@ -1,0 +1,274 @@
+{
+  "module_id": "module_0412",
+  "model_id": "nova-pro",
+  "findings_before": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "this",
+      "resource_type": "this",
+      "file_path": "/context.tf",
+      "start_line": 23,
+      "end_line": 46
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "eks_iam_policy",
+      "resource_type": "eks_iam_policy",
+      "file_path": "/iam.tf",
+      "start_line": 5,
+      "end_line": 15
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "eks_iam_role",
+      "resource_type": "eks_iam_role",
+      "file_path": "/iam.tf",
+      "start_line": 17,
+      "end_line": 33
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "github_action_controller_label",
+      "resource_type": "github_action_controller_label",
+      "file_path": "/main.tf",
+      "start_line": 20,
+      "end_line": 25
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "actions_runner_controller",
+      "resource_type": "actions_runner_controller",
+      "file_path": "/main.tf",
+      "start_line": 29,
+      "end_line": 169
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "github_action_helm_label",
+      "resource_type": "github_action_helm_label",
+      "file_path": "/main.tf",
+      "start_line": 171,
+      "end_line": 181
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "actions_runner",
+      "resource_type": "actions_runner",
+      "file_path": "/main.tf",
+      "start_line": 183,
+      "end_line": 214
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "iam_primary_roles",
+      "resource_type": "iam_primary_roles",
+      "file_path": "/remote-state.tf",
+      "start_line": 1,
+      "end_line": 10
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "eks",
+      "resource_type": "eks",
+      "file_path": "/remote-state.tf",
+      "start_line": 12,
+      "end_line": 19
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_64",
+      "title": "Ensure KMS key Policy is defined",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_kms_key.github_action_runner",
+      "resource_type": "aws_kms_key",
+      "file_path": "/kms.tf",
+      "start_line": 1,
+      "end_line": 8
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "this",
+      "resource_type": "this",
+      "file_path": "/main.tf",
+      "start_line": 1,
+      "end_line": 24
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "eks_iam_policy",
+      "resource_type": "eks_iam_policy",
+      "file_path": "/main.tf",
+      "start_line": 30,
+      "end_line": 40
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "eks_iam_role",
+      "resource_type": "eks_iam_role",
+      "file_path": "/main.tf",
+      "start_line": 42,
+      "end_line": 58
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "github_action_controller_label",
+      "resource_type": "github_action_controller_label",
+      "file_path": "/main.tf",
+      "start_line": 274,
+      "end_line": 280
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "actions_runner_controller",
+      "resource_type": "actions_runner_controller",
+      "file_path": "/main.tf",
+      "start_line": 282,
+      "end_line": 417
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "github_action_helm_label",
+      "resource_type": "github_action_helm_label",
+      "file_path": "/main.tf",
+      "start_line": 419,
+      "end_line": 430
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "actions_runner",
+      "resource_type": "actions_runner",
+      "file_path": "/main.tf",
+      "start_line": 432,
+      "end_line": 462
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "iam_primary_roles",
+      "resource_type": "iam_primary_roles",
+      "file_path": "/main.tf",
+      "start_line": 526,
+      "end_line": 535
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "eks",
+      "resource_type": "eks",
+      "file_path": "/main.tf",
+      "start_line": 537,
+      "end_line": 544
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_111",
+      "title": "Ensure IAM policies does not allow write access without constraints",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.github_action_runner",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/main.tf",
+      "start_line": 60,
+      "end_line": 138
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_356",
+      "title": "Ensure no IAM policies documents allow \"*\" as a statement's resource for restrictable actions",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.github_action_runner",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/main.tf",
+      "start_line": 60,
+      "end_line": 138
+    }
+  ],
+  "target_count": 10,
+  "resolved_count": 1,
+  "introduced_count": 2,
+  "unchanged_count": 9,
+  "repair_success_rate": 0.1,
+  "regression_rate": 0.2,
+  "net_delta": -1,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 1,
+      "introduced": 2,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 9
+    }
+  },
+  "repair_cost_usd": 0.01354,
+  "repair_tokens": 13540,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0412_nova-pro.repaired.tf",
+  "raw_response_path": "module_0412_nova-pro.raw.txt",
+  "repaired_code_sha256": "ba952ff8c5d49afd8b5a00e1095165edb2c49d74cde6c831a1c68bccf58f2ca6"
+}

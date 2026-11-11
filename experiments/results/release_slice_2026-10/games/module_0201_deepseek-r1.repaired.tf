@@ -1,0 +1,209 @@
+resource "aws_acm_certificate" "this" {
+  provider          = aws.us_east_1
+  domain_name       = var.site_domain
+  validation_method = "DNS"
+  tags              = merge(var.tags, { Name = "${var.comment_prefix}${var.site_domain}" })
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "aws_cloudfront_distribution" "this" {
+  enabled             = true
+  is_ipv6_enabled     = true
+  default_root_object = var.default_root_object
+  aliases             = [var.site_domain]
+  price_class         = "PriceClass_${var.cloudfront_price_class}"
+  comment             = "${var.comment_prefix}${var.site_domain}"
+  tags                = var.tags
+  web_acl_id          = "WAF_ARN_PLACEHOLDER"
+
+  logging_config {
+    bucket          = "${local.prefix_with_domain}-logs.s3.amazonaws.com"
+    include_cookies = false
+    prefix          = "cloudfront-logs/"
+  }
+
+  origin {
+    domain_name = local.url_hostname
+    origin_id   = "default"
+    origin_path = local.url_path == "" ? "" : "/${local.url_path}"
+
+    custom_origin_config {
+      http_port              = var.origin_custom_port > 0 ? var.origin_custom_port : 80
+      https_port             = var.origin_custom_port > 0 ? var.origin_custom_port : 443
+      origin_protocol_policy = "${local.url_protocol}-only"
+      origin_ssl_protocols   = ["TLSv1.2"]
+    }
+
+    custom_header {
+      name  = var.origin_custom_header_name
+      value = var.origin_custom_header_value
+    }
+  }
+
+  default_cache_behavior {
+    allowed_methods        = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
+    cached_methods         = ["GET", "HEAD"]
+    target_origin_id       = "default"
+    viewer_protocol_policy = var.viewer_https_only ? "redirect-to-https" : "allow-all"
+    compress               = true
+    response_headers_policy_id = "67f7725c-6f97-4210-82d7-5512b31e9d03"
+
+    min_ttl     = var.cache_ttl_override >= 0 ? var.cache_ttl_override : 0
+    default_ttl = var.cache_ttl_override >= 0 ? var.cache_ttl_override : 0
+    max_ttl     = var.cache_ttl_override >= 0 ? var.cache_ttl_override : 86400
+
+    forwarded_values {
+      query_string = true
+
+      cookies {
+        forward = "all"
+      }
+    }
+
+    lambda_function_association {
+      event_type = "viewer-request"
+      lambda_arn = "${aws_lambda_function.viewer_request.arn}:${aws_lambda_function.viewer_request.version}"
+    }
+
+    lambda_function_association {
+      event_type = "viewer-response"
+      lambda_arn = "${aws_lambda_function.viewer_response.arn}:${aws_lambda_function.viewer_response.version}"
+    }
+  }
+
+  custom_error_response {
+    error_code            = 400
+    error_caching_min_ttl = local.error_ttl
+  }
+
+  custom_error_response {
+    error_code            = 403
+    error_caching_min_ttl = local.error_ttl
+  }
+
+  custom_error_response {
+    error_code            = 404
+    error_caching_min_ttl = local.error_ttl
+  }
+
+  custom_error_response {
+    error_code            = 405
+    error_caching_min_ttl = local.error_ttl
+  }
+
+  custom_error_response {
+    error_code            = 414
+    error_caching_min_ttl = local.error_ttl
+  }
+
+  custom_error_response {
+    error_code            = 416
+    error_caching_min_ttl = local.error_ttl
+  }
+
+  custom_error_response {
+    error_code            = 500
+    error_caching_min_ttl = local.error_ttl
+  }
+
+  custom_error_response {
+    error_code            = 501
+    error_caching_min_ttl = local.error_ttl
+  }
+
+  custom_error_response {
+    error_code            = 502
+    error_caching_min_ttl = local.error_ttl
+  }
+
+  custom_error_response {
+    error_code            = 503
+    error_caching_min_ttl = local.error_ttl
+  }
+
+  custom_error_response {
+    error_code            = 504
+    error_caching_min_ttl = local.error_ttl
+  }
+
+  restrictions {
+    geo_restriction {
+      restriction_type = "whitelist"
+      locations        = ["US", "CA"]
+    }
+  }
+
+  viewer_certificate {
+    acm_certificate_arn      = aws_acm_certificate_validation.this.certificate_arn
+    ssl_support_method       = "sni-only"
+    minimum_protocol_version = "TLSv1.2_2021"
+  }
+}
+
+resource "aws_lambda_function" "viewer_request" {
+  provider = aws.us_east_1
+
+  filename         = substr(data.archive_file.lambda_zip.output_path, length(path.cwd) + 1, -1)
+  source_code_hash = data.archive_file.lambda_zip.output_base64sha256
+  function_name    = "${local.prefix_with_domain}---viewer_request"
+  role             = aws_iam_role.this.arn
+  description      = "${var.comment_prefix}${var.site_domain} (request handler)"
+  handler          = "lambda.viewer_request"
+  runtime          = "nodejs14.x"
+  publish          = true
+  tags             = var.tags
+
+  tracing_config {
+    mode = "Active"
+  }
+
+  dead_letter_config {
+    target_arn = "arn:aws:sqs:us-east-1:123456789012:dlq-queue"
+  }
+
+  reserved_concurrent_executions = 100
+  code_signing_config_arn         = "arn:aws:lambda:us-east-1:123456789012:code-signing-config:default"
+
+  vpc_config {
+    subnet_ids         = ["subnet-12345678"]
+    security_group_ids = ["sg-12345678"]
+  }
+}
+
+resource "aws_lambda_function" "viewer_response" {
+  provider = aws.us_east_1
+
+  filename         = substr(data.archive_file.lambda_zip.output_path, length(path.cwd) + 1, -1)
+  source_code_hash = data.archive_file.lambda_zip.output_base64sha256
+  function_name    = "${local.prefix_with_domain}---viewer_response"
+  role             = aws_iam_role.this.arn
+  description      = "${var.comment_prefix}${var.site_domain} (response handler)"
+  handler          = "lambda.viewer_response"
+  runtime          = "nodejs14.x"
+  publish          = true
+  tags             = var.tags
+
+  tracing_config {
+    mode = "Active"
+  }
+
+  dead_letter_config {
+    target_arn = "arn:aws:sqs:us-east-1:123456789012:dlq-queue"
+  }
+
+  reserved_concurrent_executions = 100
+  code_signing_config_arn         = "arn:aws:lambda:us-east-1:123456789012:code-signing-config:default"
+
+  vpc_config {
+    subnet_ids         = ["subnet-12345678"]
+    security_group_ids = ["sg-12345678"]
+  }
+}
+
+variable "default_root_object" {
+  description = "The object to return when the root URL is requested"
+  default     = "index.html"
+}

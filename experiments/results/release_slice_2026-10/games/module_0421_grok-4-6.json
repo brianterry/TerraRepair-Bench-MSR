@@ -1,0 +1,380 @@
+{
+  "module_id": "module_0421",
+  "model_id": "grok-4-6",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "module.aurora_postgres_cluster",
+      "resource_type": "module",
+      "file_path": "cloudposse/rds-cluster/aws/main.tf",
+      "start_line": 65,
+      "end_line": 65
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0133",
+      "title": "Enable Performance Insights to detect potential problems",
+      "severity": "LOW",
+      "resource_name": "module.aurora_postgres_cluster",
+      "resource_type": "module",
+      "file_path": "cloudposse/rds-cluster/aws/main.tf",
+      "start_line": 255,
+      "end_line": 255
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0343",
+      "title": "RDS Cluster Deletion Protection Disabled",
+      "severity": "MEDIUM",
+      "resource_name": "module.aurora_postgres_cluster",
+      "resource_type": "module",
+      "file_path": "cloudposse/rds-cluster/aws/main.tf",
+      "start_line": 161,
+      "end_line": 161
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "aurora_postgres_cluster",
+      "resource_type": "aurora_postgres_cluster",
+      "file_path": "/cluster-regional.tf",
+      "start_line": 6,
+      "end_line": 73
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "this",
+      "resource_type": "this",
+      "file_path": "/context.tf",
+      "start_line": 23,
+      "end_line": 46
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_111",
+      "title": "Ensure IAM policies does not allow write access without constraints",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.kms_key_rds",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/kms.tf",
+      "start_line": 23,
+      "end_line": 75
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_356",
+      "title": "Ensure no IAM policies documents allow \"*\" as a statement's resource for restrictable actions",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.kms_key_rds",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/kms.tf",
+      "start_line": 23,
+      "end_line": 75
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_109",
+      "title": "Ensure IAM policies does not allow permissions management / resource exposure without constraints",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.kms_key_rds",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/kms.tf",
+      "start_line": 23,
+      "end_line": 75
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "kms_key_rds",
+      "resource_type": "kms_key_rds",
+      "file_path": "/kms.tf",
+      "start_line": 1,
+      "end_line": 11
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "cluster",
+      "resource_type": "cluster",
+      "file_path": "/main.tf",
+      "start_line": 40,
+      "end_line": 47
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "vpc",
+      "resource_type": "vpc",
+      "file_path": "/remote-state.tf",
+      "start_line": 1,
+      "end_line": 8
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "vpc_ingress",
+      "resource_type": "vpc_ingress",
+      "file_path": "/remote-state.tf",
+      "start_line": 10,
+      "end_line": 26
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "eks",
+      "resource_type": "eks",
+      "file_path": "/remote-state.tf",
+      "start_line": 28,
+      "end_line": 36
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "dns_gbl_delegated",
+      "resource_type": "dns_gbl_delegated",
+      "file_path": "/remote-state.tf",
+      "start_line": 39,
+      "end_line": 47
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "parameter_store_write",
+      "resource_type": "parameter_store_write",
+      "file_path": "/ssm.tf",
+      "start_line": 68,
+      "end_line": 78
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "module.aurora_postgres_cluster",
+      "resource_type": "module",
+      "file_path": "cloudposse/rds-cluster/aws/main.tf",
+      "start_line": 65,
+      "end_line": 65
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0133",
+      "title": "Enable Performance Insights to detect potential problems",
+      "severity": "LOW",
+      "resource_name": "module.aurora_postgres_cluster",
+      "resource_type": "module",
+      "file_path": "cloudposse/rds-cluster/aws/main.tf",
+      "start_line": 255,
+      "end_line": 255
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0343",
+      "title": "RDS Cluster Deletion Protection Disabled",
+      "severity": "MEDIUM",
+      "resource_name": "module.aurora_postgres_cluster",
+      "resource_type": "module",
+      "file_path": "cloudposse/rds-cluster/aws/main.tf",
+      "start_line": 161,
+      "end_line": 161
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "aurora_postgres_cluster",
+      "resource_type": "aurora_postgres_cluster",
+      "file_path": "/cluster-regional.tf",
+      "start_line": 6,
+      "end_line": 73
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "this",
+      "resource_type": "this",
+      "file_path": "/context.tf",
+      "start_line": 23,
+      "end_line": 46
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_111",
+      "title": "Ensure IAM policies does not allow write access without constraints",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.kms_key_rds",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/kms.tf",
+      "start_line": 23,
+      "end_line": 75
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_356",
+      "title": "Ensure no IAM policies documents allow \"*\" as a statement's resource for restrictable actions",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.kms_key_rds",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/kms.tf",
+      "start_line": 23,
+      "end_line": 75
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_109",
+      "title": "Ensure IAM policies does not allow permissions management / resource exposure without constraints",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.kms_key_rds",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/kms.tf",
+      "start_line": 23,
+      "end_line": 75
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "kms_key_rds",
+      "resource_type": "kms_key_rds",
+      "file_path": "/kms.tf",
+      "start_line": 1,
+      "end_line": 11
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "cluster",
+      "resource_type": "cluster",
+      "file_path": "/main.tf",
+      "start_line": 40,
+      "end_line": 47
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "vpc",
+      "resource_type": "vpc",
+      "file_path": "/remote-state.tf",
+      "start_line": 1,
+      "end_line": 8
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "vpc_ingress",
+      "resource_type": "vpc_ingress",
+      "file_path": "/remote-state.tf",
+      "start_line": 10,
+      "end_line": 26
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "eks",
+      "resource_type": "eks",
+      "file_path": "/remote-state.tf",
+      "start_line": 28,
+      "end_line": 36
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "dns_gbl_delegated",
+      "resource_type": "dns_gbl_delegated",
+      "file_path": "/remote-state.tf",
+      "start_line": 39,
+      "end_line": 47
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "parameter_store_write",
+      "resource_type": "parameter_store_write",
+      "file_path": "/ssm.tf",
+      "start_line": 68,
+      "end_line": 78
+    }
+  ],
+  "target_count": 15,
+  "resolved_count": 0,
+  "introduced_count": 0,
+  "unchanged_count": 15,
+  "repair_success_rate": 0.0,
+  "regression_rate": 0.0,
+  "net_delta": 0,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 4
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 1
+    },
+    "other": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 10
+    }
+  },
+  "repair_cost_usd": 0.260932,
+  "repair_tokens": 50466,
+  "hcl_valid": false,
+  "failure_metadata": {
+    "source_chars": 36182,
+    "est_input_tokens": 9045,
+    "max_tokens": 40000,
+    "size_driven_failure": false,
+    "repair_error": "Repaired code failed HCL validation"
+  },
+  "repaired_code_path": "module_0421_grok-4-6.repaired.tf",
+  "raw_response_path": "module_0421_grok-4-6.raw.txt",
+  "repaired_code_sha256": "85ec45787c348094a49791d5bf14cca0ffc08456072963e5bc612354b36a1c59"
+}

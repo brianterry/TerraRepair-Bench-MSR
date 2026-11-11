@@ -1,0 +1,285 @@
+{
+  "module_id": "module_0327",
+  "model_id": "llama-3-3-70b",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0017",
+      "title": "CloudWatch log groups should be encrypted using CMK",
+      "severity": "LOW",
+      "resource_name": "aws_cloudwatch_log_group.main",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "main.tf",
+      "start_line": 34,
+      "end_line": 37
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_318",
+      "title": "Ensure Elasticsearch domains are configured with at least three dedicated master nodes for HA",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_elasticsearch_domain.main[0]",
+      "resource_type": "aws_elasticsearch_domain",
+      "file_path": "/main.tf",
+      "start_line": 1,
+      "end_line": 32
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_317",
+      "title": "Ensure Elasticsearch Domain Audit Logging is enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_elasticsearch_domain.main[0]",
+      "resource_type": "aws_elasticsearch_domain",
+      "file_path": "/main.tf",
+      "start_line": 1,
+      "end_line": 32
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_247",
+      "title": "Ensure all data stored in the Elasticsearch is encrypted with a CMK",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_elasticsearch_domain.main[0]",
+      "resource_type": "aws_elasticsearch_domain",
+      "file_path": "/main.tf",
+      "start_line": 1,
+      "end_line": 32
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_5",
+      "title": "Ensure all data stored in the Elasticsearch is securely encrypted at rest",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_elasticsearch_domain.main[0]",
+      "resource_type": "aws_elasticsearch_domain",
+      "file_path": "/main.tf",
+      "start_line": 1,
+      "end_line": 32
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_228",
+      "title": "Verify Elasticsearch domain is using an up to date TLS policy",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_elasticsearch_domain.main[0]",
+      "resource_type": "aws_elasticsearch_domain",
+      "file_path": "/main.tf",
+      "start_line": 1,
+      "end_line": 32
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_248",
+      "title": "Ensure that Elasticsearch is not using the default Security Group",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_elasticsearch_domain.main[0]",
+      "resource_type": "aws_elasticsearch_domain",
+      "file_path": "/main.tf",
+      "start_line": 1,
+      "end_line": 32
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_137",
+      "title": "Ensure that Elasticsearch is configured inside a VPC",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_elasticsearch_domain.main[0]",
+      "resource_type": "aws_elasticsearch_domain",
+      "file_path": "/main.tf",
+      "start_line": 1,
+      "end_line": 32
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_66",
+      "title": "Ensure that CloudWatch Log Group specifies retention days",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.main",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/main.tf",
+      "start_line": 34,
+      "end_line": 37
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_158",
+      "title": "Ensure that CloudWatch Log Group is encrypted by KMS",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.main",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/main.tf",
+      "start_line": 34,
+      "end_line": 37
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_338",
+      "title": "Ensure CloudWatch log groups retains logs for at least 1 year",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.main",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/main.tf",
+      "start_line": 34,
+      "end_line": 37
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_52",
+      "title": "Ensure AWS ElasticSearch/OpenSearch Fine-grained access control is enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_elasticsearch_domain.main[0]",
+      "resource_type": "aws_elasticsearch_domain",
+      "file_path": "/main.tf",
+      "start_line": 1,
+      "end_line": 32
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_59",
+      "title": "Ensure ElasticSearch/OpenSearch has dedicated master node enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_elasticsearch_domain.main[0]",
+      "resource_type": "aws_elasticsearch_domain",
+      "file_path": "/main.tf",
+      "start_line": 1,
+      "end_line": 32
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0065",
+      "title": "A KMS key is not configured to auto-rotate.",
+      "severity": "MEDIUM",
+      "resource_name": "aws_kms_key.main",
+      "resource_type": "aws_kms_key",
+      "file_path": "main.tf",
+      "start_line": 117,
+      "end_line": 118
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0178",
+      "title": "VPC Flow Logs is a feature that enables you to capture information about the IP traffic going to and from network interfaces in your VPC. After you've created a flow log, you can view and retrieve its data in Amazon CloudWatch Logs. It is recommended that VPC Flow Logs be enabled for packet \"Rejects\" for VPCs.",
+      "severity": "MEDIUM",
+      "resource_name": "aws_vpc.main",
+      "resource_type": "aws_vpc",
+      "file_path": "main.tf",
+      "start_line": 125,
+      "end_line": 127
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_317",
+      "title": "Ensure Elasticsearch Domain Audit Logging is enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_elasticsearch_domain.main[0]",
+      "resource_type": "aws_elasticsearch_domain",
+      "file_path": "/main.tf",
+      "start_line": 1,
+      "end_line": 56
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_228",
+      "title": "Verify Elasticsearch domain is using an up to date TLS policy",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_elasticsearch_domain.main[0]",
+      "resource_type": "aws_elasticsearch_domain",
+      "file_path": "/main.tf",
+      "start_line": 1,
+      "end_line": 56
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_7",
+      "title": "Ensure rotation for customer created CMKs is enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_kms_key.main",
+      "resource_type": "aws_kms_key",
+      "file_path": "/main.tf",
+      "start_line": 117,
+      "end_line": 118
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_52",
+      "title": "Ensure AWS ElasticSearch/OpenSearch Fine-grained access control is enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_elasticsearch_domain.main[0]",
+      "resource_type": "aws_elasticsearch_domain",
+      "file_path": "/main.tf",
+      "start_line": 1,
+      "end_line": 56
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_12",
+      "title": "Ensure the default security group of every VPC restricts all traffic",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_vpc.main",
+      "resource_type": "aws_vpc",
+      "file_path": "/main.tf",
+      "start_line": 125,
+      "end_line": 127
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_11",
+      "title": "Ensure VPC flow logging is enabled in all VPCs",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_vpc.main",
+      "resource_type": "aws_vpc",
+      "file_path": "/main.tf",
+      "start_line": 125,
+      "end_line": 127
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_64",
+      "title": "Ensure KMS key Policy is defined",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_kms_key.main",
+      "resource_type": "aws_kms_key",
+      "file_path": "/main.tf",
+      "start_line": 117,
+      "end_line": 118
+    }
+  ],
+  "target_count": 13,
+  "resolved_count": 10,
+  "introduced_count": 6,
+  "unchanged_count": 3,
+  "repair_success_rate": 0.7692307692307693,
+  "regression_rate": 0.46153846153846156,
+  "net_delta": 4,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 1,
+      "introduced": 1,
+      "unchanged": 2
+    },
+    "data_protection": {
+      "resolved": 4,
+      "introduced": 1,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 2,
+      "introduced": 2,
+      "unchanged": 1
+    },
+    "other": {
+      "resolved": 3,
+      "introduced": 2,
+      "unchanged": 0
+    }
+  },
+  "repair_cost_usd": 0.0017928,
+  "repair_tokens": 2241,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0327_llama-3-3-70b.repaired.tf",
+  "raw_response_path": "module_0327_llama-3-3-70b.raw.txt",
+  "repaired_code_sha256": "e24c6782ae10855cf27c58900de5258d09c8b84340bf0398a1223e820566674f"
+}

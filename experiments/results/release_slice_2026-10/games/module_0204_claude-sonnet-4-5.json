@@ -1,0 +1,593 @@
+{
+  "module_id": "module_0204",
+  "model_id": "claude-sonnet-4-5",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0010",
+      "title": "Cloudfront distribution should have Access Logging configured",
+      "severity": "MEDIUM",
+      "resource_name": "aws_cloudfront_distribution.this",
+      "resource_type": "aws_cloudfront_distribution",
+      "file_path": "main.tf",
+      "start_line": 65,
+      "end_line": 139
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0011",
+      "title": "CloudFront distribution does not have a WAF in front.",
+      "severity": "HIGH",
+      "resource_name": "aws_cloudfront_distribution.this",
+      "resource_type": "aws_cloudfront_distribution",
+      "file_path": "main.tf",
+      "start_line": 65,
+      "end_line": 139
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0013",
+      "title": "CloudFront distribution uses outdated SSL/TLS protocols.",
+      "severity": "HIGH",
+      "resource_name": "aws_cloudfront_distribution.this",
+      "resource_type": "aws_cloudfront_distribution",
+      "file_path": "main.tf",
+      "start_line": 114,
+      "end_line": 114
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "aws_s3_bucket.this",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 19,
+      "end_line": 22
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0090",
+      "title": "S3 Data should be versioned",
+      "severity": "MEDIUM",
+      "resource_name": "aws_s3_bucket.this",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 19,
+      "end_line": 22
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0091",
+      "title": "S3 Access Block should Ignore Public ACL",
+      "severity": "HIGH",
+      "resource_name": "aws_s3_bucket_public_access_block.website_bucket",
+      "resource_type": "aws_s3_bucket_public_access_block",
+      "file_path": "main.tf",
+      "start_line": 24,
+      "end_line": 29
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0093",
+      "title": "S3 Access block should restrict public bucket to limit access",
+      "severity": "HIGH",
+      "resource_name": "aws_s3_bucket_public_access_block.website_bucket",
+      "resource_type": "aws_s3_bucket_public_access_block",
+      "file_path": "main.tf",
+      "start_line": 24,
+      "end_line": 29
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0132",
+      "title": "S3 encryption should use Customer Managed Keys",
+      "severity": "HIGH",
+      "resource_name": "aws_s3_bucket.this",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 19,
+      "end_line": 22
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_55",
+      "title": "Ensure S3 bucket has ignore public ACLs enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket_public_access_block.website_bucket",
+      "resource_type": "aws_s3_bucket_public_access_block",
+      "file_path": "/main.tf",
+      "start_line": 24,
+      "end_line": 29
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_56",
+      "title": "Ensure S3 bucket has 'restrict_public_buckets' enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket_public_access_block.website_bucket",
+      "resource_type": "aws_s3_bucket_public_access_block",
+      "file_path": "/main.tf",
+      "start_line": 24,
+      "end_line": 29
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_374",
+      "title": "Ensure AWS CloudFront web distribution has geo restriction enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudfront_distribution.this",
+      "resource_type": "aws_cloudfront_distribution",
+      "file_path": "/main.tf",
+      "start_line": 65,
+      "end_line": 139
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_310",
+      "title": "Ensure CloudFront distributions should have origin failover configured",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudfront_distribution.this",
+      "resource_type": "aws_cloudfront_distribution",
+      "file_path": "/main.tf",
+      "start_line": 65,
+      "end_line": 139
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_86",
+      "title": "Ensure CloudFront distribution has Access Logging enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudfront_distribution.this",
+      "resource_type": "aws_cloudfront_distribution",
+      "file_path": "/main.tf",
+      "start_line": 65,
+      "end_line": 139
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_68",
+      "title": "CloudFront Distribution should have WAF enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudfront_distribution.this",
+      "resource_type": "aws_cloudfront_distribution",
+      "file_path": "/main.tf",
+      "start_line": 65,
+      "end_line": 139
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_174",
+      "title": "Verify CloudFront Distribution Viewer Certificate is using TLS v1.2 or higher",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudfront_distribution.this",
+      "resource_type": "aws_cloudfront_distribution",
+      "file_path": "/main.tf",
+      "start_line": 65,
+      "end_line": 139
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "acm",
+      "resource_type": "acm",
+      "file_path": "/main.tf",
+      "start_line": 6,
+      "end_line": 16
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_62",
+      "title": "Ensure S3 buckets should have event notifications enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.this",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 19,
+      "end_line": 22
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_21",
+      "title": "Ensure all data stored in the S3 bucket have versioning enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.this",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 19,
+      "end_line": 22
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_18",
+      "title": "Ensure the S3 bucket has access logging enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.this",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 19,
+      "end_line": 22
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_47",
+      "title": "Ensure AWS CloudFront attached WAFv2 WebACL is configured with AMR for Log4j Vulnerability",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudfront_distribution.this",
+      "resource_type": "aws_cloudfront_distribution",
+      "file_path": "/main.tf",
+      "start_line": 65,
+      "end_line": 139
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_32",
+      "title": "Ensure CloudFront distribution has a response headers policy attached",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudfront_distribution.this",
+      "resource_type": "aws_cloudfront_distribution",
+      "file_path": "/main.tf",
+      "start_line": 65,
+      "end_line": 139
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_145",
+      "title": "Ensure that S3 buckets are encrypted with KMS by default",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.this",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 19,
+      "end_line": 22
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_61",
+      "title": "Ensure that an S3 bucket has a lifecycle configuration",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.this",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 19,
+      "end_line": 22
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_144",
+      "title": "Ensure that S3 bucket has cross-region replication enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.this",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 19,
+      "end_line": 22
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "aws_s3_bucket.cloudfront_logs",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 62,
+      "end_line": 65
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "aws_s3_bucket.logs",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 38,
+      "end_line": 41
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0090",
+      "title": "S3 Data should be versioned",
+      "severity": "MEDIUM",
+      "resource_name": "aws_s3_bucket.cloudfront_logs",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 62,
+      "end_line": 65
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0090",
+      "title": "S3 Data should be versioned",
+      "severity": "MEDIUM",
+      "resource_name": "aws_s3_bucket.logs",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 38,
+      "end_line": 41
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0132",
+      "title": "S3 encryption should use Customer Managed Keys",
+      "severity": "HIGH",
+      "resource_name": "aws_s3_bucket_server_side_encryption_configuration.cloudfront_logs",
+      "resource_type": "aws_s3_bucket_server_side_encryption_configuration",
+      "file_path": "main.tf",
+      "start_line": 67,
+      "end_line": 75
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0132",
+      "title": "S3 encryption should use Customer Managed Keys",
+      "severity": "HIGH",
+      "resource_name": "aws_s3_bucket_server_side_encryption_configuration.logs",
+      "resource_type": "aws_s3_bucket_server_side_encryption_configuration",
+      "file_path": "main.tf",
+      "start_line": 43,
+      "end_line": 51
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_300",
+      "title": "Ensure S3 lifecycle configuration sets period for aborting failed uploads",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket_lifecycle_configuration.this",
+      "resource_type": "aws_s3_bucket_lifecycle_configuration",
+      "file_path": "/main.tf",
+      "start_line": 131,
+      "end_line": 142
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_259",
+      "title": "Ensure CloudFront response header policy enforces Strict Transport Security",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudfront_response_headers_policy.this",
+      "resource_type": "aws_cloudfront_response_headers_policy",
+      "file_path": "/main.tf",
+      "start_line": 249,
+      "end_line": 279
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "acm",
+      "resource_type": "acm",
+      "file_path": "/main.tf",
+      "start_line": 20,
+      "end_line": 29
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_2",
+      "title": "Ensure Terraform module sources use a tag with a version number",
+      "severity": "UNKNOWN",
+      "resource_name": "acm",
+      "resource_type": "acm",
+      "file_path": "/main.tf",
+      "start_line": 20,
+      "end_line": 29
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_31",
+      "title": "Ensure WAF2 has a Logging Configuration",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_wafv2_web_acl.this",
+      "resource_type": "aws_wafv2_web_acl",
+      "file_path": "/main.tf",
+      "start_line": 188,
+      "end_line": 247
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_62",
+      "title": "Ensure S3 buckets should have event notifications enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.logs",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 38,
+      "end_line": 41
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_62",
+      "title": "Ensure S3 buckets should have event notifications enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.cloudfront_logs",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 62,
+      "end_line": 65
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_21",
+      "title": "Ensure all data stored in the S3 bucket have versioning enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.logs",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 38,
+      "end_line": 41
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_21",
+      "title": "Ensure all data stored in the S3 bucket have versioning enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.cloudfront_logs",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 62,
+      "end_line": 65
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_64",
+      "title": "Ensure KMS key Policy is defined",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_kms_key.s3",
+      "resource_type": "aws_kms_key",
+      "file_path": "/main.tf",
+      "start_line": 31,
+      "end_line": 36
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_18",
+      "title": "Ensure the S3 bucket has access logging enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.cloudfront_logs",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 62,
+      "end_line": 65
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_65",
+      "title": "Ensure access control lists for S3 buckets are disabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket_ownership_controls.cloudfront_logs",
+      "resource_type": "aws_s3_bucket_ownership_controls",
+      "file_path": "/main.tf",
+      "start_line": 86,
+      "end_line": 92
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_61",
+      "title": "Ensure that an S3 bucket has a lifecycle configuration",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.logs",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 38,
+      "end_line": 41
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_61",
+      "title": "Ensure that an S3 bucket has a lifecycle configuration",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.cloudfront_logs",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 62,
+      "end_line": 65
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_145",
+      "title": "Ensure that S3 buckets are encrypted with KMS by default",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.logs",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 38,
+      "end_line": 41
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_145",
+      "title": "Ensure that S3 buckets are encrypted with KMS by default",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.cloudfront_logs",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 62,
+      "end_line": 65
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_144",
+      "title": "Ensure that S3 bucket has cross-region replication enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.logs",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 38,
+      "end_line": 41
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_144",
+      "title": "Ensure that S3 bucket has cross-region replication enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.cloudfront_logs",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 62,
+      "end_line": 65
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_144",
+      "title": "Ensure that S3 bucket has cross-region replication enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.this",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 100,
+      "end_line": 103
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_47",
+      "title": "Ensure AWS CloudFront attached WAFv2 WebACL is configured with AMR for Log4j Vulnerability",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudfront_distribution.this",
+      "resource_type": "aws_cloudfront_distribution",
+      "file_path": "/main.tf",
+      "start_line": 281,
+      "end_line": 387
+    }
+  ],
+  "target_count": 24,
+  "resolved_count": 21,
+  "introduced_count": 23,
+  "unchanged_count": 3,
+  "repair_success_rate": 0.875,
+  "regression_rate": 0.9583333333333334,
+  "net_delta": -2,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 5,
+      "introduced": 2,
+      "unchanged": 1
+    },
+    "data_protection": {
+      "resolved": 5,
+      "introduced": 6,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 5,
+      "introduced": 6,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 6,
+      "introduced": 9,
+      "unchanged": 2
+    }
+  },
+  "repair_cost_usd": 0.06684599999999999,
+  "repair_tokens": 7258,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0204_claude-sonnet-4-5.repaired.tf",
+  "raw_response_path": "module_0204_claude-sonnet-4-5.raw.txt",
+  "repaired_code_sha256": "513d714c891b9cad0def934b8a4508641e0f2ddf1ec03ae9ae6f7fd31eb027e0"
+}

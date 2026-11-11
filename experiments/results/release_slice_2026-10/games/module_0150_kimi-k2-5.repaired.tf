@@ -1,0 +1,252 @@
+locals {
+  flow_logs_to_cw_logs = var.enable_flow_logs && var.flow_logs_destination_type == "cloud-watch-logs"
+}
+
+data "aws_subnets" "default" {
+  filter {
+    name   = "default-for-az"
+    values = [true]
+  }
+}
+
+data "aws_subnet" "default" {
+  for_each = toset(data.aws_subnets.default.ids)
+  id       = each.value
+}
+
+# --------------------------------------------------------------------------------------------------
+# Enable VPC Flow Logs for the default VPC.
+# --------------------------------------------------------------------------------------------------
+
+resource "aws_cloudwatch_log_group" "default_vpc_flow_logs" {
+  count = var.enable_flow_logs && local.flow_logs_to_cw_logs ? 1 : 0
+
+  name              = var.flow_logs_log_group_name
+  retention_in_days = var.flow_logs_retention_in_days
+  kms_key_id        = var.flow_logs_kms_key_id
+
+  tags = var.tags
+}
+
+resource "aws_flow_log" "default_vpc_flow_logs" {
+  count = var.enable_flow_logs ? 1 : 0
+
+  log_destination_type = var.flow_logs_destination_type
+  log_destination      = local.flow_logs_to_cw_logs ? aws_cloudwatch_log_group.default_vpc_flow_logs[0].arn : "${var.flow_logs_s3_arn}/${var.flow_logs_s3_key_prefix}"
+  iam_role_arn         = local.flow_logs_to_cw_logs ? var.flow_logs_iam_role_arn : null
+  vpc_id               = aws_vpc.this.id
+  traffic_type         = "ALL"
+
+  tags = var.tags
+}
+
+# --------------------------------------------------------------------------------------------------
+# Clears rules associated with default resources.
+# --------------------------------------------------------------------------------------------------
+
+resource "aws_vpc" "this" {
+  cidr_block           = var.vpc_cidr
+  enable_dns_hostnames = true
+  enable_dns_support   = true
+
+  tags = merge(
+    var.tags,
+    { Name = "VPC" }
+  )
+}
+
+resource "aws_subnet" "this" {
+  for_each = var.availability_zones
+
+  vpc_id                  = aws_vpc.this.id
+  cidr_block              = cidrsubnet(var.vpc_cidr, 8, index(tolist(var.availability_zones), each.value))
+  availability_zone       = each.value
+  map_public_ip_on_launch = false
+
+  tags = merge(
+    var.tags,
+    { Name = "Subnet ${each.value}" }
+  )
+}
+
+resource "aws_route_table" "this" {
+  vpc_id = aws_vpc.this.id
+
+  tags = merge(
+    var.tags,
+    { Name = "Route Table" }
+  )
+}
+
+resource "aws_route_table_association" "this" {
+  for_each = aws_subnet.this
+
+  subnet_id      = each.value.id
+  route_table_id = aws_route_table.this.id
+}
+
+resource "aws_network_acl" "this" {
+  vpc_id = aws_vpc.this.id
+
+  tags = merge(
+    var.tags,
+    { Name = "Network ACL" }
+  )
+}
+
+resource "aws_network_acl_association" "this" {
+  for_each = aws_subnet.this
+
+  network_acl_id = aws_network_acl.this.id
+  subnet_id      = each.value.id
+}
+
+resource "aws_security_group" "this" {
+  vpc_id = aws_vpc.this.id
+
+  tags = merge(
+    var.tags,
+    { Name = "Security Group" }
+  )
+}
+
+
+# --------------------------------------------------------------------------------------------------
+# Migrations to 0.31.0
+# Removing `enabled` argument.
+# --------------------------------------------------------------------------------------------------
+
+moved {
+  from = aws_default_vpc.default[0]
+  to   = aws_vpc.this
+}
+
+moved {
+  from = aws_default_route_table.default[0]
+  to   = aws_route_table.this
+}
+
+moved {
+  from = aws_default_network_acl.default[0]
+  to   = aws_network_acl.this
+}
+
+moved {
+  from = aws_default_security_group.default[0]
+  to   = aws_security_group.this
+}
+
+
+output "default_vpc" {
+  description = "The VPC."
+  value       = aws_vpc.this
+}
+
+output "default_security_group" {
+  description = "The security group."
+  value       = aws_security_group.this
+}
+
+output "default_network_acl" {
+  description = "The network ACL."
+  value       = aws_network_acl.this
+}
+
+output "default_route_table" {
+  description = "The route table."
+  value       = aws_route_table.this
+}
+
+output "vpc_flow_logs_group" {
+  description = "The CloudWatch Logs log group which stores VPC Flow Logs."
+  value       = local.flow_logs_to_cw_logs ? aws_cloudwatch_log_group.default_vpc_flow_logs[0] : null
+}
+
+
+variable "enable_flow_logs" {
+  description = "The boolean flag whether to enable VPC Flow Logs in the VPC"
+  type        = bool
+  default     = true
+}
+
+variable "flow_logs_destination_type" {
+  description = "The type of the logging destination. Valid values: cloud-watch-logs, s3"
+  type        = string
+  default     = "cloud-watch-logs"
+}
+
+# --------------------------------------------------------------------------------------------------
+# Variables for CloudWatch Logs logging.
+# --------------------------------------------------------------------------------------------------
+
+variable "flow_logs_log_group_name" {
+  description = "The name of CloudWatch Logs group to which VPC Flow Logs are delivered if vpc_log_destination_type is cloud-watch-logs."
+  type        = string
+  default     = ""
+}
+
+variable "flow_logs_iam_role_arn" {
+  description = "The ARN of the IAM Role which will be used by VPC Flow Logs if vpc_log_destination_type is cloud-watch-logs."
+  type        = string
+  default     = ""
+}
+
+variable "flow_logs_retention_in_days" {
+  description = "Number of days to retain logs if vpc_log_destination_type is cloud-watch-logs. CIS recommends 365 days. Possible values are: 0, 1, 3, 5, 7, 14, 30, 60, 90, 120, 150, 180, 365, 400, 545, 731, 1827, and 3653. Set to 0 to keep logs indefinitely."
+  type        = number
+  default     = 365
+}
+
+variable "flow_logs_kms_key_id" {
+  description = "The ARN of the KMS Key to use when encrypting log data for VPC Flow Logs."
+  type        = string
+  default     = ""
+}
+
+# --------------------------------------------------------------------------------------------------
+# Variables for S3 logging.
+# --------------------------------------------------------------------------------------------------
+
+variable "flow_logs_s3_arn" {
+  description = "The ARN of the S3 bucket to which VPC Flow Logs are delivered if vpc_log_destination_type is s3."
+  type        = string
+  default     = ""
+}
+
+variable "flow_logs_s3_key_prefix" {
+  description = "The prefix used when VPC Flow Logs delivers logs to the S3 bucket."
+  type        = string
+  default     = "flow-logs"
+}
+
+variable "vpc_cidr" {
+  description = "The CIDR block for the VPC."
+  type        = string
+  default     = "10.0.0.0/16"
+}
+
+variable "availability_zones" {
+  description = "A set of availability zones for the subnets."
+  type        = set(string)
+  default     = []
+}
+
+variable "tags" {
+  description = "Specifies object tags key and value. This applies to all resources created by this module."
+  type        = map(string)
+  default = {
+    "Terraform" = "true"
+  }
+}
+
+
+terraform {
+  required_version = ">= 1.1.4"
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 4.3"
+    }
+  }
+}

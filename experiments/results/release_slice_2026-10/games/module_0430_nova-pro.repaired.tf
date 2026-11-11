@@ -1,0 +1,389 @@
+data "aws_iam_policy_document" "cloudtrail_cloudwatch_logs_assume_role" {
+  count = local.enabled? 1 : 0
+
+  statement {
+    effect  = "Allow"
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["cloudtrail.amazonaws.com"]
+    }
+  }
+}
+
+data "aws_iam_policy_document" "cloudtrail_cloudwatch_logs" {
+  count = local.enabled? 1 : 0
+
+  statement {
+    actions = [
+      "logs:DescribeLogGroups",
+      "logs:DescribeLogStreams"
+    ]
+
+    resources = ["arn:aws:logs:*:*:log-group:/aws/cloudtrail/${module.this.id}:*"]
+  }
+
+  statement {
+    actions = [
+      "logs:PutLogEvents",
+      "logs:CreateLogStream"
+    ]
+
+    resources = [
+      "${join("", aws_cloudwatch_log_group.cloudtrail_cloudwatch_logs[*].arn)}:*"
+    ]
+  }
+}
+
+resource "aws_iam_role" "cloudtrail_cloudwatch_logs" {
+  count                = local.enabled? 1 : 0
+  name                 = module.this.id
+  assume_role_policy   = join("", data.aws_iam_policy_document.cloudtrail_cloudwatch_logs_assume_role[*].json)
+  description          = "Allow CloudTrail to write to CloudWatch Logs"
+  max_session_duration = var.cloudtrail_cloudwatch_logs_role_max_session_duration
+  tags                 = module.this.tags
+}
+
+resource "aws_iam_policy" "cloudtrail_cloudwatch_logs" {
+  count       = local.enabled? 1 : 0
+  name        = module.this.id
+  description = "Allow CloudTrail to write to CloudWatch Logs"
+  policy      = join("", data.aws_iam_policy_document.cloudtrail_cloudwatch_logs[*].json)
+  tags        = module.this.tags
+}
+
+resource "aws_iam_role_policy_attachment" "cloudtrail_cloudwatch_logs" {
+  count      = local.enabled? 1 : 0
+  role       = join("", aws_iam_role.cloudtrail_cloudwatch_logs[*].name)
+  policy_arn = join("", aws_iam_policy.cloudtrail_cloudwatch_logs[*].arn)
+}
+
+resource "aws_cloudwatch_log_group" "cloudtrail_cloudwatch_logs" {
+  count             = local.enabled? 1 : 0
+  name              = module.this.id
+  retention_in_days = var.cloudwatch_logs_retention_in_days
+  kms_key_id        = module.kms_key_cloudtrail.key_arn
+  tags              = module.this.tags
+}
+
+locals {
+  audit_access_enabled = module.this.enabled && var.audit_access_enabled
+  audit_account_id     = module.account_map.outputs.full_account_map[module.account_map.outputs.audit_account_account_name]
+}
+
+module "kms_key_cloudtrail" {
+  source  = "cloudposse/kms-key/aws"
+  version = "0.12.1"
+
+  description             = "KMS key for CloudTrail"
+  deletion_window_in_days = 10
+  enable_key_rotation     = true
+  policy                  = join("", data.aws_iam_policy_document.kms_key_cloudtrail[*].json)
+
+  context = module.this.context
+}
+
+data "aws_caller_identity" "this" {
+  count = local.enabled? 1 : 0
+}
+
+data "aws_partition" "current" {
+  count = local.enabled? 1 : 0
+}
+
+data "aws_iam_policy_document" "kms_key_cloudtrail" {
+  count = local.enabled? 1 : 0
+
+  statement {
+    sid    = "Allow the account identity to manage the KMS key"
+    effect = "Allow"
+
+    actions = [
+      "kms:Create*",
+      "kms:Describe*",
+      "kms:Enable*",
+      "kms:List*",
+      "kms:Put*",
+      "kms:Update*",
+      "kms:Revoke*",
+      "kms:Disable*",
+      "kms:Get*",
+      "kms:Delete*",
+      "kms:TagResource",
+      "kms:UntagResource",
+      "kms:ScheduleKeyDeletion",
+      "kms:CancelKeyDeletion"
+    ]
+
+    resources = [
+      "arn:${join("", data.aws_partition.current[*].partition)}:kms:*:${join("", data.aws_caller_identity.this[*].account_id)}:key/${module.this.id}"
+    ]
+
+    principals {
+      type = "AWS"
+
+      identifiers = [
+        format("arn:${join("", data.aws_partition.current[*].partition)}:iam::%s:root", join("", data.aws_caller_identity.this[*].account_id))
+      ]
+    }
+  }
+
+  statement {
+    sid    = "Allow CloudTrail to encrypt with the KMS key"
+    effect = "Allow"
+
+    actions = [
+      "kms:Encrypt",
+      "kms:GenerateDataKey*"
+    ]
+
+    resources = [
+      "arn:${join("", data.aws_partition.current[*].partition)}:kms:*:${join("", data.aws_caller_identity.this[*].account_id)}:key/${module.this.id}"
+    ]
+
+    principals {
+      type = "Service"
+
+      identifiers = [
+        "cloudtrail.amazonaws.com"
+      ]
+    }
+
+    condition {
+      test     = "StringLike"
+      variable = "kms:EncryptionContext:aws:cloudtrail:arn"
+
+      values = [
+        format("arn:${join("", data.aws_partition.current[*].partition)}:cloudtrail:*:%s:trail/*", join("", data.aws_caller_identity.this[*].account_id))
+      ]
+    }
+  }
+
+  dynamic "statement" {
+    for_each = local.audit_access_enabled? [1] : []
+    content {
+      sid    = "Allow Audit to decrypt with the KMS key"
+      effect = "Allow"
+      actions = [
+        "kms:Decrypt",
+      ]
+      resources = [
+        "arn:${join("", data.aws_partition.current[*].partition)}:kms:*:${join("", data.aws_caller_identity.this[*].account_id)}:key/${module.this.id}"
+      ]
+      principals {
+        type = "AWS"
+        identifiers = [
+          format("arn:${join("", data.aws_partition.current[*].partition)}:iam::%s:root", local.audit_account_id)
+        ]
+      }
+    }
+  }
+}
+
+module "this" {
+  source  = "cloudposse/label/null"
+  version = "0.25.0"
+
+  enabled             = var.enabled
+  namespace           = var.namespace
+  tenant              = var.tenant
+  environment         = var.environment
+  stage               = var.stage
+  name                = var.name
+  delimiter           = var.delimiter
+  attributes          = var.attributes
+  tags                = var.tags
+  additional_tag_map  = var.additional_tag_map
+  label_order         = var.label_order
+  regex_replace_chars = var.regex_replace_chars
+  id_length_limit     = var.id_length_limit
+  label_key_case      = var.label_key_case
+  label_value_case    = var.label_value_case
+  descriptor_formats  = var.descriptor_formats
+  labels_as_tags      = var.labels_as_tags
+
+  context = var.context
+}
+
+locals {
+  enabled = module.this.enabled
+}
+
+module "cloudtrail" {
+  source  = "cloudposse/cloudtrail/aws"
+  version = "0.21.0"
+
+  cloud_watch_logs_role_arn     = join("", aws_iam_role.cloudtrail_cloudwatch_logs[*].arn)
+  cloud_watch_logs_group_arn    = "${join("", aws_cloudwatch_log_group.cloudtrail_cloudwatch_logs[*].arn)}:*"
+  enable_logging                = var.enable_logging
+  enable_log_file_validation    = var.enable_log_file_validation
+  include_global_service_events = var.include_global_service_events
+  is_multi_region_trail         = var.is_multi_region_trail
+  is_organization_trail         = var.is_organization_trail
+  s3_bucket_name                = module.cloudtrail_bucket.outputs.cloudtrail_bucket_id
+  kms_key_arn                   = module.kms_key_cloudtrail.key_arn
+
+  context = module.this.context
+}
+
+output "cloudtrail_id" {
+  value       = module.cloudtrail.cloudtrail_id
+  description = "CloudTrail ID"
+}
+
+output "cloudtrail_arn" {
+  value       = module.cloudtrail.cloudtrail_arn
+  description = "CloudTrail ARN"
+}
+
+output "cloudtrail_home_region" {
+  value       = module.cloudtrail.cloudtrail_home_region
+  description = "The region in which CloudTrail was created"
+}
+
+output "cloudtrail_logs_log_group_arn" {
+  value       = local.enabled? join("", aws_cloudwatch_log_group.cloudtrail_cloudwatch_logs[*].arn) : null
+  description = "CloudTrail Logs log group ARN"
+}
+
+output "cloudtrail_logs_log_group_name" {
+  value       = local.enabled? join("", aws_cloudwatch_log_group.cloudtrail_cloudwatch_logs[*].name) : null
+  description = "CloudTrail Logs log group name"
+}
+
+output "cloudtrail_logs_role_arn" {
+  value       = local.enabled? join("", aws_iam_role.cloudtrail_cloudwatch_logs[*].arn) : null
+  description = "CloudTrail Logs role ARN"
+}
+
+output "cloudtrail_logs_role_name" {
+  value       = local.enabled? join("", aws_iam_role.cloudtrail_cloudwatch_logs[*].name) : null
+  description = "CloudTrail Logs role name"
+}
+
+provider "aws" {
+  region = var.region
+
+  profile = module.iam_roles.terraform_profile_name
+
+  dynamic "assume_role" {
+    for_each = compact([module.iam_roles.terraform_role_arn])
+    content {
+      role_arn = assume_role.value
+    }
+  }
+}
+
+module "iam_roles" {
+  source  = "../account-map/modules/iam-roles"
+  context = module.this.context
+}
+
+module "cloudtrail_bucket" {
+  source  = "cloudposse/stack-config/yaml//modules/remote-state"
+  version = "1.5.0"
+
+  component   = var.cloudtrail_bucket_component_name
+  environment = var.cloudtrail_bucket_environment_name
+  stage       = var.cloudtrail_bucket_stage_name
+
+  context = module.this.context
+}
+
+module "account_map" {
+  source  = "cloudposse/stack-config/yaml//modules/remote-state"
+  version = "1.5.0"
+
+  component   = "account-map"
+  tenant      = module.iam_roles.global_tenant_name
+  environment = module.iam_roles.global_environment_name
+  stage       = module.iam_roles.global_stage_name
+
+  context = module.this.context
+}
+
+variable "region" {
+  type        = string
+  description = "AWS Region"
+}
+
+variable "cloudwatch_logs_retention_in_days" {
+  type        = number
+  default     = 365
+  description = "Number of days to retain logs for. CIS recommends 365 days.  Possible values are: 0, 1, 3, 5, 7, 14, 30, 60, 90, 120, 150, 180, 365, 400, 545, 731, 1827, and 3653. Set to 0 to keep logs indefinitely."
+}
+
+variable "enable_logging" {
+  type        = bool
+  default     = true
+  description = "Enable logging for the trail"
+}
+
+variable "enable_log_file_validation" {
+  type        = bool
+  default     = true
+  description = "Specifies whether log file integrity validation is enabled. Creates signed digest for validated contents of logs"
+}
+
+variable "include_global_service_events" {
+  type        = bool
+  default     = true
+  description = "Specifies whether the trail is publishing events from global services such as IAM to the log files"
+}
+
+variable "is_multi_region_trail" {
+  type        = bool
+  default     = true
+  description = "Specifies whether the trail is created in the current region or in all regions"
+}
+
+variable "cloudtrail_cloudwatch_logs_role_max_session_duration" {
+  type        = number
+  default     = 43200
+  description = "The maximum session duration (in seconds) for the CloudTrail CloudWatch Logs role. Can have a value from 1 hour to 12 hours"
+}
+
+variable "cloudtrail_bucket_component_name" {
+  type        = string
+  description = "The name of the CloudTrail bucket component"
+  default     = "cloudtrail-bucket"
+}
+
+variable "cloudtrail_bucket_environment_name" {
+  type        = string
+  description = "The name of the environment where the CloudTrail bucket is provisioned"
+}
+
+variable "cloudtrail_bucket_stage_name" {
+  type        = string
+  description = "The stage name where the CloudTrail bucket is provisioned"
+}
+
+variable "is_organization_trail" {
+  type        = bool
+  default     = false
+  description = <<-EOT
+  Specifies whether the trail is created for all accounts in an organization in AWS Organizations, or only for the current AWS account.
+
+  The default is false, and cannot be true unless the call is made on behalf of an AWS account that is the management account
+  for an organization in AWS Organizations.
+  EOT
+}
+
+variable "audit_access_enabled" {
+  type        = bool
+  default     = false
+  description = "If `true`, allows the Audit account access to read Cloudtrail logs directly from S3. This is a requirement for running Athena queries in the Audit account."
+}
+
+terraform {
+  required_version = ">= 1.0.0"
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 4.9.0"
+    }
+  }
+}

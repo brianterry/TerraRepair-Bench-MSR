@@ -1,0 +1,373 @@
+{
+  "module_id": "module_0408",
+  "model_id": "kimi-k2-5",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0079",
+      "title": "There is no encryption specified or encryption is disabled on the RDS Cluster.",
+      "severity": "HIGH",
+      "resource_name": "module.aurora_postgres",
+      "resource_type": "module",
+      "file_path": "git::https:/github.com/cloudposse/terraform-aws-rds-cluster.git?ref=tags/0.16.0/main.tf",
+      "start_line": 53,
+      "end_line": 53
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "module.aurora_postgres",
+      "resource_type": "module",
+      "file_path": "git::https:/github.com/cloudposse/terraform-aws-rds-cluster.git?ref=tags/0.16.0/main.tf",
+      "start_line": 36,
+      "end_line": 36
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0124",
+      "title": "Missing description for security group rule.",
+      "severity": "LOW",
+      "resource_name": "module.aurora_postgres",
+      "resource_type": "module",
+      "file_path": "git::https:/github.com/cloudposse/terraform-aws-rds-cluster.git?ref=tags/0.16.0/main.tf",
+      "start_line": 18,
+      "end_line": 23
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0133",
+      "title": "Enable Performance Insights to detect potential problems",
+      "severity": "LOW",
+      "resource_name": "module.aurora_postgres",
+      "resource_type": "module",
+      "file_path": "git::https:/github.com/cloudposse/terraform-aws-rds-cluster.git?ref=tags/0.16.0/main.tf",
+      "start_line": 99,
+      "end_line": 99
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0343",
+      "title": "RDS Cluster Deletion Protection Disabled",
+      "severity": "MEDIUM",
+      "resource_name": "module.aurora_postgres",
+      "resource_type": "module",
+      "file_path": "git::https:/github.com/cloudposse/terraform-aws-rds-cluster.git?ref=tags/0.16.0/main.tf",
+      "start_line": 78,
+      "end_line": 78
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "aurora_postgres",
+      "resource_type": "aurora_postgres",
+      "file_path": "/aurora-postgres.tf",
+      "start_line": 104,
+      "end_line": 128
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "elasticache_redis",
+      "resource_type": "elasticache_redis",
+      "file_path": "/elasticache-redis.tf",
+      "start_line": 34,
+      "end_line": 61
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_394",
+      "title": "Ensure aws_availability_zones data source pins zone identity so its result set does not silently expand when AWS adds an Availability Zone",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_availability_zones.available",
+      "resource_type": "aws_availability_zones",
+      "file_path": "/main.tf",
+      "start_line": 5,
+      "end_line": 5
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "kops_metadata",
+      "resource_type": "kops_metadata",
+      "file_path": "/main.tf",
+      "start_line": 11,
+      "end_line": 15
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "rds_instance_postgres",
+      "resource_type": "rds_instance_postgres",
+      "file_path": "/rds.tf",
+      "start_line": 90,
+      "end_line": 114
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "ses",
+      "resource_type": "ses",
+      "file_path": "/ses.tf",
+      "start_line": 30,
+      "end_line": 40
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_34",
+      "title": "AWS SSM Parameter should be Encrypted",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_ssm_parameter.aurora_postgres_database_name[0]",
+      "resource_type": "aws_ssm_parameter",
+      "file_path": "/aurora-postgres.tf",
+      "start_line": 130,
+      "end_line": 137
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_34",
+      "title": "AWS SSM Parameter should be Encrypted",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_ssm_parameter.aurora_postgres_master_username[0]",
+      "resource_type": "aws_ssm_parameter",
+      "file_path": "/aurora-postgres.tf",
+      "start_line": 139,
+      "end_line": 146
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_34",
+      "title": "AWS SSM Parameter should be Encrypted",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_ssm_parameter.aurora_postgres_master_password[0]",
+      "resource_type": "aws_ssm_parameter",
+      "file_path": "/aurora-postgres.tf",
+      "start_line": 148,
+      "end_line": 155
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_34",
+      "title": "AWS SSM Parameter should be Encrypted",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_ssm_parameter.aurora_postgres_master_hostname[0]",
+      "resource_type": "aws_ssm_parameter",
+      "file_path": "/aurora-postgres.tf",
+      "start_line": 157,
+      "end_line": 164
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_34",
+      "title": "AWS SSM Parameter should be Encrypted",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_ssm_parameter.aurora_postgres_replicas_hostname[0]",
+      "resource_type": "aws_ssm_parameter",
+      "file_path": "/aurora-postgres.tf",
+      "start_line": 166,
+      "end_line": 173
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_34",
+      "title": "AWS SSM Parameter should be Encrypted",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_ssm_parameter.aurora_postgres_cluster_name[0]",
+      "resource_type": "aws_ssm_parameter",
+      "file_path": "/aurora-postgres.tf",
+      "start_line": 175,
+      "end_line": 182
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_34",
+      "title": "AWS SSM Parameter should be Encrypted",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_ssm_parameter.elasticache_redis_host[0]",
+      "resource_type": "aws_ssm_parameter",
+      "file_path": "/elasticache-redis.tf",
+      "start_line": 63,
+      "end_line": 70
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_34",
+      "title": "AWS SSM Parameter should be Encrypted",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_ssm_parameter.sentry_secret",
+      "resource_type": "aws_ssm_parameter",
+      "file_path": "/main.tf",
+      "start_line": 42,
+      "end_line": 48
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_34",
+      "title": "AWS SSM Parameter should be Encrypted",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_ssm_parameter.sentry_admin_user_password",
+      "resource_type": "aws_ssm_parameter",
+      "file_path": "/main.tf",
+      "start_line": 50,
+      "end_line": 56
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0078",
+      "title": "Performance Insights encryption should use Customer Managed Keys",
+      "severity": "LOW",
+      "resource_name": "module.aurora_postgres",
+      "resource_type": "module",
+      "file_path": "git::https:/github.com/cloudposse/terraform-aws-rds-cluster.git?ref=0.16.0/main.tf",
+      "start_line": 86,
+      "end_line": 102
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0079",
+      "title": "There is no encryption specified or encryption is disabled on the RDS Cluster.",
+      "severity": "HIGH",
+      "resource_name": "module.aurora_postgres",
+      "resource_type": "module",
+      "file_path": "git::https:/github.com/cloudposse/terraform-aws-rds-cluster.git?ref=0.16.0/main.tf",
+      "start_line": 54,
+      "end_line": 54
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "module.aurora_postgres",
+      "resource_type": "module",
+      "file_path": "git::https:/github.com/cloudposse/terraform-aws-rds-cluster.git?ref=0.16.0/main.tf",
+      "start_line": 36,
+      "end_line": 36
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0124",
+      "title": "Missing description for security group rule.",
+      "severity": "LOW",
+      "resource_name": "module.aurora_postgres",
+      "resource_type": "module",
+      "file_path": "git::https:/github.com/cloudposse/terraform-aws-rds-cluster.git?ref=0.16.0/main.tf",
+      "start_line": 18,
+      "end_line": 23
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "aurora_postgres",
+      "resource_type": "aurora_postgres",
+      "file_path": "/main.tf",
+      "start_line": 104,
+      "end_line": 135
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "elasticache_redis",
+      "resource_type": "elasticache_redis",
+      "file_path": "/main.tf",
+      "start_line": 256,
+      "end_line": 283
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "kops_metadata",
+      "resource_type": "kops_metadata",
+      "file_path": "/main.tf",
+      "start_line": 323,
+      "end_line": 327
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "rds_instance_postgres",
+      "resource_type": "rds_instance_postgres",
+      "file_path": "/main.tf",
+      "start_line": 462,
+      "end_line": 486
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "ses",
+      "resource_type": "ses",
+      "file_path": "/main.tf",
+      "start_line": 533,
+      "end_line": 543
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_394",
+      "title": "Ensure aws_availability_zones data source pins zone identity so its result set does not silently expand when AWS adds an Availability Zone",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_availability_zones.available",
+      "resource_type": "aws_availability_zones",
+      "file_path": "/main.tf",
+      "start_line": 312,
+      "end_line": 317
+    }
+  ],
+  "target_count": 20,
+  "resolved_count": 11,
+  "introduced_count": 1,
+  "unchanged_count": 9,
+  "repair_success_rate": 0.55,
+  "regression_rate": 0.05,
+  "net_delta": 10,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 1
+    },
+    "data_protection": {
+      "resolved": 9,
+      "introduced": 1,
+      "unchanged": 1
+    },
+    "observability": {
+      "resolved": 1,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 1,
+      "introduced": 0,
+      "unchanged": 7
+    }
+  },
+  "repair_cost_usd": 0.0163018,
+  "repair_tokens": 11140,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0408_kimi-k2-5.repaired.tf",
+  "raw_response_path": "module_0408_kimi-k2-5.raw.txt",
+  "repaired_code_sha256": "031c7027cb92cf73e2fff035146b2702fbafd8c5bfbe07f3aaa87d31c90031ec"
+}

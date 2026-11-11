@@ -1,0 +1,417 @@
+{
+  "module_id": "module_0063",
+  "model_id": "nova-pro",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0001",
+      "title": "API Gateway stages for V1 and V2 should have access logging enabled",
+      "severity": "MEDIUM",
+      "resource_name": "aws_apigatewayv2_stage.staging",
+      "resource_type": "aws_apigatewayv2_stage",
+      "file_path": "1-api-gateway.tf",
+      "start_line": 6,
+      "end_line": 10
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "aws_s3_bucket.lambda_bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "2-lambda-bucket.tf",
+      "start_line": 6,
+      "end_line": 9
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0090",
+      "title": "S3 Data should be versioned",
+      "severity": "MEDIUM",
+      "resource_name": "aws_s3_bucket.lambda_bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "2-lambda-bucket.tf",
+      "start_line": 6,
+      "end_line": 9
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0132",
+      "title": "S3 encryption should use Customer Managed Keys",
+      "severity": "HIGH",
+      "resource_name": "aws_s3_bucket.lambda_bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "2-lambda-bucket.tf",
+      "start_line": 6,
+      "end_line": 9
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0017",
+      "title": "CloudWatch log groups should be encrypted using CMK",
+      "severity": "LOW",
+      "resource_name": "aws_cloudwatch_log_group.hello",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "3-hello-lambda.tf",
+      "start_line": 39,
+      "end_line": 43
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0066",
+      "title": "Lambda functions should have X-Ray tracing enabled",
+      "severity": "LOW",
+      "resource_name": "aws_lambda_function.hello",
+      "resource_type": "aws_lambda_function",
+      "file_path": "3-hello-lambda.tf",
+      "start_line": 25,
+      "end_line": 37
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_76",
+      "title": "Ensure API Gateway has Access Logging enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_apigatewayv2_stage.staging",
+      "resource_type": "aws_apigatewayv2_stage",
+      "file_path": "/1-api-gateway.tf",
+      "start_line": 6,
+      "end_line": 10
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_117",
+      "title": "Ensure that AWS Lambda function is configured inside a VPC",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.hello",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/3-hello-lambda.tf",
+      "start_line": 25,
+      "end_line": 37
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_363",
+      "title": "Ensure Lambda Runtime is not deprecated",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.hello",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/3-hello-lambda.tf",
+      "start_line": 25,
+      "end_line": 37
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_116",
+      "title": "Ensure that AWS Lambda function is configured for a Dead Letter Queue(DLQ)",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.hello",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/3-hello-lambda.tf",
+      "start_line": 25,
+      "end_line": 37
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_272",
+      "title": "Ensure AWS Lambda function is configured to validate code-signing",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.hello",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/3-hello-lambda.tf",
+      "start_line": 25,
+      "end_line": 37
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_115",
+      "title": "Ensure that AWS Lambda function is configured for function-level concurrent execution limit",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.hello",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/3-hello-lambda.tf",
+      "start_line": 25,
+      "end_line": 37
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_50",
+      "title": "X-Ray tracing is enabled for Lambda",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.hello",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/3-hello-lambda.tf",
+      "start_line": 25,
+      "end_line": 37
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_158",
+      "title": "Ensure that CloudWatch Log Group is encrypted by KMS",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.hello",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/3-hello-lambda.tf",
+      "start_line": 39,
+      "end_line": 43
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_338",
+      "title": "Ensure CloudWatch log groups retains logs for at least 1 year",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.hello",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/3-hello-lambda.tf",
+      "start_line": 39,
+      "end_line": 43
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_309",
+      "title": "Ensure API GatewayV2 routes specify an authorization type",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_apigatewayv2_route.get_hello",
+      "resource_type": "aws_apigatewayv2_route",
+      "file_path": "/4-hello-api-gateway.tf",
+      "start_line": 9,
+      "end_line": 14
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_233",
+      "title": "Ensure Create before destroy for ACM certificates",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_acm_certificate.api",
+      "resource_type": "aws_acm_certificate",
+      "file_path": "/5-certificate.tf",
+      "start_line": 1,
+      "end_line": 4
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_21",
+      "title": "Ensure all data stored in the S3 bucket have versioning enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.lambda_bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/2-lambda-bucket.tf",
+      "start_line": 6,
+      "end_line": 9
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_62",
+      "title": "Ensure S3 buckets should have event notifications enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.lambda_bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/2-lambda-bucket.tf",
+      "start_line": 6,
+      "end_line": 9
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_18",
+      "title": "Ensure the S3 bucket has access logging enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.lambda_bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/2-lambda-bucket.tf",
+      "start_line": 6,
+      "end_line": 9
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_145",
+      "title": "Ensure that S3 buckets are encrypted with KMS by default",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.lambda_bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/2-lambda-bucket.tf",
+      "start_line": 6,
+      "end_line": 9
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_61",
+      "title": "Ensure that an S3 bucket has a lifecycle configuration",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.lambda_bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/2-lambda-bucket.tf",
+      "start_line": 6,
+      "end_line": 9
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_144",
+      "title": "Ensure that S3 bucket has cross-region replication enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.lambda_bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/2-lambda-bucket.tf",
+      "start_line": 6,
+      "end_line": 9
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_338",
+      "title": "Ensure CloudWatch log groups retains logs for at least 1 year",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_cloudwatch_log_group.api_gateway",
+      "resource_type": "aws_cloudwatch_log_group",
+      "file_path": "/main.tf",
+      "start_line": 40,
+      "end_line": 44
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_7",
+      "title": "Ensure rotation for customer created CMKs is enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_kms_key.s3_bucket",
+      "resource_type": "aws_kms_key",
+      "file_path": "/main.tf",
+      "start_line": 78,
+      "end_line": 81
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_7",
+      "title": "Ensure rotation for customer created CMKs is enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_kms_key.cw_logs",
+      "resource_type": "aws_kms_key",
+      "file_path": "/main.tf",
+      "start_line": 83,
+      "end_line": 86
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_363",
+      "title": "Ensure Lambda Runtime is not deprecated",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.hello",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/main.tf",
+      "start_line": 121,
+      "end_line": 156
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_173",
+      "title": "Check encryption settings for Lambda environmental variable",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_lambda_function.hello",
+      "resource_type": "aws_lambda_function",
+      "file_path": "/main.tf",
+      "start_line": 121,
+      "end_line": 156
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_27",
+      "title": "Ensure all data stored in the SQS queue is encrypted",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_sqs_queue.dlq",
+      "resource_type": "aws_sqs_queue",
+      "file_path": "/main.tf",
+      "start_line": 164,
+      "end_line": 166
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_309",
+      "title": "Ensure API GatewayV2 routes specify an authorization type",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_apigatewayv2_route.get_hello",
+      "resource_type": "aws_apigatewayv2_route",
+      "file_path": "/main.tf",
+      "start_line": 196,
+      "end_line": 202
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_62",
+      "title": "Ensure S3 buckets should have event notifications enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.lambda_bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 51,
+      "end_line": 76
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_64",
+      "title": "Ensure KMS key Policy is defined",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_kms_key.s3_bucket",
+      "resource_type": "aws_kms_key",
+      "file_path": "/main.tf",
+      "start_line": 78,
+      "end_line": 81
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_64",
+      "title": "Ensure KMS key Policy is defined",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_kms_key.cw_logs",
+      "resource_type": "aws_kms_key",
+      "file_path": "/main.tf",
+      "start_line": 83,
+      "end_line": 86
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_144",
+      "title": "Ensure that S3 bucket has cross-region replication enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.lambda_bucket",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 51,
+      "end_line": 76
+    }
+  ],
+  "target_count": 23,
+  "resolved_count": 19,
+  "introduced_count": 7,
+  "unchanged_count": 4,
+  "repair_success_rate": 0.8260869565217391,
+  "regression_rate": 0.30434782608695654,
+  "net_delta": 12,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 0,
+      "introduced": 2,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 6,
+      "introduced": 2,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 5,
+      "introduced": 1,
+      "unchanged": 1
+    },
+    "other": {
+      "resolved": 8,
+      "introduced": 2,
+      "unchanged": 3
+    }
+  },
+  "repair_cost_usd": 0.005875999999999999,
+  "repair_tokens": 5876,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0063_nova-pro.repaired.tf",
+  "raw_response_path": "module_0063_nova-pro.raw.txt",
+  "repaired_code_sha256": "70c24b04173da202c66cb7a9cd32e1413ce592a0e33df3ad0b7484d3fd05d614"
+}

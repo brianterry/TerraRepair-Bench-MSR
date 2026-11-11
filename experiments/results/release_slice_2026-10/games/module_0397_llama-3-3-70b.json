@@ -1,0 +1,75 @@
+{
+  "module_id": "module_0397",
+  "model_id": "llama-3-3-70b",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0065",
+      "title": "A KMS key is not configured to auto-rotate.",
+      "severity": "MEDIUM",
+      "resource_name": "aws_kms_key.replica",
+      "resource_type": "aws_kms_key",
+      "file_path": "main.tf",
+      "start_line": 34,
+      "end_line": 39
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_7",
+      "title": "Ensure rotation for customer created CMKs is enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_kms_key.replica",
+      "resource_type": "aws_kms_key",
+      "file_path": "/main.tf",
+      "start_line": 34,
+      "end_line": 39
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_64",
+      "title": "Ensure KMS key Policy is defined",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_kms_key.replica",
+      "resource_type": "aws_kms_key",
+      "file_path": "/main.tf",
+      "start_line": 34,
+      "end_line": 39
+    }
+  ],
+  "findings_after": [],
+  "target_count": 3,
+  "resolved_count": 3,
+  "introduced_count": 0,
+  "unchanged_count": 0,
+  "repair_success_rate": 1.0,
+  "regression_rate": 0.0,
+  "net_delta": 3,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 1,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 1,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 1,
+      "introduced": 0,
+      "unchanged": 0
+    }
+  },
+  "repair_cost_usd": 0.0030008,
+  "repair_tokens": 3751,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0397_llama-3-3-70b.repaired.tf",
+  "raw_response_path": "module_0397_llama-3-3-70b.raw.txt",
+  "repaired_code_sha256": "7f32efc2e205daa0ce1fb26c0a42ca10c8c3bb94a7a801736584aad5ef6b77be"
+}

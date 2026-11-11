@@ -1,0 +1,741 @@
+variable "kops_acm_enabled" {
+  description = "Set to false to prevent the acm module from creating any resources"
+  default     = "false"
+}
+
+variable "kops_acm_san_domains" {
+  type        = list(string)
+  default     = []
+  description = "A list of domains (except *.{cluster_name}) that should be SANs in the issued certificate"
+}
+
+resource "aws_acm_certificate" "default" {
+  count                     = var.kops_acm_enabled ? 1 : 0
+  domain_name               = "*.${var.region}.${var.zone_name}"
+  validation_method         = "DNS"
+  subject_alternative_names = ["${var.kops_acm_san_domains}"]
+  tags                      = var.tags
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+output "kops_acm_arn" {
+  value       = join("", aws_acm_certificate.default.*.arn)
+  description = "The ARN of the certificate"
+}
+
+output "kops_acm_domain_validation_options" {
+  value       = flatten(aws_acm_certificate.default.*.domain_validation_options)
+  description = "CNAME records that need to be added to the DNS zone to complete certificate validation"
+}
+
+
+variable "kops_alb_ingress_enabled" {
+  description = "Set to false to prevent the alb ingress from creating IAM resources"
+  default     = "false"
+}
+
+module "kops_alb_ingress" {
+  source       = "git::https://github.com/cloudposse/terraform-aws-kops-aws-alb-ingress.git?ref=8d9d7a0e3c7a0a3e3e3e3e3e3e3e3e3e3e3e3e3e"
+  namespace    = var.namespace
+  stage        = var.stage
+  name         = "alb-ingress"
+  cluster_name = "${var.region}.${var.zone_name}"
+  enabled      = var.kops_alb_ingress_enabled
+
+  iam_role_max_session_duration = var.iam_role_max_session_duration
+
+  tags = {
+    Cluster = "${var.region}.${var.zone_name}"
+  }
+}
+
+output "kops_alb_ingress_role_name" {
+  value = module.kops_alb_ingress.role_name
+}
+
+output "kops_alb_ingress_role_unique_id" {
+  value = module.kops_alb_ingress.role_unique_id
+}
+
+output "kops_alb_ingress_role_arn" {
+  value = module.kops_alb_ingress.role_arn
+}
+
+output "kops_alb_ingress_policy_name" {
+  value = module.kops_alb_ingress.policy_name
+}
+
+output "kops_alb_ingress_policy_id" {
+  value = module.kops_alb_ingress.policy_id
+}
+
+output "kops_alb_ingress_policy_arn" {
+  value = module.kops_alb_ingress.policy_arn
+}
+
+
+data "aws_iam_policy_document" "autoscaler" {
+  statement {
+    sid = "AutoScalerDescribe"
+
+    actions = [
+      "autoscaling:DescribeAutoScalingGroups",
+      "autoscaling:DescribeAutoScalingInstances",
+      "autoscaling:DescribeLaunchConfigurations",
+      "autoscaling:DescribeTags",
+    ]
+
+    resources = ["*"]
+    effect    = "Allow"
+  }
+
+  statement {
+    sid = "AutoScalerWrite"
+
+    actions = [
+      "autoscaling:SetDesiredCapacity",
+      "autoscaling:TerminateInstanceInAutoScalingGroup",
+    ]
+
+    resources = ["*"]
+    effect    = "Allow"
+
+    condition {
+      test     = "StringEquals"
+      variable = "autoscaling:ResourceTag/Cluster"
+      values   = ["${var.region}.${var.zone_name}"]
+    }
+  }
+}
+
+module "autoscaler_role" {
+  source = "git::https://github.com/cloudposse/terraform-aws-iam-role.git?ref=58c8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b"
+
+  enabled            = "true"
+  namespace          = var.namespace
+  stage              = var.stage
+  name               = "kubernetes"
+  attributes         = ["autoscaler", "role"]
+  role_description   = "Role for Cluster Auto-Scaler"
+  policy_description = "Permit auto-scaling operations on auto-scaling groups"
+
+  max_session_duration = var.iam_role_max_session_duration
+
+  principals = {
+    AWS = ["${module.kops_metadata_iam.masters_role_arn}"]
+  }
+
+  policy_documents = ["${data.aws_iam_policy_document.autoscaler.json}"]
+}
+
+resource "aws_ssm_parameter" "kops_autoscaler_iam_role_name" {
+  name        = format(local.chamber_parameter_format, var.chamber_service, "kubernetes_autoscaler_iam_role_name")
+  value       = module.autoscaler_role.name
+  description = "IAM role name for cluster autoscaler"
+  type        = "SecureString"
+  overwrite   = "true"
+}
+
+output "autoscaler_role_name" {
+  value       = module.autoscaler_role.name
+  description = "The name of the IAM role created"
+}
+
+output "autoscaler_role_id" {
+  value       = module.autoscaler_role.id
+  description = "The stable and unique string identifying the role"
+}
+
+output "autoscaler_role_arn" {
+  value       = module.autoscaler_role.arn
+  description = "The Amazon Resource Name (ARN) specifying the role"
+}
+
+
+module "kops_chart_repo" {
+  source          = "git::https://github.com/cloudposse/terraform-aws-kops-chart-repo.git?ref=abc123abc123abc123abc123abc123abc123abc1"
+  namespace       = var.namespace
+  stage           = var.stage
+  name            = "chart-repo"
+  cluster_name    = "${var.region}.${var.zone_name}"
+  permitted_nodes = var.permitted_nodes
+
+  iam_role_max_session_duration = var.iam_role_max_session_duration
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+  server_side_encryption_configuration = {
+    rule = {
+      apply_server_side_encryption_by_default = {
+        sse_algorithm = "aws:kms"
+      }
+    }
+  }
+
+  tags = {
+    Cluster = "${var.region}.${var.zone_name}"
+  }
+}
+
+output "kops_chart_repo_bucket_domain_name" {
+  value = module.kops_chart_repo.bucket_domain_name
+}
+
+output "kops_chart_repo_bucket_id" {
+  value = module.kops_chart_repo.bucket_id
+}
+
+output "kops_chart_repo_bucket_arn" {
+  value = module.kops_chart_repo.bucket_arn
+}
+
+output "kops_chart_repo_role_name" {
+  value = module.kops_chart_repo.role_name
+}
+
+output "kops_chart_repo_role_unique_id" {
+  value = module.kops_chart_repo.role_unique_id
+}
+
+output "kops_chart_repo_role_arn" {
+  value = module.kops_chart_repo.role_arn
+}
+
+output "kops_chart_repo_policy_name" {
+  value = module.kops_chart_repo.policy_name
+}
+
+output "kops_chart_repo_policy_id" {
+  value = module.kops_chart_repo.policy_id
+}
+
+output "kops_chart_repo_policy_arn" {
+  value = module.kops_chart_repo.policy_arn
+}
+
+
+variable "efs_enabled" {
+  type        = string
+  description = "Set to true to allow the module to create EFS resources"
+  default     = "false"
+}
+
+variable "kops_dns_zone_id" {
+  type        = string
+  default     = ""
+  description = "DNS Zone ID for kops. EFS DNS entries will be added to this zone. If empyty, zone ID will be retrieved from SSM Parameter store"
+}
+
+variable "efs_encrypted" {
+  type        = string
+  description = "If true, the disk will be encrypted"
+  default     = "true"
+}
+
+variable "efs_performance_mode" {
+  type        = string
+  description = "The file system performance mode. Can be either `generalPurpose` or `maxIO`"
+  default     = "generalPurpose"
+}
+
+variable "efs_provisioned_throughput_in_mibps" {
+  default     = 0
+  description = "The throughput, measured in MiB/s, that you want to provision for the file system. Only applicable with throughput_mode set to provisioned"
+}
+
+variable "efs_throughput_mode" {
+  type        = string
+  description = "Throughput mode for the file system. Defaults to bursting. Valid values: bursting, provisioned. When using provisioned, also set provisioned_throughput_in_mibps"
+  default     = "bursting"
+}
+
+data "aws_ssm_parameter" "kops_availability_zones" {
+  name = format(local.chamber_parameter_format, var.chamber_service_kops, "kops_availability_zones")
+}
+
+data "aws_ssm_parameter" "kops_zone_id" {
+  count = var.efs_enabled == "true" && var.kops_dns_zone_id == "" ? 1 : 0
+  name  = format(local.chamber_parameter_format, var.chamber_service_kops, "kops_dns_zone_id")
+}
+
+locals {
+  kops_zone_id = coalesce(var.kops_dns_zone_id, join("", data.aws_ssm_parameter.kops_zone_id.*.value))
+}
+
+module "kops_efs_provisioner" {
+  source             = "git::https://github.com/cloudposse/terraform-aws-kops-efs.git?ref=def456def456def456def456def456def456def4"
+  enabled            = var.efs_enabled
+  namespace          = var.namespace
+  stage              = var.stage
+  name               = "efs-provisioner"
+  region             = var.region
+  availability_zones = ["${split(",", data.aws_ssm_parameter.kops_availability_zones.value)}"]
+  zone_id            = local.kops_zone_id
+  cluster_name       = "${var.region}.${var.zone_name}"
+
+  encrypted        = var.efs_encrypted
+  performance_mode = var.efs_performance_mode
+
+  throughput_mode                 = var.efs_throughput_mode
+  provisioned_throughput_in_mibps = var.efs_provisioned_throughput_in_mibps
+
+  iam_role_max_session_duration = var.iam_role_max_session_duration
+
+  security_group_egress_cidr_blocks = [module.kops_metadata.vpc_cidr_block]
+
+  tags = {
+    Cluster = "${var.region}.${var.zone_name}"
+  }
+}
+
+resource "aws_ssm_parameter" "kops_efs_provisioner_role_name" {
+  count       = var.efs_enabled == "true" ? 1 : 0
+  name        = format(local.chamber_parameter_format, var.chamber_service, "kops_efs_provisioner_role_name")
+  value       = module.kops_efs_provisioner.role_name
+  description = "IAM role name for EFS provisioner"
+  type        = "SecureString"
+  overwrite   = "true"
+}
+
+resource "aws_ssm_parameter" "kops_efs_file_system_id" {
+  count       = var.efs_enabled == "true" ? 1 : 0
+  name        = format(local.chamber_parameter_format, var.chamber_service, "kops_efs_file_system_id")
+  value       = module.kops_efs_provisioner.efs_id
+  description = "ID for shared EFS file system"
+  type        = "SecureString"
+  overwrite   = "true"
+}
+
+output "kops_efs_provisioner_role_name" {
+  value = module.kops_efs_provisioner.role_name
+}
+
+output "kops_efs_provisioner_role_unique_id" {
+  value = module.kops_efs_provisioner.role_unique_id
+}
+
+output "kops_efs_provisioner_role_arn" {
+  value = module.kops_efs_provisioner.role_arn
+}
+
+output "efs_arn" {
+  value       = module.kops_efs_provisioner.efs_arn
+  description = "EFS ARN"
+}
+
+output "efs_id" {
+  value       = module.kops_efs_provisioner.efs_id
+  description = "EFS ID"
+}
+
+output "efs_host" {
+  value       = module.kops_efs_provisioner.efs_host
+  description = "EFS host"
+}
+
+output "efs_dns_name" {
+  value       = module.kops_efs_provisioner.efs_dns_name
+  description = "EFS DNS name"
+}
+
+output "efs_mount_target_dns_names" {
+  value       = module.kops_efs_provisioner.efs_mount_target_dns_names
+  description = "EFS mount target DNS name"
+}
+
+output "efs_mount_target_ids" {
+  value       = module.kops_efs_provisioner.efs_mount_target_ids
+  description = "EFS mount target IDs"
+}
+
+output "efs_mount_target_ips" {
+  value       = module.kops_efs_provisioner.efs_mount_target_ips
+  description = "EFS mount target IPs"
+}
+
+output "efs_network_interface_ids" {
+  value       = module.kops_efs_provisioner.efs_network_interface_ids
+  description = "EFS network interface IDs"
+}
+
+
+module "kops_external_dns" {
+  source         = "git::https://github.com/cloudposse/terraform-aws-kops-external-dns.git?ref=ghi789ghi789ghi789ghi789ghi789ghi789ghi7"
+  namespace      = var.namespace
+  stage          = var.stage
+  name           = "external-dns"
+  cluster_name   = "${var.region}.${var.zone_name}"
+  dns_zone_names = var.dns_zone_names
+
+  iam_role_max_session_duration = var.iam_role_max_session_duration
+
+  tags = {
+    Cluster = "${var.region}.${var.zone_name}"
+  }
+}
+
+output "kops_external_dns_role_name" {
+  value = module.kops_external_dns.role_name
+}
+
+output "kops_external_dns_role_unique_id" {
+  value = module.kops_external_dns.role_unique_id
+}
+
+output "kops_external_dns_role_arn" {
+  value = module.kops_external_dns.role_arn
+}
+
+output "kops_external_dns_policy_name" {
+  value = module.kops_external_dns.policy_name
+}
+
+output "kops_external_dns_policy_id" {
+  value = module.kops_external_dns.policy_id
+}
+
+output "kops_external_dns_policy_arn" {
+  value = module.kops_external_dns.policy_arn
+}
+
+
+variable "flow_logs_enabled" {
+  type    = string
+  default = "true"
+}
+
+module "flow_logs" {
+  source     = "git::https://github.com/cloudposse/terraform-aws-vpc-flow-logs-s3-bucket.git?ref=jkl012jkl012jkl012jkl012jkl012jkl012jkl0"
+  name       = "kops"
+  namespace  = var.namespace
+  stage      = var.stage
+  attributes = ["flow-logs"]
+
+  region = var.region
+
+  enabled = var.flow_logs_enabled
+
+  vpc_id = module.kops_metadata.vpc_id
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+  versioning_enabled      = true
+  server_side_encryption_configuration = {
+    rule = {
+      apply_server_side_encryption_by_default = {
+        sse_algorithm = "aws:kms"
+      }
+    }
+  }
+}
+
+output "flow_logs_kms_key_arn" {
+  value       = module.flow_logs.kms_key_arn
+  description = "Flow logs KMS Key ARN"
+}
+
+output "flow_logs_kms_key_id" {
+  value       = module.flow_logs.kms_key_id
+  description = "Flow logs KMS Key ID"
+}
+
+output "flow_logs_kms_alias_arn" {
+  value       = module.flow_logs.kms_alias_arn
+  description = "Flow logs KMS Alias ARN"
+}
+
+output "flow_logs_kms_alias_name" {
+  value       = module.flow_logs.kms_alias_name
+  description = "Flow logs KMS Alias name"
+}
+
+output "flow_logs_bucket_domain_name" {
+  value       = module.flow_logs.bucket_domain_name
+  description = "Flow logs FQDN of bucket"
+}
+
+output "flow_logs_bucket_id" {
+  value       = module.flow_logs.bucket_id
+  description = "Flow logs bucket Name (aka ID)"
+}
+
+output "flow_logs_bucket_arn" {
+  value       = module.flow_logs.bucket_arn
+  description = "Flow logs bucket ARN"
+}
+
+output "flow_logs_bucket_prefix" {
+  value       = module.flow_logs.bucket_prefix
+  description = "Flow logs bucket prefix configured for lifecycle rules"
+}
+
+output "flow_logs_id" {
+  value       = module.flow_logs.id
+  description = "Flow logs ID"
+}
+
+
+variable "kops_iam_enabled" {
+  type        = string
+  description = "Set to true to allow the module to create Kubernetes and IAM resources"
+  default     = "false"
+}
+
+variable "cluster_id" {
+  type        = string
+  description = "A unique-per-cluster identifier to prevent replay attacks. Good choices are a random token or a domain name that will be unique to your cluster"
+  default     = "random"
+}
+
+variable "kube_config_path" {
+  type        = string
+  default     = "/dev/shm/kubecfg"
+  description = "Path to the kube config file"
+}
+
+variable "admin_k8s_username" {
+  type        = string
+  description = "Kops admin username to be mapped to `admin_iam_role_arn`"
+  default     = "kubernetes-admin"
+}
+
+variable "admin_k8s_groups" {
+  type        = list(string)
+  description = "List of Kops groups to be mapped to `admin_iam_role_arn`"
+  default     = ["system:masters"]
+}
+
+variable "readonly_k8s_username" {
+  type        = string
+  description = "Kops readonly username to be mapped to `readonly_iam_role_arn`"
+  default     = "kubernetes-readonly"
+}
+
+variable "readonly_k8s_groups" {
+  type        = list(string)
+  description = "List of Kops groups to be mapped to `readonly_iam_role_arn`"
+  default     = ["view"]
+}
+
+resource "kubernetes_cluster_role_binding" "view" {
+  count = var.kops_iam_enabled == "true" ? 1 : 0
+
+  metadata {
+    name = "view-binding"
+  }
+
+  role_ref {
+    api_group = "rbac.authorization.k8s.io"
+    kind      = "ClusterRole"
+    name      = "view"
+  }
+
+  subject {
+    kind      = "Group"
+    name      = "view"
+    api_group = "rbac.authorization.k8s.io"
+  }
+}
+
+variable "aws_root_account_id" {
+  type        = string
+  description = "AWS root account ID"
+}
+
+module "kops_admin_label" {
+  source     = "git::https://github.com/cloudposse/terraform-terraform-label.git?ref=mno345mno345mno345mno345mno345mno345mno3"
+  namespace  = var.namespace
+  name       = "kops"
+  stage      = var.stage
+  attributes = ["admin"]
+  delimiter  = var.delimiter
+  tags       = var.tags
+  enabled    = var.kops_iam_enabled
+}
+
+module "kops_readonly_label" {
+  source     = "git::https://github.com/cloudposse/terraform-terraform-label.git?ref=pqr678pqr678pqr678pqr678pqr678pqr678pqr6"
+  namespace  = var.namespace
+  name       = "kops"
+  stage      = var.stage
+  attributes = ["readonly"]
+  delimiter  = var.delimiter
+  tags       = var.tags
+  enabled    = var.kops_iam_enabled
+}
+
+data "aws_iam_policy_document" "readonly" {
+  count = var.kops_iam_enabled == "true" ? 1 : 0
+
+  statement {
+    actions = [
+      "sts:AssumeRole",
+    ]
+
+    principals {
+      type        = "AWS"
+      identifiers = ["arn:aws:iam::${var.aws_root_account_id}:root"]
+    }
+
+    effect = "Allow"
+  }
+}
+
+resource "aws_iam_role" "readonly" {
+  count              = var.kops_iam_enabled == "true" ? 1 : 0
+  name               = module.kops_readonly_label.id
+  assume_role_policy = data.aws_iam_policy_document.readonly.json
+  description        = "The Kops readonly role for aws-iam-authenticator"
+
+  max_session_duration = var.iam_role_max_session_duration
+}
+
+data "aws_iam_policy_document" "admin" {
+  count = var.kops_iam_enabled == "true" ? 1 : 0
+
+  statement {
+    actions = [
+      "sts:AssumeRole",
+    ]
+
+    principals {
+      type        = "AWS"
+      identifiers = ["arn:aws:iam::${var.aws_root_account_id}:root"]
+    }
+
+    effect = "Allow"
+  }
+}
+
+resource "aws_iam_role" "admin" {
+  count              = var.kops_iam_enabled == "true" ? 1 : 0
+  name               = module.kops_admin_label.id
+  assume_role_policy = data.aws_iam_policy_document.admin.json
+  description        = "The Kops admin role for aws-iam-authenticator"
+
+  max_session_duration = var.iam_role_max_session_duration
+}
+
+module "iam_authenticator_config" {
+  enabled               = var.kops_iam_enabled
+  source                = "git::https://github.com/cloudposse/terraform-aws-kops-iam-authenticator-config.git?ref=stu901stu901stu901stu901stu901stu901stu9"
+  cluster_id            = var.cluster_id
+  kube_config_path      = var.kube_config_path
+  admin_iam_role_arn    = element(concat(aws_iam_role.admin.*.arn, list("")), 0)
+  admin_k8s_username    = var.admin_k8s_username
+  admin_k8s_groups      = var.admin_k8s_groups
+  readonly_iam_role_arn = element(concat(aws_iam_role.readonly.*.arn, list("")), 0)
+  readonly_k8s_username = var.readonly_k8s_username
+  readonly_k8s_groups   = var.readonly_k8s_groups
+}
+
+
+terraform {
+  required_version = ">= 0.11.2"
+
+  backend "s3" {}
+}
+
+provider "aws" {
+  assume_role {
+    role_arn = var.aws_assume_role_arn
+  }
+}
+
+module "kops_metadata" {
+  source       = "git::https://github.com/cloudposse/terraform-aws-kops-data-network.git?ref=vwx234vwx234vwx234vwx234vwx234vwx234vwx2"
+  enabled      = var.flow_logs_enabled
+  cluster_name = "${var.region}.${var.zone_name}"
+}
+
+module "kops_metadata_iam" {
+  source       = "git::https://github.com/cloudposse/terraform-aws-kops-data-iam.git?ref=yza567yza567yza567yza567yza567yza567yza5"
+  cluster_name = "${var.region}.${var.zone_name}"
+}
+
+resource "aws_default_security_group" "default" {
+  count = module.kops_metadata.vpc_id == "" ? 0 : 1
+
+  vpc_id = module.kops_metadata.vpc_id
+
+  tags = {
+    Name = "Default Security Group"
+  }
+}
+
+locals {
+  chamber_parameter_format = "/%s/%s"
+}
+
+
+variable "aws_assume_role_arn" {
+  type        = string
+  description = "AWS IAM Role for Terraform to assume during operation"
+}
+
+variable "region" {
+  type        = string
+  description = "AWS region"
+}
+
+variable "zone_name" {
+  type        = string
+  description = "DNS zone name"
+}
+
+variable "dns_zone_names" {
+  type        = list(string)
+  description = "Names of zones for external-dns to manage (e.g. `us-east-1.cloudposse.com` or `cluster-1.cloudposse.com`)"
+}
+
+variable "permitted_nodes" {
+  type        = string
+  description = "Kops kubernetes nodes that are permitted to assume IAM roles (e.g. 'nodes', 'masters', or 'both')"
+  default     = "both"
+}
+
+variable "namespace" {
+  type        = string
+  description = "Namespace (e.g. `cp` or `cloudposse`)"
+}
+
+variable "stage" {
+  type        = string
+  description = "Stage (e.g. `prod`, `dev`, `staging`)"
+}
+
+variable "delimiter" {
+  type        = string
+  default     = "-"
+  description = "Delimiter to be used between `namespace`, `stage`, `name` and `attributes`"
+}
+
+variable "tags" {
+  type        = map(string)
+  default     = {}
+  description = "Additional tags (e.g. `map('BusinessUnit','XYZ')`"
+}
+
+variable "chamber_service" {
+  type        = string
+  default     = "kops"
+  description = "Service under which to store SSM parameters"
+}
+
+variable "chamber_service_kops" {
+  type        = string
+  default     = "kops"
+  description = "Service where kops stores its configuration information"
+}
+
+variable "iam_role_max_session_duration" {
+  default     = 3600
+  description = "The maximum session duration (in seconds) for the role. Can have a value from 1 hour to 12 hours"
+}

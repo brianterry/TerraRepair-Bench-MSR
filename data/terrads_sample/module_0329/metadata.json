@@ -1,0 +1,41 @@
+{
+  "findings_count": 6,
+  "findings": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_11",
+      "title": "",
+      "resource_name": "aws_iam_account_password_policy.main[0]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_15",
+      "title": "",
+      "resource_name": "aws_iam_account_password_policy.main[0]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_12",
+      "title": "",
+      "resource_name": "aws_iam_account_password_policy.main[0]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_14",
+      "title": "",
+      "resource_name": "aws_iam_account_password_policy.main[0]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_40",
+      "title": "",
+      "resource_name": "aws_iam_policy.policy"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_40",
+      "title": "",
+      "resource_name": "aws_iam_policy.admin_not_indicated_policy"
+    }
+  ]
+}

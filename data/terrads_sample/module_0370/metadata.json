@@ -1,0 +1,119 @@
+{
+  "findings_count": 19,
+  "findings": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_149",
+      "title": "",
+      "resource_name": "aws_secretsmanager_secret.grafana"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "ebs_csi_driver_irsa"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "eks_blueprints_addons"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "eks_data_addons"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "s3_bucket"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "amp_ingest_irsa[0]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "eks"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_K8S_49",
+      "title": "",
+      "resource_name": "kubernetes_cluster_role.spark_argowf_role"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_K8S_42",
+      "title": "",
+      "resource_name": "kubernetes_role_binding.spark_role_binding"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_K8S_42",
+      "title": "",
+      "resource_name": "kubernetes_role_binding.admin_rolebinding_argoworkflows"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_K8S_42",
+      "title": "",
+      "resource_name": "kubernetes_role_binding.admin_rolebinding_spark_team_a"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "spark_team_a_irsa"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "irsa_argo_events"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_111",
+      "title": "",
+      "resource_name": "aws_iam_policy_document.sqs_argo_events"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_356",
+      "title": "",
+      "resource_name": "aws_iam_policy_document.sqs_argo_events"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "vpc"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "vpc_endpoints_sg"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "",
+      "resource_name": "vpc_endpoints"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_57",
+      "title": "",
+      "resource_name": "aws_secretsmanager_secret.grafana"
+    }
+  ]
+}

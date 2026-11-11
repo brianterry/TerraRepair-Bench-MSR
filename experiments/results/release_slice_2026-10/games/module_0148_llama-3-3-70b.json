@@ -1,0 +1,351 @@
+{
+  "module_id": "module_0148",
+  "model_id": "llama-3-3-70b",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0090",
+      "title": "S3 Data should be versioned",
+      "severity": "MEDIUM",
+      "resource_name": "aws_s3_bucket.access_log",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 21,
+      "end_line": 26
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0132",
+      "title": "S3 encryption should use Customer Managed Keys",
+      "severity": "HIGH",
+      "resource_name": "aws_s3_bucket_server_side_encryption_configuration.content",
+      "resource_type": "aws_s3_bucket_server_side_encryption_configuration",
+      "file_path": "main.tf",
+      "start_line": 94,
+      "end_line": 103
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_300",
+      "title": "Ensure S3 lifecycle configuration sets period for aborting failed uploads",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket_lifecycle_configuration.access_log[0]",
+      "resource_type": "aws_s3_bucket_lifecycle_configuration",
+      "file_path": "/main.tf",
+      "start_line": 43,
+      "end_line": 59
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_300",
+      "title": "Ensure S3 lifecycle configuration sets period for aborting failed uploads",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket_lifecycle_configuration.content[0]",
+      "resource_type": "aws_s3_bucket_lifecycle_configuration",
+      "file_path": "/main.tf",
+      "start_line": 112,
+      "end_line": 133
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_62",
+      "title": "Ensure S3 buckets should have event notifications enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.access_log",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 21,
+      "end_line": 26
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_62",
+      "title": "Ensure S3 buckets should have event notifications enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.content",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 78,
+      "end_line": 87
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_21",
+      "title": "Ensure all data stored in the S3 bucket have versioning enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.access_log",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 21,
+      "end_line": 26
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_144",
+      "title": "Ensure that S3 bucket has cross-region replication enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.access_log",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 21,
+      "end_line": 26
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_144",
+      "title": "Ensure that S3 bucket has cross-region replication enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.content",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 78,
+      "end_line": 87
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_145",
+      "title": "Ensure that S3 buckets are encrypted with KMS by default",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.access_log",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 21,
+      "end_line": 26
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_145",
+      "title": "Ensure that S3 buckets are encrypted with KMS by default",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.content",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 78,
+      "end_line": 87
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0065",
+      "title": "A KMS key is not configured to auto-rotate.",
+      "severity": "MEDIUM",
+      "resource_name": "aws_kms_key.access_log",
+      "resource_type": "aws_kms_key",
+      "file_path": "main.tf",
+      "start_line": 44,
+      "end_line": 47
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0065",
+      "title": "A KMS key is not configured to auto-rotate.",
+      "severity": "MEDIUM",
+      "resource_name": "aws_kms_key.content",
+      "resource_type": "aws_kms_key",
+      "file_path": "main.tf",
+      "start_line": 192,
+      "end_line": 195
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "aws_s3_bucket.content_replica",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "main.tf",
+      "start_line": 276,
+      "end_line": 281
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0095",
+      "title": "Unencrypted SNS topic.",
+      "severity": "HIGH",
+      "resource_name": "aws_sns_topic.access_log",
+      "resource_type": "aws_sns_topic",
+      "file_path": "main.tf",
+      "start_line": 105,
+      "end_line": 107
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0095",
+      "title": "Unencrypted SNS topic.",
+      "severity": "HIGH",
+      "resource_name": "aws_sns_topic.content",
+      "resource_type": "aws_sns_topic",
+      "file_path": "main.tf",
+      "start_line": 256,
+      "end_line": 258
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_7",
+      "title": "Ensure rotation for customer created CMKs is enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_kms_key.access_log",
+      "resource_type": "aws_kms_key",
+      "file_path": "/main.tf",
+      "start_line": 44,
+      "end_line": 47
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_26",
+      "title": "Ensure all data stored in the SNS topic is encrypted",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_sns_topic.access_log",
+      "resource_type": "aws_sns_topic",
+      "file_path": "/main.tf",
+      "start_line": 105,
+      "end_line": 107
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_7",
+      "title": "Ensure rotation for customer created CMKs is enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_kms_key.content",
+      "resource_type": "aws_kms_key",
+      "file_path": "/main.tf",
+      "start_line": 192,
+      "end_line": 195
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_26",
+      "title": "Ensure all data stored in the SNS topic is encrypted",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_sns_topic.content",
+      "resource_type": "aws_sns_topic",
+      "file_path": "/main.tf",
+      "start_line": 256,
+      "end_line": 258
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_62",
+      "title": "Ensure S3 buckets should have event notifications enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.access_log_replica",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 125,
+      "end_line": 130
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_62",
+      "title": "Ensure S3 buckets should have event notifications enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.content_replica",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 276,
+      "end_line": 281
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_18",
+      "title": "Ensure the S3 bucket has access logging enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.access_log_replica",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 125,
+      "end_line": 130
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_18",
+      "title": "Ensure the S3 bucket has access logging enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.content_replica",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 276,
+      "end_line": 281
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_61",
+      "title": "Ensure that an S3 bucket has a lifecycle configuration",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.access_log_replica",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 125,
+      "end_line": 130
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_61",
+      "title": "Ensure that an S3 bucket has a lifecycle configuration",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_s3_bucket.content_replica",
+      "resource_type": "aws_s3_bucket",
+      "file_path": "/main.tf",
+      "start_line": 276,
+      "end_line": 281
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_64",
+      "title": "Ensure KMS key Policy is defined",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_kms_key.access_log",
+      "resource_type": "aws_kms_key",
+      "file_path": "/main.tf",
+      "start_line": 44,
+      "end_line": 47
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_64",
+      "title": "Ensure KMS key Policy is defined",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_kms_key.content",
+      "resource_type": "aws_kms_key",
+      "file_path": "/main.tf",
+      "start_line": 192,
+      "end_line": 195
+    }
+  ],
+  "target_count": 11,
+  "resolved_count": 11,
+  "introduced_count": 17,
+  "unchanged_count": 0,
+  "repair_success_rate": 1.0,
+  "regression_rate": 1.5454545454545454,
+  "net_delta": -6,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 0,
+      "introduced": 2,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 4,
+      "introduced": 6,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 2,
+      "introduced": 5,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 5,
+      "introduced": 4,
+      "unchanged": 0
+    }
+  },
+  "repair_cost_usd": 0.0035512,
+  "repair_tokens": 4439,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0148_llama-3-3-70b.repaired.tf",
+  "raw_response_path": "module_0148_llama-3-3-70b.raw.txt",
+  "repaired_code_sha256": "4457a970c762a2de7345813422feca96bce0fa55b8872d6712c4e643a758b952"
+}

@@ -1,0 +1,49 @@
+{
+  "experiment": "_smoke",
+  "started": "2026-10-28T14:28:56.179099+00:00",
+  "region": "us-east-1",
+  "corpus_rule": {
+    "min_findings": 3,
+    "max_findings": 50
+  },
+  "candidates_scanned": 7,
+  "corpus_size": 3,
+  "models": [
+    "nova-lite",
+    "qwen3-32b"
+  ],
+  "model_details": {
+    "nova-lite": {
+      "bedrock_model_id": "us.amazon.nova-lite-v1:0",
+      "effective_max_tokens": 10000,
+      "temperature_sent": true
+    },
+    "qwen3-32b": {
+      "bedrock_model_id": "qwen.qwen3-32b-v1:0",
+      "effective_max_tokens": 16384,
+      "temperature_sent": true
+    }
+  },
+  "git": {
+    "source": "image_build_arg",
+    "commit": "3a9ae7fe40d96f7a62c4b1003eabff8e702fa6ae",
+    "dirty": false,
+    "tracked_diff_sha256": null
+  },
+  "scanner_versions": {
+    "trivy": "Version: 0.74.0",
+    "checkov": "3.3.20"
+  },
+  "temperature": 0.0,
+  "concurrency": 2,
+  "max_tokens": 40000,
+  "bedrock_timeouts_s": {
+    "read_timeout": 900,
+    "invoke_timeout": 900.0
+  },
+  "completed": "2026-10-28T14:30:53.023950+00:00",
+  "cost_by_model": {
+    "nova-lite": 0.0093,
+    "qwen3-32b": 0.0095
+  }
+}

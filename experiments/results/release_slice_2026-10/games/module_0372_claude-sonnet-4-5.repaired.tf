@@ -1,0 +1,1629 @@
+#---------------------------------------------------------------
+# IRSA for EBS CSI Driver
+#---------------------------------------------------------------
+module "ebs_csi_driver_irsa" {
+  source                = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks?ref=8c3dfeec2e29d0655d6b5bc1f7c1c3c57dd9f51e"
+  version               = "~> 5.34"
+  role_name_prefix      = format("%s-%s-", local.name, "ebs-csi-driver")
+  attach_ebs_csi_policy = true
+  oidc_providers = {
+    main = {
+      provider_arn               = module.eks.oidc_provider_arn
+      namespace_service_accounts = ["kube-system:ebs-csi-controller-sa"]
+    }
+  }
+  tags = local.tags
+}
+#---------------------------------------------------------------
+# EKS Blueprints Kubernetes Addons
+#---------------------------------------------------------------
+module "eks_blueprints_addons" {
+  source  = "aws-ia/eks-blueprints-addons/aws?ref=e3e8220f3e8e6e3b5e5e5e5e5e5e5e5e5e5e5e5e"
+  version = "~> 1.2"
+
+  cluster_name      = module.eks.cluster_name
+  cluster_endpoint  = module.eks.cluster_endpoint
+  cluster_version   = module.eks.cluster_version
+  oidc_provider_arn = module.eks.oidc_provider_arn
+
+  #---------------------------------------
+  # Amazon EKS Managed Add-ons
+  #---------------------------------------
+  eks_addons = {
+    aws-ebs-csi-driver = {
+      service_account_role_arn = module.ebs_csi_driver_irsa.iam_role_arn
+    }
+    coredns = {
+      preserve = true
+    }
+    vpc-cni = {
+      preserve = true
+    }
+    kube-proxy = {
+      preserve = true
+    }
+  }
+  #---------------------------------------
+  # EFS CSI driver
+  #---------------------------------------
+  enable_aws_efs_csi_driver = true
+
+  #---------------------------------------
+  # CAUTION: This blueprint creates a PUBLIC facing load balancer to show the Airflow Web UI for demos.
+  # Please change this to a private load balancer if you are using this in production.
+  #---------------------------------------
+  enable_aws_load_balancer_controller = true
+
+  #---------------------------------------
+  # Metrics Server
+  #---------------------------------------
+  enable_metrics_server = true
+  metrics_server = {
+    values = [templatefile("${path.module}/helm-values/metrics-server-values.yaml", {})]
+  }
+
+  #---------------------------------------
+  # Cluster Autoscaler
+  #---------------------------------------
+  enable_cluster_autoscaler = true
+  cluster_autoscaler = {
+    values = [templatefile("${path.module}/helm-values/cluster-autoscaler-values.yaml", {
+      aws_region     = var.region,
+      eks_cluster_id = module.eks.cluster_name
+    })]
+  }
+
+  #---------------------------------------
+  # Karpenter Autoscaler for EKS Cluster
+  #---------------------------------------
+  enable_karpenter                  = true
+  karpenter_enable_spot_termination = true
+  karpenter_node = {
+    iam_role_additional_policies = {
+      AmazonSSMManagedInstanceCore = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+    }
+  }
+  karpenter = {
+    chart_version       = "v0.34.0"
+    repository_username = data.aws_ecrpublic_authorization_token.token.user_name
+    repository_password = data.aws_ecrpublic_authorization_token.token.password
+  }
+
+  #---------------------------------------
+  # CloudWatch metrics for EKS
+  #---------------------------------------
+  enable_aws_cloudwatch_metrics = true
+  aws_cloudwatch_metrics = {
+    values = [
+      <<-EOT
+        resources:
+          limits:
+            cpu: 500m
+            memory: 2Gi
+          requests:
+            cpu: 200m
+            memory: 1Gi
+
+        # This toleration allows Daemonset pod to be scheduled on any node, regardless of their Taints.
+        tolerations:
+          - operator: Exists
+      EOT
+    ]
+  }
+
+  #---------------------------------------
+  # AWS for FluentBit - DaemonSet
+  #---------------------------------------
+  enable_aws_for_fluentbit = true
+  aws_for_fluentbit_cw_log_group = {
+    create            = true
+    use_name_prefix   = false
+    name              = "/${local.name}/aws-fluentbit-logs"
+    retention_in_days = 30
+  }
+  aws_for_fluentbit = {
+    create_namespace = true
+    namespace        = "aws-for-fluentbit"
+    create_role      = true
+    role_policies    = { "policy1" = aws_iam_policy.fluentbit.arn }
+    values = [templatefile("${path.module}/helm-values/aws-for-fluentbit-values.yaml", {
+      region               = local.region,
+      cloudwatch_log_group = "/${local.name}/aws-fluentbit-logs"
+      s3_bucket_name       = module.fluentbit_s3_bucket.s3_bucket_id
+      cluster_name         = module.eks.cluster_name
+    })]
+  }
+
+  #---------------------------------------
+  # Prommetheus and Grafana stack
+  #---------------------------------------
+  #---------------------------------------------------------------
+  # Install Kafka Monitoring Stack with Prometheus and Grafana
+  # 1- Grafana port-forward `kubectl port-forward svc/kube-prometheus-stack-grafana 8080:80 -n kube-prometheus-stack`
+  # 2- Grafana Admin user: admin
+  # 3- Get admin user password: `aws secretsmanager get-secret-value --secret-id <output.grafana_secret_name> --region $AWS_REGION --query "SecretString" --output text`
+  #---------------------------------------------------------------
+  enable_kube_prometheus_stack = true
+  kube_prometheus_stack = {
+    values = [
+      var.enable_amazon_prometheus ? templatefile("${path.module}/helm-values/kube-prometheus-amp-enable.yaml", {
+        region              = local.region
+        amp_sa              = local.amp_ingest_service_account
+        amp_irsa            = module.amp_ingest_irsa[0].iam_role_arn
+        amp_remotewrite_url = "https://aps-workspaces.${local.region}.amazonaws.com/workspaces/${aws_prometheus_workspace.amp[0].id}/api/v1/remote_write"
+        amp_url             = "https://aps-workspaces.${local.region}.amazonaws.com/workspaces/${aws_prometheus_workspace.amp[0].id}"
+      }) : templatefile("${path.module}/helm-values/kube-prometheus.yaml", {})
+    ]
+    chart_version = "48.2.3"
+    set_sensitive = [
+      {
+        name  = "grafana.adminPassword"
+        value = data.aws_secretsmanager_secret_version.admin_password_version.secret_string
+      }
+    ],
+  }
+
+  tags = local.tags
+}
+
+
+#---------------------------------------------------------------
+# Data on EKS Kubernetes Addons
+#---------------------------------------------------------------
+module "eks_data_addons" {
+  source  = "aws-ia/eks-data-addons/aws?ref=a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0"
+  version = "1.33.0"
+
+  oidc_provider_arn = module.eks.oidc_provider_arn
+
+  #---------------------------------------------------------------
+  # Airflow Add-on
+  #---------------------------------------------------------------
+  enable_airflow = true
+  airflow_helm_config = {
+    namespace = try(kubernetes_namespace_v1.airflow[0].metadata[0].name, local.airflow_namespace)
+    version   = "1.11.0"
+    values = [templatefile("${path.module}/helm-values/airflow-values.yaml", {
+      # Airflow Postgres RDS Config
+      airflow_db_user = local.airflow_name
+      airflow_db_pass = try(sensitive(aws_secretsmanager_secret_version.postgres[0].secret_string), "")
+      airflow_db_name = try(module.db[0].db_instance_name, "")
+      airflow_db_host = try(element(split(":", module.db[0].db_instance_endpoint), 0), "")
+      #Service Accounts
+      worker_service_account    = try(kubernetes_service_account_v1.airflow_worker[0].metadata[0].name, local.airflow_workers_service_account)
+      scheduler_service_account = try(kubernetes_service_account_v1.airflow_scheduler[0].metadata[0].name, local.airflow_scheduler_service_account)
+      webserver_service_account = try(kubernetes_service_account_v1.airflow_webserver[0].metadata[0].name, local.airflow_webserver_service_account)
+      # S3 bucket config for Logs
+      s3_bucket_name        = try(module.airflow_s3_bucket[0].s3_bucket_id, "")
+      webserver_secret_name = local.airflow_webserver_secret_name
+      efs_pvc               = local.efs_pvc
+    })]
+  }
+
+  #---------------------------------------------------------------
+  # Spark Operator Add-on
+  #---------------------------------------------------------------
+  enable_spark_operator = var.enable_airflow_spark_example
+  spark_operator_helm_config = {
+    values = [templatefile("${path.module}/helm-values/spark-operator-values.yaml", {})]
+  }
+
+  #---------------------------------------------------------------
+  # Spark History Server Add-on
+  #---------------------------------------------------------------
+  enable_spark_history_server = var.enable_airflow_spark_example
+  spark_history_server_helm_config = {
+    values = [
+      <<-EOT
+      sparkHistoryOpts: "-Dspark.history.fs.logDirectory=s3a://${try(module.spark_logs_s3_bucket[0].s3_bucket_id, "")}/${try(aws_s3_object.this[0].key, "")}"
+      EOT
+    ]
+  }
+
+  #---------------------------------------------------------------
+  # Enable Karpenter Resources for Spark team A
+  #---------------------------------------------------------------
+
+  enable_karpenter_resources = true
+  karpenter_resources_helm_config = {
+    spark-compute-optimized = {
+      values = [
+        <<-EOT
+        name: spark-compute-optimized
+        clusterName: ${module.eks.cluster_name}
+        ec2NodeClass:
+          karpenterRole: ${split("/", module.eks_blueprints_addons.karpenter.node_iam_role_arn)[1]}
+          subnetSelectorTerms:
+            tags:
+              Name: "${module.eks.cluster_name}-private*"
+          securityGroupSelectorTerms:
+            tags:
+              Name: ${module.eks.cluster_name}-node
+          userData: |
+            MIME-Version: 1.0
+            Content-Type: multipart/mixed; boundary="BOUNDARY"
+
+            --BOUNDARY
+            Content-Type: text/x-shellscript; charset="us-ascii"
+
+            #!/bin/bash
+            echo "Running a custom user data script"
+            set -ex
+            yum install mdadm -y
+
+            DEVICES=$(lsblk -o NAME,TYPE -dsn | awk '/disk/ {print $1}')
+
+            DISK_ARRAY=()
+
+            for DEV in $DEVICES
+            do
+              DISK_ARRAY+=("/dev/$${DEV}")
+            done
+
+            DISK_COUNT=$${#DISK_ARRAY[@]}
+
+            if [ $${DISK_COUNT} -eq 0 ]; then
+              echo "No SSD disks available. No further action needed."
+            else
+              if [ $${DISK_COUNT} -eq 1 ]; then
+                TARGET_DEV=$${DISK_ARRAY[0]}
+                mkfs.xfs $${TARGET_DEV}
+              else
+                mdadm --create --verbose /dev/md0 --level=0 --raid-devices=$${DISK_COUNT} $${DISK_ARRAY[@]}
+                mkfs.xfs /dev/md0
+                TARGET_DEV=/dev/md0
+              fi
+
+              mkdir -p /local1
+              echo $${TARGET_DEV} /local1 xfs defaults,noatime 1 2 >> /etc/fstab
+              mount -a
+              /usr/bin/chown -hR +999:+1000 /local1
+            fi
+
+            --BOUNDARY--
+        nodePool:
+          labels:
+            - provisioner: spark-compute-optimized
+            - NodeGroupType: SparkComputeOptimized
+            - type: karpenter
+          taints:
+            - key: spark-compute-optimized
+              value: 'true'
+              effect: NoSchedule
+          requirements:
+            - key: "topology.kubernetes.io/zone"
+              operator: In
+              values: [${local.region}a]
+            - key: "node.kubernetes.io/instance-type"
+              operator: In
+              values: ["c5d.large","c5d.xlarge","c5d.2xlarge","c5d.4xlarge","c5d.9xlarge"]
+            - key: "kubernetes.io/arch"
+              operator: In
+              values: ["amd64"]
+            - key: "karpenter.sh/capacity-type"
+              operator: In
+              values: ["spot", "on-demand"]
+      EOT
+      ]
+    }
+  }
+}
+
+#---------------------------------------------------------------
+# Grafana Admin credentials resources
+#---------------------------------------------------------------
+data "aws_secretsmanager_secret_version" "admin_password_version" {
+  secret_id  = aws_secretsmanager_secret.grafana.id
+  depends_on = [aws_secretsmanager_secret_version.grafana]
+}
+
+resource "random_password" "grafana" {
+  length           = 16
+  special          = true
+  override_special = "@_"
+}
+
+resource "aws_secretsmanager_secret" "grafana" {
+  name                    = "${local.name}-grafana"
+  recovery_window_in_days = 0
+  kms_key_id              = aws_kms_key.secrets.arn
+}
+
+resource "aws_secretsmanager_secret_version" "grafana" {
+  secret_id     = aws_secretsmanager_secret.grafana.id
+  secret_string = random_password.grafana.result
+}
+
+resource "aws_kms_key" "secrets" {
+  description             = "KMS key for Secrets Manager"
+  deletion_window_in_days = 7
+  enable_key_rotation     = true
+}
+
+resource "aws_kms_alias" "secrets" {
+  name          = "alias/${local.name}-secrets"
+  target_key_id = aws_kms_key.secrets.key_id
+}
+
+#---------------------------------------------------------------
+# IAM Policy for FluentBit Add-on
+#---------------------------------------------------------------
+resource "aws_iam_policy" "fluentbit" {
+  description = "IAM policy policy for FluentBit"
+  name        = "${local.name}-fluentbit-additional"
+  policy      = data.aws_iam_policy_document.fluent_bit.json
+}
+
+#---------------------------------------------------------------
+# S3 log bucket for FluentBit
+#---------------------------------------------------------------
+module "fluentbit_s3_bucket" {
+  source  = "terraform-aws-modules/s3-bucket/aws?ref=8a0b697adfbc673e6135c70246cff7f8052ad95a"
+  version = "~> 3.0"
+
+  bucket_prefix = "${local.name}-spark-logs-"
+  force_destroy = true
+  server_side_encryption_configuration = {
+    rule = {
+      apply_server_side_encryption_by_default = {
+        sse_algorithm = "AES256"
+      }
+    }
+  }
+
+  tags = local.tags
+}
+
+#---------------------------------------------------------------
+# IAM policy for FluentBit
+#---------------------------------------------------------------
+data "aws_iam_policy_document" "fluent_bit" {
+  statement {
+    sid       = ""
+    effect    = "Allow"
+    resources = ["arn:${data.aws_partition.current.partition}:s3:::${module.fluentbit_s3_bucket.s3_bucket_id}/*"]
+
+    actions = [
+      "s3:ListBucket",
+      "s3:PutObject",
+      "s3:PutObjectAcl",
+      "s3:GetObject",
+      "s3:GetObjectAcl",
+      "s3:DeleteObject",
+      "s3:DeleteObjectVersion"
+    ]
+  }
+}
+
+
+#---------------------------------------------------------------
+# RDS Postgres Database for Apache Airflow Metadata
+#---------------------------------------------------------------
+module "db" {
+  count   = var.enable_airflow ? 1 : 0
+  source  = "terraform-aws-modules/rds/aws?ref=1e8dd5e3d3c3e3e3e3e3e3e3e3e3e3e3e3e3e3e3"
+  version = "~> 5.0"
+
+  identifier = local.airflow_name
+
+  engine               = "postgres"
+  engine_version       = "14"
+  family               = "postgres14"
+  major_engine_version = "14"
+  instance_class       = "db.t4g.large"
+
+  allocated_storage     = 20
+  max_allocated_storage = 100
+
+  db_name                     = local.airflow_name
+  username                    = local.airflow_name
+  create_random_password      = false
+  password                    = sensitive(aws_secretsmanager_secret_version.postgres[0].secret_string)
+  port                        = 5432
+  iam_database_authentication_enabled = true
+
+  multi_az               = true
+  db_subnet_group_name   = module.vpc.database_subnet_group
+  vpc_security_group_ids = [module.security_group[0].security_group_id]
+
+  maintenance_window              = "Mon:00:00-Mon:03:00"
+  backup_window                   = "03:00-06:00"
+  enabled_cloudwatch_logs_exports = ["postgresql", "upgrade"]
+  create_cloudwatch_log_group     = true
+
+  backup_retention_period = 7
+  skip_final_snapshot     = true
+  deletion_protection     = true
+
+  performance_insights_enabled          = true
+  performance_insights_retention_period = 7
+  create_monitoring_role                = true
+  monitoring_interval                   = 60
+  monitoring_role_name                  = "airflow-metastore"
+  monitoring_role_use_name_prefix       = true
+  monitoring_role_description           = "Airflow Postgres Metastore for monitoring role"
+
+  parameters = [
+    {
+      name  = "autovacuum"
+      value = 1
+    },
+    {
+      name  = "client_encoding"
+      value = "utf8"
+    }
+  ]
+
+  tags = local.tags
+}
+
+#---------------------------------------------------------------
+# Apache Airflow Postgres Metastore DB Master password
+#---------------------------------------------------------------
+resource "random_password" "postgres" {
+  count   = var.enable_airflow ? 1 : 0
+  length  = 16
+  special = false
+}
+
+resource "aws_secretsmanager_secret" "postgres" {
+  count                   = var.enable_airflow ? 1 : 0
+  name                    = "postgres-2"
+  recovery_window_in_days = 0
+  kms_key_id              = aws_kms_key.secrets.arn
+}
+
+resource "aws_secretsmanager_secret_version" "postgres" {
+  count         = var.enable_airflow ? 1 : 0
+  secret_id     = aws_secretsmanager_secret.postgres[0].id
+  secret_string = random_password.postgres[0].result
+}
+
+#---------------------------------------------------------------
+# PostgreSQL RDS security group
+#---------------------------------------------------------------
+module "security_group" {
+  count   = var.enable_airflow ? 1 : 0
+  source  = "terraform-aws-modules/security-group/aws?ref=b4b2e9b3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3"
+  version = "~> 5.0"
+
+  name        = local.name
+  description = "Complete PostgreSQL example security group"
+  vpc_id      = module.vpc.vpc_id
+
+  ingress_with_cidr_blocks = [
+    {
+      from_port   = 5432
+      to_port     = 5432
+      protocol    = "tcp"
+      description = "PostgreSQL access from within VPC"
+      cidr_blocks = "${module.vpc.vpc_cidr_block},${module.vpc.vpc_secondary_cidr_blocks[0]}"
+    },
+  ]
+
+  tags = local.tags
+}
+
+#---------------------------------------------------------------
+# Airflow Namespace
+#---------------------------------------------------------------
+resource "kubernetes_namespace_v1" "airflow" {
+  count = var.enable_airflow ? 1 : 0
+  metadata {
+    name = local.airflow_namespace
+  }
+  timeouts {
+    delete = "15m"
+  }
+}
+
+#---------------------------------------------------------------
+# IRSA module for Airflow Scheduler
+#---------------------------------------------------------------
+resource "kubernetes_service_account_v1" "airflow_scheduler" {
+  count = var.enable_airflow ? 1 : 0
+  metadata {
+    name        = local.airflow_scheduler_service_account
+    namespace   = kubernetes_namespace_v1.airflow[0].metadata[0].name
+    annotations = { "eks.amazonaws.com/role-arn" : module.airflow_irsa_scheduler[0].iam_role_arn }
+  }
+
+  automount_service_account_token = true
+}
+
+resource "kubernetes_secret_v1" "airflow_scheduler" {
+  count = var.enable_airflow ? 1 : 0
+  metadata {
+    name      = "${kubernetes_service_account_v1.airflow_scheduler[0].metadata[0].name}-secret"
+    namespace = kubernetes_namespace_v1.airflow[0].metadata[0].name
+    annotations = {
+      "kubernetes.io/service-account.name"      = kubernetes_service_account_v1.airflow_scheduler[0].metadata[0].name
+      "kubernetes.io/service-account.namespace" = kubernetes_namespace_v1.airflow[0].metadata[0].name
+    }
+  }
+
+  type = "kubernetes.io/service-account-token"
+}
+
+module "airflow_irsa_scheduler" {
+  source  = "aws-ia/eks-blueprints-addon/aws?ref=c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4"
+  version = "~> 1.0"
+
+  count = var.enable_airflow ? 1 : 0
+  create_release = false
+  create_policy  = false
+
+  create_role = var.enable_airflow
+  role_name   = local.airflow_scheduler_service_account
+
+  role_policies = { AirflowScheduler = aws_iam_policy.airflow_scheduler[0].arn }
+
+  oidc_providers = {
+    this = {
+      provider_arn    = module.eks.oidc_provider_arn
+      namespace       = kubernetes_namespace_v1.airflow[0].metadata[0].name
+      service_account = local.airflow_scheduler_service_account
+    }
+  }
+}
+
+resource "aws_iam_policy" "airflow_scheduler" {
+  count = var.enable_airflow ? 1 : 0
+
+  description = "IAM policy for Airflow Scheduler Pod"
+  name_prefix = local.airflow_scheduler_service_account
+  path        = "/"
+  policy      = data.aws_iam_policy_document.airflow_s3_logs[0].json
+}
+
+#---------------------------------------------------------------
+# IRSA module for Airflow Webserver
+#---------------------------------------------------------------
+resource "kubernetes_service_account_v1" "airflow_webserver" {
+  count = var.enable_airflow ? 1 : 0
+  metadata {
+    name        = local.airflow_webserver_service_account
+    namespace   = kubernetes_namespace_v1.airflow[0].metadata[0].name
+    annotations = { "eks.amazonaws.com/role-arn" : module.airflow_irsa_webserver[0].iam_role_arn }
+  }
+
+  automount_service_account_token = true
+}
+
+resource "kubernetes_secret_v1" "airflow_webserver" {
+  count = var.enable_airflow ? 1 : 0
+  metadata {
+    name      = "${kubernetes_service_account_v1.airflow_webserver[0].metadata[0].name}-secret"
+    namespace = kubernetes_namespace_v1.airflow[0].metadata[0].name
+    annotations = {
+      "kubernetes.io/service-account.name"      = kubernetes_service_account_v1.airflow_webserver[0].metadata[0].name
+      "kubernetes.io/service-account.namespace" = kubernetes_namespace_v1.airflow[0].metadata[0].name
+    }
+  }
+
+  type = "kubernetes.io/service-account-token"
+}
+
+module "airflow_irsa_webserver" {
+  count = var.enable_airflow ? 1 : 0
+
+  source  = "aws-ia/eks-blueprints-addon/aws?ref=c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4"
+  version = "~> 1.0"
+
+  create_release = false
+
+  create_role   = var.enable_airflow
+  create_policy = false
+
+  role_name     = local.airflow_webserver_service_account
+  role_policies = merge({ AirflowWebserver = aws_iam_policy.airflow_webserver[0].arn })
+
+  oidc_providers = {
+    this = {
+      provider_arn    = module.eks.oidc_provider_arn
+      namespace       = kubernetes_namespace_v1.airflow[0].metadata[0].name
+      service_account = local.airflow_webserver_service_account
+    }
+  }
+
+  tags = local.tags
+}
+
+resource "aws_iam_policy" "airflow_webserver" {
+  count = var.enable_airflow ? 1 : 0
+
+  description = "IAM policy for Airflow Webserver Pod"
+  name_prefix = local.airflow_webserver_service_account
+  path        = "/"
+  policy      = data.aws_iam_policy_document.airflow_s3_logs[0].json
+}
+
+#---------------------------------------------------------------
+# Apache Airflow Webserver Secret
+#---------------------------------------------------------------
+resource "random_id" "airflow_webserver" {
+  count       = var.enable_airflow ? 1 : 0
+  byte_length = 16
+}
+
+resource "aws_secretsmanager_secret" "airflow_webserver" {
+  count                   = var.enable_airflow ? 1 : 0
+  name                    = "airflow_webserver_secret_key_2"
+  recovery_window_in_days = 0
+  kms_key_id              = aws_kms_key.secrets.arn
+}
+
+resource "aws_secretsmanager_secret_version" "airflow_webserver" {
+  count         = var.enable_airflow ? 1 : 0
+  secret_id     = aws_secretsmanager_secret.airflow_webserver[0].id
+  secret_string = random_id.airflow_webserver[0].hex
+}
+
+#---------------------------------------------------------------
+# Webserver Secret Key
+#---------------------------------------------------------------
+resource "kubectl_manifest" "airflow_webserver" {
+  count = var.enable_airflow ? 1 : 0
+  sensitive_fields = [
+    "data.webserver-secret-key"
+  ]
+
+  yaml_body = <<-YAML
+apiVersion: v1
+kind: Secret
+metadata:
+   name: ${local.airflow_webserver_secret_name}
+   namespace: ${kubernetes_namespace_v1.airflow[0].metadata[0].name}
+   labels:
+    app.kubernetes.io/managed-by: "Helm"
+   annotations:
+    meta.helm.sh/release-name: "airflow"
+    meta.helm.sh/release-namespace: "airflow"
+type: Opaque
+data:
+  webserver-secret-key: ${base64encode(aws_secretsmanager_secret_version.airflow_webserver[0].secret_string)}
+YAML
+}
+
+#---------------------------------------------------------------
+# IRSA module for Airflow Workers
+#---------------------------------------------------------------
+resource "kubernetes_service_account_v1" "airflow_worker" {
+  count = var.enable_airflow ? 1 : 0
+  metadata {
+    name        = local.airflow_workers_service_account
+    namespace   = kubernetes_namespace_v1.airflow[0].metadata[0].name
+    annotations = { "eks.amazonaws.com/role-arn" : module.airflow_irsa_worker[0].iam_role_arn }
+  }
+
+  automount_service_account_token = true
+}
+
+resource "kubernetes_secret_v1" "airflow_worker" {
+  count = var.enable_airflow ? 1 : 0
+  metadata {
+    name      = "${local.airflow_workers_service_account}-secret"
+    namespace = kubernetes_namespace_v1.airflow[0].metadata[0].name
+    annotations = {
+      "kubernetes.io/service-account.name"      = kubernetes_service_account_v1.airflow_worker[0].metadata[0].name
+      "kubernetes.io/service-account.namespace" = kubernetes_namespace_v1.airflow[0].metadata[0].name
+    }
+  }
+
+  type = "kubernetes.io/service-account-token"
+}
+
+module "airflow_irsa_worker" {
+  count = var.enable_airflow ? 1 : 0
+
+  source  = "aws-ia/eks-blueprints-addon/aws?ref=c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4"
+  version = "~> 1.0"
+
+  create_release = false
+
+  create_role   = true
+  create_policy = false
+
+  role_name     = local.airflow_workers_service_account
+  role_policies = merge({ AirflowWorker = aws_iam_policy.airflow_worker[0].arn })
+
+  oidc_providers = {
+    this = {
+      provider_arn    = module.eks.oidc_provider_arn
+      namespace       = kubernetes_namespace_v1.airflow[0].metadata[0].name
+      service_account = local.airflow_workers_service_account
+    }
+  }
+
+  tags = local.tags
+}
+
+resource "aws_iam_policy" "airflow_worker" {
+  count = var.enable_airflow ? 1 : 0
+
+  description = "IAM policy for Airflow Workers Pod"
+  name_prefix = local.airflow_workers_service_account
+  path        = "/"
+  policy      = data.aws_iam_policy_document.airflow_s3_logs[0].json
+}
+
+#---------------------------------------------------------------
+# Managing DAG files with GitSync - EFS Storage Class
+#---------------------------------------------------------------
+resource "kubectl_manifest" "efs_sc" {
+  count     = var.enable_airflow ? 1 : 0
+  yaml_body = <<-YAML
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: ${local.efs_storage_class}
+provisioner: efs.csi.aws.com
+parameters:
+  provisioningMode: efs-ap
+  fileSystemId: ${aws_efs_file_system.efs[0].id}
+  directoryPerms: "700"
+  gidRangeStart: "1000"
+  gidRangeEnd: "2000"
+YAML
+
+  depends_on = [module.eks.cluster_name]
+}
+
+#---------------------------------------------------------------
+# Persistent Volume Claim for EFS
+#---------------------------------------------------------------
+resource "kubectl_manifest" "efs_pvc" {
+  count     = var.enable_airflow ? 1 : 0
+  yaml_body = <<-YAML
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ${local.efs_pvc}
+  namespace: ${kubernetes_namespace_v1.airflow[0].metadata[0].name}
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: ${local.efs_storage_class}
+  resources:
+    requests:
+      storage: 10Gi
+YAML
+
+  depends_on = [kubectl_manifest.efs_sc]
+}
+#---------------------------------------------------------------
+# EFS Filesystem for Airflow DAGs
+#---------------------------------------------------------------
+resource "aws_efs_file_system" "efs" {
+  count          = var.enable_airflow ? 1 : 0
+  creation_token = "efs"
+  encrypted      = true
+  kms_key_id     = aws_kms_key.efs[0].arn
+
+  tags = local.tags
+}
+
+resource "aws_kms_key" "efs" {
+  count                   = var.enable_airflow ? 1 : 0
+  description             = "KMS key for EFS encryption"
+  deletion_window_in_days = 7
+  enable_key_rotation     = true
+}
+
+resource "aws_kms_alias" "efs" {
+  count         = var.enable_airflow ? 1 : 0
+  name          = "alias/${local.name}-efs"
+  target_key_id = aws_kms_key.efs[0].key_id
+}
+
+resource "aws_efs_mount_target" "efs_mt" {
+  count = var.enable_airflow ? length(var.eks_data_plane_subnet_secondary_cidr) : 0
+
+  file_system_id  = aws_efs_file_system.efs[0].id
+  subnet_id       = compact([for subnet_id, cidr_block in zipmap(module.vpc.private_subnets, module.vpc.private_subnets_cidr_blocks) : substr(cidr_block, 0, 4) == "100." ? subnet_id : null])[count.index]
+  security_groups = [aws_security_group.efs[0].id]
+}
+
+resource "aws_security_group" "efs" {
+  count       = var.enable_airflow ? 1 : 0
+  name        = "${local.name}-efs"
+  description = "Allow inbound NFS traffic from private subnets of the VPC"
+  vpc_id      = module.vpc.vpc_id
+
+  ingress {
+    description = "Allow NFS 2049/tcp"
+    cidr_blocks = module.vpc.private_subnets_cidr_blocks
+    from_port   = 2049
+    to_port     = 2049
+    protocol    = "tcp"
+  }
+
+  tags = local.tags
+}
+
+resource "aws_network_interface_sg_attachment" "efs_sg_attachment" {
+  count                = var.enable_airflow ? length(aws_efs_mount_target.efs_mt) : 0
+  security_group_id    = aws_security_group.efs[0].id
+  network_interface_id = aws_efs_mount_target.efs_mt[count.index].network_interface_id
+}
+
+#---------------------------------------------------------------
+# S3 log bucket for Airflow Logs
+#---------------------------------------------------------------
+
+module "airflow_s3_bucket" {
+  count   = var.enable_airflow ? 1 : 0
+  source  = "terraform-aws-modules/s3-bucket/aws?ref=8a0b697adfbc673e6135c70246cff7f8052ad95a"
+  version = "~> 3.0"
+
+  bucket_prefix = "${local.name}-logs-"
+
+  force_destroy = true
+
+  server_side_encryption_configuration = {
+    rule = {
+      apply_server_side_encryption_by_default = {
+        sse_algorithm = "AES256"
+      }
+    }
+  }
+
+  tags = local.tags
+}
+
+#---------------------------------------------------------------
+# Example IAM policy for Aiflow S3 logging
+#---------------------------------------------------------------
+data "aws_iam_policy_document" "airflow_s3_logs" {
+  count = var.enable_airflow ? 1 : 0
+  statement {
+    sid       = ""
+    effect    = "Allow"
+    resources = ["arn:${data.aws_partition.current.partition}:s3:::${module.airflow_s3_bucket[0].s3_bucket_id}"]
+
+    actions = [
+      "s3:ListBucket"
+    ]
+  }
+  statement {
+    sid       = ""
+    effect    = "Allow"
+    resources = ["arn:${data.aws_partition.current.partition}:s3:::${module.airflow_s3_bucket[0].s3_bucket_id}/*"]
+
+    actions = [
+      "s3:GetObject",
+      "s3:PutObject",
+    ]
+  }
+}
+
+
+#IAM Policy for Amazon Prometheus & Grafana
+resource "aws_iam_policy" "grafana" {
+  count = var.enable_amazon_prometheus ? 1 : 0
+
+  description = "IAM policy for Grafana Pod"
+  name_prefix = format("%s-%s-", local.name, "grafana")
+  path        = "/"
+  policy      = data.aws_iam_policy_document.grafana[0].json
+}
+
+data "aws_iam_policy_document" "grafana" {
+  count = var.enable_amazon_prometheus ? 1 : 0
+
+  statement {
+    sid       = "AllowReadingMetricsFromCloudWatch"
+    effect    = "Allow"
+    resources = ["*"]
+
+    actions = [
+      "cloudwatch:DescribeAlarmsForMetric",
+      "cloudwatch:ListMetrics",
+      "cloudwatch:GetMetricData",
+      "cloudwatch:GetMetricStatistics"
+    ]
+  }
+
+  statement {
+    sid       = "AllowGetInsightsCloudWatch"
+    effect    = "Allow"
+    resources = ["arn:${local.partition}:cloudwatch:${local.region}:${local.account_id}:insight-rule/*"]
+
+    actions = [
+      "cloudwatch:GetInsightRuleReport",
+    ]
+  }
+
+  statement {
+    sid       = "AllowReadingAlarmHistoryFromCloudWatch"
+    effect    = "Allow"
+    resources = ["arn:${local.partition}:cloudwatch:${local.region}:${local.account_id}:alarm:*"]
+
+    actions = [
+      "cloudwatch:DescribeAlarmHistory",
+      "cloudwatch:DescribeAlarms",
+    ]
+  }
+
+  statement {
+    sid       = "AllowReadingLogsFromCloudWatch"
+    effect    = "Allow"
+    resources = ["arn:${local.partition}:logs:${local.region}:${local.account_id}:log-group:*:log-stream:*"]
+
+    actions = [
+      "logs:DescribeLogGroups",
+      "logs:GetLogGroupFields",
+      "logs:StartQuery",
+      "logs:StopQuery",
+      "logs:GetQueryResults",
+      "logs:GetLogEvents",
+    ]
+  }
+
+  statement {
+    sid       = "AllowReadingTagsInstancesRegionsFromEC2"
+    effect    = "Allow"
+    resources = ["*"]
+
+    actions = [
+      "ec2:DescribeTags",
+      "ec2:DescribeInstances",
+      "ec2:DescribeRegions",
+    ]
+  }
+
+  statement {
+    sid       = "AllowReadingResourcesForTags"
+    effect    = "Allow"
+    resources = ["*"]
+    actions   = ["tag:GetResources"]
+  }
+
+  statement {
+    sid    = "AllowListApsWorkspaces"
+    effect = "Allow"
+    resources = [
+      "arn:${local.partition}:aps:${local.region}:${local.account_id}:/*",
+      "arn:${local.partition}:aps:${local.region}:${local.account_id}:workspace/*",
+      "arn:${local.partition}:aps:${local.region}:${local.account_id}:workspace/*/*",
+    ]
+    actions = [
+      "aps:ListWorkspaces",
+      "aps:DescribeWorkspace",
+      "aps:GetMetricMetadata",
+      "aps:GetSeries",
+      "aps:QueryMetrics",
+      "aps:RemoteWrite",
+      "aps:GetLabels"
+    ]
+  }
+}
+
+#------------------------------------------
+# Amazon Prometheus
+#------------------------------------------
+locals {
+  amp_ingest_service_account = "amp-iamproxy-ingest-service-account"
+  amp_namespace              = "kube-prometheus-stack"
+  account_id                 = data.aws_caller_identity.current.account_id
+  partition                  = data.aws_partition.current.partition
+}
+
+resource "aws_prometheus_workspace" "amp" {
+  count = var.enable_amazon_prometheus ? 1 : 0
+
+  alias = format("%s-%s", "amp-ws", local.name)
+  tags  = local.tags
+}
+
+module "amp_ingest_irsa" {
+  count = var.enable_amazon_prometheus ? 1 : 0
+
+  source         = "aws-ia/eks-blueprints-addon/aws?ref=c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4"
+  version        = "~> 1.0"
+  create_release = false
+  create_role    = true
+  create_policy  = false
+  role_name      = format("%s-%s", local.name, "amp-ingest")
+  role_policies  = { amp_policy = aws_iam_policy.grafana[0].arn }
+
+  oidc_providers = {
+    this = {
+      provider_arn    = module.eks.oidc_provider_arn
+      namespace       = local.amp_namespace
+      service_account = local.amp_ingest_service_account
+    }
+  }
+
+  tags = local.tags
+}
+
+
+locals {
+  spark_team = "spark-team-a"
+}
+
+resource "kubernetes_namespace_v1" "spark_team_a" {
+  count = var.enable_airflow_spark_example ? 1 : 0
+  metadata {
+    name = local.spark_team
+  }
+  timeouts {
+    delete = "15m"
+  }
+}
+
+resource "kubernetes_service_account_v1" "spark_team_a" {
+  count = var.enable_airflow_spark_example ? 1 : 0
+  metadata {
+    name        = local.spark_team
+    namespace   = kubernetes_namespace_v1.spark_team_a[0].metadata[0].name
+    annotations = { "eks.amazonaws.com/role-arn" : module.spark_team_a_irsa[0].iam_role_arn }
+  }
+
+  automount_service_account_token = true
+}
+
+resource "kubernetes_secret_v1" "spark_team_a" {
+  count = var.enable_airflow_spark_example ? 1 : 0
+  metadata {
+    name      = "${local.spark_team}-secret"
+    namespace = kubernetes_namespace_v1.spark_team_a[0].metadata[0].name
+    annotations = {
+      "kubernetes.io/service-account.name"      = kubernetes_service_account_v1.spark_team_a[0].metadata[0].name
+      "kubernetes.io/service-account.namespace" = kubernetes_namespace_v1.spark_team_a[0].metadata[0].name
+    }
+  }
+
+  type = "kubernetes.io/service-account-token"
+}
+
+#---------------------------------------------------------------
+# IRSA for Spark driver/executor pods for "spark-team-a"
+#---------------------------------------------------------------
+module "spark_team_a_irsa" {
+  count = var.enable_airflow_spark_example ? 1 : 0
+
+  source  = "aws-ia/eks-blueprints-addon/aws?ref=c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4"
+  version = "~> 1.0"
+
+  create_release = false
+
+  create_role   = true
+  role_name     = "${local.name}-${local.spark_team}"
+  create_policy = false
+  role_policies = {
+    spark_team_a_policy = aws_iam_policy.spark[0].arn
+  }
+
+  oidc_providers = {
+    this = {
+      provider_arn    = module.eks.oidc_provider_arn
+      namespace       = local.spark_team
+      service_account = local.spark_team
+    }
+  }
+}
+
+#---------------------------------------------------------------
+# Creates IAM policy for IRSA. Provides IAM permissions for Spark driver/executor pods
+#---------------------------------------------------------------
+resource "aws_iam_policy" "spark" {
+  count       = var.enable_airflow_spark_example ? 1 : 0
+  description = "IAM role policy for Spark Job execution"
+  name        = "${local.name}-spark-irsa"
+  policy      = data.aws_iam_policy_document.spark_operator.json
+}
+
+#---------------------------------------------------------------
+# Kubernetes Cluster role for service Account analytics-k8s-data-team-a
+#---------------------------------------------------------------
+resource "kubernetes_cluster_role" "spark_role" {
+  count = var.enable_airflow_spark_example ? 1 : 0
+  metadata {
+    name = "spark-cluster-role"
+  }
+
+  rule {
+    verbs      = ["get", "list", "watch"]
+    api_groups = [""]
+    resources  = ["namespaces", "nodes", "persistentvolumes"]
+  }
+
+  rule {
+    verbs      = ["list", "watch"]
+    api_groups = ["storage.k8s.io"]
+    resources  = ["storageclasses"]
+  }
+  rule {
+    verbs      = ["get", "list", "watch", "describe", "create", "edit", "delete", "deletecollection", "annotate", "patch", "label"]
+    api_groups = [""]
+    resources  = ["serviceaccounts", "services", "configmaps", "events", "pods", "pods/log", "persistentvolumeclaims"]
+  }
+
+  rule {
+    verbs      = ["create", "patch", "delete", "watch"]
+    api_groups = [""]
+    resources  = ["secrets"]
+  }
+
+  rule {
+    verbs      = ["get", "list", "watch", "describe", "create", "edit", "delete", "annotate", "patch", "label"]
+    api_groups = ["apps"]
+    resources  = ["statefulsets", "deployments"]
+  }
+
+  rule {
+    verbs      = ["get", "list", "watch", "describe", "create", "edit", "delete", "annotate", "patch", "label"]
+    api_groups = ["batch", "extensions"]
+    resources  = ["jobs"]
+  }
+
+  rule {
+    verbs      = ["get", "list", "watch", "describe", "create", "edit", "delete", "annotate", "patch", "label"]
+    api_groups = ["extensions"]
+    resources  = ["ingresses"]
+  }
+
+  rule {
+    verbs      = ["get", "list", "watch", "describe", "create", "edit", "delete", "deletecollection", "annotate", "patch", "label"]
+    api_groups = ["rbac.authorization.k8s.io"]
+    resources  = ["roles", "rolebindings"]
+  }
+
+  depends_on = [module.spark_team_a_irsa]
+}
+#---------------------------------------------------------------
+# Kubernetes Cluster Role binding role for service Account analytics-k8s-data-team-a
+#---------------------------------------------------------------
+resource "kubernetes_cluster_role_binding" "spark_role_binding" {
+  count = var.enable_airflow_spark_example ? 1 : 0
+  metadata {
+    name = "spark-cluster-role-bind"
+  }
+
+  subject {
+    kind      = "ServiceAccount"
+    name      = local.spark_team
+    namespace = local.spark_team
+  }
+
+  role_ref {
+    api_group = "rbac.authorization.k8s.io"
+    kind      = "ClusterRole"
+    name      = kubernetes_cluster_role.spark_role[0].id
+  }
+
+  depends_on = [module.spark_team_a_irsa]
+}
+
+#---------------------------------------------------------------
+# S3 log bucket for Spark logs
+#---------------------------------------------------------------
+module "spark_logs_s3_bucket" {
+  count   = var.enable_airflow_spark_example ? 1 : 0
+  source  = "terraform-aws-modules/s3-bucket/aws?ref=8a0b697adfbc673e6135c70246cff7f8052ad95a"
+  version = "~> 3.0"
+
+  bucket_prefix = "${local.name}-spark-logs-"
+
+  force_destroy = true
+
+  server_side_encryption_configuration = {
+    rule = {
+      apply_server_side_encryption_by_default = {
+        sse_algorithm = "AES256"
+      }
+    }
+  }
+
+  tags = local.tags
+}
+
+resource "aws_s3_object" "this" {
+  count        = var.enable_airflow_spark_example ? 1 : 0
+  bucket       = module.spark_logs_s3_bucket[0].s3_bucket_id
+  key          = "spark-event-logs/"
+  content_type = "application/x-directory"
+}
+
+#---------------------------------------------------------------
+# Kubernetes Cluster Role binding role for Airflow Worker with Spark Operator Role
+#---------------------------------------------------------------
+resource "kubernetes_cluster_role_binding" "airflow_worker_spark_role_binding" {
+  count = var.enable_airflow_spark_example ? 1 : 0
+  metadata {
+    name = "airflow-worker-spark-cluster-role-bind"
+  }
+
+  subject {
+    kind      = "ServiceAccount"
+    name      = kubernetes_service_account_v1.airflow_worker[0].metadata[0].name
+    namespace = kubernetes_namespace_v1.airflow[0].metadata[0].name
+  }
+
+  role_ref {
+    api_group = "rbac.authorization.k8s.io"
+    kind      = "ClusterRole"
+    name      = "spark-operator"
+  }
+
+  depends_on = [module.airflow_irsa_worker]
+}
+
+#---------------------------------------------------------------
+# Example IAM policy for Spark job execution
+#---------------------------------------------------------------
+data "aws_iam_policy_document" "spark_operator" {
+  statement {
+    sid       = ""
+    effect    = "Allow"
+    resources = ["arn:${data.aws_partition.current.partition}:s3:::*"]
+
+    actions = [
+      "s3:DeleteObject",
+      "s3:DeleteObjectVersion",
+      "s3:GetObject",
+      "s3:ListBucket",
+      "s3:PutObject",
+    ]
+  }
+
+  statement {
+    sid       = ""
+    effect    = "Allow"
+    resources = ["arn:${data.aws_partition.current.partition}:logs:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:log-group:*"]
+
+    actions = [
+      "logs:CreateLogGroup",
+      "logs:CreateLogStream",
+      "logs:DescribeLogGroups",
+      "logs:DescribeLogStreams",
+      "logs:PutLogEvents",
+    ]
+  }
+}
+
+
+#---------------------------------------------------------------
+# EKS Cluster
+#---------------------------------------------------------------
+module "eks" {
+  source  = "terraform-aws-modules/eks/aws?ref=a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0"
+  version = "~> 19.15"
+
+  cluster_name    = local.name
+  cluster_version = var.eks_cluster_version
+
+  cluster_endpoint_public_access  = false
+  cluster_endpoint_public_access_cidrs = []
+
+  cluster_enabled_log_types = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
+
+  vpc_id = module.vpc.vpc_id
+  subnet_ids = compact([for subnet_id, cidr_block in zipmap(module.vpc.private_subnets, module.vpc.private_subnets_cidr_blocks) : substr(cidr_block, 0, 4) == "100." ? subnet_id : null])
+
+  manage_aws_auth_configmap = true
+  aws_auth_roles = [
+    {
+      rolearn  = module.eks_blueprints_addons.karpenter.node_iam_role_arn
+      username = "system:node:{{EC2PrivateDNSName}}"
+      groups = [
+        "system:bootstrappers",
+        "system:nodes",
+      ]
+    }
+  ]
+
+  cluster_security_group_additional_rules = {
+    ingress_nodes_ephemeral_ports_tcp = {
+      description                = "Nodes on ephemeral ports"
+      protocol                   = "tcp"
+      from_port                  = 1025
+      to_port                    = 65535
+      type                       = "ingress"
+      source_node_security_group = true
+    }
+  }
+
+  node_security_group_additional_rules = {
+    ingress_self_all = {
+      description = "Node to node all ports/protocols"
+      protocol    = "-1"
+      from_port   = 0
+      to_port     = 0
+      type        = "ingress"
+      self        = true
+    }
+    ingress_cluster_to_node_all_traffic = {
+      description                   = "Cluster API to Nodegroup all traffic"
+      protocol                      = "-1"
+      from_port                     = 0
+      to_port                       = 0
+      type                          = "ingress"
+      source_cluster_security_group = true
+    }
+    egress_all = {
+      description = "Node all egress"
+      protocol    = "-1"
+      from_port   = 0
+      to_port     = 0
+      type        = "egress"
+      cidr_blocks = ["10.0.0.0/8", "100.64.0.0/10"]
+    }
+  }
+
+  eks_managed_node_group_defaults = {
+    iam_role_additional_policies = {
+      AmazonSSMManagedInstanceCore = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+    }
+  }
+
+  eks_managed_node_groups = {
+    core_node_group = {
+      name        = "core-node-group"
+      description = "EKS Core node group for hosting critical add-ons"
+      subnet_ids = compact([for subnet_id, cidr_block in zipmap(module.vpc.private_subnets, module.vpc.private_subnets_cidr_blocks) : substr(cidr_block, 0, 4) == "100." ? subnet_id : null])
+
+      min_size     = 4
+      max_size     = 8
+      desired_size = 4
+
+      instance_types = ["m5.xlarge"]
+
+      ebs_optimized = true
+      block_device_mappings = {
+        xvda = {
+          device_name = "/dev/xvda"
+          ebs = {
+            volume_size = 100
+            volume_type = "gp3"
+          }
+        }
+      }
+
+      labels = {
+        WorkerType    = "ON_DEMAND"
+        NodeGroupType = "core"
+      }
+
+      tags = merge(local.tags, {
+        Name                     = "core-node-grp",
+        "karpenter.sh/discovery" = local.name
+      })
+    }
+  }
+}
+
+
+provider "aws" {
+  region = local.region
+}
+
+provider "kubernetes" {
+  host                   = module.eks.cluster_endpoint
+  cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
+  token                  = data.aws_eks_cluster_auth.this.token
+}
+
+provider "helm" {
+  kubernetes {
+    host                   = module.eks.cluster_endpoint
+    cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
+    token                  = data.aws_eks_cluster_auth.this.token
+  }
+}
+
+provider "kubectl" {
+  apply_retry_count      = 30
+  host                   = module.eks.cluster_endpoint
+  cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
+  load_config_file       = false
+  token                  = data.aws_eks_cluster_auth.this.token
+}
+
+provider "aws" {
+  alias  = "ecr"
+  region = "us-east-1"
+}
+
+data "aws_availability_zones" "available" {
+  state = "available"
+}
+data "aws_region" "current" {}
+data "aws_caller_identity" "current" {}
+data "aws_partition" "current" {}
+
+data "aws_ecrpublic_authorization_token" "token" {
+  provider = aws.ecr
+}
+
+data "aws_eks_cluster_auth" "this" {
+  name = module.eks.cluster_name
+}
+
+#---------------------------------------------------------------
+# Local variables
+#---------------------------------------------------------------
+locals {
+  name   = var.name
+  region = var.region
+  azs    = slice(data.aws_availability_zones.available.names, 0, 2)
+
+  airflow_name                      = "airflow"
+  airflow_namespace                 = "airflow"
+  airflow_scheduler_service_account = "airflow-scheduler"
+  airflow_webserver_service_account = "airflow-webserver"
+  airflow_workers_service_account   = "airflow-worker"
+  airflow_webserver_secret_name     = "airflow-webserver-secret-key"
+  efs_storage_class                 = "efs-sc"
+  efs_pvc                           = "airflowdags-pvc"
+  tags = {
+    Blueprint  = local.name
+    GithubRepo = "github.com/awslabs/data-on-eks"
+  }
+}
+
+
+output "configure_kubectl" {
+  description = "Configure kubectl: make sure you're logged in with the correct AWS profile and run the following command to update your kubeconfig"
+  value       = "aws eks --region ${var.region} update-kubeconfig --name ${var.name}"
+}
+
+output "s3_bucket_id_airflow_logs" {
+  description = "Airflow logs S3 bucket ID"
+  value       = try(module.airflow_s3_bucket[0].s3_bucket_id, "")
+}
+
+output "s3_bucket_id_fluentbit_logs" {
+  description = "FluentBit logs S3 bucket ID"
+  value       = module.fluentbit_s3_bucket.s3_bucket_id
+}
+
+output "grafana_secret_name" {
+  description = "Grafana password secret name"
+  value       = aws_secretsmanager_secret.grafana.name
+}
+
+
+variable "name" {
+  description = "Name of the VPC and EKS Cluster"
+  default     = "self-managed-airflow"
+  type        = string
+}
+
+variable "region" {
+  description = "Region"
+  default     = "us-west-2"
+  type        = string
+}
+
+variable "eks_cluster_version" {
+  description = "EKS Cluster version"
+  default     = "1.29"
+  type        = string
+}
+
+variable "vpc_cidr" {
+  description = "VPC CIDR"
+  default     = "10.0.0.0/16"
+  type        = string
+}
+
+variable "public_subnets" {
+  description = "Public Subnets CIDRs. 62 IPs per Subnet/AZ"
+  default     = ["10.0.0.0/26", "10.0.0.64/26"]
+  type        = list(string)
+}
+
+variable "private_subnets" {
+  description = "Private Subnets CIDRs. 254 IPs per Subnet/AZ for Private NAT + NLB + Airflow + EC2 Jumphost etc."
+  default     = ["10.0.1.0/24", "10.0.2.0/24"]
+  type        = list(string)
+}
+
+variable "db_private_subnets" {
+  description = "Private Subnets CIDRs. 254 IPs per Subnet/AZ for Airflow DB."
+  default     = ["10.0.20.0/26", "10.0.21.0/26"]
+  type        = list(string)
+}
+
+variable "secondary_cidr_blocks" {
+  description = "Secondary CIDR blocks to be attached to VPC"
+  default     = ["100.64.0.0/16"]
+  type        = list(string)
+}
+
+variable "eks_data_plane_subnet_secondary_cidr" {
+  description = "Secondary CIDR blocks. 32766 IPs per Subnet per Subnet/AZ for EKS Node and Pods"
+  default     = ["100.64.0.0/17", "100.64.128.0/17"]
+  type        = list(string)
+}
+
+variable "enable_amazon_prometheus" {
+  description = "Enable AWS Managed Prometheus service"
+  type        = bool
+  default     = true
+}
+
+variable "enable_airflow" {
+  description = "Enable Apache Airflow"
+  type        = bool
+  default     = true
+}
+
+variable "enable_airflow_spark_example" {
+  description = "Enable Apache Airflow and Spark Operator example"
+  type        = bool
+  default     = false
+}
+
+
+terraform {
+  required_version = ">= 1.3.2"
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.95"
+    }
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = ">= 2.10"
+    }
+    helm = {
+      source  = "hashicorp/helm"
+      version = "~> 2.17"
+    }
+    kubectl = {
+      source  = "gavinbunney/kubectl"
+      version = ">= 1.14"
+    }
+    random = {
+      source  = "hashicorp/random"
+      version = ">= 3.5.1"
+    }
+  }
+}
+
+
+#---------------------------------------------------------------
+# Supporting Network Resources
+#---------------------------------------------------------------
+
+module "vpc" {
+  source  = "terraform-aws-modules/vpc/aws?ref=b1a2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0"
+  version = "~> 5.0"
+
+  name = local.name
+  cidr = var.vpc_cidr
+  azs  = local.azs
+
+  secondary_cidr_blocks = var.secondary_cidr_blocks
+
+  private_subnets = concat(var.private_subnets, var.eks_data_plane_subnet_secondary_cidr)
+
+  public_subnets = var.public_subnets
+
+  database_subnets                   = var.db_private_subnets
+  create_database_subnet_group       = true
+  create_database_subnet_route_table = true
+
+  enable_nat_gateway   = true
+  single_nat_gateway   = true
+  enable_dns_hostnames = true
+  enable_flow_log                      = true
+  create_flow_log_cloudwatch_iam_role  = true
+  create_flow_log_cloudwatch_log_group = true
+
+  public_subnet_tags = {
+    "kubernetes.io/role/elb" = 1
+  }
+
+  private_subnet_tags = {
+    "kubernetes.io/role/internal-elb" = 1
+    "karpenter.sh/discovery" = local.name
+  }
+
+  tags = local.tags
+}

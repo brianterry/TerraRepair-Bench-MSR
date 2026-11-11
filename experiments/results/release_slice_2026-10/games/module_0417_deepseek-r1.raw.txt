@@ -1,0 +1,107 @@
+
+
+module "this" {
+  source  = "git::https://github.com/cloudposse/terraform-null-label.git?ref=4d52515bea6f1e0c5f5fdb9e7e0de94e7c3bccbc"
+
+  enabled             = var.enabled
+  namespace           = var.namespace
+  tenant              = var.tenant
+  environment         = var.environment
+  stage               = var.stage
+  name                = var.name
+  delimiter           = var.delimiter
+  attributes          = var.attributes
+  tags                = var.tags
+  additional_tag_map  = var.additional_tag_map
+  label_order         = var.label_order
+  regex_replace_chars = var.regex_replace_chars
+  id_length_limit     = var.id_length_limit
+  label_key_case      = var.label_key_case
+  label_value_case    = var.label_value_case
+  descriptor_formats  = var.descriptor_formats
+  labels_as_tags      = var.labels_as_tags
+
+  context = var.context
+}
+
+module "iam_label" {
+  source  = "git::https://github.com/cloudposse/terraform-null-label.git?ref=4d52515bea6f1e0c5f5fdb9e7e0de94e7c3bccbc"
+
+  attributes = var.iam_attributes
+
+  context = module.this.context
+}
+
+module "security_group" {
+  source  = "git::https://github.com/cloudposse/terraform-aws-security-group.git?ref=5a367d7c7bce8b625e6d9860b6db0b3c3c6c0e0a"
+
+  security_group_description = "Security Group for Spacelift worker pool"
+  allow_all_egress           = true
+
+  vpc_id = local.vpc_id
+
+  context = module.this.context
+}
+
+module "autoscale_group" {
+  source  = "git::https://github.com/cloudposse/terraform-aws-ec2-autoscale-group.git?ref=0a5a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a"
+
+  image_id                    = var.spacelift_ami_id == null ? join("", data.aws_ami.spacelift.*.image_id) : var.spacelift_ami_id
+  instance_type               = var.instance_type
+  mixed_instances_policy      = var.mixed_instances_policy
+  subnet_ids                  = local.vpc_private_subnet_ids
+  health_check_type           = var.health_check_type
+  health_check_grace_period   = var.health_check_grace_period
+  user_data_base64            = join("", data.cloudinit_config.config.*.rendered)
+  associate_public_ip_address = false
+  block_device_mappings       = var.block_device_mappings
+  iam_instance_profile_name   = join("", aws_iam_instance_profile.default.*.name)
+  security_group_ids          = [module.security_group.id]
+  termination_policies        = var.termination_policies
+  wait_for_capacity_timeout   = var.wait_for_capacity_timeout
+  ebs_optimized               = var.ebs_optimized
+
+  min_size         = var.min_size
+  max_size         = var.max_size
+  desired_capacity = var.desired_capacity
+
+  autoscaling_policies_enabled           = true
+  default_cooldown                       = var.default_cooldown
+  scale_down_cooldown_seconds            = var.scale_down_cooldown_seconds
+  cpu_utilization_high_threshold_percent = var.cpu_utilization_high_threshold_percent
+  cpu_utilization_low_threshold_percent  = var.cpu_utilization_low_threshold_percent
+
+  instance_refresh = var.instance_refresh
+
+  context = module.this.context
+}
+
+module "account_map" {
+  source  = "git::https://github.com/cloudposse/terraform-stack-config.git//modules/remote-state?ref=0a5a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a"
+
+  component   = "account-map"
+  environment = coalesce(var.account_map_environment_name, module.this.environment)
+  stage       = var.account_map_stage_name
+  tenant      = coalesce(var.account_map_tenant_name, module.this.tenant)
+
+  context = module.this.context
+}
+
+module "ecr" {
+  source  = "git::https://github.com/cloudposse/terraform-stack-config.git//modules/remote-state?ref=0a5a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a"
+
+  component   = "ecr"
+  environment = coalesce(var.ecr_environment_name, module.this.environment)
+  stage       = var.ecr_stage_name
+  tenant      = coalesce(var.ecr_tenant_name, module.this.tenant)
+
+  context = module.this.context
+}
+
+module "vpc" {
+  source  = "git::https://github.com/cloudposse/terraform-stack-config.git//modules/remote-state?ref=0a5a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a"
+
+  component = "vpc"
+
+  context = module.this.context
+}

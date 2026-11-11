@@ -1,0 +1,406 @@
+{
+  "module_id": "module_0407",
+  "model_id": "grok-4-6",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0086",
+      "title": "S3 Access block should block public ACL",
+      "severity": "HIGH",
+      "resource_name": "module.kops_chart_repo",
+      "resource_type": "module",
+      "file_path": "git::https:/github.com/cloudposse/terraform-aws-kops-chart-repo.git?ref=tags/0.3.0/main.tf",
+      "start_line": 16,
+      "end_line": 34
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0087",
+      "title": "S3 Access block should block public policy",
+      "severity": "HIGH",
+      "resource_name": "module.kops_chart_repo",
+      "resource_type": "module",
+      "file_path": "git::https:/github.com/cloudposse/terraform-aws-kops-chart-repo.git?ref=tags/0.3.0/main.tf",
+      "start_line": 16,
+      "end_line": 34
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0089",
+      "title": "S3 Bucket Logging",
+      "severity": "LOW",
+      "resource_name": "module.kops_chart_repo",
+      "resource_type": "module",
+      "file_path": "git::https:/github.com/cloudposse/terraform-aws-kops-chart-repo.git?ref=tags/0.3.0/main.tf",
+      "start_line": 16,
+      "end_line": 34
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0091",
+      "title": "S3 Access Block should Ignore Public ACL",
+      "severity": "HIGH",
+      "resource_name": "module.kops_chart_repo",
+      "resource_type": "module",
+      "file_path": "git::https:/github.com/cloudposse/terraform-aws-kops-chart-repo.git?ref=tags/0.3.0/main.tf",
+      "start_line": 16,
+      "end_line": 34
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0093",
+      "title": "S3 Access block should restrict public bucket to limit access",
+      "severity": "HIGH",
+      "resource_name": "module.kops_chart_repo",
+      "resource_type": "module",
+      "file_path": "git::https:/github.com/cloudposse/terraform-aws-kops-chart-repo.git?ref=tags/0.3.0/main.tf",
+      "start_line": 16,
+      "end_line": 34
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0094",
+      "title": "S3 buckets should each define an aws_s3_bucket_public_access_block",
+      "severity": "LOW",
+      "resource_name": "module.kops_chart_repo",
+      "resource_type": "module",
+      "file_path": "git::https:/github.com/cloudposse/terraform-aws-kops-chart-repo.git?ref=tags/0.3.0/main.tf",
+      "start_line": 16,
+      "end_line": 34
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0132",
+      "title": "S3 encryption should use Customer Managed Keys",
+      "severity": "HIGH",
+      "resource_name": "module.kops_chart_repo",
+      "resource_type": "module",
+      "file_path": "git::https:/github.com/cloudposse/terraform-aws-kops-chart-repo.git?ref=tags/0.3.0/main.tf",
+      "start_line": 16,
+      "end_line": 34
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0037",
+      "title": "EFS Encryption has not been enabled",
+      "severity": "HIGH",
+      "resource_name": "module.kops_efs_provisioner",
+      "resource_type": "module",
+      "file_path": "git::https:/github.com/cloudposse/terraform-aws-kops-efs.git?ref=tags/0.6.0/git::https:/github.com/cloudposse/terraform-aws-efs.git?ref=tags/0.9.0/main.tf",
+      "start_line": 21,
+      "end_line": 21
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "module.kops_efs_provisioner",
+      "resource_type": "module",
+      "file_path": "git::https:/github.com/cloudposse/terraform-aws-kops-efs.git?ref=tags/0.6.0/git::https:/github.com/cloudposse/terraform-aws-efs.git?ref=tags/0.9.0/main.tf",
+      "start_line": 56,
+      "end_line": 56
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0124",
+      "title": "Missing description for security group rule.",
+      "severity": "LOW",
+      "resource_name": "module.kops_efs_provisioner",
+      "resource_type": "module",
+      "file_path": "git::https:/github.com/cloudposse/terraform-aws-kops-efs.git?ref=tags/0.6.0/git::https:/github.com/cloudposse/terraform-aws-efs.git?ref=tags/0.9.0/main.tf",
+      "start_line": 45,
+      "end_line": 50
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0086",
+      "title": "S3 Access block should block public ACL",
+      "severity": "HIGH",
+      "resource_name": "module.flow_logs",
+      "resource_type": "module",
+      "file_path": "git::https:/github.com/cloudposse/terraform-aws-vpc-flow-logs-s3-bucket.git?ref=tags/0.1.1/git::https:/github.com/cloudposse/terraform-aws-s3-log-storage.git?ref=tags/0.4.1/main.tf",
+      "start_line": 12,
+      "end_line": 67
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0087",
+      "title": "S3 Access block should block public policy",
+      "severity": "HIGH",
+      "resource_name": "module.flow_logs",
+      "resource_type": "module",
+      "file_path": "git::https:/github.com/cloudposse/terraform-aws-vpc-flow-logs-s3-bucket.git?ref=tags/0.1.1/git::https:/github.com/cloudposse/terraform-aws-s3-log-storage.git?ref=tags/0.4.1/main.tf",
+      "start_line": 12,
+      "end_line": 67
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0090",
+      "title": "S3 Data should be versioned",
+      "severity": "MEDIUM",
+      "resource_name": "module.flow_logs",
+      "resource_type": "module",
+      "file_path": "git::https:/github.com/cloudposse/terraform-aws-vpc-flow-logs-s3-bucket.git?ref=tags/0.1.1/git::https:/github.com/cloudposse/terraform-aws-s3-log-storage.git?ref=tags/0.4.1/main.tf",
+      "start_line": 21,
+      "end_line": 21
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0091",
+      "title": "S3 Access Block should Ignore Public ACL",
+      "severity": "HIGH",
+      "resource_name": "module.flow_logs",
+      "resource_type": "module",
+      "file_path": "git::https:/github.com/cloudposse/terraform-aws-vpc-flow-logs-s3-bucket.git?ref=tags/0.1.1/git::https:/github.com/cloudposse/terraform-aws-s3-log-storage.git?ref=tags/0.4.1/main.tf",
+      "start_line": 12,
+      "end_line": 67
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0093",
+      "title": "S3 Access block should restrict public bucket to limit access",
+      "severity": "HIGH",
+      "resource_name": "module.flow_logs",
+      "resource_type": "module",
+      "file_path": "git::https:/github.com/cloudposse/terraform-aws-vpc-flow-logs-s3-bucket.git?ref=tags/0.1.1/git::https:/github.com/cloudposse/terraform-aws-s3-log-storage.git?ref=tags/0.4.1/main.tf",
+      "start_line": 12,
+      "end_line": 67
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0094",
+      "title": "S3 buckets should each define an aws_s3_bucket_public_access_block",
+      "severity": "LOW",
+      "resource_name": "module.flow_logs",
+      "resource_type": "module",
+      "file_path": "git::https:/github.com/cloudposse/terraform-aws-vpc-flow-logs-s3-bucket.git?ref=tags/0.1.1/git::https:/github.com/cloudposse/terraform-aws-s3-log-storage.git?ref=tags/0.4.1/main.tf",
+      "start_line": 12,
+      "end_line": 67
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "kops_alb_ingress",
+      "resource_type": "kops_alb_ingress",
+      "file_path": "/alb-ingress.tf",
+      "start_line": 6,
+      "end_line": 19
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "autoscaler_role",
+      "resource_type": "autoscaler_role",
+      "file_path": "/autoscaler-role.tf",
+      "start_line": 19,
+      "end_line": 37
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_111",
+      "title": "Ensure IAM policies does not allow write access without constraints",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.autoscaler",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/autoscaler-role.tf",
+      "start_line": 1,
+      "end_line": 17
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_356",
+      "title": "Ensure no IAM policies documents allow \"*\" as a statement's resource for restrictable actions",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.autoscaler",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/autoscaler-role.tf",
+      "start_line": 1,
+      "end_line": 17
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "kops_chart_repo",
+      "resource_type": "kops_chart_repo",
+      "file_path": "/chart-repo.tf",
+      "start_line": 1,
+      "end_line": 14
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "kops_efs_provisioner",
+      "resource_type": "kops_efs_provisioner",
+      "file_path": "/efs-provisioner.tf",
+      "start_line": 49,
+      "end_line": 71
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "kops_external_dns",
+      "resource_type": "kops_external_dns",
+      "file_path": "/external-dns.tf",
+      "start_line": 1,
+      "end_line": 14
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "flow_logs",
+      "resource_type": "flow_logs",
+      "file_path": "/flow-logs.tf",
+      "start_line": 6,
+      "end_line": 18
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "kops_admin_label",
+      "resource_type": "kops_admin_label",
+      "file_path": "/iam-authenticator.tf",
+      "start_line": 68,
+      "end_line": 77
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "kops_readonly_label",
+      "resource_type": "kops_readonly_label",
+      "file_path": "/iam-authenticator.tf",
+      "start_line": 79,
+      "end_line": 88
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "iam_authenticator_config",
+      "resource_type": "iam_authenticator_config",
+      "file_path": "/iam-authenticator.tf",
+      "start_line": 142,
+      "end_line": 153
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "kops_metadata",
+      "resource_type": "kops_metadata",
+      "file_path": "/main.tf",
+      "start_line": 13,
+      "end_line": 17
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "kops_metadata_iam",
+      "resource_type": "kops_metadata_iam",
+      "file_path": "/main.tf",
+      "start_line": 19,
+      "end_line": 22
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_34",
+      "title": "AWS SSM Parameter should be Encrypted",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_ssm_parameter.kops_autoscaler_iam_role_name",
+      "resource_type": "aws_ssm_parameter",
+      "file_path": "/autoscaler-role.tf",
+      "start_line": 39,
+      "end_line": 45
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_34",
+      "title": "AWS SSM Parameter should be Encrypted",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_ssm_parameter.kops_efs_provisioner_role_name",
+      "resource_type": "aws_ssm_parameter",
+      "file_path": "/efs-provisioner.tf",
+      "start_line": 73,
+      "end_line": 80
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_34",
+      "title": "AWS SSM Parameter should be Encrypted",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_ssm_parameter.kops_efs_file_system_id",
+      "resource_type": "aws_ssm_parameter",
+      "file_path": "/efs-provisioner.tf",
+      "start_line": 82,
+      "end_line": 89
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_337",
+      "title": "Ensure SSM parameters are using KMS CMK",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_ssm_parameter.kops_autoscaler_iam_role_name",
+      "resource_type": "aws_ssm_parameter",
+      "file_path": "/main.tf",
+      "start_line": 140,
+      "end_line": 146
+    }
+  ],
+  "target_count": 32,
+  "resolved_count": 32,
+  "introduced_count": 1,
+  "unchanged_count": 0,
+  "repair_success_rate": 1.0,
+  "regression_rate": 0.03125,
+  "net_delta": 31,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 13,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 5,
+      "introduced": 1,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 1,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 13,
+      "introduced": 0,
+      "unchanged": 0
+    }
+  },
+  "repair_cost_usd": 0.20373,
+  "repair_tokens": 39337,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0407_grok-4-6.repaired.tf",
+  "raw_response_path": "module_0407_grok-4-6.raw.txt",
+  "repaired_code_sha256": "79a0f755d7fe23988a47c02389e191dc8fd32a7638f2b45698888d478b2adfa4"
+}

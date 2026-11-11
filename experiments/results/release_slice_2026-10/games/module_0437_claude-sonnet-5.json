@@ -1,0 +1,263 @@
+{
+  "module_id": "module_0437",
+  "model_id": "claude-sonnet-5",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0038",
+      "title": "EKS Clusters should have cluster control plane logging turned on",
+      "severity": "MEDIUM",
+      "resource_name": "module.eks_cluster",
+      "resource_type": "module",
+      "file_path": "cloudposse/eks-cluster/aws/main.tf",
+      "start_line": 55,
+      "end_line": 122
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0040",
+      "title": "EKS Clusters should have the public access disabled",
+      "severity": "CRITICAL",
+      "resource_name": "module.eks_cluster",
+      "resource_type": "module",
+      "file_path": "cloudposse/eks-cluster/aws/main.tf",
+      "start_line": 93,
+      "end_line": 93
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0041",
+      "title": "EKS cluster should not have open CIDR range for public access",
+      "severity": "CRITICAL",
+      "resource_name": "module.eks_cluster",
+      "resource_type": "module",
+      "file_path": "cloudposse/eks-cluster/aws/main.tf",
+      "start_line": 94,
+      "end_line": 94
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "vpc_cni_eks_iam_role",
+      "resource_type": "vpc_cni_eks_iam_role",
+      "file_path": "/addons.tf",
+      "start_line": 112,
+      "end_line": 126
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "coredns_fargate_profile",
+      "resource_type": "coredns_fargate_profile",
+      "file_path": "/addons.tf",
+      "start_line": 128,
+      "end_line": 147
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_ebs_csi_driver_eks_iam_role",
+      "resource_type": "aws_ebs_csi_driver_eks_iam_role",
+      "file_path": "/addons.tf",
+      "start_line": 161,
+      "end_line": 173
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_ebs_csi_driver_fargate_profile",
+      "resource_type": "aws_ebs_csi_driver_fargate_profile",
+      "file_path": "/addons.tf",
+      "start_line": 175,
+      "end_line": 195
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_efs_csi_driver_eks_iam_role",
+      "resource_type": "aws_efs_csi_driver_eks_iam_role",
+      "file_path": "/addons.tf",
+      "start_line": 207,
+      "end_line": 221
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_111",
+      "title": "Ensure IAM policies does not allow write access without constraints",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.vpc_cni_ipv6",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/addons.tf",
+      "start_line": 79,
+      "end_line": 103
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_356",
+      "title": "Ensure no IAM policies documents allow \"*\" as a statement's resource for restrictable actions",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy_document.vpc_cni_ipv6",
+      "resource_type": "aws_iam_policy_document",
+      "file_path": "/addons.tf",
+      "start_line": 79,
+      "end_line": 103
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "this",
+      "resource_type": "this",
+      "file_path": "/context.tf",
+      "start_line": 23,
+      "end_line": 46
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "fargate_pod_execution_role",
+      "resource_type": "fargate_pod_execution_role",
+      "file_path": "/fargate-profiles.tf",
+      "start_line": 10,
+      "end_line": 25
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "fargate_profile",
+      "resource_type": "fargate_profile",
+      "file_path": "/fargate-profiles.tf",
+      "start_line": 31,
+      "end_line": 49
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "karpenter_label",
+      "resource_type": "karpenter_label",
+      "file_path": "/karpenter.tf",
+      "start_line": 26,
+      "end_line": 34
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_394",
+      "title": "Ensure aws_availability_zones data source pins zone identity so its result set does not silently expand when AWS adds an Availability Zone",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_availability_zones.default",
+      "resource_type": "aws_availability_zones",
+      "file_path": "/main.tf",
+      "start_line": 138,
+      "end_line": 153
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "utils",
+      "resource_type": "utils",
+      "file_path": "/main.tf",
+      "start_line": 155,
+      "end_line": 158
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "eks_cluster",
+      "resource_type": "eks_cluster",
+      "file_path": "/main.tf",
+      "start_line": 160,
+      "end_line": 200
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "vpc",
+      "resource_type": "vpc",
+      "file_path": "/remote-state.tf",
+      "start_line": 15,
+      "end_line": 33
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_TF_1",
+      "title": "Ensure Terraform module sources use a commit hash",
+      "severity": "UNKNOWN",
+      "resource_name": "vpc_ingress",
+      "resource_type": "vpc_ingress",
+      "file_path": "/remote-state.tf",
+      "start_line": 35,
+      "end_line": 47
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_394",
+      "title": "Ensure aws_availability_zones data source pins zone identity so its result set does not silently expand when AWS adds an Availability Zone",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_availability_zones.default",
+      "resource_type": "aws_availability_zones",
+      "file_path": "/main.tf",
+      "start_line": 1033,
+      "end_line": 1050
+    }
+  ],
+  "target_count": 19,
+  "resolved_count": 18,
+  "introduced_count": 0,
+  "unchanged_count": 1,
+  "repair_success_rate": 0.9473684210526315,
+  "regression_rate": 0.0,
+  "net_delta": 18,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 4,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 1,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 13,
+      "introduced": 0,
+      "unchanged": 1
+    }
+  },
+  "repair_cost_usd": 0.434222,
+  "repair_tokens": 68715,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0437_claude-sonnet-5.repaired.tf",
+  "raw_response_path": "module_0437_claude-sonnet-5.raw.txt",
+  "repaired_code_sha256": "fbde70f63d3330d3f9a382f36fa49775afea1eda1b7d2dc73af199dfb7ac94ba"
+}

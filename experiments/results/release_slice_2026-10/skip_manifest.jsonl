@@ -1,0 +1,152 @@
+{"kind": "candidate", "id": "module_0003", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:38:09.078757+00:00"}
+{"kind": "candidate", "id": "module_0004", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:38:12.116669+00:00"}
+{"kind": "candidate", "id": "module_0005", "reason": "finding count 1 outside [3,50]", "ts": "2026-10-28T14:38:16.177690+00:00"}
+{"kind": "candidate", "id": "module_0006", "reason": "finding count 1 outside [3,50]", "ts": "2026-10-28T14:38:20.529202+00:00"}
+{"kind": "candidate", "id": "module_0009", "reason": "finding count 1 outside [3,50]", "ts": "2026-10-28T14:38:31.073976+00:00"}
+{"kind": "candidate", "id": "module_0011", "reason": "finding count 2 outside [3,50]", "ts": "2026-10-28T14:38:35.883391+00:00"}
+{"kind": "candidate", "id": "module_0012", "reason": "finding count 1 outside [3,50]", "ts": "2026-10-28T14:38:38.881022+00:00"}
+{"kind": "candidate", "id": "module_0028", "reason": "finding count 1 outside [3,50]", "ts": "2026-10-28T14:39:39.713553+00:00"}
+{"kind": "candidate", "id": "module_0031", "reason": "finding count 1 outside [3,50]", "ts": "2026-10-28T14:39:53.520454+00:00"}
+{"kind": "candidate", "id": "module_0034", "reason": "finding count 1 outside [3,50]", "ts": "2026-10-28T14:40:06.164539+00:00"}
+{"kind": "candidate", "id": "module_0064", "reason": "finding count 56 outside [3,50]", "ts": "2026-10-28T14:45:43.601154+00:00"}
+{"kind": "candidate", "id": "module_0070", "reason": "finding count 77 outside [3,50]", "ts": "2026-10-28T14:45:58.386495+00:00"}
+{"kind": "candidate", "id": "module_0071", "reason": "finding count 57 outside [3,50]", "ts": "2026-10-28T14:46:01.256843+00:00"}
+{"kind": "candidate", "id": "module_0072", "reason": "finding count 71 outside [3,50]", "ts": "2026-10-28T14:46:04.382056+00:00"}
+{"kind": "candidate", "id": "module_0074", "reason": "finding count 51 outside [3,50]", "ts": "2026-10-28T14:46:10.833882+00:00"}
+{"kind": "candidate", "id": "module_0086", "reason": "finding count 58 outside [3,50]", "ts": "2026-10-28T14:46:47.238507+00:00"}
+{"kind": "candidate", "id": "module_0090", "reason": "finding count 53 outside [3,50]", "ts": "2026-10-28T14:46:58.870401+00:00"}
+{"kind": "candidate", "id": "module_0092", "reason": "finding count 53 outside [3,50]", "ts": "2026-10-28T14:47:04.966091+00:00"}
+{"kind": "candidate", "id": "module_0097", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:47:23.638562+00:00"}
+{"kind": "candidate", "id": "module_0102", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:47:37.270122+00:00"}
+{"kind": "candidate", "id": "module_0117", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:48:22.306026+00:00"}
+{"kind": "candidate", "id": "module_0120", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:48:31.931120+00:00"}
+{"kind": "candidate", "id": "module_0121", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:48:34.716919+00:00"}
+{"kind": "candidate", "id": "module_0126", "reason": "finding count 99 outside [3,50]", "ts": "2026-10-28T14:48:49.428826+00:00"}
+{"kind": "candidate", "id": "module_0128", "reason": "finding count 99 outside [3,50]", "ts": "2026-10-28T14:48:55.891583+00:00"}
+{"kind": "candidate", "id": "module_0132", "reason": "finding count 2 outside [3,50]", "ts": "2026-10-28T14:49:07.808632+00:00"}
+{"kind": "candidate", "id": "module_0133", "reason": "finding count 2 outside [3,50]", "ts": "2026-10-28T14:49:10.790980+00:00"}
+{"kind": "candidate", "id": "module_0135", "reason": "finding count 87 outside [3,50]", "ts": "2026-10-28T14:49:16.487830+00:00"}
+{"kind": "candidate", "id": "module_0142", "reason": "finding count 2 outside [3,50]", "ts": "2026-10-28T14:49:38.216000+00:00"}
+{"kind": "candidate", "id": "module_0144", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:49:44.278906+00:00"}
+{"kind": "candidate", "id": "module_0146", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:49:50.405735+00:00"}
+{"kind": "candidate", "id": "module_0147", "reason": "finding count 1 outside [3,50]", "ts": "2026-10-28T14:49:53.412467+00:00"}
+{"kind": "candidate", "id": "module_0149", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:49:59.272185+00:00"}
+{"kind": "candidate", "id": "module_0151", "reason": "finding count 322 outside [3,50]", "ts": "2026-10-28T14:50:05.981115+00:00"}
+{"kind": "candidate", "id": "module_0153", "reason": "finding count 2 outside [3,50]", "ts": "2026-10-28T14:50:13.575299+00:00"}
+{"kind": "candidate", "id": "module_0157", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:50:26.506503+00:00"}
+{"kind": "candidate", "id": "module_0158", "reason": "finding count 2 outside [3,50]", "ts": "2026-10-28T14:50:29.533644+00:00"}
+{"kind": "candidate", "id": "module_0159", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:50:32.246967+00:00"}
+{"kind": "candidate", "id": "module_0181", "reason": "finding count 2 outside [3,50]", "ts": "2026-10-28T14:51:37.382311+00:00"}
+{"kind": "candidate", "id": "module_0183", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:51:43.060129+00:00"}
+{"kind": "candidate", "id": "module_0194", "reason": "finding count 2 outside [3,50]", "ts": "2026-10-28T14:51:45.976629+00:00"}
+{"kind": "candidate", "id": "module_0205", "reason": "finding count 70 outside [3,50]", "ts": "2026-10-28T14:52:18.061991+00:00"}
+{"kind": "candidate", "id": "module_0208", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:52:26.083937+00:00"}
+{"kind": "candidate", "id": "module_0210", "reason": "finding count 72 outside [3,50]", "ts": "2026-10-28T14:52:35.055434+00:00"}
+{"kind": "candidate", "id": "module_0213", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:52:44.765902+00:00"}
+{"kind": "candidate", "id": "module_0220", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:53:11.025573+00:00"}
+{"kind": "candidate", "id": "module_0221", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:53:13.945112+00:00"}
+{"kind": "candidate", "id": "module_0222", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:53:17.155066+00:00"}
+{"kind": "candidate", "id": "module_0223", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:53:20.700078+00:00"}
+{"kind": "candidate", "id": "module_0225", "reason": "finding count 2 outside [3,50]", "ts": "2026-10-28T14:53:33.523788+00:00"}
+{"kind": "candidate", "id": "module_0227", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:53:40.044076+00:00"}
+{"kind": "candidate", "id": "module_0228", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:53:43.167311+00:00"}
+{"kind": "candidate", "id": "module_0229", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:53:45.998150+00:00"}
+{"kind": "candidate", "id": "module_0230", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:53:48.702109+00:00"}
+{"kind": "candidate", "id": "module_0231", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:53:51.444413+00:00"}
+{"kind": "candidate", "id": "module_0232", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:53:54.200543+00:00"}
+{"kind": "candidate", "id": "module_0233", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:53:57.058782+00:00"}
+{"kind": "candidate", "id": "module_0234", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:53:59.933422+00:00"}
+{"kind": "candidate", "id": "module_0235", "reason": "finding count 1 outside [3,50]", "ts": "2026-10-28T14:54:02.965567+00:00"}
+{"kind": "candidate", "id": "module_0238", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:54:18.415320+00:00"}
+{"kind": "candidate", "id": "module_0239", "reason": "finding count 1 outside [3,50]", "ts": "2026-10-28T14:54:21.322827+00:00"}
+{"kind": "candidate", "id": "module_0241", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:54:51.129236+00:00"}
+{"kind": "candidate", "id": "module_0242", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:54:54.395292+00:00"}
+{"kind": "candidate", "id": "module_0244", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:54:57.366307+00:00"}
+{"kind": "candidate", "id": "module_0245", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:55:00.369984+00:00"}
+{"kind": "candidate", "id": "module_0247", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:55:03.382170+00:00"}
+{"kind": "candidate", "id": "module_0250", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:55:06.476597+00:00"}
+{"kind": "candidate", "id": "module_0251", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:55:09.588516+00:00"}
+{"kind": "candidate", "id": "module_0252", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:55:12.464155+00:00"}
+{"kind": "candidate", "id": "module_0253", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:55:15.203023+00:00"}
+{"kind": "candidate", "id": "module_0254", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:55:17.935090+00:00"}
+{"kind": "candidate", "id": "module_0256", "reason": "finding count 1 outside [3,50]", "ts": "2026-10-28T14:55:20.882343+00:00"}
+{"kind": "candidate", "id": "module_0258", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:55:23.722710+00:00"}
+{"kind": "candidate", "id": "module_0259", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:55:27.025630+00:00"}
+{"kind": "candidate", "id": "module_0260", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:55:29.927972+00:00"}
+{"kind": "candidate", "id": "module_0262", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:55:32.726640+00:00"}
+{"kind": "candidate", "id": "module_0263", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:55:35.611538+00:00"}
+{"kind": "candidate", "id": "module_0264", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:55:38.490055+00:00"}
+{"kind": "candidate", "id": "module_0266", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:55:41.414448+00:00"}
+{"kind": "candidate", "id": "module_0268", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:55:44.270232+00:00"}
+{"kind": "candidate", "id": "module_0269", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:55:47.094289+00:00"}
+{"kind": "candidate", "id": "module_0270", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:55:49.928221+00:00"}
+{"kind": "candidate", "id": "module_0271", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:55:52.844964+00:00"}
+{"kind": "candidate", "id": "module_0272", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:55:55.789140+00:00"}
+{"kind": "candidate", "id": "module_0273", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:55:58.946193+00:00"}
+{"kind": "candidate", "id": "module_0274", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:56:01.823297+00:00"}
+{"kind": "candidate", "id": "module_0275", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:56:04.736533+00:00"}
+{"kind": "candidate", "id": "module_0276", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:56:07.879724+00:00"}
+{"kind": "candidate", "id": "module_0277", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:56:11.209940+00:00"}
+{"kind": "candidate", "id": "module_0278", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:56:14.471524+00:00"}
+{"kind": "candidate", "id": "module_0279", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:56:17.552455+00:00"}
+{"kind": "candidate", "id": "module_0280", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:56:20.605927+00:00"}
+{"kind": "candidate", "id": "module_0281", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:56:23.715021+00:00"}
+{"kind": "candidate", "id": "module_0282", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:56:26.721323+00:00"}
+{"kind": "candidate", "id": "module_0284", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:56:29.515102+00:00"}
+{"kind": "candidate", "id": "module_0285", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:56:32.359434+00:00"}
+{"kind": "candidate", "id": "module_0286", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:56:35.287644+00:00"}
+{"kind": "candidate", "id": "module_0287", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:56:38.117694+00:00"}
+{"kind": "candidate", "id": "module_0288", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:56:41.289111+00:00"}
+{"kind": "candidate", "id": "module_0289", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:56:44.528640+00:00"}
+{"kind": "candidate", "id": "module_0290", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:56:47.671546+00:00"}
+{"kind": "candidate", "id": "module_0291", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:56:50.765149+00:00"}
+{"kind": "candidate", "id": "module_0293", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:56:53.486991+00:00"}
+{"kind": "candidate", "id": "module_0294", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:56:56.235640+00:00"}
+{"kind": "candidate", "id": "module_0295", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:56:59.154962+00:00"}
+{"kind": "candidate", "id": "module_0296", "reason": "finding count 1 outside [3,50]", "ts": "2026-10-28T14:57:01.950632+00:00"}
+{"kind": "candidate", "id": "module_0297", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:57:04.775580+00:00"}
+{"kind": "candidate", "id": "module_0301", "reason": "finding count 2 outside [3,50]", "ts": "2026-10-28T14:57:13.781223+00:00"}
+{"kind": "candidate", "id": "module_0302", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:57:16.537322+00:00"}
+{"kind": "candidate", "id": "module_0305", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:57:19.469376+00:00"}
+{"kind": "candidate", "id": "module_0306", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:57:22.147980+00:00"}
+{"kind": "candidate", "id": "module_0307", "reason": "finding count 1 outside [3,50]", "ts": "2026-10-28T14:57:25.068033+00:00"}
+{"kind": "candidate", "id": "module_0308", "reason": "finding count 1 outside [3,50]", "ts": "2026-10-28T14:57:28.110146+00:00"}
+{"kind": "candidate", "id": "module_0309", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:57:31.121252+00:00"}
+{"kind": "candidate", "id": "module_0310", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:57:34.930498+00:00"}
+{"kind": "candidate", "id": "module_0311", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:57:37.962055+00:00"}
+{"kind": "candidate", "id": "module_0312", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:57:40.738776+00:00"}
+{"kind": "candidate", "id": "module_0313", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:57:43.498283+00:00"}
+{"kind": "candidate", "id": "module_0314", "reason": "finding count 1 outside [3,50]", "ts": "2026-10-28T14:57:46.899080+00:00"}
+{"kind": "candidate", "id": "module_0324", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:58:10.357496+00:00"}
+{"kind": "candidate", "id": "module_0325", "reason": "finding count 1 outside [3,50]", "ts": "2026-10-28T14:58:13.475012+00:00"}
+{"kind": "candidate", "id": "module_0331", "reason": "finding count 1 outside [3,50]", "ts": "2026-10-28T14:58:30.101008+00:00"}
+{"kind": "candidate", "id": "module_0335", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:58:48.773810+00:00"}
+{"kind": "candidate", "id": "module_0342", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:59:10.910684+00:00"}
+{"kind": "candidate", "id": "module_0344", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T14:59:16.723432+00:00"}
+{"kind": "candidate", "id": "module_0349", "reason": "finding count 126 outside [3,50]", "ts": "2026-10-28T14:59:31.099383+00:00"}
+{"kind": "candidate", "id": "module_0377", "reason": "finding count 54 outside [3,50]", "ts": "2026-10-28T15:03:39.118914+00:00"}
+{"kind": "candidate", "id": "module_0386", "reason": "finding count 1 outside [3,50]", "ts": "2026-10-28T15:03:57.581925+00:00"}
+{"kind": "candidate", "id": "module_0387", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T15:04:00.579398+00:00"}
+{"kind": "candidate", "id": "module_0399", "reason": "finding count 0 outside [3,50]", "ts": "2026-10-28T15:04:41.835752+00:00"}
+{"kind": "candidate", "id": "module_0402", "reason": "finding count 156 outside [3,50]", "ts": "2026-10-28T15:04:57.915919+00:00"}
+{"kind": "candidate", "id": "module_0409", "reason": "finding count 2 outside [3,50]", "ts": "2026-10-28T15:06:06.267428+00:00"}
+{"kind": "candidate", "id": "module_0416", "reason": "finding count 2 outside [3,50]", "ts": "2026-10-28T15:06:37.505924+00:00"}
+{"kind": "candidate", "id": "module_0422", "reason": "finding count 2 outside [3,50]", "ts": "2026-10-28T15:07:14.179301+00:00"}
+{"kind": "candidate", "id": "module_0424", "reason": "finding count 2 outside [3,50]", "ts": "2026-10-28T15:07:20.093352+00:00"}
+{"kind": "candidate", "id": "module_0431", "reason": "finding count 1 outside [3,50]", "ts": "2026-10-28T15:07:46.035051+00:00"}
+{"kind": "candidate", "id": "module_0434", "reason": "finding count 2 outside [3,50]", "ts": "2026-10-28T15:07:59.117783+00:00"}
+{"kind": "candidate", "id": "module_0442", "reason": "finding count 2 outside [3,50]", "ts": "2026-10-28T15:08:35.068617+00:00"}
+{"kind": "game", "id": "module_0095_claude-sonnet-5", "reason": "throttled: claude-sonnet-5: throttled after 6 attempts (ServiceUnavailableException)", "ts": "2026-10-28T17:42:38.991080+00:00"}
+{"kind": "game", "id": "module_0098_claude-sonnet-5", "reason": "throttled: claude-sonnet-5: throttled after 6 attempts (ServiceUnavailableException)", "ts": "2026-10-28T17:43:45.340211+00:00"}
+{"kind": "game", "id": "module_0104_claude-sonnet-5", "reason": "throttled: claude-sonnet-5: throttled after 6 attempts (ServiceUnavailableException)", "ts": "2026-10-28T17:50:54.035749+00:00"}
+{"kind": "game", "id": "module_0105_claude-sonnet-5", "reason": "throttled: claude-sonnet-5: throttled after 6 attempts (ServiceUnavailableException)", "ts": "2026-10-28T17:51:36.638796+00:00"}
+{"kind": "game", "id": "module_0224_grok-4-6", "reason": "invoke timeout: invocation exceeded 900s wall-clock cap", "ts": "2026-10-28T21:15:39.132125+00:00"}
+{"kind": "size_note", "id": "module_0240_nova-lite", "reason": "size-driven HCL failure: 187322 chars (~46830 tok) > max_tokens 40000; scored 0/0/0 to model per option A", "ts": "2026-10-28T21:29:15.256383+00:00"}
+{"kind": "size_note", "id": "module_0240_qwen3-32b", "reason": "size-driven HCL failure: 187322 chars (~46830 tok) > max_tokens 40000; scored 0/0/0 to model per option A", "ts": "2026-10-28T21:29:36.870223+00:00"}
+{"kind": "size_note", "id": "module_0240_claude-sonnet-4-5", "reason": "size-driven HCL failure: 187322 chars (~46830 tok) > max_tokens 40000; scored 0/0/0 to model per option A", "ts": "2026-10-28T21:33:22.562784+00:00"}
+{"kind": "size_note", "id": "module_0240_deepseek-v3-2", "reason": "size-driven HCL failure: 187322 chars (~46830 tok) > max_tokens 40000; scored 0/0/0 to model per option A", "ts": "2026-10-28T21:34:41.672574+00:00"}
+{"kind": "size_note", "id": "module_0240_claude-sonnet-5", "reason": "size-driven HCL failure: 187322 chars (~46830 tok) > max_tokens 40000; scored 0/0/0 to model per option A", "ts": "2026-10-28T21:35:05.973873+00:00"}
+{"kind": "size_note", "id": "module_0240_deepseek-r1", "reason": "size-driven HCL failure: 187322 chars (~46830 tok) > max_tokens 40000; scored 0/0/0 to model per option A", "ts": "2026-10-28T21:35:42.377040+00:00"}
+{"kind": "size_note", "id": "module_0240_kimi-k2-5", "reason": "size-driven HCL failure: 187322 chars (~46830 tok) > max_tokens 40000; scored 0/0/0 to model per option A", "ts": "2026-10-28T21:37:23.401843+00:00"}
+{"kind": "size_note", "id": "module_0240_grok-4-6", "reason": "size-driven HCL failure: 187322 chars (~46830 tok) > max_tokens 40000; scored 0/0/0 to model per option A", "ts": "2026-10-28T21:39:00.018520+00:00"}
+{"kind": "game", "id": "module_0316_grok-4-6", "reason": "invoke timeout: invocation exceeded 900s wall-clock cap", "ts": "2026-10-28T22:02:33.217412+00:00"}

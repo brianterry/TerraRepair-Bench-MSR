@@ -1,0 +1,53 @@
+{
+  "findings_count": 8,
+  "findings": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_260",
+      "title": "",
+      "resource_name": "aws_security_group.elb"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_23",
+      "title": "",
+      "resource_name": "aws_security_group.elb"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_127",
+      "title": "",
+      "resource_name": "aws_elb.blue"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_92",
+      "title": "",
+      "resource_name": "aws_elb.blue"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_376",
+      "title": "",
+      "resource_name": "aws_elb.blue"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_127",
+      "title": "",
+      "resource_name": "aws_elb.green"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_92",
+      "title": "",
+      "resource_name": "aws_elb.green"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_376",
+      "title": "",
+      "resource_name": "aws_elb.green"
+    }
+  ]
+}

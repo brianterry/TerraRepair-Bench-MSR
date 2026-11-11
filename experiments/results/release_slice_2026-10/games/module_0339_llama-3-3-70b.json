@@ -1,0 +1,131 @@
+{
+  "module_id": "module_0339",
+  "model_id": "llama-3-3-70b",
+  "findings_before": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_37",
+      "title": "Ensure CodeCommit associates an approval rule",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_codecommit_repository.global_customizations",
+      "resource_type": "aws_codecommit_repository",
+      "file_path": "/codecommit.tf",
+      "start_line": 4,
+      "end_line": 9
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_37",
+      "title": "Ensure CodeCommit associates an approval rule",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_codecommit_repository.account_customizations",
+      "resource_type": "aws_codecommit_repository",
+      "file_path": "/codecommit.tf",
+      "start_line": 11,
+      "end_line": 16
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_37",
+      "title": "Ensure CodeCommit associates an approval rule",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_codecommit_repository.account_request",
+      "resource_type": "aws_codecommit_repository",
+      "file_path": "/codecommit.tf",
+      "start_line": 18,
+      "end_line": 23
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_37",
+      "title": "Ensure CodeCommit associates an approval rule",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_codecommit_repository.account_provisioning_customizations",
+      "resource_type": "aws_codecommit_repository",
+      "file_path": "/codecommit.tf",
+      "start_line": 25,
+      "end_line": 30
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_37",
+      "title": "Ensure CodeCommit associates an approval rule",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_codecommit_repository.global_customizations",
+      "resource_type": "aws_codecommit_repository",
+      "file_path": "/main.tf",
+      "start_line": 131,
+      "end_line": 151
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_37",
+      "title": "Ensure CodeCommit associates an approval rule",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_codecommit_repository.account_customizations",
+      "resource_type": "aws_codecommit_repository",
+      "file_path": "/main.tf",
+      "start_line": 153,
+      "end_line": 173
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_37",
+      "title": "Ensure CodeCommit associates an approval rule",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_codecommit_repository.account_request",
+      "resource_type": "aws_codecommit_repository",
+      "file_path": "/main.tf",
+      "start_line": 175,
+      "end_line": 195
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_37",
+      "title": "Ensure CodeCommit associates an approval rule",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_codecommit_repository.account_provisioning_customizations",
+      "resource_type": "aws_codecommit_repository",
+      "file_path": "/main.tf",
+      "start_line": 197,
+      "end_line": 217
+    }
+  ],
+  "target_count": 4,
+  "resolved_count": 0,
+  "introduced_count": 0,
+  "unchanged_count": 4,
+  "repair_success_rate": 0.0,
+  "regression_rate": 0.0,
+  "net_delta": 0,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 4
+    }
+  },
+  "repair_cost_usd": 0.0111984,
+  "repair_tokens": 13998,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0339_llama-3-3-70b.repaired.tf",
+  "raw_response_path": "module_0339_llama-3-3-70b.raw.txt",
+  "repaired_code_sha256": "6c610655e52551061a3584fdf62b757652cbc9c0176df285e2bce67544a7ca79"
+}

@@ -1,0 +1,1004 @@
+terraform {
+  required_version = ">= 0.10.7"
+}
+
+provider "archive" {
+  version = "1.0.0"
+}
+
+provider "external" {
+  version = "1.0.0"
+}
+
+provider "ignition" {
+  version = "1.0.0"
+}
+
+provider "local" {
+  version = "1.0.0"
+}
+
+provider "null" {
+  version = "1.0.0"
+}
+
+provider "random" {
+  version = "1.0.0"
+}
+
+provider "template" {
+  version = "1.0.0"
+}
+
+provider "tls" {
+  version = "1.0.1"
+}
+
+locals {
+  tectonic_ca_count = "${length(var.tectonic_custom_ca_pem_list) + 3}"
+  tectonic_http_proxy_enabled = "${length(var.tectonic_http_proxy_address) > 0}"
+}
+
+variable "tectonic_config_version" {
+  default = "1.0"
+}
+
+variable "tectonic_image_re" {
+  type    = "string"
+  default = "/^([^/]+/[^/]+/[^/]+):(.*)$/"
+}
+
+variable "tectonic_container_images" {
+  type        = "map"
+  default = {
+    addon_resizer                = "gcr.io/google_containers/addon-resizer:2.1"
+    awscli                       = "quay.io/coreos/awscli:025a357f05242fdad6a81e8a6b520098aa65a600"
+    gcloudsdk                    = "google/cloud-sdk:178.0.0-alpine"
+    bootkube                     = "quay.io/coreos/bootkube:v0.8.1"
+    calico                       = "quay.io/calico/node:v2.6.1"
+    calico_cni                   = "quay.io/calico/cni:v1.11.0"
+    console                      = "quay.io/coreos/tectonic-console:v6.0.5"
+    error_server                 = "quay.io/coreos/tectonic-error-server:1.1"
+    etcd                         = "quay.io/coreos/etcd:v3.1.8"
+    etcd_operator                = "quay.io/coreos/etcd-operator:v0.5.0"
+    flannel                      = "quay.io/coreos/flannel:v0.8.0-amd64"
+    flannel_cni                  = "quay.io/coreos/flannel-cni:v0.2.0"
+    heapster                     = "gcr.io/google_containers/heapster:v1.4.1"
+    hyperkube                    = "quay.io/coreos/hyperkube:v1.9.6_coreos.0"
+    identity                     = "quay.io/coreos/dex:v2.8.1"
+    ingress_controller           = "quay.io/kubernetes-ingress-controller/nginx-ingress-controller:0.9.0-beta.17"
+    kenc                         = "quay.io/coreos/kenc:0.0.2"
+    kubedns                      = "gcr.io/google_containers/k8s-dns-kube-dns-amd64:1.14.8"
+    kubednsmasq                  = "gcr.io/google_containers/k8s-dns-dnsmasq-nanny-amd64:1.14.8"
+    kubedns_sidecar              = "gcr.io/google_containers/k8s-dns-sidecar-amd64:1.14.8"
+    kube_version                 = "quay.io/coreos/kube-version:0.1.0"
+    kube_version_operator        = "quay.io/coreos/kube-version-operator:v1.9.6-kvo.4"
+    node_agent                   = "quay.io/coreos/node-agent:cd69b4a0f65b0d3a3b30edfce3bb184fd2a22c26"
+    pod_checkpointer             = "quay.io/coreos/pod-checkpointer:e22cc0e3714378de92f45326474874eb602ca0ac"
+    stats_emitter                = "quay.io/coreos/tectonic-stats:6e882361357fe4b773adbf279cddf48cb50164c1"
+    stats_extender               = "quay.io/coreos/tectonic-stats-extender:487b3da4e175da96dabfb44fba65cdb8b823db2e"
+    tectonic_channel_operator    = "quay.io/coreos/tectonic-channel-operator:0.6.4"
+    tectonic_etcd_operator       = "quay.io/coreos/tectonic-etcd-operator:v0.0.2"
+    tectonic_prometheus_operator = "quay.io/coreos/tectonic-prometheus-operator:v1.9.5"
+    tectonic_cluo_operator       = "quay.io/coreos/tectonic-cluo-operator:v0.3.2"
+    tectonic_torcx               = "quay.io/coreos/tectonic-torcx:v0.2.0"
+    tectonic_alm_operator        = "quay.io/coreos/tectonic-alm-operator:v0.4.0"
+  }
+}
+
+variable "tectonic_container_base_images" {
+  type        = "map"
+  default = {
+    tectonic_monitoring_auth = "quay.io/coreos/tectonic-monitoring-auth"
+    config_reload            = "quay.io/coreos/configmap-reload"
+    addon_resizer            = "quay.io/coreos/addon-resizer"
+    kube_state_metrics       = "quay.io/coreos/kube-state-metrics"
+    grafana                  = "quay.io/coreos/monitoring-grafana"
+    grafana_watcher          = "quay.io/coreos/grafana-watcher"
+    prometheus_operator      = "quay.io/coreos/prometheus-operator"
+    prometheus_config_reload = "quay.io/coreos/prometheus-config-reloader"
+    prometheus               = "quay.io/prometheus/prometheus"
+    alertmanager             = "quay.io/prometheus/alertmanager"
+    node_exporter            = "quay.io/prometheus/node-exporter"
+    kube_rbac_proxy          = "quay.io/coreos/kube-rbac-proxy"
+  }
+}
+
+variable "tectonic_versions" {
+  type        = "map"
+  default = {
+    etcd          = "3.1.8"
+    kubernetes    = "1.9.6+tectonic.1"
+    monitoring    = "1.9.5"
+    tectonic      = "1.9.6-tectonic.1"
+    tectonic-etcd = "0.0.1"
+    cluo          = "0.3.2"
+    alm           = "0.4.0"
+  }
+}
+
+variable "tectonic_service_cidr" {
+  type    = "string"
+  default = "10.3.0.0/16"
+}
+
+variable "tectonic_cluster_cidr" {
+  type    = "string"
+  default = "10.2.0.0/16"
+}
+
+variable "tectonic_master_count" {
+  type    = "string"
+  default = "1"
+}
+
+variable "tectonic_worker_count" {
+  type    = "string"
+  default = "3"
+}
+
+variable "tectonic_etcd_count" {
+  type    = "string"
+  default = "0"
+}
+
+variable "tectonic_etcd_servers" {
+  type    = "list"
+  default = []
+}
+
+variable "tectonic_etcd_tls_enabled" {
+  default = true
+}
+
+variable "tectonic_etcd_ca_cert_path" {
+  type    = "string"
+  default = "/dev/null"
+}
+
+variable "tectonic_etcd_client_cert_path" {
+  type    = "string"
+  default = "/dev/null"
+}
+
+variable "tectonic_etcd_client_key_path" {
+  type    = "string"
+  default = "/dev/null"
+}
+
+variable "tectonic_base_domain" {
+  type = "string"
+}
+
+variable "tectonic_cluster_name" {
+  type = "string"
+}
+
+variable "tectonic_pull_secret_path" {
+  type    = "string"
+  default = ""
+}
+
+variable "tectonic_license_path" {
+  type    = "string"
+  default = ""
+}
+
+variable "tectonic_container_linux_channel" {
+  type    = "string"
+  default = "stable"
+}
+
+variable "tectonic_container_linux_version" {
+  type    = "string"
+  default = "latest"
+}
+
+variable "tectonic_update_server" {
+  type        = "string"
+  default     = "https://tectonic.update.core-os.net"
+}
+
+variable "tectonic_update_channel" {
+  type        = "string"
+  default     = "tectonic-1.8-production"
+}
+
+variable "tectonic_update_app_id" {
+  type        = "string"
+  default     = "6bc7b986-4654-4a0f-94b3-84ce6feb1db4"
+}
+
+variable "tectonic_admin_email" {
+  type = "string"
+}
+
+variable "tectonic_admin_password" {
+  type = "string"
+}
+
+variable "tectonic_ca_cert" {
+  type    = "string"
+  default = ""
+}
+
+variable "tectonic_ca_key" {
+  type    = "string"
+  default = ""
+}
+
+variable "tectonic_ca_key_alg" {
+  type    = "string"
+  default = "RSA"
+}
+
+variable "tectonic_tls_validity_period" {
+  type    = "string"
+  default = "26280"
+}
+
+variable "tectonic_vanilla_k8s" {
+  default = false
+}
+
+variable "tectonic_stats_url" {
+  type        = "string"
+  default     = "https://stats-collector.tectonic.com"
+}
+
+variable "tectonic_ddns_server" {
+  type    = "string"
+  default = ""
+}
+
+variable "tectonic_ddns_key_name" {
+  type    = "string"
+  default = ""
+}
+
+variable "tectonic_ddns_key_algorithm" {
+  type    = "string"
+  default = ""
+}
+
+variable "tectonic_ddns_key_secret" {
+  type    = "string"
+  default = ""
+}
+
+variable "tectonic_networking" {
+  default = "flannel"
+}
+
+variable "tectonic_self_hosted_etcd" {
+  default = ""
+}
+
+variable "tectonic_etcd_backup_size" {
+  type        = "string"
+  default     = "512"
+}
+
+variable "tectonic_etcd_backup_storage_class" {
+  type        = "string"
+  default     = ""
+}
+
+variable "tectonic_bootstrap_upgrade_cl" {
+  type        = "string"
+  default     = "true"
+}
+
+variable "tectonic_kubelet_debug_config" {
+  type    = "string"
+  default = ""
+}
+
+variable "tectonic_custom_ca_pem_list" {
+  type    = "list"
+  default = []
+}
+
+variable "tectonic_iscsi_enabled" {
+  type        = "string"
+  default     = "false"
+}
+
+variable "tectonic_http_proxy_address" {
+  type    = "string"
+  default = ""
+}
+
+variable "tectonic_https_proxy_address" {
+  type    = "string"
+  default = ""
+}
+
+variable "tectonic_no_proxy" {
+  type    = "list"
+  default = []
+}
+
+variable "tectonic_ntp_servers" {
+  type    = "list"
+  default = []
+}
+
+variable "tectonic_nfs_config_file" {
+  type    = "string"
+  default = ""
+}
+
+locals {
+  _tectonic_nfs_config_file = "${var.tectonic_nfs_config_file != "" ? var.tectonic_nfs_config_file : "/dev/null"}"
+}
+
+variable "tectonic_proxy_exclusive_units" {
+  default = false
+}
+
+provider "aws" {
+  region  = "${var.tectonic_aws_region}"
+  profile = "${var.tectonic_aws_profile}"
+  version = "1.7.0"
+}
+
+data "aws_availability_zones" "azs" {
+  state = "available"
+  filter {
+    name   = "opt-in-status"
+    values = ["opt-in-not-required"]
+  }
+}
+
+module "container_linux" {
+  source = "../../modules/container_linux"
+  release_channel = "${var.tectonic_container_linux_channel}"
+  release_version = "${var.tectonic_container_linux_version}"
+}
+
+module "vpc" {
+  source = "../../modules/aws/vpc"
+  base_domain              = "${var.tectonic_base_domain}"
+  cidr_block               = "${var.tectonic_aws_vpc_cidr_block}"
+  cluster_id               = "${module.tectonic.cluster_id}"
+  cluster_name             = "${var.tectonic_cluster_name}"
+  custom_dns_name          = "${var.tectonic_dns_name}"
+  enable_etcd_sg           = "${var.tectonic_self_hosted_etcd == "" && length(compact(var.tectonic_etcd_servers)) == 0 ? 1 : 0}"
+  external_master_subnets  = "${compact(var.tectonic_aws_external_master_subnet_ids)}"
+  external_vpc_id          = "${var.tectonic_aws_external_vpc_id}"
+  external_worker_subnets  = "${compact(var.tectonic_aws_external_worker_subnet_ids)}"
+  extra_tags               = "${var.tectonic_aws_extra_tags}"
+  private_master_endpoints = "${var.tectonic_aws_private_endpoints}"
+  public_master_endpoints  = "${var.tectonic_aws_public_endpoints}"
+  master_az_count = "${length(keys(var.tectonic_aws_master_custom_subnets)) > 0 ? "${length(keys(var.tectonic_aws_master_custom_subnets))}" : "${length(data.aws_availability_zones.azs.names)}"}"
+  worker_az_count = "${length(keys(var.tectonic_aws_worker_custom_subnets)) > 0 ? "${length(keys(var.tectonic_aws_worker_custom_subnets))}" : "${length(data.aws_availability_zones.azs.names)}"}"
+  master_subnets = "${concat(values(var.tectonic_aws_master_custom_subnets),list("padding"))}"
+  worker_subnets = "${concat(values(var.tectonic_aws_worker_custom_subnets),list("padding"))}"
+  master_azs = "${ split("|", "${length(keys(var.tectonic_aws_master_custom_subnets))}" > 0 ?
+    join("|", keys(var.tectonic_aws_master_custom_subnets)) :
+    join("|", data.aws_availability_zones.azs.names)
+  )}"
+  worker_azs = "${ split("|", "${length(keys(var.tectonic_aws_worker_custom_subnets))}" > 0 ?
+    join("|", keys(var.tectonic_aws_worker_custom_subnets)) :
+    join("|", data.aws_availability_zones.azs.names)
+  )}"
+}
+
+module "etcd" {
+  source = "../../modules/aws/etcd"
+  base_domain                = "${var.tectonic_base_domain}"
+  cluster_id                 = "${module.tectonic.cluster_id}"
+  cluster_name               = "${var.tectonic_cluster_name}"
+  container_image            = "${var.tectonic_container_images["etcd"]}"
+  container_linux_channel    = "${var.tectonic_container_linux_channel}"
+  container_linux_version    = "${module.container_linux.version}"
+  ec2_ami                    = "${var.tectonic_aws_ec2_ami_override}"
+  ec2_type                   = "${var.tectonic_aws_etcd_ec2_type}"
+  etcd_iam_role              = "${var.tectonic_aws_etcd_iam_role_name}"
+  external_endpoints         = "${compact(var.tectonic_etcd_servers)}"
+  extra_tags                 = "${var.tectonic_aws_extra_tags}"
+  ign_etcd_crt_id_list       = "${module.ignition_masters.etcd_crt_id_list}"
+  ign_etcd_dropin_id_list    = "${module.ignition_masters.etcd_dropin_id_list}"
+  ign_ntp_dropin_id          = "${length(var.tectonic_ntp_servers) > 0 ? module.ignition_masters.ntp_dropin_id : ""}"
+  ign_profile_env_id         = "${module.ignition_masters.profile_env_id}"
+  ign_systemd_default_env_id = "${module.ignition_masters.systemd_default_env_id}"
+  instance_count             = "${length(data.template_file.etcd_hostname_list.*.id)}"
+  root_volume_iops           = "${var.tectonic_aws_etcd_root_volume_iops}"
+  root_volume_size           = "${var.tectonic_aws_etcd_root_volume_size}"
+  root_volume_type           = "${var.tectonic_aws_etcd_root_volume_type}"
+  s3_bucket                  = "${aws_s3_bucket.tectonic.bucket}"
+  sg_ids                     = "${concat(var.tectonic_aws_etcd_extra_sg_ids, list(module.vpc.etcd_sg_id))}"
+  ssh_key                    = "${var.tectonic_aws_ssh_key}"
+  subnets                    = "${module.vpc.worker_subnet_ids}"
+  tls_enabled                = "${var.tectonic_etcd_tls_enabled}"
+}
+
+module "ignition_masters" {
+  source = "../../modules/ignition"
+  assets_location           = "${aws_s3_bucket_object.tectonic_assets.bucket}/${aws_s3_bucket_object.tectonic_assets.key}"
+  base_domain               = "${var.tectonic_base_domain}"
+  bootstrap_upgrade_cl      = "${var.tectonic_bootstrap_upgrade_cl}"
+  cloud_provider            = "aws"
+  cluster_name              = "${var.tectonic_cluster_name}"
+  container_images          = "${var.tectonic_container_images}"
+  custom_ca_cert_pem_list   = "${var.tectonic_custom_ca_pem_list}"
+  etcd_advertise_name_list  = "${data.template_file.etcd_hostname_list.*.rendered}"
+  etcd_ca_cert_pem          = "${module.etcd_certs.etcd_ca_crt_pem}"
+  etcd_client_crt_pem       = "${module.etcd_certs.etcd_client_crt_pem}"
+  etcd_client_key_pem       = "${module.etcd_certs.etcd_client_key_pem}"
+  etcd_count                = "${length(data.template_file.etcd_hostname_list.*.id)}"
+  etcd_initial_cluster_list = "${data.template_file.etcd_hostname_list.*.rendered}"
+  etcd_peer_crt_pem         = "${module.etcd_certs.etcd_peer_crt_pem}"
+  etcd_peer_key_pem         = "${module.etcd_certs.etcd_peer_key_pem}"
+  etcd_server_crt_pem       = "${module.etcd_certs.etcd_server_crt_pem}"
+  etcd_server_key_pem       = "${module.etcd_certs.etcd_server_key_pem}"
+  etcd_tls_enabled          = "${var.tectonic_etcd_tls_enabled}"
+  http_proxy                = "${var.tectonic_http_proxy_address}"
+  http_proxy_enabled        = "${local.tectonic_http_proxy_enabled}"
+  https_proxy               = "${var.tectonic_https_proxy_address}"
+  image_re                  = "${var.tectonic_image_re}"
+  ingress_ca_cert_pem       = "${module.ingress_certs.ca_cert_pem}"
+  iscsi_enabled             = "${var.tectonic_iscsi_enabled}"
+  kube_ca_cert_pem          = "${module.kube_certs.ca_cert_pem}"
+  kube_dns_service_ip       = "${module.bootkube.kube_dns_service_ip}"
+  kubeconfig_fetch_cmd      = "/opt/s3-puller.sh ${aws_s3_bucket_object.kubeconfig.bucket}/${aws_s3_bucket_object.kubeconfig.key} /etc/kubernetes/kubeconfig"
+  kubelet_cni_bin_dir       = "${var.tectonic_networking == "calico" || var.tectonic_networking == "canal" ? "/var/lib/cni/bin" : "" }"
+  kubelet_debug_config      = "${var.tectonic_kubelet_debug_config}"
+  kubelet_node_label        = "node-role.kubernetes.io/master"
+  kubelet_node_taints       = "node-role.kubernetes.io/master=:NoSchedule"
+  nfs_config_file           = "${local._tectonic_nfs_config_file}"
+  no_proxy                  = "${var.tectonic_no_proxy}"
+  ntp_servers               = "${var.tectonic_ntp_servers}"
+  proxy_exclusive_units     = "${var.tectonic_proxy_exclusive_units}"
+  tectonic_vanilla_k8s      = "${var.tectonic_vanilla_k8s}"
+}
+
+module "masters" {
+  source = "../../modules/aws/master-asg"
+  assets_s3_location                   = "${aws_s3_bucket_object.tectonic_assets.bucket}/${aws_s3_bucket_object.tectonic_assets.key}"
+  autoscaling_group_extra_tags         = "${var.tectonic_autoscaling_group_extra_tags}"
+  aws_lbs                              = "${module.vpc.aws_lbs}"
+  base_domain                          = "${var.tectonic_base_domain}"
+  cluster_id                           = "${module.tectonic.cluster_id}"
+  cluster_name                         = "${var.tectonic_cluster_name}"
+  container_images                     = "${var.tectonic_container_images}"
+  container_linux_channel              = "${var.tectonic_container_linux_channel}"
+  container_linux_version              = "${module.container_linux.version}"
+  ec2_ami                              = "${var.tectonic_aws_ec2_ami_override}"
+  ec2_type                             = "${var.tectonic_aws_master_ec2_type}"
+  extra_tags                           = "${var.tectonic_aws_extra_tags}"
+  ign_bootkube_path_unit_id            = "${module.bootkube.systemd_path_unit_id}"
+  ign_bootkube_service_id              = "${module.bootkube.systemd_service_id}"
+  ign_ca_cert_id_list                  = "${module.ignition_masters.ca_cert_id_list}"
+  ign_docker_dropin_id                 = "${module.ignition_masters.docker_dropin_id}"
+  ign_init_assets_service_id           = "${module.ignition_masters.init_assets_service_id}"
+  ign_installer_kubelet_env_id         = "${module.ignition_masters.installer_kubelet_env_id}"
+  ign_installer_runtime_mappings_id    = "${module.ignition_masters.installer_runtime_mappings_id}"
+  ign_iscsi_service_id                 = "${module.ignition_masters.iscsi_service_id}"
+  ign_k8s_node_bootstrap_service_id    = "${module.ignition_masters.k8s_node_bootstrap_service_id}"
+  ign_kubelet_service_id               = "${module.ignition_masters.kubelet_service_id}"
+  ign_locksmithd_service_id            = "${module.ignition_masters.locksmithd_service_id}"
+  ign_max_user_watches_id              = "${module.ignition_masters.max_user_watches_id}"
+  ign_nfs_config_id                    = "${var.tectonic_nfs_config_file != "" ? module.ignition_masters.nfs_config_id : ""}"
+  ign_ntp_dropin_id                    = "${length(var.tectonic_ntp_servers) > 0 ? module.ignition_masters.ntp_dropin_id : ""}"
+  ign_profile_env_id                   = "${module.ignition_masters.profile_env_id}"
+  ign_rm_assets_path_unit_id           = "${module.ignition_masters.rm_assets_path_unit_id}"
+  ign_rm_assets_service_id             = "${module.ignition_masters.rm_assets_service_id}"
+  ign_s3_puller_id                     = "${module.ignition_masters.s3_puller_id}"
+  ign_systemd_default_env_id           = "${module.ignition_masters.systemd_default_env_id}"
+  ign_tectonic_path_unit_id            = "${var.tectonic_vanilla_k8s ? "" : module.tectonic.systemd_path_unit_id}"
+  ign_tectonic_service_id              = "${module.tectonic.systemd_service_id}"
+  ign_update_ca_certificates_dropin_id = "${module.ignition_masters.update_ca_certificates_dropin_id}"
+  instance_count                       = "${var.tectonic_master_count}"
+  master_iam_role                      = "${var.tectonic_aws_master_iam_role_name}"
+  master_sg_ids                        = "${concat(var.tectonic_aws_master_extra_sg_ids, list(module.vpc.master_sg_id))}"
+  private_endpoints                    = "${var.tectonic_aws_private_endpoints}"
+  public_endpoints                     = "${var.tectonic_aws_public_endpoints}"
+  root_volume_iops                     = "${var.tectonic_aws_master_root_volume_iops}"
+  root_volume_size                     = "${var.tectonic_aws_master_root_volume_size}"
+  root_volume_type                     = "${var.tectonic_aws_master_root_volume_type}"
+  s3_bucket                            = "${aws_s3_bucket.tectonic.bucket}"
+  ssh_key                              = "${var.tectonic_aws_ssh_key}"
+  subnet_ids                           = "${module.vpc.master_subnet_ids}"
+}
+
+module "ignition_workers" {
+  source = "../../modules/ignition"
+  bootstrap_upgrade_cl    = "${var.tectonic_bootstrap_upgrade_cl}"
+  cloud_provider          = "aws"
+  container_images        = "${var.tectonic_container_images}"
+  custom_ca_cert_pem_list = "${var.tectonic_custom_ca_pem_list}"
+  etcd_ca_cert_pem        = "${module.etcd_certs.etcd_ca_crt_pem}"
+  http_proxy              = "${var.tectonic_http_proxy_address}"
+  http_proxy_enabled      = "${local.tectonic_http_proxy_enabled}"
+  https_proxy             = "${var.tectonic_https_proxy_address}"
+  image_re                = "${var.tectonic_image_re}"
+  ingress_ca_cert_pem     = "${module.ingress_certs.ca_cert_pem}"
+  iscsi_enabled           = "${var.tectonic_iscsi_enabled}"
+  kube_ca_cert_pem        = "${module.kube_certs.ca_cert_pem}"
+  kube_dns_service_ip     = "${module.bootkube.kube_dns_service_ip}"
+  kubeconfig_fetch_cmd    = "/opt/s3-puller.sh ${aws_s3_bucket_object.kubeconfig.bucket}/${aws_s3_bucket_object.kubeconfig.key} /etc/kubernetes/kubeconfig"
+  kubelet_cni_bin_dir     = "${var.tectonic_networking == "calico" || var.tectonic_networking == "canal" ? "/var/lib/cni/bin" : "" }"
+  kubelet_debug_config    = "${var.tectonic_kubelet_debug_config}"
+  kubelet_node_label      = "node-role.kubernetes.io/node"
+  kubelet_node_taints     = ""
+  nfs_config_file         = "${local._tectonic_nfs_config_file}"
+  no_proxy                = "${var.tectonic_no_proxy}"
+  ntp_servers             = "${var.tectonic_ntp_servers}"
+  proxy_exclusive_units   = "${var.tectonic_proxy_exclusive_units}"
+  tectonic_vanilla_k8s    = "${var.tectonic_vanilla_k8s}"
+}
+
+module "workers" {
+  source = "../../modules/aws/worker-asg"
+  autoscaling_group_extra_tags         = "${var.tectonic_autoscaling_group_extra_tags}"
+  cluster_id                           = "${module.tectonic.cluster_id}"
+  cluster_name                         = "${var.tectonic_cluster_name}"
+  container_linux_channel              = "${var.tectonic_container_linux_channel}"
+  container_linux_version              = "${module.container_linux.version}"
+  ec2_ami                              = "${var.tectonic_aws_ec2_ami_override}"
+  ec2_type                             = "${var.tectonic_aws_worker_ec2_type}"
+  extra_tags                           = "${var.tectonic_aws_extra_tags}"
+  ign_ca_cert_id_list                  = "${module.ignition_masters.ca_cert_id_list}"
+  ign_docker_dropin_id                 = "${module.ignition_workers.docker_dropin_id}"
+  ign_installer_kubelet_env_id         = "${module.ignition_workers.installer_kubelet_env_id}"
+  ign_installer_runtime_mappings_id    = "${module.ignition_workers.installer_runtime_mappings_id}"
+  ign_iscsi_service_id                 = "${module.ignition_workers.iscsi_service_id}"
+  ign_k8s_node_bootstrap_service_id    = "${module.ignition_workers.k8s_node_bootstrap_service_id}"
+  ign_kubelet_service_id               = "${module.ignition_workers.kubelet_service_id}"
+  ign_locksmithd_service_id            = "${module.ignition_workers.locksmithd_service_id}"
+  ign_max_user_watches_id              = "${module.ignition_workers.max_user_watches_id}"
+  ign_nfs_config_id                    = "${var.tectonic_nfs_config_file != "" ? module.ignition_workers.nfs_config_id : ""}"
+  ign_ntp_dropin_id                    = "${length(var.tectonic_ntp_servers) > 0 ? module.ignition_workers.ntp_dropin_id : ""}"
+  ign_profile_env_id                   = "${module.ignition_workers.profile_env_id}"
+  ign_s3_puller_id                     = "${module.ignition_workers.s3_puller_id}"
+  ign_systemd_default_env_id           = "${module.ignition_workers.systemd_default_env_id}"
+  ign_update_ca_certificates_dropin_id = "${module.ignition_workers.update_ca_certificates_dropin_id}"
+  instance_count                       = "${var.tectonic_worker_count}"
+  load_balancers                       = "${var.tectonic_aws_worker_load_balancers}"
+  root_volume_iops                     = "${var.tectonic_aws_worker_root_volume_iops}"
+  root_volume_size                     = "${var.tectonic_aws_worker_root_volume_size}"
+  root_volume_type                     = "${var.tectonic_aws_worker_root_volume_type}"
+  s3_bucket                            = "${aws_s3_bucket.tectonic.bucket}"
+  sg_ids                               = "${concat(var.tectonic_aws_worker_extra_sg_ids, list(module.vpc.worker_sg_id))}"
+  ssh_key                              = "${var.tectonic_aws_ssh_key}"
+  subnet_ids                           = "${module.vpc.worker_subnet_ids}"
+  vpc_id                               = "${module.vpc.vpc_id}"
+  worker_iam_role                      = "${var.tectonic_aws_worker_iam_role_name}"
+}
+
+module "dns" {
+  source = "../../modules/dns/route53"
+  api_external_elb_dns_name      = "${module.vpc.aws_api_external_dns_name}"
+  api_external_elb_zone_id       = "${module.vpc.aws_elb_api_external_zone_id}"
+  api_internal_elb_dns_name      = "${module.vpc.aws_api_internal_dns_name}"
+  api_internal_elb_zone_id       = "${module.vpc.aws_elb_api_internal_zone_id}"
+  api_ip_addresses               = "${module.vpc.aws_lbs}"
+  base_domain                    = "${var.tectonic_base_domain}"
+  cluster_id                     = "${module.tectonic.cluster_id}"
+  cluster_name                   = "${var.tectonic_cluster_name}"
+  console_elb_dns_name           = "${module.vpc.aws_console_dns_name}"
+  console_elb_zone_id            = "${module.vpc.aws_elb_console_zone_id}"
+  custom_dns_name                = "${var.tectonic_dns_name}"
+  elb_alias_enabled              = true
+  etcd_count                     = "${length(data.template_file.etcd_hostname_list.*.id)}"
+  etcd_ip_addresses              = "${module.etcd.ip_addresses}"
+  external_endpoints             = ["${compact(var.tectonic_etcd_servers)}"]
+  master_count                   = "${var.tectonic_master_count}"
+  tectonic_external_private_zone = "${var.tectonic_aws_external_private_zone}"
+  tectonic_external_vpc_id       = "${module.vpc.vpc_id}"
+  tectonic_extra_tags            = "${var.tectonic_aws_extra_tags}"
+  tectonic_private_endpoints     = "${var.tectonic_aws_private_endpoints}"
+  tectonic_public_endpoints      = "${var.tectonic_aws_public_endpoints}"
+  tectonic_vanilla_k8s           = "${var.tectonic_vanilla_k8s}"
+}
+
+data "aws_region" "current" {
+  current = true
+}
+
+resource "aws_s3_bucket" "tectonic" {
+  bucket = "${var.tectonic_aws_assets_s3_bucket_name == "" ? format("%s%s-%s", "a", var.tectonic_cluster_name, md5(format("%s-%s", data.aws_region.current.name , var.tectonic_base_domain))) : var.tectonic_aws_assets_s3_bucket_name }"
+  acl    = "private"
+
+  versioning {
+    enabled = true
+  }
+
+  logging {
+    target_bucket = aws_s3_bucket.tectonic.bucket
+    target_prefix = "logs/"
+  }
+
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm = "aws:kms"
+      }
+    }
+  }
+
+  lifecycle_rule {
+    id      = "auto-archive"
+    enabled = true
+
+    transition {
+      days          = 30
+      storage_class = "GLACIER"
+    }
+  }
+
+  tags = "${merge(map(
+      "Name", "${var.tectonic_cluster_name}-tectonic",
+      "KubernetesCluster", "${var.tectonic_cluster_name}",
+      "tectonicClusterID", "${module.tectonic.cluster_id}"
+    ), var.tectonic_aws_extra_tags)}"
+
+  lifecycle {
+    ignore_changes = ["*"]
+  }
+}
+
+resource "aws_s3_bucket_public_access_block" "tectonic" {
+  bucket = aws_s3_bucket.tectonic.id
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
+resource "aws_s3_bucket_object" "tectonic_assets" {
+  bucket = "${aws_s3_bucket.tectonic.bucket}"
+  key    = "assets.zip"
+  source = "${data.archive_file.assets.output_path}"
+  acl    = "private"
+  server_side_encryption = "aws:kms"
+
+  tags = "${merge(map(
+      "Name", "${var.tectonic_cluster_name}-tectonic-assets",
+      "KubernetesCluster", "${var.tectonic_cluster_name}",
+      "tectonicClusterID", "${module.tectonic.cluster_id}"
+    ), var.tectonic_aws_extra_tags)}"
+
+  lifecycle {
+    ignore_changes = ["*"]
+  }
+}
+
+resource "aws_s3_bucket_object" "kubeconfig" {
+  bucket  = "${aws_s3_bucket.tectonic.bucket}"
+  key     = "kubeconfig"
+  content = "${module.bootkube.kubeconfig}"
+  acl     = "private"
+  server_side_encryption = "aws:kms"
+
+  tags = "${merge(map(
+      "Name", "${var.tectonic_cluster_name}-kubeconfig",
+      "KubernetesCluster", "${var.tectonic_cluster_name}",
+      "tectonicClusterID", "${module.tectonic.cluster_id}"
+    ), var.tectonic_aws_extra_tags)}"
+}
+
+data "template_file" "etcd_hostname_list" {
+  count    = "${var.tectonic_self_hosted_etcd != "" ? 0 : var.tectonic_etcd_count > 0 ? var.tectonic_etcd_count : length(data.aws_availability_zones.azs.names) == 5 ? 5 : 3}"
+  template = "${var.tectonic_cluster_name}-etcd-${count.index}.${var.tectonic_base_domain}"
+}
+
+module "bootkube" {
+  source         = "../../modules/bootkube"
+  cloud_provider = "aws"
+  cluster_name = "${var.tectonic_cluster_name}"
+  kube_apiserver_url = "https://${var.tectonic_aws_private_endpoints ? module.dns.api_internal_fqdn : module.dns.api_external_fqdn}:443"
+  oidc_issuer_url    = "https://${var.tectonic_aws_private_endpoints ? module.dns.ingress_internal_fqdn : module.dns.ingress_external_fqdn}/identity"
+  container_images = "${var.tectonic_container_images}"
+  versions         = "${var.tectonic_versions}"
+  self_hosted_etcd = "${var.tectonic_self_hosted_etcd}"
+  service_cidr = "${var.tectonic_service_cidr}"
+  cluster_cidr = "${var.tectonic_cluster_cidr}"
+  advertise_address = "0.0.0.0"
+  anonymous_auth    = "false"
+  oidc_username_claim = "email"
+  oidc_groups_claim   = "groups"
+  oidc_client_id      = "tectonic-kubectl"
+  oidc_ca_cert        = "${module.ingress_certs.ca_cert_pem}"
+  apiserver_cert_pem   = "${module.kube_certs.apiserver_cert_pem}"
+  apiserver_key_pem    = "${module.kube_certs.apiserver_key_pem}"
+  etcd_ca_cert_pem     = "${module.etcd_certs.etcd_ca_crt_pem}"
+  etcd_client_cert_pem = "${module.etcd_certs.etcd_client_crt_pem}"
+  etcd_client_key_pem  = "${module.etcd_certs.etcd_client_key_pem}"
+  etcd_peer_cert_pem   = "${module.etcd_certs.etcd_peer_crt_pem}"
+  etcd_peer_key_pem    = "${module.etcd_certs.etcd_peer_key_pem}"
+  etcd_server_cert_pem = "${module.etcd_certs.etcd_server_crt_pem}"
+  etcd_server_key_pem  = "${module.etcd_certs.etcd_server_key_pem}"
+  kube_ca_cert_pem     = "${module.kube_certs.ca_cert_pem}"
+  kubelet_cert_pem     = "${module.kube_certs.kubelet_cert_pem}"
+  kubelet_key_pem      = "${module.kube_certs.kubelet_key_pem}"
+  etcd_backup_size          = "${var.tectonic_etcd_backup_size}"
+  etcd_backup_storage_class = "${var.tectonic_etcd_backup_storage_class}"
+  etcd_endpoints            = "${module.dns.etcd_endpoints}"
+  master_count              = "${var.tectonic_master_count}"
+  node_monitor_grace_period = "2m"
+  pod_eviction_timeout = "220s"
+  cloud_config_path = ""
+}
+
+module "tectonic" {
+  source   = "../../modules/tectonic"
+  platform = "aws"
+  cluster_name = "${var.tectonic_cluster_name}"
+  base_address       = "${var.tectonic_aws_private_endpoints ? module.dns.ingress_internal_fqdn : module.dns.ingress_external_fqdn}"
+  kube_apiserver_url = "https://${var.tectonic_aws_private_endpoints ? module.dns.api_internal_fqdn : module.dns.api_external_fqdn}:443"
+  service_cidr       = "${var.tectonic_service_cidr}"
+  container_images      = "${var.tectonic_container_images}"
+  container_base_images = "${var.tectonic_container_base_images}"
+  versions              = "${var.tectonic_versions}"
+  license_path     = "${var.tectonic_vanilla_k8s ? "/dev/null" : pathexpand(var.tectonic_license_path)}"
+  pull_secret_path = "${var.tectonic_vanilla_k8s ? "/dev/null" : pathexpand(var.tectonic_pull_secret_path)}"
+  admin_email    = "${var.tectonic_admin_email}"
+  admin_password = "${var.tectonic_admin_password}"
+  update_channel = "${var.tectonic_update_channel}"
+  update_app_id  = "${var.tectonic_update_app_id}"
+  update_server  = "${var.tectonic_update_server}"
+  ca_generated = "${var.tectonic_ca_cert == "" ? false : true}"
+  ca_cert      = "${module.kube_certs.ca_cert_pem}"
+  ingress_ca_cert_pem = "${module.ingress_certs.ca_cert_pem}"
+  ingress_cert_pem    = "${module.ingress_certs.cert_pem}"
+  ingress_key_pem     = "${module.ingress_certs.key_pem}"
+  identity_client_cert_pem = "${module.identity_certs.client_cert_pem}"
+  identity_client_key_pem  = "${module.identity_certs.client_key_pem}"
+  identity_server_cert_pem = "${module.identity_certs.server_cert_pem}"
+  identity_server_key_pem  = "${module.identity_certs.server_key_pem}"
+  console_client_id = "tectonic-console"
+  kubectl_client_id = "tectonic-kubectl"
+  ingress_kind      = "NodePort"
+  self_hosted_etcd  = "${var.tectonic_self_hosted_etcd}"
+  master_count      = "${var.tectonic_master_count}"
+  stats_url         = "${var.tectonic_stats_url}"
+  image_re = "${var.tectonic_image_re}"
+}
+
+module "flannel_vxlan" {
+  source = "../../modules/net/flannel_vxlan"
+  cluster_cidr     = "${var.tectonic_cluster_cidr}"
+  enabled          = "${var.tectonic_networking == "flannel"}"
+  container_images = "${var.tectonic_container_images}"
+}
+
+module "calico" {
+  source = "../../modules/net/calico"
+  container_images = "${var.tectonic_container_images}"
+  cluster_cidr     = "${var.tectonic_cluster_cidr}"
+  enabled          = "${var.tectonic_networking == "calico"}"
+}
+
+module "canal" {
+  source = "../../modules/net/canal"
+  container_images = "${var.tectonic_container_images}"
+  cluster_cidr     = "${var.tectonic_cluster_cidr}"
+  enabled          = "${var.tectonic_networking == "canal"}"
+}
+
+data "archive_file" "assets" {
+  type       = "zip"
+  source_dir = "./generated/"
+  output_path = "./.terraform/generated_${sha1("${module.etcd_certs.id} ${module.tectonic.id} ${module.bootkube.id} ${module.flannel_vxlan.id} ${module.calico.id} ${module.canal.id}")}.zip"
+}
+
+module "kube_certs" {
+  source = "../../modules/tls/kube/self-signed"
+  ca_cert_pem        = "${var.tectonic_ca_cert}"
+  ca_key_alg         = "${var.tectonic_ca_key_alg}"
+  ca_key_pem         = "${var.tectonic_ca_key}"
+  kube_apiserver_url = "https://${var.tectonic_aws_private_endpoints ? module.dns.api_internal_fqdn : module.dns.api_external_fqdn}:443"
+  service_cidr       = "${var.tectonic_service_cidr}"
+  validity_period    = "${var.tectonic_tls_validity_period}"
+}
+
+module "etcd_certs" {
+  source = "../../modules/tls/etcd/signed"
+  etcd_ca_cert_path     = "${var.tectonic_etcd_ca_cert_path}"
+  etcd_cert_dns_names   = "${data.template_file.etcd_hostname_list.*.rendered}"
+  etcd_client_cert_path = "${var.tectonic_etcd_client_cert_path}"
+  etcd_client_key_path  = "${var.tectonic_etcd_client_key_path}"
+  self_signed           = "${var.tectonic_self_hosted_etcd != "" ? "true" : length(compact(var.tectonic_etcd_servers)) == 0 ? "true" : "false"}"
+  service_cidr          = "${var.tectonic_service_cidr}"
+}
+
+module "ingress_certs" {
+  source = "../../modules/tls/ingress/self-signed"
+  base_address    = "${var.tectonic_aws_private_endpoints ? module.dns.ingress_internal_fqdn : module.dns.ingress_external_fqdn}"
+  ca_cert_pem     = "${module.kube_certs.ca_cert_pem}"
+  ca_key_alg      = "${module.kube_certs.ca_key_alg}"
+  ca_key_pem      = "${module.kube_certs.ca_key_pem}"
+  validity_period = "${var.tectonic_tls_validity_period}"
+}
+
+module "identity_certs" {
+  source = "../../modules/tls/identity/self-signed"
+  ca_cert_pem     = "${module.kube_certs.ca_cert_pem}"
+  ca_key_alg      = "${module.kube_certs.ca_key_alg}"
+  ca_key_pem      = "${module.kube_certs.ca_key_pem}"
+  validity_period = "${var.tectonic_tls_validity_period}"
+}
+
+variable "tectonic_aws_config_version" {
+  default = "1.0"
+}
+
+variable "tectonic_aws_profile" {
+  type    = "string"
+  default = "default"
+}
+
+variable "tectonic_aws_ssh_key" {
+  type        = "string"
+}
+
+variable "tectonic_aws_master_ec2_type" {
+  type        = "string"
+  default     = "t2.medium"
+}
+
+variable "tectonic_aws_worker_ec2_type" {
+  type        = "string"
+  default     = "t2.medium"
+}
+
+variable "tectonic_aws_etcd_ec2_type" {
+  type = "string"
+  default = "t2.medium"
+}
+
+variable "tectonic_aws_ec2_ami_override" {
+  type        = "string"
+  default     = ""
+}
+
+variable "tectonic_aws_etcd_extra_sg_ids" {
+  type    = "list"
+  default = []
+}
+
+variable "tectonic_aws_assets_s3_bucket_name" {
+  type    = "string"
+  default = ""
+}
+
+variable "tectonic_aws_master_extra_sg_ids" {
+  type    = "list"
+  default = []
+}
+
+variable "tectonic_aws_worker_extra_sg_ids" {
+  type    = "list"
+  default = []
+}
+
+variable "tectonic_aws_vpc_cidr_block" {
+  type    = "string"
+  default = "10.0.0.0/16"
+}
+
+variable "tectonic_aws_external_vpc_id" {
+  type = "string"
+  default = ""
+}
+
+variable "tectonic_aws_private_endpoints" {
+  default = true
+}
+
+variable "tectonic_aws_public_endpoints" {
+  default = true
+}
+
+variable "tectonic_aws_external_private_zone" {
+  default = ""
+}
+
+variable "tectonic_aws_external_master_subnet_ids" {
+  type = "list"
+  default = []
+}
+
+variable "tectonic_aws_external_worker_subnet_ids" {
+  type = "list"
+  default = []
+}
+
+variable "tectonic_aws_extra_tags" {
+  type        = "map"
+  default     = {}
+}
+
+variable "tectonic_autoscaling_group_extra_tags" {
+  type    = "list"
+  default = []
+}
+
+variable "tectonic_dns_name" {
+  type        = "string"
+  default     = ""
+}
+
+variable "tectonic_aws_etcd_root_volume_type" {
+  type        = "string"
+  default     = "gp2"
+}
+
+variable "tectonic_aws_etcd_root_volume_size" {
+  type        = "string"
+  default     = "30"
+}
+
+variable "tectonic_aws_etcd_root_volume_iops" {
+  type    = "string"
+  default = "100"
+}
+
+variable "tectonic_aws_master_root_volume_type" {
+  type        = "string"
+  default     = "gp2"
+}
+
+variable "tectonic_aws_master_root_volume_size" {
+  type        = "string"
+  default     = "30"
+}
+
+variable "tectonic_aws_master_root_volume_iops" {
+  type    = "string"
+  default = "100"
+}
+
+variable "tectonic_aws_worker_root_volume_type" {
+  type        = "string"
+  default     = "gp2"
+}
+
+variable "tectonic_aws_worker_root_volume_size" {
+  type        = "string"
+  default     = "30"
+}
+
+variable "tectonic_aws_worker_root_volume_iops" {
+  type    = "string"
+  default = "100"
+}
+
+variable "tectonic_aws_master_custom_subnets" {
+  type    = "map"
+  default = {}
+}
+
+variable "tectonic_aws_worker_custom_subnets" {
+  type    = "map"
+  default = {}
+}
+
+variable "tectonic_aws_region" {
+  type        = "string"
+  default     = "eu-west-1"
+}
+
+variable "tectonic_aws_master_iam_role_name" {
+  type    = "string"
+  default = ""
+}
+
+variable "tectonic_aws_worker_iam_role_name" {
+  type    = "string"
+  default = ""
+}
+
+variable "tectonic_aws_etcd_iam_role_name" {
+  type    = "string"
+  default = ""
+}
+
+variable "tectonic_aws_worker_load_balancers" {
+  type    = "list"
+  default = []
+}

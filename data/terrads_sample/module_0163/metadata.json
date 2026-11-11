@@ -1,0 +1,53 @@
+{
+  "findings_count": 8,
+  "findings": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_293",
+      "title": "",
+      "resource_name": "aws_db_instance.this[0]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_353",
+      "title": "",
+      "resource_name": "aws_db_instance.this[0]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_157",
+      "title": "",
+      "resource_name": "aws_db_instance.this[0]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_129",
+      "title": "",
+      "resource_name": "aws_db_instance.this[0]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_133",
+      "title": "",
+      "resource_name": "aws_db_instance.this[0]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_118",
+      "title": "",
+      "resource_name": "aws_db_instance.this[0]"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_338",
+      "title": "",
+      "resource_name": "aws_cloudwatch_log_group.this"
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_304",
+      "title": "",
+      "resource_name": "aws_secretsmanager_secret_rotation.this[0]"
+    }
+  ]
+}

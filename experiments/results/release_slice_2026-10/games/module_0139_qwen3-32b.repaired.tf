@@ -1,0 +1,109 @@
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 3.0"
+    }
+  }
+}
+
+provider "aws" {
+  region = "us-east-1"
+}
+
+resource "aws_vpc" "sagemaker" {
+  cidr_block = "10.0.0.0/16"
+
+  tags = {
+    Name = "sagemaker-vpc"
+  }
+}
+
+resource "aws_subnet" "sagemaker" {
+  vpc_id     = aws_vpc.sagemaker.id
+  cidr_block = "10.0.1.0/24"
+}
+
+resource "aws_security_group" "allow_tls" {
+  name        = "allow_tls"
+  description = "Allow TLS inbound traffic"
+  vpc_id      = aws_vpc.sagemaker.id
+
+  ingress {
+    description = "TLS from VPC"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = [aws_vpc.sagemaker.cidr_block]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "allow_tls"
+  }
+}
+
+resource "aws_vpc_flow_log" "sagemaker_flow_log" {
+  vpc_id            = aws_vpc.sagemaker.id
+  log_destination_type = "cloud_watch_logs"
+  log_destination    = aws_cloudwatch_log_group.sagemaker_flow_log.arn
+  log_format         = "${json_escape(jsonencode({}))}"
+  traffic_type       = "REJECT"
+}
+
+resource "aws_cloudwatch_log_group" "sagemaker_flow_log" {
+  name = "/aws/vpc/flow-logs/sagemaker"
+}
+
+data "aws_iam_policy_document" "instance-assume-role-policy" {
+  statement {
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["ec2.amazonaws.com"]
+    }
+  }
+}
+
+resource "aws_iam_role" "sagemaker" {
+  name               = "instance_role"
+  path               = "/system/"
+  assume_role_policy = data.aws_iam_policy_document.instance-assume-role-policy.json
+}
+
+resource "aws_kms_key" "notebook_encryption_key" {
+  description = "KMS key for SageMaker notebook encryption"
+  key_usage   = "ENCRYPT_DECRYPT"
+}
+
+resource "aws_sagemaker_notebook_instance" "ni" {
+  name          = "roger-notebook-instance"
+  role_arn      = aws_iam_role.sagemaker.arn
+  instance_type = "ml.t2.medium"
+  
+  root_access = "Disabled"
+  direct_internet_access = "Disabled"
+  volume_size_in_gb = 5
+  default_code_repository = "arn:aws:sagemaker:us-east-1:123456789012:code-repository/my-repo"
+  root_access = "Disabled"
+  lifecycle_config_name = "notebook-lifecycle-config"
+  depends_on = [aws_kms_key.notebook_encryption_key]
+
+  subnet_id = aws_subnet.sagemaker.id
+  security_groups = [aws_security_group.allow_tls.id]
+  encryption_key = aws_kms_key.notebook_encryption_key.arn
+  enable_internet_access = false
+  enable_inter_container_traffic_encryption = true
+  enable_sagemaker_data_encryption = true
+  enable_network_isolation = true
+  instance_metadata_service_configuration {
+    minimum_ims_version = "2.0"
+  }
+}

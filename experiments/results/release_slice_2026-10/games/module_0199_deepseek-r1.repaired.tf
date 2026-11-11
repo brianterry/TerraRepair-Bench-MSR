@@ -1,0 +1,145 @@
+resource "aws_api_gateway_rest_api" "this" {
+  name        = "${local.prefix_with_domain}"
+  description = "${var.comment_prefix}${var.api_domain}"
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "aws_api_gateway_deployment" "this" {
+  rest_api_id = "${aws_api_gateway_rest_api.this.id}"
+
+  depends_on = [
+    "aws_api_gateway_integration.proxy_root",
+    "aws_api_gateway_integration.proxy_other",
+  ]
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "aws_api_gateway_stage" "this" {
+  stage_name    = "${var.stage_name}"
+  description   = "${var.comment_prefix}${var.api_domain}"
+  rest_api_id   = "${aws_api_gateway_rest_api.this.id}"
+  deployment_id = "${aws_api_gateway_deployment.this.id}"
+  tags          = "${var.tags}"
+
+  access_log_settings {
+    destination_arn = "${aws_cloudwatch_log_group.api_gw.arn}"
+    format          = "{\"requestId\":\"$context.requestId\",\"ip\":\"$context.identity.sourceIp\",\"caller\":\"$context.identity.caller\",\"user\":\"$context.identity.user\",\"requestTime\":\"$context.requestTime\",\"httpMethod\":\"$context.httpMethod\",\"resourcePath\":\"$context.resourcePath\",\"status\":\"$context.status\",\"protocol\":\"$context.protocol\",\"responseLength\":\"$context.responseLength\"}"
+  }
+
+  xray_tracing_enabled = true
+  cache_cluster_enabled = true
+  cache_cluster_size = "0.5"
+}
+
+resource "aws_api_gateway_method_settings" "this" {
+  rest_api_id = "${aws_api_gateway_rest_api.this.id}"
+  stage_name  = "${aws_api_gateway_stage.this.stage_name}"
+  method_path = "*/*"
+
+  settings {
+    metrics_enabled        = "${var.api_gateway_cloudwatch_metrics}"
+    logging_level          = "${var.api_gateway_logging_level}"
+    data_trace_enabled     = "${var.api_gateway_logging_level == "OFF" ? false : true}"
+    throttling_rate_limit  = "${var.throttling_rate_limit}"
+    throttling_burst_limit = "${var.throttling_burst_limit}"
+    caching_enabled        = true
+    cache_ttl_in_seconds   = 300
+  }
+}
+
+resource "aws_api_gateway_domain_name" "this" {
+  domain_name              = "${var.api_domain}"
+  regional_certificate_arn = "${aws_acm_certificate_validation.this.certificate_arn}"
+  security_policy          = "TLS_1_2"
+
+  endpoint_configuration {
+    types = ["REGIONAL"]
+  }
+}
+
+resource "aws_api_gateway_method" "proxy_root" {
+  rest_api_id   = "${aws_api_gateway_rest_api.this.id}"
+  resource_id   = "${aws_api_gateway_rest_api.this.root_resource_id}"
+  http_method   = "ANY"
+  authorization = "AWS_IAM"
+}
+
+resource "aws_api_gateway_method" "proxy_other" {
+  rest_api_id   = "${aws_api_gateway_rest_api.this.id}"
+  resource_id   = "${aws_api_gateway_resource.proxy_other.id}"
+  http_method   = "ANY"
+  authorization = "AWS_IAM"
+}
+
+resource "aws_lambda_function" "local_zipfile" {
+  count = "${var.function_s3_bucket == "" ? 1 : 0}"
+
+  filename         = "${var.function_zipfile}"
+  source_code_hash = "${var.function_s3_bucket == "" ? "${base64sha256(file("${var.function_zipfile}"))}" : ""}"
+
+  description   = "${var.comment_prefix}${var.api_domain}"
+  function_name = "${local.prefix_with_domain}"
+  handler       = "${var.function_handler}"
+  runtime       = "${var.function_runtime}"
+  timeout       = "${var.function_timeout}"
+  memory_size   = "${var.memory_size}"
+  role          = "${aws_iam_role.this.arn}"
+  tags          = "${var.tags}"
+
+  environment {
+    variables = "${var.function_env_vars}"
+  }
+
+  tracing_config {
+    mode = "Active"
+  }
+
+  reserved_concurrent_executions = 100
+}
+
+resource "aws_lambda_function" "s3_zipfile" {
+  count = "${var.function_s3_bucket == "" ? 0 : 1}"
+
+  s3_bucket = "${var.function_s3_bucket}"
+  s3_key    = "${var.function_zipfile}"
+
+  description   = "${var.comment_prefix}${var.api_domain}"
+  function_name = "${local.prefix_with_domain}"
+  handler       = "${var.function_handler}"
+  runtime       = "${var.function_runtime}"
+  timeout       = "${var.function_timeout}"
+  memory_size   = "${var.memory_size}"
+  role          = "${aws_iam_role.this.arn}"
+  tags          = "${var.tags}"
+
+  environment {
+    variables = "${var.function_env_vars}"
+  }
+
+  tracing_config {
+    mode = "Active"
+  }
+
+  reserved_concurrent_executions = 100
+}
+
+resource "aws_acm_certificate" "this" {
+  domain_name       = "${var.api_domain}"
+  validation_method = "DNS"
+  tags              = "${merge(var.tags, map("Name", "${var.comment_prefix}${var.api_domain}"))}"
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+variable "function_runtime" {
+  description = "Which node.js version should Lambda use for this function"
+  default     = "nodejs14.x"
+}

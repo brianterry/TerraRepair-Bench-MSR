@@ -1,0 +1,338 @@
+```hcl
+module "imagebuilder_log_bucket" {
+  source = "github.com/ministryofjustice/modernisation-platform-terraform-s3-bucket?ref=9facf9fc8f8b8e3f93ffbda822028534b9a75399"
+
+  providers = {
+    aws.bucket-replication = aws.bucket-replication
+  }
+
+  bucket_prefix       = "ec2-image-builder-logs-"
+  versioning_enabled  = false
+  replication_enabled = false
+  logging {
+    target_bucket = module.imagebuilder_log_bucket.bucket.id
+    target_prefix = "logs/"
+  }
+
+  lifecycle_rule = [
+    {
+      id      = "main"
+      enabled = "Enabled"
+      prefix  = ""
+      tags    = {}
+      transition = [
+        {
+          days          = 90
+          storage_class = "STANDARD_IA"
+          }, {
+          days          = 365
+          storage_class = "GLACIER"
+        }
+      ]
+      expiration = {
+        days = 730
+      }
+      noncurrent_version_transition = [
+        {
+          days          = 90
+          storage_class = "STANDARD_IA"
+          }, {
+          days          = 365
+          storage_class = "GLACIER"
+        }
+      ]
+      noncurrent_version_expiration = {
+        days = 730
+      }
+    }
+  ]
+
+  tags = local.tags
+}
+
+module "laa-shared-bucket" {
+  source = "github.com/ministryofjustice/modernisation-platform-terraform-s3-bucket?ref=9facf9fc8f8b8e3f93ffbda822028534b9a75399"
+
+  providers = {
+    aws.bucket-replication = aws.bucket-replication
+  }
+  bucket_prefix       = "modernisation-platform-laa-shared"
+  bucket_policy       = [data.aws_iam_policy_document.laa_shared_bucket_policy.json]
+  replication_enabled = false
+  versioning_enabled  = true
+  force_destroy       = false
+  ownership_controls  = "BucketOwnerEnforced"
+  custom_kms_key      = local.laa_general_kms_arn
+  logging {
+    target_bucket = module.laa-shared-bucket.bucket.id
+    target_prefix = "logs/"
+  }
+
+  lifecycle_rule = [
+    {
+      id      = "main"
+      enabled = "Enabled"
+      prefix  = ""
+
+      tags = {
+        rule      = "log"
+        autoclean = "true"
+      }
+
+      transition = [
+        {
+          days          = 90
+          storage_class = "STANDARD_IA"
+          }, {
+          days          = 365
+          storage_class = "GLACIER"
+        }
+      ]
+
+      noncurrent_version_transition = [
+        {
+          days          = 90
+          storage_class = "STANDARD_IA"
+          }, {
+          days          = 365
+          storage_class = "GLACIER"
+        }
+      ]
+
+      noncurrent_version_expiration = {
+        days = 730
+      }
+    }
+  ]
+
+  tags = local.tags
+}
+
+module "s3-bucket" {
+  source = "github.com/ministryofjustice/modernisation-platform-terraform-s3-bucket?ref=9facf9fc8f8b8e3f93ffbda822028534b9a75399"
+
+  providers = {
+    aws.bucket-replication = aws.bucket-replication
+  }
+  bucket_prefix       = "mod-platform-image-artefact-bucket"
+  bucket_policy       = [data.aws_iam_policy_document.bucket_policy.json]
+  replication_enabled = false
+  versioning_enabled  = true
+  force_destroy       = false
+  ownership_controls  = "BucketOwnerEnforced"
+  logging {
+    target_bucket = module.s3-bucket.bucket.id
+    target_prefix = "logs/"
+  }
+
+  lifecycle_rule = [
+    {
+      id      = "main"
+      enabled = "Enabled"
+      prefix  = ""
+
+      tags = {
+        rule      = "log"
+        autoclean = "true"
+      }
+
+      transition = [
+        {
+          days          = 90
+          storage_class = "STANDARD_IA"
+        }
+      ]
+
+      noncurrent_version_transition = [
+        {
+          days          = 90
+          storage_class = "STANDARD_IA"
+          }, {
+          days          = 365
+          storage_class = "GLACIER"
+        }
+      ]
+
+      noncurrent_version_expiration = {
+        days = 730
+      }
+    }
+  ]
+
+  tags = local.tags
+}
+
+module "s3-software-bucket" {
+  source = "github.com/ministryofjustice/modernisation-platform-terraform-s3-bucket?ref=9facf9fc8f8b8e3f93ffbda822028534b9a75399"
+
+  providers = {
+    aws.bucket-replication = aws.bucket-replication
+  }
+  bucket_prefix       = "modernisation-platform-software"
+  bucket_policy       = [data.aws_iam_policy_document.software_bucket_policy.json]
+  replication_enabled = false
+  versioning_enabled  = true
+  force_destroy       = false
+  logging {
+    target_bucket = module.s3-software-bucket.bucket.id
+    target_prefix = "logs/"
+  }
+
+  lifecycle_rule = [
+    {
+      id      = "main"
+      enabled = "Enabled"
+      prefix  = ""
+
+      tags = {
+        rule      = "log"
+        autoclean = "true"
+      }
+
+      transition = [
+        {
+          days          = 90
+          storage_class = "STANDARD_IA"
+          }, {
+          days          = 365
+          storage_class = "GLACIER"
+        }
+      ]
+
+      noncurrent_version_transition = [
+        {
+          days          = 90
+          storage_class = "STANDARD_IA"
+          }, {
+          days          = 365
+          storage_class = "GLACIER"
+        }
+      ]
+
+      noncurrent_version_expiration = {
+        days = 730
+      }
+    }
+  ]
+
+  tags = local.tags
+}
+
+data "aws_iam_policy_document" "oidc_assume_role_core" {
+  statement {
+    sid       = "AllowOIDCToDecryptKMS"
+    effect    = "Allow"
+    resources = ["*"]
+    actions   = ["kms:Decrypt"]
+  }
+
+  statement {
+    sid       = "AllowUpdateLambdaCode"
+    effect    = "Allow"
+    resources = ["arn:aws:lambda:eu-west-2:${local.environment_management.account_ids["core-shared-services-production"]}:function:*"]
+    actions   = ["lambda:UpdateFunctionCode"]
+  }
+
+  statement {
+    sid       = "AllowGoToRunLambda"
+    effect    = "Allow"
+    resources = [module.instance_scheduler.lambda_function_arn]
+    actions   = ["sts:AssumeRole"]
+  }
+
+  statement {
+    sid    = "GuardDutyMalwareProtectionActions"
+    effect = "Allow"
+    actions = [
+      "guardduty:CreateMalwareProtectionPlan",
+      "guardduty:DeleteMalwareProtectionPlan",
+      "guardduty:ListDetectors",
+      "guardduty:ListTagsForResource",
+      "guardduty:TagResource",
+      "guardduty:UpdateMalwareProtectionPlan"
+    ]
+    resources = [
+      "arn:aws:guardduty:eu-west-2:*:malware-protection-plan/*"
+    ]
+    condition {
+      test     = "ForAllValues:StringEquals"
+      variable = "aws:CalledVia"
+      values   = ["guardduty.amazonaws.com"]
+    }
+  }
+
+  statement {
+    actions   = ["iam:PassRole"]
+    effect    = "Allow"
+    resources = ["arn:aws:iam::${local.environment_management.account_ids[terraform.workspace]}:role/GuardDutyS3MalwareProtectionRole"]
+    condition {
+      test     = "StringEquals"
+      variable = "iam:PassedToService"
+      values = [
+        "malware-protection-plan.guardduty.amazonaws.com"
+      ]
+    }
+  }
+}
+
+resource "aws_instance" "ad_fixngo" {
+  for_each = local.ad_fixngo.aws_instances
+
+  ami                    = data.aws_ami.ad_fixngo[each.value.ami_name].id
+  availability_zone      = each.value.availability_zone
+  ebs_optimized          = true
+  iam_instance_profile   = aws_iam_instance_profile.ad_fixngo[each.key].name
+  instance_type          = each.value.instance_type
+  key_name               = aws_key_pair.ad_fixngo[each.value.key_name].key_name
+  private_ip             = each.value.private_ip
+  subnet_id              = each.value.subnet_id
+  user_data_base64       = base64encode(file("./files/ad-fixngo-ec2-user-data.yaml"))
+  vpc_security_group_ids = [aws_security_group.ad_fixngo[each.value.vpc_security_group_name].id]
+  monitoring {
+    enabled = true
+  }
+
+  dynamic "ephemeral_block_device" {
+    for_each = {
+      for key, value in data.aws_ami.ad_fixngo[each.value.ami_name].block_device_mappings :
+      key.device_name => value if key.device_name!= data.aws_ami.ad_fixngo[each.value.ami_name].root_device_name
+    }
+    content {
+      device_name = ephemeral_block_device.value.device_name
+      no_device   = true
+    }
+  }
+
+  metadata_options {
+    http_endpoint = "enabled"
+    http_tokens   = "required"
+  }
+
+  root_block_device {
+    encrypted   = true
+    kms_key_id  = module.kms["hmpps"].key_arns["ebs"]
+    volume_size = 127
+    volume_type = "gp3"
+
+    tags = merge(local.ad_fixngo.tags, each.value.tags, {
+      backup = "false"
+      Name   = each.key
+    })
+  }
+
+  lifecycle {
+    ignore_changes = [
+      user_data,
+      ebs_block_device,
+    ]
+  }
+
+  tags = merge(local.ad_fixngo.tags, each.value.tags, {
+    Name = each.key
+  })
+}
+
+data "aws_availability_zones" "available" {
+  state = "available"
+}
+```

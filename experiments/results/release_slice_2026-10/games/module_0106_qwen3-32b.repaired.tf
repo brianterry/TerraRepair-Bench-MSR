@@ -1,0 +1,170 @@
+provider "aws" {
+  region = "us-east-2"
+}
+
+resource "aws_s3_bucket" "terraform_state" {
+  bucket = "antonputra-terraform-state"
+
+  lifecycle {
+    prevent_destroy = true
+  }
+
+  logging {
+    target_bucket = self.id
+    target_prefix = "logs/"
+  }
+
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm   = "aws:kms"
+        kms_key_id      = aws_kms_key.terraform_state.arn
+      }
+    }
+  }
+
+  versioning {
+    enabled = true
+  }
+
+  lifecycle_rule {
+    id      = "default"
+    enabled = true
+
+    transition {
+      days          = 30
+      storage_class = "STANDARD_IA"
+    }
+
+    expiration {
+      days = 365
+    }
+  }
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Deny"
+        Principal = "*"
+        Action = "s3:PutObject"
+        Resource = "${aws_s3_bucket.terraform_state.arn}/*"
+        Condition = {
+          StringNotEquals = {
+            "aws:Referer" = "https://console.aws.amazon.com"
+          }
+        }
+      }
+    ]
+  })
+
+  replication_configuration {
+    role = aws_iam_role.s3_replication.arn
+    rules {
+      id     = "cross-region-replication"
+      status = "Enabled"
+      destination {
+        bucket = aws_s3_bucket.replication_target.arn
+        storage_class = "STANDARD"
+      }
+    }
+  }
+
+  versioning {
+    enabled = true
+  }
+}
+
+resource "aws_kms_key" "terraform_state" {
+  description             = "KMS key for S3 bucket encryption"
+  deletion_window_in_days = 10
+}
+
+resource "aws_s3_bucket_replication_configuration" "replication_config" {
+  bucket = aws_s3_bucket.terraform_state.id
+  role   = aws_iam_role.s3_replication.arn
+
+  rules {
+    id     = "cross-region-replication"
+    status = "Enabled"
+    destination {
+      bucket = aws_s3_bucket.replication_target.arn
+      storage_class = "STANDARD"
+    }
+  }
+}
+
+resource "aws_s3_bucket" "replication_target" {
+  bucket = "antonputra-terraform-state-replication"
+}
+
+resource "aws_iam_role" "s3_replication" {
+  name = "s3_replication_role"
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect = "Allow"
+      Principal = { Service = "s3.amazonaws.com" }
+      Action = "sts:AssumeRole"
+    }]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "s3_replication" {
+  role       = aws_iam_role.s3_replication.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
+}
+
+resource "aws_dynamodb_table" "terraform_state" {
+  name         = "terraform-state"
+  billing_mode = "PAY_PER_REQUEST"
+  hash_key     = "LockID"
+  point_in_time_recovery {
+    enabled = true
+  }
+
+  attribute {
+    name = "LockID"
+    type = "S"
+  }
+
+  server_side_encryption {
+    enabled = true
+    kms_key_arn = aws_kms_key.dynamodb.arn
+  }
+}
+
+resource "aws_kms_key" "dynamodb" {
+  description             = "KMS key for DynamoDB encryption"
+  deletion_window_in_days = 10
+}
+
+resource "aws_dynamodb_table_replica" "terraform_state_replica" {
+  table_name = aws_dynamodb_table.terraform_state.name
+  region     = "us-west-2"
+}
+
+resource "aws_dynamodb_table_event_notification" "terraform_state_notification" {
+  table_name = aws_dynamodb_table.terraform_state.name
+  event_types = ["INSERT", "MODIFY", "REMOVE"]
+  event_source = "aws:dynamodb"
+  event_destination {
+    arn = "arn:aws:lambda:us-east-2:123456789012:function:ProcessDynamoDBEvents"
+  }
+}
+
+terraform {
+  backend "s3" {
+    key = "global/s3/terraform.tfstate"
+  }
+}
+
+output "s3_bucket_arn" {
+  value       = aws_s3_bucket.terraform_state.arn
+  description = "The ARN of the S3 bucket"
+}
+
+output "dynamodb_table_name" {
+  value       = aws_dynamodb_table.terraform_state.name
+  description = "The name of the DynamoDB table"
+}

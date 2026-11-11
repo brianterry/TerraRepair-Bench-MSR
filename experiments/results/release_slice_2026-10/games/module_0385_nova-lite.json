@@ -1,0 +1,226 @@
+{
+  "module_id": "module_0385",
+  "model_id": "nova-lite",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "aws_vpc_security_group_egress_rule.docker_machine[\"allow_http_ipv4\"]",
+      "resource_type": "aws_vpc_security_group_egress_rule",
+      "file_path": "docker_machine_security_group.tf",
+      "start_line": 53,
+      "end_line": 53
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "aws_vpc_security_group_egress_rule.docker_machine[\"allow_http_ipv6\"]",
+      "resource_type": "aws_vpc_security_group_egress_rule",
+      "file_path": "docker_machine_security_group.tf",
+      "start_line": 54,
+      "end_line": 54
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "aws_vpc_security_group_egress_rule.docker_machine[\"allow_https_ipv4\"]",
+      "resource_type": "aws_vpc_security_group_egress_rule",
+      "file_path": "docker_machine_security_group.tf",
+      "start_line": 53,
+      "end_line": 53
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "aws_vpc_security_group_egress_rule.docker_machine[\"allow_https_ipv6\"]",
+      "resource_type": "aws_vpc_security_group_egress_rule",
+      "file_path": "docker_machine_security_group.tf",
+      "start_line": 54,
+      "end_line": 54
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "aws_vpc_security_group_egress_rule.docker_machine[\"allow_ssh_ipv4\"]",
+      "resource_type": "aws_vpc_security_group_egress_rule",
+      "file_path": "docker_machine_security_group.tf",
+      "start_line": 53,
+      "end_line": 53
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "aws_vpc_security_group_egress_rule.docker_machine[\"allow_ssh_ipv6\"]",
+      "resource_type": "aws_vpc_security_group_egress_rule",
+      "file_path": "docker_machine_security_group.tf",
+      "start_line": 54,
+      "end_line": 54
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "aws_vpc_security_group_egress_rule.runner[\"allow_https_ipv4\"]",
+      "resource_type": "aws_vpc_security_group_egress_rule",
+      "file_path": "runner_security_group.tf",
+      "start_line": 49,
+      "end_line": 49
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "aws_vpc_security_group_egress_rule.runner[\"allow_https_ipv6\"]",
+      "resource_type": "aws_vpc_security_group_egress_rule",
+      "file_path": "runner_security_group.tf",
+      "start_line": 50,
+      "end_line": 50
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "aws_vpc_security_group_egress_rule.docker_machine[\"allow_http_ipv4\"]",
+      "resource_type": "aws_vpc_security_group_egress_rule",
+      "file_path": "docker_machine_security_group.tf",
+      "start_line": 53,
+      "end_line": 53
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "aws_vpc_security_group_egress_rule.docker_machine[\"allow_http_ipv6\"]",
+      "resource_type": "aws_vpc_security_group_egress_rule",
+      "file_path": "docker_machine_security_group.tf",
+      "start_line": 54,
+      "end_line": 54
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "aws_vpc_security_group_egress_rule.docker_machine[\"allow_https_ipv4\"]",
+      "resource_type": "aws_vpc_security_group_egress_rule",
+      "file_path": "docker_machine_security_group.tf",
+      "start_line": 53,
+      "end_line": 53
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "aws_vpc_security_group_egress_rule.docker_machine[\"allow_https_ipv6\"]",
+      "resource_type": "aws_vpc_security_group_egress_rule",
+      "file_path": "docker_machine_security_group.tf",
+      "start_line": 54,
+      "end_line": 54
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "aws_vpc_security_group_egress_rule.docker_machine[\"allow_ssh_ipv4\"]",
+      "resource_type": "aws_vpc_security_group_egress_rule",
+      "file_path": "docker_machine_security_group.tf",
+      "start_line": 53,
+      "end_line": 53
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "aws_vpc_security_group_egress_rule.docker_machine[\"allow_ssh_ipv6\"]",
+      "resource_type": "aws_vpc_security_group_egress_rule",
+      "file_path": "docker_machine_security_group.tf",
+      "start_line": 54,
+      "end_line": 54
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "aws_vpc_security_group_egress_rule.runner[\"allow_https_ipv4\"]",
+      "resource_type": "aws_vpc_security_group_egress_rule",
+      "file_path": "runner_security_group.tf",
+      "start_line": 49,
+      "end_line": 49
+    },
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0104",
+      "title": "A security group rule should not allow unrestricted egress to any IP address.",
+      "severity": "CRITICAL",
+      "resource_name": "aws_vpc_security_group_egress_rule.runner[\"allow_https_ipv6\"]",
+      "resource_type": "aws_vpc_security_group_egress_rule",
+      "file_path": "runner_security_group.tf",
+      "start_line": 50,
+      "end_line": 50
+    }
+  ],
+  "target_count": 8,
+  "resolved_count": 0,
+  "introduced_count": 0,
+  "unchanged_count": 8,
+  "repair_success_rate": 0.0,
+  "regression_rate": 0.0,
+  "net_delta": 0,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 8
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    }
+  },
+  "repair_cost_usd": 0.0057019,
+  "repair_tokens": 47019,
+  "hcl_valid": false,
+  "failure_metadata": {
+    "source_chars": 130690,
+    "est_input_tokens": 32672,
+    "max_tokens": 40000,
+    "size_driven_failure": false,
+    "repair_error": "Repaired code failed HCL validation"
+  },
+  "repaired_code_path": "module_0385_nova-lite.repaired.tf",
+  "raw_response_path": "module_0385_nova-lite.raw.txt",
+  "repaired_code_sha256": "e6b3bea0775f2e4d6366595098a1c9f0ff3dbd308f7fbc410d6ce8d43f44da20"
+}

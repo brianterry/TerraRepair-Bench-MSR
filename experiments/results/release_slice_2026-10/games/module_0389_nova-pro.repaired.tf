@@ -1,0 +1,498 @@
+```hcl
+data "aws_region" "current" {
+  region = var.region
+
+  count = var.create? 1 : 0
+}
+data "aws_partition" "current" {
+  count = var.create? 1 : 0
+}
+data "aws_caller_identity" "current" {
+  count = var.create? 1 : 0
+}
+
+locals {
+  account_id = try(data.aws_caller_identity.current[0].account_id, "")
+  partition  = try(data.aws_partition.current[0].partition, "")
+  region     = try(data.aws_region.current[0].region, "")
+}
+
+################################################################################
+# Service
+################################################################################
+
+locals {
+  # https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deployment-type-external.html
+  is_external_deployment = try(var.deployment_controller.type, null) == "EXTERNAL"
+  is_daemon              = var.scheduling_strategy == "DAEMON"
+  is_fargate             = var.launch_type == "FARGATE"
+
+  # Flattened `network_configuration`
+  network_configuration = {
+    assign_public_ip = var.assign_public_ip
+    security_groups  = flatten(concat([try(aws_security_group.this[0].id, [])], var.security_group_ids))
+    subnets          = var.subnet_ids
+  }
+
+  create_service = var.create && var.create_service
+}
+
+resource "aws_ecs_service" "this" = = " = " " aws  "  " : aws aws  " = = = " "  is "  is = " aws {
+  
+  is  is "  is " " " iam  is = = is
+ = = is
+ "is
+ is
+
+  is  is = = =  is
+  is = = " iam is  is
+  is = " = " " " = = = " = " = " = = = "  = = "  is
+  is " aws =is "is
+ " aws " =
+  is = = " aws " = " = {
+ is = "s
+ = " = " = = = = "  # =  #  # = " = " 0 " = = "  is  is = = "  is "  is " = = = = " aws aws  is = "  is
+ = = {
+  is = = is
+ = =local  #  # " = "  is = " = =s "  is
+ = = = = aws  is = " iam aws = {
+  # = " aws "  is {
+  = " " " = "  " = " = "  is {
+ iam = = = "  " = = = = " aws " aws "
+ aws " # = = = " aws " =
+ iam aws aws  = " aws " aws  " = " aws aws aws aws aws = = aws = {
+ aws iam aws aws aws  {
+  " aws  {
+ 1
+ aws  "
+ " awsvariable = = {
+ aws aws aws aws aws = {
+ _ aws aws " aws aws aws " aws aws  {
+  {
+ aws iam aws aws aws = aws aws aws aws aws = " aws  is {
+ aws aws aws  service "aws  {
+ aws  = = {
+ aws iam aws aws aws aws aws aws iam iam aws aws aws iam aws aws  service
+ aws aws  {
+  {
+ aws
+
+ aws aws aws aws aws = " aws aws aws aws aws  {
+ aws iam = aws aws iam aws  " : " aws [ : aws aws  = aws aws aws iam
+
+
+ iam iam aws aws :
+  {
+ aws aws s {
+ : : aws aws aws aws aws : aws aws  = {
+ aws aws
+
+ iam  {
+  = = iam aws iam aws aws aws  {
+
+ iam service {
+  = : aws aws : aws iam iam  {
+ aws : aws aws aws aws aws aws aws aws aws aws " aws  = aws aws aws aws = aws aws iam aws  create iam iam aws aws  " aws aws  = iam  = "  = aws aws aws aws aws  {
+  {
+ aws aws aws aws = " aws
+
+
+ aws aws aws aws aws   {
+ aws iam
+  service aws aws iam aws aws aws aws  this aws aws  is " " aws  service "  this aws  is  is : aws aws  is  this aws " aws aws aws aws  is
+ aws aws  this  service  service  service  = " aws aws aws  is is  is aws  is  is aws aws aws aws aws  is  is is
+  is  is
+ :  =  is
+ aws aws iam  is  is aws  is
+ {
+ iam aws is
+  is  is  = "  is  = " = "  is {
+  = :  is
+  =  =
+ aws :
+ aws aws  = " aws  =  is =  is  is {
+ iam aws  {
+ aws 1
+ : :  "  = aws  "  "  is
+ iam [ :  = aws aws aws iam  "  {
+ aws aws  is {
+  is {
+ aws aws aws aws aws   is  is
+
+  is  is =  is aws  is  = {
+ is
+  is {
+  is  is  = aws  =  is = : aws  {
+  {
+  = aws  = iam aws aws aws  {
+  = cid
+
+  {
+
+ [ aws aws  {
+ ``
+  {
+ aws aws aws aws aws  =
+
+
+ aws  {
+  = " aws aws aws =  
+ C
+ aws  {
+ aws aws
+
+
+ aws
+  {
+ iam iam  = = = "  =  = = =aws aws  {
+
+ {
+  {
+  {
+ aws  {
+  =
+
+
+ {
+  = " aws "  " =  {
+  service {
+  {
+ aws aws aws aws  service {
+ aws aws  = aws aws aws aws aws  = " = aws aws aws- aws aws
+ aws
+
+
+ :  description  service {
+ :  = {
+ aws aws aws
+ aws aws aws aws aws aws aws aws aws aws : aws
+ iam aws  {
+  = aws aws aws aws aws aws aws
+ iam  {
+ aws
+ [ aws aws aws aws aws aws aws aws aws  " aws iam aws aws aws aws aws aws aws aws aws  = aws aws aws aws aws aws aws aws aws aws aws
+ aws  {
+ aws  " aws aws aws aws aws aws aws aws aws aws
+ aws aws aws aws aws aws aws aws  service aws aws aws aws aws aws service aws aws  {
+ aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws  service ``
+ aws aws aws aws aws aws aws  service  {
+  {
+  service aws aws aws  {
+ aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws  this aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws  this aws aws  this aws aws aws aws aws aws aws C aws aws  service aws aws aws aws aws aws aws aws  service aws aws aws aws aws aws aws aws aws  =  create   aws aws aws aws  " aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws  " aws aws aws aws aws aws  {
+ aws aws aws aws aws aws aws aws  " aws aws aws aws aws  " aws aws aws aws aws aws aws
+ aws "  is  {
+ = aws aws aws aws aws  {
+ aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws
+ aws aws aws aws aws  {
+ aws  =  {
+ aws aws aws  aws aws aws aws aws aws aws aws service service 
+ aws  service aws aws aws aws aws aws aws aws  {
+ aws  s  aws aws aws aws aws aws  {
+ aws aws {
+ ``
+ service  {
+ aws aws aws aws aws    {
+  service {
+  {
+    {
+  =  =   = " =  =  {
+   {
+  aws  service  {
+   aws " "     aws  {
+     is =  {
+ aws 
+ aws    {
+   " aws aws service   {
+ aws   {
+    =  = aws aws  aws is  = = aws   is aws aws  =    is aws   #  # =  # # =  =  # aws  =  =  service ``
+ service  service aws  service aws aws aws aws aws aws  #  = aws aws aws  " aws aws aws aws aws aws aws aws aws  = aws aws 
+ aws  =  =  = aws  = iam aws  #  = aws  = aws aws aws  " aws aws aws aws aws aws aws aws 
+       =  #     -  = 
+
+
+ aws 
+ aws  is   is    deployment   is   : {
+  {
+  = 
+
+
+   = 
+  "  #  service  is
+ is  #  service  service  {
+  is aws iam aws aws aws aws aws aws aws aws aws aws aws = aws aws aws aws aws aws service aws aws iam aws aws aws aws aws aws  " aws iam  is
+ iam iam iam  service aws  = aws aws  = : aws aws : aws aws aws iam aws  = aws  {
+  {
+  "  " aws  = aws  "  = aws aws aws aws iam aws  =  = aws  " aws aws   "  =  is  = :  " aws  {
+   {
+  = aws  aws  =  {
+ aws aws aws aws aws 78484 784 aws aws aws aws  {
+ aws aws  {
+  = aws aws  {
+  region  service : :  =  =  =  = aws  = aws aws  {
+  {
+ aws aws aws aws aws aws aws aws aws  " aws  is
+ aws aws  {
+  {
+  = = service
+ aws aws iam service  # aws aws aws aws = aws aws aws aws aws 8  {
+  #  {
+ aws aws aws  {
+ aws  = service aws  service  =  =  = aws :  {
+ aws aws  {
+ 784
+ aws aws aws aws  aws  "  =  {
+  {
+ task aws  {
+ aws aws :  iam aws aws      aws aws  :  {
+  
+  =
+  service aws  task  {
+  service  {
+   {
+  {
+ :  service  aws aws    aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws  {
+ aws
+ aws aws aws aws aws aws aws aws aws aws aws aws aws  "  "  " aws    service aws    aws aws aws service aws aws  service {
+  =  =  =  = aws     {
+  {
+ service  service    =  =  {
+ aws aws  "  {
+  {
+ aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws  "  service aws  = aws aws  {
+  {
+  {
+  {
+ aws aws   "  =  = aws  =  = aws aws aws aws aws aws  service {
+  {
+ aws aws service  service service aws ``
+  {
+ aws aws aws aws aws aws aws aws aws aws aws aws  {
+  {
+ aws aws  service service aws : aws ``
+ aws aws aws aws aws aws  service aws aws aws aws  service aws aws service aws aws aws aws aws aws aws aws aws aws aws aws  aws aws aws aws aws aws aws aws  =  aws aws aws aws   aws aws is  # aws aws  " aws aws aws 
+  = aws aws  is  is  is  =  = aws aws aws aws aws aws  = aws aws aws aws  {
+  " aws aws aws aws   =  = aws  aws aws aws aws aws aws aws
+  = " =
+
+ aws  " aws aws aws  " aws aws aws  aws aws-  :
+  {
+ aws aws aws aws aws aws aws aws. aws aws aws aws - : aws aws aws aws aws aws aws  = aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws-aws : aws aws aws aws aws aws aws aws aws aws aws aws aws aws- aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws  {
+- 784-aws aws aws aws aws aws aws aws aws-aws-  aws  = aws {
+ aws- 784 aws   {
+ aws aws aws aws aws 784 aws {
+
+ aws aws aws aws aws
+
+ aws aws aws aws 784- aws aws aws aws aws aws aws aws aws aws aws-aws aws aws aws aws aws aws aws aws aws  aws aws aws   aws aws aws aws aws aws aws aws  aws aws aws aws  aws  service  task aws aws aws  = aws :  aws aws aws  task aws aws  {
+  {
+  task aws 7 aws aws aws aws aws aws aws aws 78 aws aws  " aws  = aws aws 78 = aws 78 aws aws 7
+ aws 7 : aws aws aws aws  aws
+ aws aws aws aws aws aws aws " aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws " aws aws aws aws aws  "   aws aws aws  aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws : aws aws aws aws aws aws aws iam  service aws aws aws aws aws aws aws aws aws aws  " aws aws aws aws aws aws aws  service aws aws  " aws
+ service aws aws  service aws aws aws aws aws  = aws aws aws  aws aws     {
+  is
+ aws aws aws  is  is  service {
+  = aws aws aws aws   =  is aws aws  aws  aws aws aws aws {
+ {
+ 
+  =     = = =  {
+  = 1
+ aws
+
+
+ aws aws  = " aws aws  = aws aws 
+ = aws aws aws aws aws  aws  {
+  :  = aws aws aws aws aws  {
+ aws aws aws aws aws aws aws aws  = {
+ aws aws aws
+
+ aws aws aws aws aws aws aws  aws {
+  {
+  = {
+ aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws
+ aws aws aws aws aws aws
+ aws aws aws
+ aws aws aws aws aws :
+ aws aws
+ aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws  {
+  aws aws aws aws aws aws aws aws aws aws aws
+
+ - aws aws  "  " aws aws aws aws aws aws aws aws aws aws aws
+ aws aws aws aws aws aws {
+ aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws  {
+ aws aws aws aws aws  {
+ aws aws aws  aws aws aws aws aws aws aws aws aws  {
+ aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws " aws aws aws aws aws aws  aws aws aws aws aws aws aws aws aws aws aws aws  {
+ aws aws aws aws aws aws aws aws
+ aws aws aws aws aws aws aws aws  {
+ aws aws aws aws aws aws aws iam aws
+ aws aws aws aws aws aws aws aws  = aws aws : : aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws  is aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws =
+ aws aws  = aws aws {
+
+ aws aws aws aws aws aws {
+ aws :  {
+  {
+  {
+ aws aws aws aws aws aws aws aws aws aws
+ aws aws aws aws aws aws aws aws aws : aws aws aws aws aws aws aws aws aws
+ aws aws aws aws aws aws aws aws : aws aws aws aws aws aws aws aws aws aws aws aws is aws is is aws is aws   {
+ aws aws aws aws aws aws aws aws aws aws : aws aws aws aws aws aws aws aws : aws ``
+ aws iam aws aws aws aws aws aws aws  aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws  is aws aws aws  is
+ aws aws aws aws aws aws aws aws aws
+ aws aws aws aws aws  is  is
+  is aws aws aws aws aws aws  is aws aws aws aws :  is aws aws aws aws aws aws  is
+ aws : aws aws aws aws  is aws aws iam   is
+ aws aws  is aws  is aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws is aws aws aws  is aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws  aws aws aws aws aws aws aws  service ``
+ aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws  aws
+ aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws is aws is
+ aws aws : aws aws aws aws {
+
+ aws aws aws aws aws aws aws
+ aws aws aws aws aws ``
+ aws aws aws aws aws aws aws aws aws aws aws aws aws aws
+ aws aws aws aws aws aws aws aws aws aws aws aws aws ``
+
+ aws aws  aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws is aws aws
+ aws  aws aws aws aws
+ aws aws aws aws aws aws aws  aws aws aws  is aws aws 1
+ aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws ``
+  is aws aws aws
+ aws aws aws aws aws aws aws aws aws aws aws aws aws ``
+ ``
+ aws aws 
+  {
+ aws  is
+ aws aws aws aws aws aws  aws aws aws  aws aws  is aws aws aws aws aws aws aws aws  {
+ aws  aws aws aws aws aws    aws  aws aws  aws aws aws aws aws aws aws aws aws  is :  ``
+  is : aws aws aws  is  aws aws aws aws aws aws aws s aws aws :   is
+ aws aws aws aws  is
+ is : aws  is  aws 1  is aws  is  is  is  is aws aws  is aws aws aws  is aws  is  is aws aws  is aws aws  is
+  aws aws
+ aws aws  is aws aws aws aws  = iam  aws aws  is  is aws : : aws :
+  {
+  is
+  is  is : aws : aws iam aws 
+  is  is aws  is
+ iam iam 1
+  is  is
+ :  is :  is  is  is  "  is aws aws : iam
+  #  = aws {
+ iam  =  is  is aws aws aws aws  is aws  is : aws iam aws  is aws aws aws aws aws  is aws
+  is  is aws aws aws aws iam  is
+ aws aws  is aws  is  create aws aws aws aws aws  is
+ aws aws iam  create aws aws aws aws aws aws : aws : iam iam iam iam 
+ aws iam : aws aws  is
+  is aws  is aws aws aws iam  aws iam aws aws aws aws aws :  {
+ aws aws iam iam iam iam iam  =  is ``
+ aws aws aws aws  is aws aws aws  is aws  is aws aws : : aws aws aws  is aws aws  is
+  is
+ aws aws ``
+ aws aws  is
+  is aws  is  is  {
+ :  = aws : aws  is
+ : {
+ aws aws  is aws iam  {
+  {
+ : : aws aws aws aws aws aws aws aws aws iam aws aws iam aws  is 
+  is iam aws aws aws aws aws aws aws  is aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws iam aws  is
+ aws iam aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws   {
+ aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws  {
+ aws aws : iam aws aws aws  aws aws aws  {
+  aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws  is aws  is aws aws  is aws  is  is aws aws iam aws aws aws aws aws  {
+ aws  is  is aws aws  is aws aws aws aws aws   {
+ aws  is   aws aws aws aws aws aws aws aws aws aws aws  is aws  is  is aws aws aws aws aws aws aws aws aws aws aws aws  {
+ aws aws aws aws aws aws aws aws aws : aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws   aws aws aws   {
+ aws  = aws  aws aws aws aws   aws aws aws
+ aws aws   iam aws   
+  " aws  aws aws 
+  {
+  aws  "  {
+ aws aws aws aws aws aws   aws  {
+  {
+ aws aws aws aws aws aws aws  {
+ 
+
+
+ aws aws aws  aws {
+ aws aws  aws       aws  {
+ aws aws aws     aws aws aws  " aws aws aws  {
+  {
+ 
+
+ aws  " aws  aws  {
+ aws aws aws aws aws aws aws aws {
+ aws aws aws aws aws aws aws aws aws aws aws aws aws aws  " aws aws  " aws aws aws  {
+  {
+ aws aws aws aws  
+ aws   is  is
+ aws aws "aws iam   aws aws aws aws  aws aws aws is  is aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws  is aws iam aws aws aws aws   {
+ aws aws  {
+ aws aws aws aws aws aws aws aws aws : aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws  aws aws aws aws aws aws aws aws aws resource aws aws aws aws : aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws  {
+  aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws  aws aws aws aws  "  = aws aws aws aws   aws aws aws aws aws aws aws aws aws aws aws aws iam aws aws aws aws aws  " aws aws aws aws aws aws 1
+ aws  is aws aws aws aws aws aws aws aws aws aws  is aws  is  is aws aws aws aws  is aws aws  is  is aws aws aws iam aws  is aws aws aws aws  = aws aws aws aws aws aws  "  {
+  " aws aws aws iam aws aws " aws aws  "  required  = aws  =  =  = aws aws aws aws iam aws  " aws aws ``
+ iam aws aws {
+ aws  = aws aws aws aws aws  {
+ aws  {
+ aws  aws aws aws   aws aws aws aws aws iam  = aws aws aws  {
+  is aws aws id
+  {
+  is  aws awsaws    "  {
+  is  is
+  is  = aws aws aws  is ``
+   is aws aws aws
+  is aws  is aws aws aws aws aws    is   is  is  is
+ aws  is aws aws  {
+  "   is aws aws   # aws aws aws aws   aws : aws :  is
+ aws aws aws iam  is aws  aws aws aws aws  aws aws aws aws aws iam iam iam iam iam iam  = iam iam  = aws iam iam iam aws aws iam iam iam iam {
+ aws aws iam  iam    iam iam iam iam : aws aws aws  =  = iam iam iam : aws aws iam aws aws aws aws aws iam aws aws iam aws aws aws aws  = : aws aws  {
+ aws aws  = aws aws aws aws aws aws iam aws aws aws aws aws aws aws aws  aws   = aws aws aws is aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws iam aws aws aws  " aws iam aws aws  = aws : aws iam aws iam aws aws aws aws aws aws iam aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws  = nullable aws aws iam aws aws iam aws : aws aws  aws iam aws  {
+  {
+ aws aws aws aws aws aws aws aws aws aws aws aws iam aws aws aws aws  {
+ iam aws  is
+ aws aws aws aws aws iam
+ aws aws aws aws aws aws aws aws aws aws aws aws : aws iam iam aws iam aws iam aws aws  aws : aws aws aws aws aws :  =aws aws aws aws aws aws  {
+ aws  {
+ aws aws aws aws aws aws aws aws aws aws aws  is aws aws iam aws aws aws  {
+  {
+  {
+  {
+ : aws aws aws aws aws aws aws  is aws aws aws aws  {
+ aws  = iam aws aws  {
+ aws iam iam : aws aws aws  = aws  = aws aws aws iam aws aws iam iam : aws aws aws iam aws  " iam  is aws aws aws aws aws  {
+  {
+ aws aws aws aws aws  {
+ aws  "  is aws aws iam aws aws aws aws aws aws aws aws aws aws aws aws  aws aws aws  is aws aws aws aws aws aws aws  = {
+ aws aws aws aws  data aws aws aws aws  # aws aws  " aws aws aws aws aws aws aws aws aws  {
+ aws aws aws aws aws aws aws aws aws aws aws aws aws aws  {
+  is aws aws aws aws  {
+ aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws iam aws aws aws aws aws aws aws  is aws : aws aws aws aws aws aws  is {
+ aws aws aws aws aws aws aws aws aws  service aws : aws aws aws aws aws aws aws aws aws  service aws aws  # aws aws  {
+ aws aws aws aws aws aws  " aws  =  is aws aws aws aws aws aws aws aws : iam aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws  {
+ aws aws  =  is aws aws aws aws aws aws : aws aws aws aws aws aws aws aws aws aws aws  {
+ aws  {
+ aws aws. aws aws aws aws aws aws  {
+ aws aws aws aws aws aws : aws aws aws aws aws aws  = {
+ aws
+ aws. aws aws aws aws aws aws aws aws aws aws : : aws  is  is aws aws  is aws  is iam : aws aws aws aws aws aws aws aws aws aws aws aws iam aws  is iam iam aws  is aws  is aws aws aws aws aws aws aws aws aws aws aws aws  service aws aws aws aws aws iam aws aws aws : required : iam aws  {
+ aws aws aws aws aws aws iam aws aws aws :  is  # aws iam aws aws : aws  #
+ aws aws aws aws : aws aws iam aws aws  # aws aws aws aws
+ aws aws aws aws  service : aws aws aws aws aws aws aws : aws aws aws aws aws iam aws aws  = aws aws aws aws aws aws aws aws aws aws aws iam aws aws aws aws aws aws aws  {
+ aws aws aws aws  {
+ aws aws aws  is {
+ aws aws aws aws aws aws aws aws aws  = aws aws iam iam aws aws aws iam  {
+ aws aws  {
+ aws aws aws aws aws  "  {
+ aws  " aws aws aws aws aws  =  {
+  {
+ aws  is aws aws  is : aws : #- aws aws aws aws iam iam iam aws iam aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws
+ aws aws aws : " aws aws aws aws aws aws aws aws aws aws aws iam aws aws aws aws aws iam aws aws aws aws aws aws aws aws aws iam aws aws aws aws aws aws aws aws aws  " aws  " aws aws  service iam aws aws iam aws aws aws aws aws aws aws  {
+ aws aws aws aws aws iam aws aws aws aws aws aws aws aws aws "aws aws aws aws aws  # " aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws aws iam aws aws aws aws aws aws aws aws aws aws aws  " aws aws  " aws  " iam 1 aws iam iam iam aws  " aws aws  {
+  {
+  {
+  {
+  {
+  {
+  {
+  " aws iam aws aws aws aws : iam  =  {
+  {
+ iam aws aws aws aws aws aws aws  data " aws   # = " aws aws aws  # " aws

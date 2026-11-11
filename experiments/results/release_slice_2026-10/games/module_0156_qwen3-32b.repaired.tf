@@ -1,0 +1,2083 @@
+locals {
+  create_role = local.create && var.create_function && !var.create_layer && var.create_role
+
+  # Lambda@Edge uses the Cloudwatch region closest to the location where the function is executed
+  # The region part of the LogGroup ARN is then replaced with a wildcard (*) so Lambda@Edge is able to log in every region
+  log_group_arn_regional = try(data.aws_cloudwatch_log_group.lambda[0].arn, aws_cloudwatch_log_group.lambda[0].arn, "")
+  log_group_name         = try(data.aws_cloudwatch_log_group.lambda[0].name, aws_cloudwatch_log_group.lambda[0].name, "")
+  log_group_arn          = local.create_role && var.lambda_at_edge ? format("arn:%s:%s:%s:%s:%s", data.aws_arn.log_group_arn[0].partition, data.aws_arn.log_group_arn[0].service, var.lambda_at_edge_logs_all_regions ? "*" : "us-east-1", data.aws_arn.log_group_arn[0].account, data.aws_arn.log_group_arn[0].resource) : local.log_group_arn_regional
+
+  # Defaulting to "*" (an invalid character for an IAM Role name) will cause an error when
+  #   attempting to plan if the role_name and function_name are not set.  This is a workaround
+  #   for #83 that will allow one to import resources without receiving an error from coalesce.
+  # @see https://github.com/terraform-aws-modules/terraform-aws-lambda/issues/83
+  role_name   = local.create_role ? coalesce(var.role_name, var.function_name, "*") : null
+  policy_name = coalesce(var.policy_name, local.role_name, "*")
+
+  # IAM Role trusted entities is a list of any (allow strings (services) and maps (type+identifiers))
+  trusted_entities_services = distinct(compact(concat(
+    slice(["lambda.amazonaws.com", "edgelambda.amazonaws.com"], 0, var.lambda_at_edge ? 2 : 1),
+    [for service in var.trusted_entities : try(tostring(service), "")]
+  )))
+
+  trusted_entities_principals = [
+    for principal in var.trusted_entities : {
+      type        = principal.type
+      identifiers = tolist(principal.identifiers)
+    }
+    if !can(tostring(principal))
+  ]
+}
+
+###########
+# IAM role
+###########
+
+data "aws_iam_policy_document" "assume_role" {
+  count = local.create_role ? 1 : 0
+
+  statement {
+    effect  = "Allow"
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = local.trusted_entities_services
+    }
+
+    dynamic "principals" {
+      for_each = local.trusted_entities_principals
+      content {
+        type        = principals.value.type
+        identifiers = principals.value.identifiers
+      }
+    }
+  }
+
+  dynamic "statement" {
+    for_each = var.assume_role_policy_statements
+
+    content {
+      sid         = try(statement.value.sid, replace(statement.key, "/[^0-9A-Za-z]*/", ""))
+      effect      = try(statement.value.effect, null)
+      actions     = try(statement.value.actions, null)
+      not_actions = try(statement.value.not_actions, null)
+
+      dynamic "principals" {
+        for_each = try(statement.value.principals, [])
+        content {
+          type        = principals.value.type
+          identifiers = principals.value.identifiers
+        }
+      }
+
+      dynamic "not_principals" {
+        for_each = try(statement.value.not_principals, [])
+        content {
+          type        = not_principals.value.type
+          identifiers = not_principals.value.identifiers
+        }
+      }
+
+      dynamic "condition" {
+        for_each = try(statement.value.condition, [])
+        content {
+          test     = condition.value.test
+          variable = condition.value.variable
+          values   = condition.value.values
+        }
+      }
+    }
+  }
+}
+
+resource "aws_iam_role" "lambda" {
+  count = local.create_role ? 1 : 0
+
+  name                  = local.role_name
+  description           = var.role_description
+  path                  = var.role_path
+  force_detach_policies = var.role_force_detach_policies
+  permissions_boundary  = var.role_permissions_boundary
+  assume_role_policy    = data.aws_iam_policy_document.assume_role[0].json
+  max_session_duration  = var.role_maximum_session_duration
+
+  tags = merge(var.tags, var.role_tags)
+}
+
+##################
+# Cloudwatch Logs
+##################
+
+data "aws_arn" "log_group_arn" {
+  count = local.create_role && var.lambda_at_edge ? 1 : 0
+
+  arn = local.log_group_arn_regional
+}
+
+data "aws_iam_policy_document" "logs" {
+  count = local.create_role && var.attach_cloudwatch_logs_policy ? 1 : 0
+
+  statement {
+    effect = "Allow"
+
+    actions = compact([
+      !var.use_existing_cloudwatch_log_group && var.attach_create_log_group_permission ? "logs:CreateLogGroup" : "",
+      "logs:CreateLogStream",
+      "logs:PutLogEvents"
+    ])
+
+    resources = flatten([for _, v in ["%v:*", "%v:*:*"] : format(v, local.log_group_arn)])
+  }
+}
+
+resource "aws_iam_role_policy" "logs" {
+  count = local.create_role && var.attach_cloudwatch_logs_policy ? 1 : 0
+
+  name   = "${local.policy_name}-logs"
+  role   = aws_iam_role.lambda[0].name
+  policy = data.aws_iam_policy_document.logs[0].json
+}
+
+#####################
+# Dead Letter Config
+#####################
+
+data "aws_iam_policy_document" "dead_letter" {
+  count = local.create_role && var.attach_dead_letter_policy ? 1 : 0
+
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "sns:Publish",
+      "sqs:SendMessage",
+    ]
+
+    resources = [
+      var.dead_letter_target_arn,
+    ]
+  }
+}
+
+resource "aws_iam_role_policy" "dead_letter" {
+  count = local.create_role && var.attach_dead_letter_policy ? 1 : 0
+
+  name   = "${local.policy_name}-dl"
+  role   = aws_iam_role.lambda[0].name
+  policy = data.aws_iam_policy_document.dead_letter[0].json
+}
+
+######
+# VPC
+######
+
+# Copying AWS managed policy to be able to attach the same policy with multiple roles without overwrites by another function
+data "aws_iam_policy" "vpc" {
+  count = local.create_role && var.attach_network_policy ? 1 : 0
+
+  arn = "arn:${data.aws_partition.current.partition}:iam::aws:policy/service-role/AWSLambdaENIManagementAccess"
+}
+
+resource "aws_iam_role_policy" "vpc" {
+  count = local.create_role && var.attach_network_policy ? 1 : 0
+
+  name   = "${local.policy_name}-vpc"
+  role   = aws_iam_role.lambda[0].name
+  policy = data.aws_iam_policy.vpc[0].policy
+}
+
+#####################
+# Tracing with X-Ray
+#####################
+
+# Copying AWS managed policy to be able to attach the same policy with multiple roles without overwrites by another function
+data "aws_iam_policy" "tracing" {
+  count = local.create_role && var.attach_tracing_policy ? 1 : 0
+
+  arn = "arn:${data.aws_partition.current.partition}:iam::aws:policy/AWSXRayDaemonWriteAccess"
+}
+
+resource "aws_iam_role_policy" "tracing" {
+  count = local.create_role && var.attach_tracing_policy ? 1 : 0
+
+  name   = "${local.policy_name}-tracing"
+  role   = aws_iam_role.lambda[0].name
+  policy = data.aws_iam_policy.tracing[0].policy
+}
+
+###############################
+# Failure/Success Async Events
+###############################
+
+data "aws_iam_policy_document" "async" {
+  count = local.create_role && var.attach_async_event_policy ? 1 : 0
+
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "sns:Publish",
+      "sqs:SendMessage",
+      "events:PutEvents",
+      "lambda:InvokeFunction",
+    ]
+
+    resources = compact(distinct([var.destination_on_failure, var.destination_on_success]))
+  }
+}
+
+resource "aws_iam_role_policy" "async" {
+  count = local.create_role && var.attach_async_event_policy ? 1 : 0
+
+  name   = "${local.policy_name}-async"
+  role   = aws_iam_role.lambda[0].name
+  policy = data.aws_iam_policy_document.async[0].json
+}
+
+###########################
+# Additional policy (JSON)
+###########################
+
+resource "aws_iam_role_policy" "additional_json" {
+  count = local.create_role && var.attach_policy_json ? 1 : 0
+
+  name   = local.policy_name
+  role   = aws_iam_role.lambda[0].name
+  policy = var.policy_json
+}
+
+#####################################
+# Additional policies (list of JSON)
+#####################################
+
+resource "aws_iam_role_policy" "additional_jsons" {
+  count = local.create_role && var.attach_policy_jsons ? var.number_of_policy_jsons : 0
+
+  name   = "${local.policy_name}-${count.index}"
+  role   = aws_iam_role.lambda[0].name
+  policy = var.policy_jsons[count.index]
+}
+
+###########################
+# ARN of additional policy
+###########################
+
+resource "aws_iam_role_policy_attachment" "additional_one" {
+  count = local.create_role && var.attach_policy ? 1 : 0
+
+  role       = aws_iam_role.lambda[0].name
+  policy_arn = var.policy
+}
+
+######################################
+# List of ARNs of additional policies
+######################################
+
+resource "aws_iam_role_policy_attachment" "additional_many" {
+  count = local.create_role && var.attach_policies ? var.number_of_policies : 0
+
+  role       = aws_iam_role.lambda[0].name
+  policy_arn = var.policies[count.index]
+}
+
+###############################
+# Additional policy statements
+###############################
+
+data "aws_iam_policy_document" "additional_inline" {
+  count = local.create_role && var.attach_policy_statements ? 1 : 0
+
+  dynamic "statement" {
+    for_each = var.policy_statements
+
+    content {
+      sid           = try(statement.value.sid, replace(statement.key, "/[^0-9A-Za-z]*/", ""))
+      effect        = try(statement.value.effect, null)
+      actions       = try(statement.value.actions, null)
+      not_actions   = try(statement.value.not_actions, null)
+      resources     = try(statement.value.resources, null)
+      not_resources = try(statement.value.not_resources, null)
+
+      dynamic "principals" {
+        for_each = try(statement.value.principals, [])
+        content {
+          type        = principals.value.type
+          identifiers = principals.value.identifiers
+        }
+      }
+
+      dynamic "not_principals" {
+        for_each = try(statement.value.not_principals, [])
+        content {
+          type        = not_principals.value.type
+          identifiers = not_principals.value.identifiers
+        }
+      }
+
+      dynamic "condition" {
+        for_each = try(statement.value.condition, [])
+        content {
+          test     = condition.value.test
+          variable = condition.value.variable
+          values   = condition.value.values
+        }
+      }
+    }
+  }
+}
+
+resource "aws_iam_role_policy" "additional_inline" {
+  count = local.create_role && var.attach_policy_statements ? 1 : 0
+
+  name   = "${local.policy_name}-inline"
+  role   = aws_iam_role.lambda[0].name
+  policy = data.aws_iam_policy_document.additional_inline[0].json
+}
+
+
+data "aws_partition" "current" {}
+data "aws_region" "current" {}
+data "aws_caller_identity" "current" {}
+
+locals {
+  create = var.create && var.putin_khuylo
+
+  archive_filename        = try(data.external.archive_prepare[0].result.filename, null)
+  archive_filename_string = local.archive_filename != null ? local.archive_filename : ""
+
+  # Use a generated filename to determine when the source code has changed.
+  # filename - to get package from local
+  filename = var.local_existing_package != null ? var.local_existing_package : (var.store_on_s3 ? null : local.archive_filename)
+
+  source_code_hash = var.ignore_source_code_hash ? null : (terraform_data.package_filename_for_hash[0].output.filename != null ? try(filebase64sha256(terraform_data.package_filename_for_hash[0].output.filename), null) : null)
+
+  # s3_* - to get package from S3
+  s3_bucket         = var.s3_existing_package != null ? try(var.s3_existing_package.bucket, null) : (var.store_on_s3 ? var.s3_bucket : null)
+  s3_key            = var.s3_existing_package != null ? try(var.s3_existing_package.key, null) : (var.store_on_s3 ? var.s3_prefix != null ? format("%s%s", var.s3_prefix, replace(local.archive_filename_string, "/^.*//", "")) : replace(local.archive_filename_string, "/^\\.//", "") : null)
+  s3_object_version = var.s3_existing_package != null ? try(var.s3_existing_package.version_id, null) : (var.store_on_s3 ? try(aws_s3_object.lambda_package[0].version_id, null) : null)
+
+}
+
+
+# For computing the source_code_hash, wrap local.filename in a resource
+# that depends on null_resource.archive, and, if var.local_existing_package
+# is set to the output of another resource, on that other resource.
+# terraform-docs-ignore
+resource "terraform_data" "package_filename_for_hash" {
+  count = var.ignore_source_code_hash ? 0 : 1
+
+  input = {
+    filename = local.filename
+  }
+
+  triggers_replace = [local.filename]
+
+  depends_on = [null_resource.archive]
+}
+
+resource "aws_lambda_function" "this" {
+  count = local.create && var.create_function && !var.create_layer ? 1 : 0
+
+  region = var.region
+
+  function_name                      = var.function_name
+  description                        = var.description
+  role                               = var.create_role ? aws_iam_role.lambda[0].arn : var.lambda_role
+  handler                            = var.package_type != "Zip" ? null : var.handler
+  memory_size                        = var.memory_size
+  reserved_concurrent_executions     = var.reserved_concurrent_executions
+  runtime                            = var.package_type != "Zip" ? null : var.runtime
+  layers                             = var.layers
+  timeout                            = var.lambda_at_edge ? min(var.timeout, 30) : var.timeout
+  publish                            = (var.lambda_at_edge || var.snap_start) ? true : var.publish
+  kms_key_arn                        = var.kms_key_arn
+  image_uri                          = var.image_uri
+  package_type                       = var.package_type
+  architectures                      = var.architectures
+  code_signing_config_arn            = var.code_signing_config_arn
+  replace_security_groups_on_destroy = var.replace_security_groups_on_destroy
+  replacement_security_group_ids     = var.replacement_security_group_ids
+  skip_destroy                       = var.skip_destroy
+
+  /* ephemeral_storage is not supported in gov-cloud region, so it should be set to `null` */
+  dynamic "ephemeral_storage" {
+    for_each = var.ephemeral_storage_size == null ? [] : [true]
+
+    content {
+      size = var.ephemeral_storage_size
+    }
+  }
+
+  filename         = local.filename
+  source_code_hash = local.source_code_hash
+
+  s3_bucket         = local.s3_bucket
+  s3_key            = local.s3_key
+  s3_object_version = local.s3_object_version
+
+  dynamic "image_config" {
+    for_each = length(var.image_config_entry_point) > 0 || length(var.image_config_command) > 0 || var.image_config_working_directory != null ? [true] : []
+    content {
+      entry_point       = var.image_config_entry_point
+      command           = var.image_config_command
+      working_directory = var.image_config_working_directory
+    }
+  }
+
+  dynamic "environment" {
+    for_each = length(keys(var.environment_variables)) == 0 ? [] : [true]
+    content {
+      variables = var.environment_variables
+    }
+  }
+
+  dynamic "dead_letter_config" {
+    for_each = var.dead_letter_target_arn == null ? [] : [true]
+    content {
+      target_arn = var.dead_letter_target_arn
+    }
+  }
+
+  dynamic "tracing_config" {
+    for_each = var.tracing_mode == null ? [] : [true]
+    content {
+      mode = var.tracing_mode
+    }
+  }
+
+  dynamic "vpc_config" {
+    for_each = var.vpc_subnet_ids != null && var.vpc_security_group_ids != null ? [true] : []
+    content {
+      security_group_ids          = var.vpc_security_group_ids
+      subnet_ids                  = var.vpc_subnet_ids
+      ipv6_allowed_for_dual_stack = var.ipv6_allowed_for_dual_stack
+    }
+  }
+
+  dynamic "file_system_config" {
+    for_each = var.file_system_arn != null && var.file_system_local_mount_path != null ? [true] : []
+    content {
+      local_mount_path = var.file_system_local_mount_path
+      arn              = var.file_system_arn
+    }
+  }
+
+  dynamic "snap_start" {
+    for_each = var.snap_start ? [true] : []
+
+    content {
+      apply_on = "PublishedVersions"
+    }
+  }
+
+  dynamic "logging_config" {
+    # Dont create logging config on gov cloud as it is not avaible.
+    # See https://github.com/hashicorp/terraform-provider-aws/issues/34810
+    for_each = data.aws_partition.current.partition == "aws" ? [true] : []
+
+    content {
+      log_group             = var.logging_log_group
+      log_format            = var.logging_log_format
+      application_log_level = var.logging_log_format == "Text" ? null : var.logging_application_log_level
+      system_log_level      = var.logging_log_format == "Text" ? null : var.logging_system_log_level
+    }
+  }
+
+  dynamic "durable_config" {
+    for_each = var.durable_config_execution_timeout != null ? [true] : []
+
+    content {
+      execution_timeout = var.durable_config_execution_timeout
+      retention_period  = var.durable_config_retention_period
+    }
+  }
+
+  dynamic "timeouts" {
+    for_each = length(var.timeouts) > 0 ? [true] : []
+
+    content {
+      create = try(var.timeouts.create, null)
+      update = try(var.timeouts.update, null)
+      delete = try(var.timeouts.delete, null)
+    }
+  }
+
+  dynamic "tenancy_config" {
+    for_each = var.tenant_isolation_mode ? [true] : []
+    content {
+      tenant_isolation_mode = "PER_TENANT"
+    }
+  }
+
+  tags = merge(
+    var.tags,
+    var.function_tags
+  )
+
+  depends_on = [
+    null_resource.archive,
+    aws_s3_object.lambda_package,
+
+    # Depending on the log group is necessary to allow Terraform to create the log group before AWS can.
+    # When a lambda function is invoked, AWS creates the log group automatically if it doesn't exist yet.
+    # Without the dependency, this can result in a race condition if the lambda function is invoked before
+    # Terraform can create the log group.
+    aws_cloudwatch_log_group.lambda,
+
+    # Before the lambda is created the execution role with all its policies should be ready
+    aws_iam_role_policy.additional_inline,
+    aws_iam_role_policy.additional_json,
+    aws_iam_role_policy.additional_jsons,
+    aws_iam_role_policy.async,
+    aws_iam_role_policy.dead_letter,
+    aws_iam_role_policy.logs,
+    aws_iam_role_policy.tracing,
+    aws_iam_role_policy.vpc,
+    aws_iam_role_policy_attachment.additional_many,
+    aws_iam_role_policy_attachment.additional_one,
+  ]
+}
+
+resource "aws_lambda_layer_version" "this" {
+  count = local.create && var.create_layer ? 1 : 0
+
+  region = var.region
+
+  layer_name   = var.layer_name
+  description  = var.description
+  license_info = var.license_info
+
+  compatible_runtimes      = length(var.compatible_runtimes) > 0 ? var.compatible_runtimes : (var.runtime == "" ? null : [var.runtime])
+  compatible_architectures = var.compatible_architectures
+  skip_destroy             = var.layer_skip_destroy
+
+  filename         = local.filename
+  source_code_hash = local.source_code_hash
+
+  s3_bucket         = local.s3_bucket
+  s3_key            = local.s3_key
+  s3_object_version = local.s3_object_version
+
+  depends_on = [null_resource.archive, aws_s3_object.lambda_package]
+}
+
+resource "aws_s3_object" "lambda_package" {
+  count = local.create && var.store_on_s3 && var.create_package ? 1 : 0
+
+  region = var.region
+
+  bucket        = var.s3_bucket
+  acl           = var.s3_acl
+  key           = local.s3_key
+  source        = data.external.archive_prepare[0].result.filename
+  storage_class = var.s3_object_storage_class
+
+  server_side_encryption = var.s3_server_side_encryption
+  kms_key_id             = var.s3_kms_key_id
+
+  tags = var.s3_object_tags_only ? var.s3_object_tags : merge(var.tags, var.s3_object_tags)
+
+  dynamic "override_provider" {
+    for_each = var.s3_object_override_default_tags ? [true] : []
+
+    content {
+      default_tags {
+        tags = {}
+      }
+    }
+  }
+
+  depends_on = [null_resource.archive]
+}
+
+data "aws_cloudwatch_log_group" "lambda" {
+  count = local.create && var.create_function && !var.create_layer && var.use_existing_cloudwatch_log_group ? 1 : 0
+
+  region = var.region
+
+  name = coalesce(var.logging_log_group, "/aws/lambda/${var.lambda_at_edge ? "us-east-1." : ""}${var.function_name}")
+}
+
+resource "aws_cloudwatch_log_group" "lambda" {
+  count = local.create && var.create_function && !var.create_layer && !var.use_existing_cloudwatch_log_group ? 1 : 0
+
+  region = var.region
+
+  name                        = coalesce(var.logging_log_group, "/aws/lambda/${var.lambda_at_edge ? "us-east-1." : ""}${var.function_name}")
+  retention_in_days           = var.cloudwatch_logs_retention_in_days
+  kms_key_id                  = var.cloudwatch_logs_kms_key_id
+  skip_destroy                = var.cloudwatch_logs_skip_destroy
+  log_group_class             = var.cloudwatch_logs_log_group_class
+  deletion_protection_enabled = var.cloudwatch_logs_deletion_protection_enabled
+
+  tags = merge(var.tags, var.cloudwatch_logs_tags)
+}
+
+resource "aws_lambda_provisioned_concurrency_config" "current_version" {
+  count = local.create && var.create_function && !var.create_layer && var.provisioned_concurrent_executions > -1 ? 1 : 0
+
+  region = var.region
+
+  function_name = aws_lambda_function.this[0].function_name
+  qualifier     = aws_lambda_function.this[0].version
+
+  provisioned_concurrent_executions = var.provisioned_concurrent_executions
+}
+
+locals {
+  qualifiers = zipmap(["current_version", "unqualified_alias"], [var.create_current_version_async_event_config ? true : null, var.create_unqualified_alias_async_event_config ? true : null])
+}
+
+resource "aws_lambda_function_event_invoke_config" "this" {
+  for_each = { for k, v in local.qualifiers : k => v if v != null && local.create && var.create_function && !var.create_layer && var.create_async_event_config }
+
+  region = var.region
+
+  function_name = aws_lambda_function.this[0].function_name
+  qualifier     = each.key == "current_version" ? aws_lambda_function.this[0].version : null
+
+  maximum_event_age_in_seconds = var.maximum_event_age_in_seconds
+  maximum_retry_attempts       = var.maximum_retry_attempts
+
+  dynamic "destination_config" {
+    for_each = var.destination_on_failure != null || var.destination_on_success != null ? [true] : []
+    content {
+      dynamic "on_failure" {
+        for_each = var.destination_on_failure != null ? [true] : []
+        content {
+          destination = var.destination_on_failure
+        }
+      }
+
+      dynamic "on_success" {
+        for_each = var.destination_on_success != null ? [true] : []
+        content {
+          destination = var.destination_on_success
+        }
+      }
+    }
+  }
+}
+
+resource "aws_lambda_permission" "current_version_triggers" {
+  for_each = { for k, v in var.allowed_triggers : k => v if local.create && var.create_function && !var.create_layer && var.create_current_version_allowed_triggers }
+
+  region = var.region
+
+  function_name = aws_lambda_function.this[0].function_name
+  qualifier     = aws_lambda_function.this[0].version
+
+  statement_id_prefix    = try(each.value.statement_id, each.key)
+  action                 = try(each.value.action, "lambda:InvokeFunction")
+  principal              = try(each.value.principal, format("%s.amazonaws.com", try(each.value.service, "")))
+  principal_org_id       = try(each.value.principal_org_id, null)
+  source_arn             = try(each.value.source_arn, null)
+  source_account         = try(each.value.source_account, null)
+  event_source_token     = try(each.value.event_source_token, null)
+  function_url_auth_type = try(each.value.function_url_auth_type, null)
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+# Error: Error adding new Lambda Permission for lambda: InvalidParameterValueException: We currently do not support adding policies for $LATEST.
+resource "aws_lambda_permission" "unqualified_alias_triggers" {
+  for_each = { for k, v in var.allowed_triggers : k => v if local.create && var.create_function && !var.create_layer && var.create_unqualified_alias_allowed_triggers }
+
+  region = var.region
+
+  function_name = aws_lambda_function.this[0].function_name
+
+  statement_id_prefix    = try(each.value.statement_id, each.key)
+  action                 = try(each.value.action, "lambda:InvokeFunction")
+  principal              = try(each.value.principal, format("%s.amazonaws.com", try(each.value.service, "")))
+  principal_org_id       = try(each. value.principal_org_id, null)
+  source_arn             = try(each.value.source_arn, null)
+  source_account         = try(each.value.source_account, null)
+  event_source_token     = try(each.value.event_source_token, null)
+  function_url_auth_type = try(each.value.function_url_auth_type, "AWS_IAM")
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "aws_lambda_event_source_mapping" "this" {
+  for_each = { for k, v in var.event_source_mapping : k => v if local.create && var.create_function && !var.create_layer && var.create_unqualified_alias_allowed_triggers }
+
+  region = var.region
+
+  function_name = aws_lambda_function.this[0].arn
+
+  event_source_arn = try(each.value.event_source_arn, null)
+
+  batch_size                         = try(each.value.batch_size, null)
+  maximum_batching_window_in_seconds = try(each.value.maximum_batching_window_in_seconds, null)
+  enabled                            = try(each.value.enabled, true)
+  starting_position                  = try(each.value.starting_position, null)
+  starting_position_timestamp        = try(each.value.starting_position_timestamp, null)
+  parallelization_factor             = try(each.value.parallelization_factor, null)
+  maximum_retry_attempts             = try(each.value.maximum_retry_attempts, null)
+  maximum_record_age_in_seconds      = try(each.value.maximum_record_age_in_seconds, null)
+  bisect_batch_on_function_error     = try(each.value.bisect_batch_on_function_error, null)
+  topics                             = try(each.value.topics, null)
+  queues                             = try(each.value.queues, null)
+  function_response_types            = try(each.value.function_response_types, null)
+  tumbling_window_in_seconds         = try(each.value.tumbling_window_in_seconds, null)
+
+  dynamic "destination_config" {
+    for_each = try(each.value.destination_arn_on_failure, null) != null ? [true] : []
+    content {
+      on_failure {
+        destination_arn = each.value["destination_arn_on_failure"]
+      }
+    }
+  }
+
+  dynamic "scaling_config" {
+    for_each = try([each.value.scaling_config], [])
+    content {
+      maximum_concurrency = try(scaling_config.value.maximum_concurrency, null)
+    }
+  }
+
+
+  dynamic "self_managed_event_source" {
+    for_each = try(each.value.self_managed_event_source, [])
+    content {
+      endpoints = self_managed_event_source.value.endpoints
+    }
+  }
+
+  dynamic "self_managed_kafka_event_source_config" {
+    for_each = try(each.value.self_managed_kafka_event_source_config, [])
+    content {
+      consumer_group_id = self_managed_kafka_event_source_config.value.consumer_group_id
+    }
+  }
+  dynamic "amazon_managed_kafka_event_source_config" {
+    for_each = try(each.value.amazon_managed_kafka_event_source_config, [])
+    content {
+      consumer_group_id = amazon_managed_kafka_event_source_config.value.consumer_group_id
+    }
+  }
+
+  dynamic "source_access_configuration" {
+    for_each = try(each.value.source_access_configuration, [])
+    content {
+      type = source_access_configuration.value["type"]
+      uri  = source_access_configuration.value["uri"]
+    }
+  }
+
+  dynamic "filter_criteria" {
+    for_each = try(each.value.filter_criteria, null) != null ? [true] : []
+
+    content {
+      dynamic "filter" {
+        for_each = try(flatten([each.value.filter_criteria]), [])
+
+        content {
+          pattern = try(filter.value.pattern, null)
+        }
+      }
+    }
+  }
+
+  dynamic "document_db_event_source_config" {
+    for_each = try(each.value.document_db_event_source_config, [])
+
+    content {
+      database_name   = document_db_event_source_config.value.database_name
+      collection_name = try(document_db_event_source_config.value.collection_name, null)
+      full_document   = try(document_db_event_source_config.value.full_document, null)
+    }
+  }
+
+  dynamic "metrics_config" {
+    for_each = try([each.value.metrics_config], [])
+
+    content {
+      metrics = metrics_config.value.metrics
+    }
+  }
+
+  dynamic "provisioned_poller_config" {
+    for_each = try([each.value.provisioned_poller_config], [])
+    content {
+      maximum_pollers = try(provisioned_poller_config.value.maximum_pollers, null)
+      minimum_pollers = try(provisioned_poller_config.value.minimum_pollers, null)
+    }
+  }
+
+  tags = merge(var.tags, try(each.value.tags, {}))
+}
+
+resource "aws_lambda_function_url" "this" {
+  count = local.create && var.create_function && !var.create_layer && var.create_lambda_function_url ? 1 : 0
+
+  region = var.region
+
+  function_name = aws_lambda_function.this[0].function_name
+
+  # Error: error creating Lambda Function URL: ValidationException
+  qualifier          = var.create_unqualified_alias_lambda_function_url ? null : aws_lambda_function.this[0].version
+  authorization_type = var.authorization_type
+  invoke_mode        = var.invoke_mode
+
+  dynamic "cors" {
+    for_each = length(keys(var.cors)) == 0 ? [] : [var.cors]
+
+    content {
+      allow_credentials = try(cors.value.allow_credentials, null)
+      allow_headers     = try(cors.value.allow_headers, null)
+      allow_methods     = try(cors.value.allow_methods, null)
+      allow_origins     = try(cors.value.allow_origins, null)
+      expose_headers    = try(cors.value.expose_headers, null)
+      max_age           = try(cors.value.max_age, null)
+    }
+  }
+}
+
+resource "aws_lambda_function_recursion_config" "this" {
+  count = local.create && var.create_function && !var.create_layer && var.recursive_loop == "Allow" ? 1 : 0
+
+  region = var.region
+
+  function_name  = aws_lambda_function.this[0].function_name
+  recursive_loop = var.recursive_loop
+}
+
+# This resource contains the extra information required by SAM CLI to provide the testing capabilities
+# to the TF application. The required data is where SAM CLI can find the Lambda function source code
+# and what are the resources that contain the building logic.
+resource "null_resource" "sam_metadata_aws_lambda_function" {
+  count = local.create && var.create_sam_metadata && var.create_package && var.create_function && !var.create_layer ? 1 : 0
+
+  triggers = {
+    # This is a way to let SAM CLI correlates between the Lambda function resource, and this metadata
+    # resource
+    resource_name = "aws_lambda_function.this[0]"
+    resource_type = "ZIP_LAMBDA_FUNCTION"
+
+    # The Lambda function source code.
+    original_source_code = jsonencode(var.source_path)
+
+    # a property to let SAM CLI knows where to find the Lambda function source code if the provided
+    # value for original_source_code attribute is map.
+    source_code_property = "path"
+
+    # A property to let SAM CLI knows where to find the Lambda function built output
+    built_output_path = data.external.archive_prepare[0].result.filename
+  }
+
+  # SAM CLI can run terraform apply -target metadata resource, and this will apply the building
+  # resources as well
+  depends_on = [data.external.archive_prepare, null_resource.archive]
+}
+
+# This resource contains the extra information required by SAM CLI to provide the testing capabilities
+# to the TF application. The required data is where SAM CLI can find the Lambda layer source code
+# and what are the resources that contain the building logic.
+resource "null_resource" "sam_metadata_aws_lambda_layer_version" {
+  count = local.create && var.create_sam_metadata && var.create_package && var.create_layer ? 1 : 0
+
+  triggers = {
+    # This is a way to let SAM CLI correlates between the Lambda layer resource, and this metadata
+    # resource
+    resource_name = "aws_lambda_layer_version.this[0]"
+    resource_type = "LAMBDA_LAYER"
+
+    # The Lambda layer source code.
+    original_source_code = jsonencode(var.source_path)
+
+    # a property to let SAM CLI knows where to find the Lambda layer source code if the provided
+    # value for original_source_code attribute is map.
+    source_code_property = "path"
+
+    # A property to let SAM CLI knows where to find the Lambda layer built output
+    built_output_path = data.external.archive_prepare[0].result.filename
+  }
+
+  # SAM CLI can run terraform apply -target metadata resource, and this will apply the building
+  # resources as well
+  depends_on = [data.external.archive_prepare, null_resource.archive]
+}
+
+
+# Lambda Function
+output "lambda_function_arn" {
+  description = "The ARN of the Lambda Function"
+  value       = try(aws_lambda_function.this[0].arn, "")
+}
+
+output "lambda_function_arn_static" {
+  description = "The static ARN of the Lambda Function. Use this to avoid cycle errors between resources (e.g., Step Functions)"
+  value       = local.create && var.create_function && !var.create_layer ? "arn:${data.aws_partition.current.partition}:lambda:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:function:${var.function_name}" : ""
+}
+
+output "lambda_function_code_sha256" {
+  description = "The base64-encoded representation of the source code package file"
+  value       = try(aws_lambda_function.this[0].code_sha256, "")
+}
+
+output "lambda_function_invoke_arn" {
+  description = "The Invoke ARN of the Lambda Function"
+  value       = try(aws_lambda_function.this[0].invoke_arn, "")
+}
+
+output "lambda_function_name" {
+  description = "The name of the Lambda Function"
+  value       = try(aws_lambda_function.this[0].function_name, "")
+}
+
+output "lambda_function_qualified_arn" {
+  description = "The ARN identifying your Lambda Function Version"
+  value       = try(aws_lambda_function.this[0].qualified_arn, "")
+}
+
+output "lambda_function_qualified_invoke_arn" {
+  description = "The Invoke ARN identifying your Lambda Function Version"
+  value       = try(aws_lambda_function.this[0].qualified_invoke_arn, "")
+}
+
+output "lambda_function_version" {
+  description = "Latest published version of Lambda Function"
+  value       = try(aws_lambda_function.this[0].version, "")
+}
+
+output "lambda_function_last_modified" {
+  description = "The date Lambda Function resource was last modified"
+  value       = try(aws_lambda_function.this[0].last_modified, "")
+}
+
+output "lambda_function_kms_key_arn" {
+  description = "The ARN for the KMS encryption key of Lambda Function"
+  value       = try(aws_lambda_function.this[0].kms_key_arn, "")
+}
+
+output "lambda_function_source_code_hash" {
+  description = "The user-defined hash of the source code package file"
+  value       = try(aws_lambda_function.this[0].source_code_hash, "")
+}
+
+output "lambda_function_source_code_size" {
+  description = "The size in bytes of the function .zip file"
+  value       = try(aws_lambda_function.this[0].source_code_size, "")
+}
+
+output "lambda_function_signing_job_arn" {
+  description = "ARN of the signing job"
+  value       = try(aws_lambda_function.this[0].signing_job_arn, "")
+}
+
+output "lambda_function_signing_profile_version_arn" {
+  description = "ARN of the signing profile version"
+  value       = try(aws_lambda_function.this[0].signing_profile_version_arn, "")
+}
+
+# Lambda Function URL
+output "lambda_function_url" {
+  description = "The URL of the Lambda Function URL"
+  value       = try(aws_lambda_function_url.this[0].function_url, "")
+}
+
+output "lambda_function_url_id" {
+  description = "The Lambda Function URL generated id"
+  value       = try(aws_lambda_function_url.this[0].url_id, "")
+}
+
+# Lambda Layer
+output "lambda_layer_arn" {
+  description = "The ARN of the Lambda Layer with version"
+  value       = try(aws_lambda_layer_version.this[0].arn, "")
+}
+
+output "lambda_layer_layer_arn" {
+  description = "The ARN of the Lambda Layer without version"
+  value       = try(aws_lambda_layer_version.this[0].layer_arn, "")
+}
+
+output "lambda_layer_code_sha256" {
+  description = "The base64-encoded representation of the Lambda Layer source code package file"
+  value       = try(aws_lambda_layer_version.this[0].code_sha256, "")
+}
+
+output "lambda_layer_created_date" {
+  description = "The date Lambda Layer resource was created"
+  value       = try(aws_lambda_layer_version.this[0].created_date, "")
+}
+
+output "lambda_layer_source_code_hash" {
+  description = "The user-defined hash of the Lambda Layer source code package file"
+  value       = try(aws_lambda_layer_version.this[0].source_code_hash, "")
+}
+
+output "lambda_layer_source_code_size" {
+  description = "The size in bytes of the Lambda Layer .zip file"
+  value       = try(aws_lambda_layer_version.this[0].source_code_size, "")
+}
+
+output "lambda_layer_version" {
+  description = "The Lambda Layer version"
+  value       = try(aws_lambda_layer_version.this[0].version, "")
+}
+
+# Lambda Event Source Mapping
+output "lambda_event_source_mapping_arn" {
+  description = "The event source mapping ARN"
+  value       = { for k, v in aws_lambda_event_source_mapping.this : k => v.arn }
+}
+
+output "lambda_event_source_mapping_function_arn" {
+  description = "The the ARN of the Lambda function the event source mapping is sending events to"
+  value       = { for k, v in aws_lambda_event_source_mapping.this : k => v.function_arn }
+}
+
+output "lambda_event_source_mapping_state" {
+  description = "The state of the event source mapping"
+  value       = { for k, v in aws_lambda_event_source_mapping.this : k => v.state }
+}
+
+output "lambda_event_source_mapping_state_transition_reason" {
+  description = "The reason the event source mapping is in its current state"
+  value       = { for k, v in aws_lambda_event_source_mapping.this : k => v.state_transition_reason }
+}
+
+output "lambda_event_source_mapping_uuid" {
+  description = "The UUID of the created event source mapping"
+  value       = { for k, v in aws_lambda_event_source_mapping.this : k => v.uuid }
+}
+
+# IAM Role
+output "lambda_role_arn" {
+  description = "The ARN of the IAM role created for the Lambda Function"
+  value       = try(aws_iam_role.lambda[0].arn, "")
+}
+
+output "lambda_role_name" {
+  description = "The name of the IAM role created for the Lambda Function"
+  value       = try(aws_iam_role.lambda[0].name, "")
+}
+
+output "lambda_role_unique_id" {
+  description = "The unique id of the IAM role created for the Lambda Function"
+  value       = try(aws_iam_role.lambda[0].unique_id, "")
+}
+
+# CloudWatch Log Group
+output "lambda_cloudwatch_log_group_arn" {
+  description = "The ARN of the Cloudwatch Log Group"
+  value       = local.log_group_arn
+}
+
+output "lambda_cloudwatch_log_group_name" {
+  description = "The name of the Cloudwatch Log Group"
+  value       = local.log_group_name
+}
+
+# Deployment package
+output "local_filename" {
+  description = "The filename of zip archive deployed (if deployment was from local)"
+  value       = local.filename
+
+  depends_on = [
+    null_resource.archive,
+  ]
+}
+
+output "s3_object" {
+  description = "The map with S3 object data of zip archive deployed (if deployment was from S3)"
+  value = {
+    bucket     = local.s3_bucket
+    key        = local.s3_key
+    version_id = local.s3_object_version
+  }
+}
+
+
+locals {
+  python = (substr(pathexpand("~"), 0, 1) == "/") ? "python3" : "python.exe"
+}
+
+# Generates a filename for the zip archive based on the content of the files
+# in source_path. The filename will change when the source code changes.
+data "external" "archive_prepare" {
+  count = var.create && var.create_package ? 1 : 0
+
+  program = [local.python, "${path.module}/package.py", "prepare"]
+
+  query = {
+    paths = jsonencode({
+      module = path.module
+      root   = path.root
+      cwd    = path.cwd
+    })
+
+    docker = var.build_in_docker ? jsonencode({
+      docker_pip_cache          = var.docker_pip_cache
+      docker_build_root         = var.docker_build_root
+      docker_file               = var.docker_file
+      docker_image              = var.docker_image
+      with_ssh_agent            = var.docker_with_ssh_agent
+      docker_additional_options = var.docker_additional_options
+      docker_entrypoint         = var.docker_entrypoint
+    }) : null
+
+    artifacts_dir = var.artifacts_dir
+    runtime       = var.runtime
+    source_path   = try(tostring(var.source_path), jsonencode(var.source_path))
+    hash_extra    = var.hash_extra
+    # Include into the hash the module sources that affect the packaging.
+    hash_internal = jsonencode([filesha256("${path.module}/package.py")])
+
+    recreate_missing_package = var.recreate_missing_package
+    quiet                    = var.quiet_archive_local_exec
+  }
+}
+
+# This transitive resource used as a bridge between a state stored
+# in a Terraform plan and a call of a build command on the apply stage
+# to transfer a noticeable amount of data
+resource "local_file" "archive_plan" {
+  count = var.create && var.create_package ? 1 : 0
+
+  content              = var.build_in_docker ? sensitive(data.external.archive_prepare[0].result.build_plan) : data.external.archive_prepare[0].result.build_plan
+  filename             = data.external.archive_prepare[0].result.build_plan_filename
+  directory_permission = "0755"
+  file_permission      = "0644"
+}
+
+# Build the zip archive whenever the filename changes.
+resource "null_resource" "archive" {
+  count = var.create && var.create_package ? 1 : 0
+
+  triggers = {
+    filename  = data.external.archive_prepare[0].result.filename
+    timestamp = var.trigger_on_package_timestamp ? data.external.archive_prepare[0].result.timestamp : null
+  }
+
+  provisioner "local-exec" {
+    interpreter = [
+      local.python, "${path.module}/package.py", "build",
+      "--timestamp", data.external.archive_prepare[0].result.timestamp
+    ]
+    command = data.external.archive_prepare[0].result.build_plan_filename
+    quiet   = var.quiet_archive_local_exec
+  }
+
+  depends_on = [local_file.archive_plan]
+}
+
+
+variable "create" {
+  description = "Controls whether resources should be created"
+  type        = bool
+  default     = true
+}
+
+variable "create_package" {
+  description = "Controls whether Lambda package should be created"
+  type        = bool
+  default     = true
+}
+
+variable "create_function" {
+  description = "Controls whether Lambda Function resource should be created"
+  type        = bool
+  default     = true
+}
+
+variable "create_layer" {
+  description = "Controls whether Lambda Layer resource should be created"
+  type        = bool
+  default     = false
+}
+
+variable "create_role" {
+  description = "Controls whether IAM role for Lambda Function should be created"
+  type        = bool
+  default     = true
+}
+
+variable "create_lambda_function_url" {
+  description = "Controls whether the Lambda Function URL resource should be created"
+  type        = bool
+  default     = false
+}
+
+variable "create_sam_metadata" {
+  description = "Controls whether the SAM metadata null resource should be created"
+  type        = bool
+  default     = false
+}
+
+variable "putin_khuylo" {
+  description = "Do you agree that Putin doesn't respect Ukrainian sovereignty and territorial integrity? More info: https://en.wikipedia.org/wiki/Putin_khuylo!"
+  type        = bool
+  default     = true
+}
+
+variable "region" {
+  description = "Region where the resource(s) will be managed. Defaults to the region set in the provider configuration"
+  type        = string
+  default     = null
+}
+
+###########
+# Function
+###########
+
+variable "lambda_at_edge" {
+  description = "Set this to true if using Lambda@Edge, to enable publishing, limit the timeout, and allow edgelambda.amazonaws.com to invoke the function"
+  type        = bool
+  default     = false
+}
+
+variable "lambda_at_edge_logs_all_regions" {
+  description = "Whether to specify a wildcard in IAM policy used by Lambda@Edge to allow logging in all regions"
+  type        = bool
+  default     = true
+}
+
+variable "function_name" {
+  description = "A unique name for your Lambda Function"
+  type        = string
+  default     = ""
+}
+
+variable "handler" {
+  description = "Lambda Function entrypoint in your code"
+  type        = string
+  default     = ""
+}
+
+variable "runtime" {
+  description = "Lambda Function runtime"
+  type        = string
+  default     = ""
+}
+
+variable "lambda_role" {
+  description = " IAM role ARN attached to the Lambda Function. This governs both who / what can invoke your Lambda Function, as well as what resources our Lambda Function has access to. See Lambda Permission Model for more details."
+  type        = string
+  default     = ""
+}
+
+variable "description" {
+  description = "Description of your Lambda Function (or Layer)"
+  type        = string
+  default     = ""
+}
+
+variable "code_signing_config_arn" {
+  description = "Amazon Resource Name (ARN) for a Code Signing Configuration"
+  type        = string
+  default     = null
+}
+
+variable "layers" {
+  description = "List of Lambda Layer Version ARNs (maximum of 5) to attach to your Lambda Function."
+  type        = list(string)
+  default     = null
+}
+
+variable "architectures" {
+  description = "Instruction set architecture for your Lambda function. Valid values are [\"x86_64\"] and [\"arm64\"]."
+  type        = list(string)
+  default     = null
+}
+
+variable "kms_key_arn" {
+  description = "The ARN of KMS key to use by your Lambda Function"
+  type        = string
+  default     = null
+}
+
+variable "memory_size" {
+  description = "Amount of memory in MB your Lambda Function can use at runtime. Valid value between 128 MB to 10,240 MB (10 GB), in 64 MB increments."
+  type        = number
+  default     = 128
+}
+
+variable "ephemeral_storage_size" {
+  description = "Amount of ephemeral storage (/tmp) in MB your Lambda Function can use at runtime. Valid value between 512 MB to 10,240 MB (10 GB)."
+  type        = number
+  default     = 512
+}
+
+variable "publish" {
+  description = "Whether to publish creation/change as new Lambda Function Version."
+  type        = bool
+  default     = false
+}
+
+variable "reserved_concurrent_executions" {
+  description = "The amount of reserved concurrent executions for this Lambda Function. A value of 0 disables Lambda Function from being triggered and -1 removes any concurrency limitations. Defaults to Unreserved Concurrency Limits -1."
+  type        = number
+  default     = -1
+}
+
+variable "timeout" {
+  description = "The amount of time your Lambda Function has to run in seconds."
+  type        = number
+  default     = 3
+}
+
+variable "dead_letter_target_arn" {
+  description = "The ARN of an SNS topic or SQS queue to notify when an invocation fails."
+  type        = string
+  default     = null
+}
+
+variable "environment_variables" {
+  description = "A map that defines environment variables for the Lambda Function."
+  type        = map(string)
+  default     = {}
+}
+
+variable "tracing_mode" {
+  description = "Tracing mode of the Lambda Function. Valid value can be either PassThrough or Active."
+  type        = string
+  default     = "Active"
+}
+
+variable "vpc_subnet_ids" {
+  description = "List of subnet ids when Lambda Function should run in the VPC. Usually private or intra subnets."
+  type        = list(string)
+  default     = null
+}
+
+variable "vpc_security_group_ids" {
+  description = "List of security group ids when Lambda Function should run in the VPC."
+  type        = list(string)
+  default     = null
+}
+
+variable "ipv6_allowed_for_dual_stack" {
+  description = "Allows outbound IPv6 traffic on VPC functions that are connected to dual-stack subnets"
+  type        = bool
+  default     = null
+}
+
+variable "tags" {
+  description = "A map of tags to assign to resources."
+  type        = map(string)
+  default     = {}
+}
+
+# TODO - remove at next breaking change
+# tflint-ignore: terraform_unused_declarations
+variable "include_default_tag" {
+  description = "[Deprecated] Set to false to not include the default tag in the tags map."
+  type        = bool
+  default     = true
+}
+
+variable "function_tags" {
+  description = "A map of tags to assign only to the lambda function"
+  type        = map(string)
+  default     = {}
+}
+
+variable "s3_object_tags" {
+  description = "A map of tags to assign to S3 bucket object."
+  type        = map(string)
+  default     = {}
+}
+
+variable "s3_object_tags_only" {
+  description = "Set to true to not merge tags with s3_object_tags. Useful to avoid breaching S3 Object 10 tag limit."
+  type        = bool
+  default     = false
+}
+
+variable "package_type" {
+  description = "The Lambda deployment package type. Valid options: Zip or Image"
+  type        = string
+  default     = "Zip"
+}
+
+variable "image_uri" {
+  description = "The ECR image URI containing the function's deployment package."
+  type        = string
+  default     = null
+}
+
+variable "image_config_entry_point" {
+  description = "The ENTRYPOINT for the docker image"
+  type        = list(string)
+  default     = []
+
+}
+variable "image_config_command" {
+  description = "The CMD for the docker image"
+  type        = list(string)
+  default     = []
+}
+
+variable "image_config_working_directory" {
+  description = "The working directory for the docker image"
+  type        = string
+  default     = null
+}
+
+variable "snap_start" {
+  description = "(Optional) Snap start settings for low-latency startups"
+  type        = bool
+  default     = false
+}
+
+variable "replace_security_groups_on_destroy" {
+  description = "(Optional) When true, all security groups defined in vpc_security_group_ids will be replaced with the default security group after the function is destroyed. Set the replacement_security_group_ids variable to use a custom list of security groups for replacement instead."
+  type        = bool
+  default     = null
+}
+
+variable "replacement_security_group_ids" {
+  description = "(Optional) List of security group IDs to assign to orphaned Lambda function network interfaces upon destruction. replace_security_groups_on_destroy must be set to true to use this attribute."
+  type        = list(string)
+  default     = null
+}
+
+variable "timeouts" {
+  description = "Define maximum timeout for creating, updating, and deleting Lambda Function resources"
+  type        = map(string)
+  default     = {}
+}
+
+variable "skip_destroy" {
+  description = "Set to true if you do not wish the function to be deleted at destroy time, and instead just remove the function from the Terraform state. Useful for Lambda@Edge functions attached to CloudFront distributions."
+  type        = bool
+  default     = null
+}
+
+variable "tenant_isolation_mode" {
+  description = "Enable tenant isolation mode for the Lambda Function"
+  type        = bool
+  default     = false
+}
+
+###############
+# Function URL
+###############
+
+variable "create_unqualified_alias_lambda_function_url" {
+  description = "Whether to use unqualified alias pointing to $LATEST version in Lambda Function URL"
+  type        = bool
+  default     = true
+}
+
+variable "authorization_type" {
+  description = "The type of authentication that the Lambda Function URL uses. Set to 'AWS_IAM' to restrict access to authenticated IAM users only. Set to 'NONE' to bypass IAM authentication and create a public endpoint."
+  type        = string
+  default     = "AWS_IAM"
+}
+
+variable "cors" {
+  description = "CORS settings to be used by the Lambda Function URL"
+  type        = any
+  default     = {}
+}
+
+variable "invoke_mode" {
+  description = "Invoke mode of the Lambda Function URL. Valid values are BUFFERED (default) and RESPONSE_STREAM."
+  type        = string
+  default     = null
+}
+
+variable "s3_object_override_default_tags" {
+  description = "Whether to override the default_tags from provider? NB: S3 objects support a maximum of 10 tags."
+  type        = bool
+  default     = false
+}
+
+########
+# Layer
+########
+
+variable "layer_name" {
+  description = "Name of Lambda Layer to create"
+  type        = string
+  default     = ""
+}
+
+variable "layer_skip_destroy" {
+  description = "Whether to retain the old version of a previously deployed Lambda Layer."
+  type        = bool
+  default     = false
+}
+
+variable "license_info" {
+  description = "License info for your Lambda Layer. Eg, MIT or full url of a license."
+  type        = string
+  default     = ""
+}
+
+variable "compatible_runtimes" {
+  description = "A list of Runtimes this layer is compatible with. Up to 5 runtimes can be specified."
+  type        = list(string)
+  default     = []
+}
+
+variable "compatible_architectures" {
+  description = "A list of Architectures Lambda layer is compatible with. Currently x86_64 and arm64 can be specified."
+  type        = list(string)
+  default     = null
+}
+
+############################
+# Lambda Async Event Config
+############################
+
+variable "create_async_event_config" {
+  description = "Controls whether async event configuration for Lambda Function/Alias should be created"
+  type        = bool
+  default     = false
+}
+
+variable "create_current_version_async_event_config" {
+  description = "Whether to allow async event configuration on current version of Lambda Function (this will revoke permissions from previous version because Terraform manages only current resources)"
+  type        = bool
+  default     = true
+}
+
+variable "create_unqualified_alias_async_event_config" {
+  description = "Whether to allow async event configuration on unqualified alias pointing to $LATEST version"
+  type        = bool
+  default     = true
+}
+
+variable "maximum_event_age_in_seconds" {
+  description = "Maximum age of a request that Lambda sends to a function for processing in seconds. Valid values between 60 and 21600."
+  type        = number
+  default     = null
+}
+
+variable "maximum_retry_attempts" {
+  description = "Maximum number of times to retry when the function returns an error. Valid values between 0 and 2. Defaults to 2."
+  type        = number
+  default     = null
+}
+
+variable "destination_on_failure" {
+  description = "Amazon Resource Name (ARN) of the destination resource for failed asynchronous invocations"
+  type        = string
+  default     = null
+}
+
+variable "destination_on_success" {
+  description = "Amazon Resource Name (ARN) of the destination resource for successful asynchronous invocations"
+  type        = string
+  default     = null
+}
+
+##########################
+# Provisioned Concurrency
+##########################
+
+variable "provisioned_concurrent_executions" {
+  description = "Amount of capacity to allocate. Set to 1 or greater to enable, or set to 0 to disable provisioned concurrency."
+  type        = number
+  default     = -1
+}
+
+############################################
+# Lambda Permissions (for allowed triggers)
+############################################
+
+variable "create_current_version_allowed_triggers" {
+  description = "Whether to allow triggers on current version of Lambda Function (this will revoke permissions from previous version because Terraform manages only current resources)"
+  type        = bool
+  default     = true
+}
+
+variable "create_unqualified_alias_allowed_triggers" {
+  description = "Whether to allow triggers on unqualified alias pointing to $LATEST version"
+  type        = bool
+  default     = true
+}
+
+variable "allowed_triggers" {
+  description = "Map of allowed triggers to create Lambda permissions"
+  type        = map(any)
+  default     = {}
+}
+
+############################################
+# Lambda Event Source Mapping
+############################################
+
+variable "event_source_mapping" {
+  description = "Map of event source mapping"
+  type        = any
+  default     = {}
+}
+
+#################
+# CloudWatch Logs
+#################
+
+variable "use_existing_cloudwatch_log_group" {
+  description = "Whether to use an existing CloudWatch log group or create new"
+  type        = bool
+  default     = false
+}
+
+variable "cloudwatch_logs_retention_in_days" {
+  description = "Specifies the number of days you want to retain log events in the specified log group. Possible values are: 1, 3, 5, 7, 14, 30, 60, 90, 120, 150, 180, 365, 400, 545, 731, 1827, and 3653."
+  type        = number
+  default     = null
+}
+
+variable "cloudwatch_logs_kms_key_id" {
+  description = "The ARN of the KMS Key to use when encrypting log data."
+  type        = string
+  default     = null
+}
+
+variable "cloudwatch_logs_skip_destroy" {
+  description = "Whether to keep the log group (and any logs it may contain) at destroy time."
+  type        = bool
+  default     = false
+}
+
+variable "cloudwatch_logs_log_group_class" {
+  description = "Specified the log class of the log group. Possible values are: `STANDARD` or `INFREQUENT_ACCESS`"
+  type        = string
+  default     = null
+}
+
+variable "cloudwatch_logs_deletion_protection_enabled" {
+  description = "Whether to enable deletion protection for the log group."
+  type        = bool
+  default     = null
+}
+
+variable "cloudwatch_logs_tags" {
+  description = "A map of tags to assign to the resource."
+  type        = map(string)
+  default     = {}
+}
+
+######
+# IAM
+######
+
+variable "role_name" {
+  description = "Name of IAM role to use for Lambda Function"
+  type        = string
+  default     = null
+}
+
+variable "role_description" {
+  description = "Description of IAM role to use for Lambda Function"
+  type        = string
+  default     = null
+}
+
+variable "role_path" {
+  description = "Path of IAM role to use for Lambda Function"
+  type        = string
+  default     = null
+}
+
+variable "role_force_detach_policies" {
+  description = "Specifies to force detaching any policies the IAM role has before destroying it."
+  type        = bool
+  default     = true
+}
+
+variable "role_permissions_boundary" {
+  description = "The ARN of the policy that is used to set the permissions boundary for the IAM role used by Lambda Function"
+  type        = string
+  default     = null
+}
+
+variable "role_tags" {
+  description = "A map of tags to assign to IAM role"
+  type        = map(string)
+  default     = {}
+}
+
+variable "role_maximum_session_duration" {
+  description = "Maximum session duration, in seconds, for the IAM role"
+  type        = number
+  default     = 3600
+}
+
+###########
+# Policies
+###########
+
+variable "policy_name" {
+  description = "IAM policy name. It override the default value, which is the same as role_name"
+  type        = string
+  default     = null
+}
+
+variable "attach_cloudwatch_logs_policy" {
+  description = "Controls whether CloudWatch Logs policy should be added to IAM role for Lambda Function"
+  type        = bool
+  default     = true
+}
+
+variable "attach_create_log_group_permission" {
+  description = "Controls whether to add the create log group permission to the CloudWatch logs policy"
+  type        = bool
+  default     = true
+}
+
+variable "attach_dead_letter_policy" {
+  description = "Controls whether SNS/SQS dead letter notification policy should be added to IAM role for Lambda Function"
+  type        = bool
+  default     = false
+}
+
+variable "attach_network_policy" {
+  description = "Controls whether VPC/network policy should be added to IAM role for Lambda Function"
+  type        = bool
+  default     = false
+}
+
+variable "attach_tracing_policy" {
+  description = "Controls whether X-Ray tracing policy should be added to IAM role for Lambda Function"
+  type        = bool
+  default     = true
+}
+
+variable "attach_async_event_policy" {
+  description = "Controls whether async event policy should be added to IAM role for Lambda Function"
+  type        = bool
+  default     = false
+}
+
+variable "attach_policy_json" {
+  description = "Controls whether policy_json should be added to IAM role for Lambda Function"
+  type        = bool
+  default     = false
+}
+
+variable "attach_policy_jsons" {
+  description = "Controls whether policy_jsons should be added to IAM role for Lambda Function"
+  type        = bool
+  default     = false
+}
+
+variable "attach_policy" {
+  description = "Controls whether policy should be added to IAM role for Lambda Function"
+  type        = bool
+  default     = false
+}
+
+variable "attach_policies" {
+  description = "Controls whether list of policies should be added to IAM role for Lambda Function"
+  type        = bool
+  default     = false
+}
+
+variable "number_of_policy_jsons" {
+  description = "Number of policies JSON to attach to IAM role for Lambda Function"
+  type        = number
+  default     = 0
+}
+
+variable "number_of_policies" {
+  description = "Number of policies to attach to IAM role for Lambda Function"
+  type        = number
+  default     = 0
+}
+
+variable "attach_policy_statements" {
+  description = "Controls whether policy_statements should be added to IAM role for Lambda Function"
+  type        = bool
+  default     = false
+}
+
+variable "trusted_entities" {
+  description = "List of additional trusted entities for assuming Lambda Function role (trust relationship)"
+  type        = any
+  default     = []
+}
+
+variable "assume_role_policy_statements" {
+  description = "Map of dynamic policy statements for assuming Lambda Function role (trust relationship)"
+  type        = any
+  default     = {}
+}
+
+variable "policy_json" {
+  description = "An additional policy document as JSON to attach to the Lambda Function role"
+  type        = string
+  default     = null
+}
+
+variable "policy_jsons" {
+  description = "List of additional policy documents as JSON to attach to Lambda Function role"
+  type        = list(string)
+  default     = []
+}
+
+variable "policy" {
+  description = "An additional policy document ARN to attach to the Lambda Function role"
+  type        = string
+  default     = null
+}
+
+variable "policies" {
+  description = "List of policy statements ARN to attach to Lambda Function role"
+  type        = list(string)
+  default     = []
+}
+
+variable "policy_statements" {
+  description = "Map of dynamic policy statements to attach to Lambda Function role"
+  type        = any
+  default     = {}
+}
+
+variable "file_system_arn" {
+  description = "The Amazon Resource Name (ARN) of the Amazon EFS Access Point that provides access to the file system."
+  type        = string
+  default     = null
+}
+
+variable "file_system_local_mount_path" {
+  description = "The path where the function can access the file system, starting with /mnt/."
+  type        = string
+  default     = null
+}
+
+##########################
+# Build artifact settings
+##########################
+
+variable "artifacts_dir" {
+  description = "Directory name where artifacts should be stored"
+  type        = string
+  default     = "builds"
+}
+
+variable "s3_prefix" {
+  description = "Directory name where artifacts should be stored in the S3 bucket. If unset, the path from `artifacts_dir` is used"
+  type        = string
+  default     = null
+}
+
+variable "ignore_source_code_hash" {
+  description = "Whether to ignore changes to the function's source code hash. Set to true if you manage infrastructure and code deployments separately."
+  type        = bool
+  default     = false
+}
+
+variable "local_existing_package" {
+  description = "The absolute path to an existing zip-file to use"
+  type        = string
+  default     = null
+}
+
+variable "s3_existing_package" {
+  description = "The S3 bucket object with keys bucket, key, version pointing to an existing zip-file to use"
+  type        = map(string)
+  default     = null
+}
+
+variable "store_on_s3" {
+  description = "Whether to store produced artifacts on S3 or locally."
+  type        = bool
+  default     = false
+}
+
+variable "s3_object_storage_class" {
+  description = "Specifies the desired Storage Class for the artifact uploaded to S3. Can be either STANDARD, REDUCED_REDUNDANCY, ONEZONE_IA, INTELLIGENT_TIERING, or STANDARD_IA."
+  type        = string
+  default     = "ONEZONE_IA" # Cheaper than STANDARD and it is enough for Lambda deployments
+}
+
+variable "s3_bucket" {
+  description = "S3 bucket to store artifacts"
+  type        = string
+  default     = null
+}
+
+variable "s3_acl" {
+  description = "The canned ACL to apply. Valid values are private, public-read, public-read-write, aws-exec-read, authenticated-read, bucket-owner-read, and bucket-owner-full-control. Defaults to private."
+  type        = string
+  default     = "private"
+}
+
+variable "s3_server_side_encryption" {
+  description = "Specifies server-side encryption of the object in S3. Valid values are \"AES256\" and \"aws:kms\"."
+  type        = string
+  default     = null
+}
+
+variable "s3_kms_key_id" {
+  description = "Specifies a custom KMS key to use for S3 object encryption."
+  type        = string
+  default     = null
+}
+
+variable "source_path" {
+  description = "The absolute path to a local file or directory containing your Lambda source code"
+  type        = any # string | list(string | map(any))
+  default     = null
+}
+
+variable "hash_extra" {
+  description = "The string to add into hashing function. Useful when building same source path for different functions."
+  type        = string
+  default     = ""
+}
+
+variable "build_in_docker" {
+  description = "Whether to build dependencies in Docker"
+  type        = bool
+  default     = false
+}
+
+variable "docker_file" {
+  description = "Path to a Dockerfile when building in Docker"
+  type        = string
+  default     = ""
+}
+
+variable "docker_build_root" {
+  description = "Root dir where to build in Docker"
+  type        = string
+  default     = ""
+}
+
+variable "docker_image" {
+  description = "Docker image to use for the build"
+  type        = string
+  default     = ""
+}
+
+variable "docker_with_ssh_agent" {
+  description = "Whether to pass SSH_AUTH_SOCK into docker environment or not"
+  type        = bool
+  default     = false
+}
+
+variable "docker_pip_cache" {
+  description = "Whether to mount a shared pip cache folder into docker environment or not"
+  type        = any
+  default     = null
+}
+
+variable "docker_additional_options" {
+  description = "Additional options to pass to the docker run command (e.g. to set environment variables, volumes, etc.)"
+  type        = list(string)
+  default     = []
+}
+
+variable "docker_entrypoint" {
+  description = "Path to the Docker entrypoint to use"
+  type        = string
+  default     = null
+}
+
+variable "recreate_missing_package" {
+  description = "Whether to recreate missing Lambda package if it is missing locally or not"
+  type        = bool
+  default     = true
+}
+
+variable "trigger_on_package_timestamp" {
+  description = "Whether to recreate the Lambda package if the timestamp changes"
+  type        = bool
+  default     = true
+}
+
+variable "quiet_archive_local_exec" {
+  description = "Whether to disable archive local execution output"
+  type        = bool
+  default     = true
+}
+
+############################################
+# Lambda Advanced Logging Settings
+############################################
+
+variable "logging_log_format" {
+  description = "The log format of the Lambda Function. Valid values are \"JSON\" or \"Text\"."
+  type        = string
+  default     = "Text"
+}
+
+variable "logging_application_log_level" {
+  description = "The application log level of the Lambda Function. Valid values are \"TRACE\", \"DEBUG\", \"INFO\", \"WARN\", \"ERROR\", or \"FATAL\"."
+  type        = string
+  default     = "INFO"
+}
+
+variable "logging_system_log_level" {
+  description = "The system log level of the Lambda Function. Valid values are \"DEBUG\", \"INFO\", or \"WARN\"."
+  type        = string
+  default     = "INFO"
+}
+
+variable "logging_log_group" {
+  description = "The CloudWatch log group to send logs to."
+  type        = string
+  default     = null
+}
+
+############################################
+# Lambda Recursive Loop Settings
+############################################
+
+variable "recursive_loop" {
+  description = "Lambda function recursion configuration. Valid values are Allow or Terminate."
+  type        = string
+  default     = null
+}
+
+############################################
+# Lambda Durable Execution Settings
+############################################
+
+variable "durable_config_execution_timeout" {
+  description = "Maximum execution time in seconds for the durable function. Valid values between 1 and 31622400 (366 days)."
+  type        = number
+  default     = null
+}
+
+variable "durable_config_retention_period" {
+  description = "Number of days to retain the function's execution state. Valid values between 1 and 90. Defaults to 14 if durable_config is enabled."
+  type        = number
+  default     = null
+}
+
+
+terraform {
+  required_version = ">= 1.5.7"
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 6.28"
+    }
+    external = {
+      source  = "hashicorp/external"
+      version = ">= 1.0"
+    }
+    local = {
+      source  = "hashicorp/local"
+      version = ">= 1.0"
+    }
+    null = {
+      source  = "hashicorp/null"
+      version = ">= 2.0"
+    }
+  }
+
+  provider_meta "aws" {
+    user_agent = [
+      "github.com/terraform-aws-modules/terraform-aws-lambda"
+    ]
+  }
+}

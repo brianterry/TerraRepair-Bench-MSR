@@ -1,0 +1,98 @@
+{
+  "module_id": "module_0397",
+  "model_id": "qwen3-32b",
+  "findings_before": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0065",
+      "title": "A KMS key is not configured to auto-rotate.",
+      "severity": "MEDIUM",
+      "resource_name": "aws_kms_key.replica",
+      "resource_type": "aws_kms_key",
+      "file_path": "main.tf",
+      "start_line": 34,
+      "end_line": 39
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_7",
+      "title": "Ensure rotation for customer created CMKs is enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_kms_key.replica",
+      "resource_type": "aws_kms_key",
+      "file_path": "/main.tf",
+      "start_line": 34,
+      "end_line": 39
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_64",
+      "title": "Ensure KMS key Policy is defined",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_kms_key.replica",
+      "resource_type": "aws_kms_key",
+      "file_path": "/main.tf",
+      "start_line": 34,
+      "end_line": 39
+    }
+  ],
+  "findings_after": [
+    {
+      "tool": "trivy",
+      "rule_id": "AWS-0065",
+      "title": "A KMS key is not configured to auto-rotate.",
+      "severity": "MEDIUM",
+      "resource_name": "aws_kms_key.replica",
+      "resource_type": "aws_kms_key",
+      "file_path": "main.tf",
+      "start_line": 101,
+      "end_line": 124
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_7",
+      "title": "Ensure rotation for customer created CMKs is enabled",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_kms_key.replica",
+      "resource_type": "aws_kms_key",
+      "file_path": "/main.tf",
+      "start_line": 101,
+      "end_line": 124
+    }
+  ],
+  "target_count": 3,
+  "resolved_count": 1,
+  "introduced_count": 0,
+  "unchanged_count": 2,
+  "repair_success_rate": 0.3333333333333333,
+  "regression_rate": 0.0,
+  "net_delta": 1,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 1,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 1
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 1
+    }
+  },
+  "repair_cost_usd": 0.0015011999999999998,
+  "repair_tokens": 3753,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0397_qwen3-32b.repaired.tf",
+  "raw_response_path": "module_0397_qwen3-32b.raw.txt",
+  "repaired_code_sha256": "4b7151276dad109d6d4a72915c08322f53347965d6034aa6b9c82b0b739ed15c"
+}

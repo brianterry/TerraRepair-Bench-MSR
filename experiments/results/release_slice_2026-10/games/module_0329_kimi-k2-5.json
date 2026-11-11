@@ -1,0 +1,108 @@
+{
+  "module_id": "module_0329",
+  "model_id": "kimi-k2-5",
+  "findings_before": [
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_12",
+      "title": "Ensure IAM password policy requires at least one number",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_account_password_policy.main[0]",
+      "resource_type": "aws_iam_account_password_policy",
+      "file_path": "/main.tf",
+      "start_line": 149,
+      "end_line": 159
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_15",
+      "title": "Ensure IAM password policy requires at least one uppercase letter",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_account_password_policy.main[0]",
+      "resource_type": "aws_iam_account_password_policy",
+      "file_path": "/main.tf",
+      "start_line": 149,
+      "end_line": 159
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_14",
+      "title": "Ensure IAM password policy requires at least one symbol",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_account_password_policy.main[0]",
+      "resource_type": "aws_iam_account_password_policy",
+      "file_path": "/main.tf",
+      "start_line": 149,
+      "end_line": 159
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_11",
+      "title": "Ensure IAM password policy requires at least one lowercase letter",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_account_password_policy.main[0]",
+      "resource_type": "aws_iam_account_password_policy",
+      "file_path": "/main.tf",
+      "start_line": 149,
+      "end_line": 159
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_40",
+      "title": "Ensure AWS IAM policy does not allow full IAM privileges",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy.policy",
+      "resource_type": "aws_iam_policy",
+      "file_path": "/main.tf",
+      "start_line": 161,
+      "end_line": 179
+    },
+    {
+      "tool": "checkov",
+      "rule_id": "CKV2_AWS_40",
+      "title": "Ensure AWS IAM policy does not allow full IAM privileges",
+      "severity": "UNKNOWN",
+      "resource_name": "aws_iam_policy.admin_not_indicated_policy",
+      "resource_type": "aws_iam_policy",
+      "file_path": "/main.tf",
+      "start_line": 190,
+      "end_line": 208
+    }
+  ],
+  "findings_after": [],
+  "target_count": 6,
+  "resolved_count": 6,
+  "introduced_count": 0,
+  "unchanged_count": 0,
+  "repair_success_rate": 1.0,
+  "regression_rate": 0.0,
+  "net_delta": 6,
+  "class_breakdown": {
+    "access_control": {
+      "resolved": 6,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "data_protection": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "observability": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    },
+    "other": {
+      "resolved": 0,
+      "introduced": 0,
+      "unchanged": 0
+    }
+  },
+  "repair_cost_usd": 0.005886,
+  "repair_tokens": 4072,
+  "hcl_valid": true,
+  "repaired_code_path": "module_0329_kimi-k2-5.repaired.tf",
+  "raw_response_path": "module_0329_kimi-k2-5.raw.txt",
+  "repaired_code_sha256": "2015bf7a397c3fe0b4bfdec56a606cfae36f1d6bdecda943854272999c5f6a64"
+}

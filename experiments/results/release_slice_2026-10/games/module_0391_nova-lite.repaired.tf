@@ -1,0 +1,86 @@
+provider "aws" {
+  region = "us-east-1"
+}
+
+resource "aws_s3_bucket" "huoxian_bucket" {
+  force_destroy = true
+  bucket        = "houxian${random_string.random_suffix.result}"
+
+  versioning {
+    enabled = true
+  }
+
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm = "aws:kms"
+        kms_master_key_id = "alias/aws/s3"
+      }
+    }
+  }
+
+  public_access_block_configuration {
+    block_public_acls       = true
+    block_public_policy    = true
+    ignore_public_acls      = true
+    restrict_public_buckets = true
+  }
+
+  logging {
+    target_bucket = "huoxian-logs-bucket"
+    target_prefix = "logs/"
+  }
+
+  lifecycle_rule {
+    id      = "logs-retention"
+    enabled = true
+
+    abort_incomplete_multipart_upload_after_days = 7
+
+    noncurrent_version_transition {
+      storage_class = "STANDARD_IA"
+      transition_after_days = 30
+    }
+
+    expiration {
+      days = 365
+    }
+  }
+
+  notification {
+    topic_arn = "arn:aws:sns:us-east-1:123456789012:huoxian-topic"
+    events    = ["s3:ObjectCreated:*"]
+  }
+}
+
+resource "aws_s3_object" "huoxian_object" {
+  bucket = aws_s3_bucket.huoxian_bucket.id
+  acl    = "private"
+  key    = "flag1650859"
+  source = "./flag1650859"
+  depends_on = [
+    aws_s3_bucket.huoxian_bucket,
+  ]
+}
+
+resource "random_string" "random_suffix" {
+  length  = 5
+  special = false
+  upper   = false
+}
+
+data "aws_canonical_user_id" "current" {}
+
+output "aws_s3_bucket_name" {
+  value       = "https://${aws_s3_bucket.huoxian_bucket.bucket}.s3.us-east-1.amazonaws.com"
+  description = "This is the bucket name of AWS S3 Service."
+}
+
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "4.10.0"
+    }
+  }
+}

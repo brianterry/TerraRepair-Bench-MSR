@@ -1,0 +1,201 @@
+```hcl
+locals {
+  ami_id = var.arch == "arm64"? data.aws_ami.fedora-coreos-arm[0].image_id : data.aws_ami.fedora-coreos.image_id
+}
+
+data "aws_ami" "fedora-coreos" {
+  most_recent = true
+  owners      = ["125523088429"]
+
+  filter {
+    name   = "architecture"
+    values = ["x86_64"]
+  }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+
+  filter {
+    name   = "description"
+    values = ["Fedora CoreOS ${var.os_stream} *"]
+  }
+}
+
+data "aws_ami" "fedora-coreos-arm" {
+  count = var.arch == "arm64"? 1 : 0
+
+  most_recent = true
+  owners      = ["125523088429"]
+
+  filter {
+    name   = "architecture"
+    values = ["arm64"]
+  }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+
+  filter {
+    name   = "description"
+    values = ["Fedora CoreOS ${var.os_stream} *"]
+  }
+}
+
+resource "aws_lb_target_group" "workers-http" {
+  name        = "${var.name}-workers-http"
+  vpc_id      = var.vpc_id
+  target_type = "instance"
+
+  protocol = "TCP"
+  port     = 80
+
+  health_check {
+    protocol = "HTTP"
+    port     = 10254
+    path     = "/healthz"
+    healthy_threshold   = 3
+    unhealthy_threshold = 3
+    interval = 10
+  }
+}
+
+resource "aws_lb_target_group" "workers-https" {
+  name        = "${var.name}-workers-https"
+  vpc_id      = var.vpc_id
+  target_type = "instance"
+
+  protocol = "TCP"
+  port     = 443
+
+  health_check {
+    protocol = "HTTP"
+    port     = 10254
+    path     = "/healthz"
+    healthy_threshold   = 3
+    unhealthy_threshold = 3
+    interval = 10
+  }
+}
+
+output "target_group_http" {
+  description = "ARN of a target group of workers for HTTP traffic"
+  value       = aws_lb_target_group.workers-http.arn
+}
+
+output "target_group_https" {
+  description = "ARN of a target group of workers for HTTPS traffic"
+  value       = aws_lb_target_group.workers-https.arn
+}
+
+resource "aws_autoscaling_group" "workers" {
+  name = "${var.name}-worker"
+
+  desired_capacity = var.worker_count
+  min_size         = var.worker_count
+  max_size         = var.worker_count + 2
+
+  vpc_zone_identifier = var.subnet_ids
+
+  launch_template {
+    id      = aws_launch_template.worker.id
+    version = aws_launch_template.worker.latest_version
+  }
+
+  target_group_arns = flatten([
+    aws_lb_target_group.workers-http.id,
+    aws_lb_target_group.workers-https.id,
+    var.target_groups,
+  ])
+
+  instance_refresh {
+    strategy = "Rolling"
+    preferences {
+      instance_warmup        = 120
+      min_healthy_percentage = 90
+    }
+  }
+  health_check_grace_period = 30
+  default_cooldown = 30
+
+  lifecycle {
+    create_before_destroy = true
+  }
+
+  wait_for_capacity_timeout = "0"
+
+  tag {
+    key                 = "Name"
+    value               = "${var.name}-worker"
+    propagate_at_launch = true
+  }
+}
+
+resource "aws_launch_template" "worker" {
+  name_prefix   = "${var.name}-worker"
+  image_id      = local.ami_id
+  instance_type = var.instance_type
+
+  ebs_optimized = true
+  block_device_mappings {
+    device_name = "/dev/xvda"
+    ebs {
+      volume_type           = var.disk_type
+      volume_size           = var.disk_size
+      iops                  = var.disk_iops
+      encrypted             = true
+      delete_on_termination = true
+    }
+  }
+
+  network_interfaces {
+    associate_public_ip_address = false
+    security_groups             = var.security_groups
+  }
+
+  user_data = sensitive(base64encode(data.ct_config.worker.rendered))
+
+  metadata_options {
+    http_tokens = "required"
+    http_endpoint = "enabled"
+    http_put_response_hop_limit = 1
+  }
+
+  monitoring {
+    enabled = false
+  }
+
+  credit_specification {
+    cpu_credits = var.cpu_credits
+  }
+  dynamic "instance_market_options" {
+    for_each = var.spot_price > 0 ? [1] : []
+    content {
+      market_type = "spot"
+      spot_options {
+        max_price = var.spot_price
+      }
+    }
+  }
+
+  lifecycle {
+    create_before_destroy = true
+    ignore_changes        = [image_id]
+  }
+}
+
+data "ct_config" "worker" {
+  content = templatefile("${path.module}/butane/worker.yaml", {
+    kubeconfig             = indent(10, var.kubeconfig)
+    ssh_authorized_key     = var.ssh_authorized_key
+    cluster_dns_service_ip = cidrhost(var.service_cidr, 10)
+    node_labels            = join(",", var.node_labels)
+    node_taints            = join(",", var.node_taints)
+  })
+  strict   = true
+  snippets = var.snippets
+}
+```

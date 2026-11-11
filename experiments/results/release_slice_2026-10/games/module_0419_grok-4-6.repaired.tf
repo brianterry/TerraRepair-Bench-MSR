@@ -1,0 +1,630 @@
+#
+# ONLY EDIT THIS FILE IN github.com/cloudposse/terraform-null-label
+# All other instances of this file should be a copy of that one
+#
+#
+# Copy this file from https://github.com/cloudposse/terraform-null-label/blob/master/exports/context.tf
+# and then place it in your Terraform module to automatically get
+# Cloud Posse's standard configuration inputs suitable for passing
+# to Cloud Posse modules.
+#
+# curl -sL https://raw.githubusercontent.com/cloudposse/terraform-null-label/master/exports/context.tf -o context.tf
+#
+# Modules should access the whole context as `module.this.context`
+# to get the input variables with nulls for defaults,
+# for example `context = module.this.context`,
+# and access individual variables as `module.this.<var>`,
+# with final values filled in.
+#
+# For example, when using defaults, `module.this.context.delimiter`
+# will be null, and `module.this.delimiter` will be `-` (hyphen).
+#
+
+module "this" {
+  source = "git::https://github.com/cloudposse/terraform-null-label.git?ref=488ab91e34a24a86957e397d9f7262ec5925586a"
+
+  enabled             = var.enabled
+  namespace           = var.namespace
+  tenant              = var.tenant
+  environment         = var.environment
+  stage               = var.stage
+  name                = var.name
+  delimiter           = var.delimiter
+  attributes          = var.attributes
+  tags                = var.tags
+  additional_tag_map  = var.additional_tag_map
+  label_order         = var.label_order
+  regex_replace_chars = var.regex_replace_chars
+  id_length_limit     = var.id_length_limit
+  label_key_case      = var.label_key_case
+  label_value_case    = var.label_value_case
+  descriptor_formats  = var.descriptor_formats
+  labels_as_tags      = var.labels_as_tags
+
+  context = var.context
+}
+
+# Copy contents of cloudposse/terraform-null-label/variables.tf here
+
+variable "context" {
+  type = any
+  default = {
+    enabled             = true
+    namespace           = null
+    tenant              = null
+    environment         = null
+    stage               = null
+    name                = null
+    delimiter           = null
+    attributes          = []
+    tags                = {}
+    additional_tag_map  = {}
+    regex_replace_chars = null
+    label_order         = []
+    id_length_limit     = null
+    label_key_case      = null
+    label_value_case    = null
+    descriptor_formats  = {}
+    # Note: we have to use [] instead of null for unset lists due to
+    # https://github.com/hashicorp/terraform/issues/28137
+    # which was not fixed until Terraform 1.0.0,
+    # but we want the default to be all the labels in `label_order`
+    # and we want users to be able to prevent all tag generation
+    # by setting `labels_as_tags` to `[]`, so we need
+    # a different sentinel to indicate "default"
+    labels_as_tags = ["unset"]
+  }
+  description = <<-EOT
+    Single object for setting entire context at once.
+    See description of individual variables for details.
+    Leave string and numeric variables as `null` to use default value.
+    Individual variable settings (non-null) override settings in context object,
+    except for attributes, tags, and additional_tag_map, which are merged.
+  EOT
+
+  validation {
+    condition     = lookup(var.context, "label_key_case", null) == null ? true : contains(["lower", "title", "upper"], var.context["label_key_case"])
+    error_message = "Allowed values: `lower`, `title`, `upper`."
+  }
+
+  validation {
+    condition     = lookup(var.context, "label_value_case", null) == null ? true : contains(["lower", "title", "upper", "none"], var.context["label_value_case"])
+    error_message = "Allowed values: `lower`, `title`, `upper`, `none`."
+  }
+}
+
+variable "enabled" {
+  type        = bool
+  default     = null
+  description = "Set to false to prevent the module from creating any resources"
+}
+
+variable "namespace" {
+  type        = string
+  default     = null
+  description = "ID element. Usually an abbreviation of your organization name, e.g. 'eg' or 'cp', to help ensure generated IDs are globally unique"
+}
+
+variable "tenant" {
+  type        = string
+  default     = null
+  description = "ID element _(Rarely used, not included by default)_. A customer identifier, indicating who this instance of a resource is for"
+}
+
+variable "environment" {
+  type        = string
+  default     = null
+  description = "ID element. Usually used for region e.g. 'uw2', 'us-west-2', OR role 'prod', 'staging', 'dev', 'UAT'"
+}
+
+variable "stage" {
+  type        = string
+  default     = null
+  description = "ID element. Usually used to indicate role, e.g. 'prod', 'staging', 'source', 'build', 'test', 'deploy', 'release'"
+}
+
+variable "name" {
+  type        = string
+  default     = null
+  description = <<-EOT
+    ID element. Usually the component or solution name, e.g. 'app' or 'jenkins'.
+    This is the only ID element not also included as a `tag`.
+    The "name" tag is set to the full `id` string. There is no tag with the value of the `name` input.
+    EOT
+}
+
+variable "delimiter" {
+  type        = string
+  default     = null
+  description = <<-EOT
+    Delimiter to be used between ID elements.
+    Defaults to `-` (hyphen). Set to `""` to use no delimiter at all.
+  EOT
+}
+
+variable "attributes" {
+  type        = list(string)
+  default     = []
+  description = <<-EOT
+    ID element. Additional attributes (e.g. `workers` or `cluster`) to add to `id`,
+    in the order they appear in the list. New attributes are appended to the
+    end of the list. The elements of the list are joined by the `delimiter`
+    and treated as a single ID element.
+    EOT
+}
+
+variable "labels_as_tags" {
+  type        = set(string)
+  default     = ["default"]
+  description = <<-EOT
+    Set of labels (ID elements) to include as tags in the `tags` output.
+    Default is to include all labels.
+    Tags with empty values will not be included in the `tags` output.
+    Set to `[]` to suppress all generated tags.
+    **Notes:**
+      The value of the `name` tag, if included, will be the `id`, not the `name`.
+      Unlike other `null-label` inputs, the initial setting of `labels_as_tags` cannot be
+      changed in later chained modules. Attempts to change it will be silently ignored.
+    EOT
+}
+
+variable "tags" {
+  type        = map(string)
+  default     = {}
+  description = <<-EOT
+    Additional tags (e.g. `{'BusinessUnit': 'XYZ'}`).
+    Neither the tag keys nor the tag values will be modified by this module.
+    EOT
+}
+
+variable "additional_tag_map" {
+  type        = map(string)
+  default     = {}
+  description = <<-EOT
+    Additional key-value pairs to add to each map in `tags_as_list_of_maps`. Not added to `tags` or `id`.
+    This is for some rare cases where resources want additional configuration of tags
+    and therefore take a list of maps with tag key, value, and additional configuration.
+    EOT
+}
+
+variable "label_order" {
+  type        = list(string)
+  default     = null
+  description = <<-EOT
+    The order in which the labels (ID elements) appear in the `id`.
+    Defaults to ["namespace", "environment", "stage", "name", "attributes"].
+    You can omit any of the 6 labels ("tenant" is the 6th), but at least one must be present.
+    EOT
+}
+
+variable "regex_replace_chars" {
+  type        = string
+  default     = null
+  description = <<-EOT
+    Terraform regular expression (regex) string.
+    Characters matching the regex will be removed from the ID elements.
+    If not set, `"/[^a-zA-Z0-9-]/"` is used to remove all characters other than hyphens, letters and digits.
+  EOT
+}
+
+variable "id_length_limit" {
+  type        = number
+  default     = null
+  description = <<-EOT
+    Limit `id` to this many characters (minimum 6).
+    Set to `0` for unlimited length.
+    Set to `null` for keep the existing setting, which defaults to `0`.
+    Does not affect `id_full`.
+  EOT
+  validation {
+    condition     = var.id_length_limit == null ? true : var.id_length_limit >= 6 || var.id_length_limit == 0
+    error_message = "The id_length_limit must be >= 6 if supplied (not null), or 0 for unlimited length."
+  }
+}
+
+variable "label_key_case" {
+  type        = string
+  default     = null
+  description = <<-EOT
+    Controls the letter case of the `tags` keys (label names) for tags generated by this module.
+    Does not affect keys of tags passed in via the `tags` input.
+    Possible values: `lower`, `title`, `upper`.
+    Default value: `title`.
+  EOT
+
+  validation {
+    condition     = var.label_key_case == null ? true : contains(["lower", "title", "upper"], var.label_key_case)
+    error_message = "Allowed values: `lower`, `title`, `upper`."
+  }
+}
+
+variable "label_value_case" {
+  type        = string
+  default     = null
+  description = <<-EOT
+    Controls the letter case of ID elements (labels) as included in `id`,
+    set as tag values, and output by this module individually.
+    Does not affect values of tags passed in via the `tags` input.
+    Possible values: `lower`, `title`, `upper` and `none` (no transformation).
+    Set this to `title` and set `delimiter` to `""` to yield Pascal Case IDs.
+    Default value: `lower`.
+  EOT
+
+  validation {
+    condition     = var.label_value_case == null ? true : contains(["lower", "title", "upper", "none"], var.label_value_case)
+    error_message = "Allowed values: `lower`, `title`, `upper`, `none`."
+  }
+}
+
+variable "descriptor_formats" {
+  type        = any
+  default     = {}
+  description = <<-EOT
+    Describe additional descriptors to be output in the `descriptors` output map.
+    Map of maps. Keys are names of descriptors. Values are maps of the form
+    `{
+       format = string
+       labels = list(string)
+    }`
+    (Type is `any` so the map values can later be enhanced to provide additional options.)
+    `format` is a Terraform format string to be passed to the `format()` function.
+    `labels` is a list of labels, in order, to pass to `format()` function.
+    Label values will be normalized before being passed to `format()` so they will be
+    identical to how they appear in `id`.
+    Default is `{}` (`descriptors` output will be empty).
+    EOT
+}
+
+#### End of copy of cloudposse/terraform-null-label/variables.tf
+
+
+locals {
+  enabled = module.this.enabled
+
+  sub_domain = var.name
+  root_domain = coalesce(module.acm.outputs.domain_name, join(".", [
+    module.this.environment, module.dns_delegated.outputs.default_domain_name
+  ]), module.dns_delegated.outputs.default_domain_name)
+  domain_name = join(".", [local.sub_domain, local.root_domain])
+}
+
+data "aws_caller_identity" "current" {}
+
+data "aws_region" "current" {}
+
+data "aws_iam_policy_document" "cloudwatch_logs_kms" {
+  count = local.enabled ? 1 : 0
+
+  statement {
+    sid    = "EnableRootPermissions"
+    effect = "Allow"
+
+    principals {
+      type        = "AWS"
+      identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"]
+    }
+
+    actions   = ["kms:*"]
+    resources = ["*"]
+  }
+
+  statement {
+    sid    = "AllowCloudWatchLogs"
+    effect = "Allow"
+
+    principals {
+      type        = "Service"
+      identifiers = ["logs.${data.aws_region.current.name}.amazonaws.com"]
+    }
+
+    actions = [
+      "kms:Encrypt",
+      "kms:Decrypt",
+      "kms:ReEncrypt*",
+      "kms:GenerateDataKey*",
+      "kms:CreateGrant",
+      "kms:DescribeKey",
+    ]
+
+    resources = ["*"]
+  }
+}
+
+resource "aws_kms_key" "cloudwatch_logs" {
+  count                   = local.enabled ? 1 : 0
+  description             = "CMK for API Gateway CloudWatch log group encryption"
+  deletion_window_in_days = 7
+  enable_key_rotation     = true
+  policy                  = data.aws_iam_policy_document.cloudwatch_logs_kms[0].json
+  tags                    = module.this.tags
+}
+
+resource "aws_cloudwatch_log_group" "api_gateway" {
+  count             = local.enabled ? 1 : 0
+  name              = module.this.id
+  retention_in_days = 365
+  kms_key_id        = aws_kms_key.cloudwatch_logs[0].arn
+  tags              = module.this.tags
+}
+
+resource "aws_api_gateway_rest_api" "this" {
+  count  = local.enabled ? 1 : 0
+  name   = module.this.id
+  body   = jsonencode(var.openapi_config)
+  policy = var.rest_api_policy
+
+  endpoint_configuration {
+    types = [var.endpoint_type]
+  }
+
+  tags = module.this.tags
+}
+
+resource "aws_api_gateway_rest_api_policy" "this" {
+  count       = local.enabled && var.rest_api_policy != null ? 1 : 0
+  rest_api_id = aws_api_gateway_rest_api.this[0].id
+  policy      = var.rest_api_policy
+}
+
+resource "aws_api_gateway_deployment" "this" {
+  count       = local.enabled ? 1 : 0
+  rest_api_id = aws_api_gateway_rest_api.this[0].id
+
+  triggers = {
+    redeployment = sha1(jsonencode(var.openapi_config))
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
+
+  depends_on = [aws_api_gateway_rest_api_policy.this]
+}
+
+resource "aws_api_gateway_vpc_link" "this" {
+  count       = local.enabled && var.enable_private_link_nlb ? 1 : 0
+  name        = module.this.id
+  description = "VPC Link for ${module.this.id}"
+  target_arns = module.nlb[*].nlb_arn
+  tags        = module.this.tags
+}
+
+resource "aws_api_gateway_stage" "this" {
+  count                 = local.enabled ? 1 : 0
+  deployment_id         = aws_api_gateway_deployment.this[0].id
+  rest_api_id           = aws_api_gateway_rest_api.this[0].id
+  stage_name            = module.this.stage
+  cache_cluster_enabled = true
+  cache_cluster_size    = "0.5"
+  xray_tracing_enabled  = var.xray_tracing_enabled
+
+  variables = {
+    vpc_link_id = join("", aws_api_gateway_vpc_link.this[*].id)
+  }
+
+  access_log_settings {
+    destination_arn = aws_cloudwatch_log_group.api_gateway[0].arn
+    format          = var.access_log_format
+  }
+
+  tags = module.this.tags
+}
+
+resource "aws_api_gateway_method_settings" "all" {
+  count       = local.enabled ? 1 : 0
+  rest_api_id = aws_api_gateway_rest_api.this[0].id
+  stage_name  = aws_api_gateway_stage.this[0].stage_name
+  method_path = "*/*"
+
+  settings {
+    metrics_enabled      = var.metrics_enabled
+    logging_level        = var.logging_level
+    caching_enabled      = true
+    cache_data_encrypted = true
+    cache_ttl_in_seconds = 300
+  }
+}
+
+module "api_gateway_rest_api" {
+  source = "git::https://github.com/cloudposse/terraform-null-label.git?ref=488ab91e34a24a86957e397d9f7262ec5925586a"
+
+  enabled = false
+
+  context = module.this.context
+}
+
+data "aws_acm_certificate" "issued" {
+  count    = local.enabled ? 1 : 0
+  domain   = local.root_domain
+  statuses = ["ISSUED"]
+}
+
+data "aws_route53_zone" "this" {
+  count        = local.enabled ? 1 : 0
+  name         = module.dns_delegated.outputs.default_domain_name
+  private_zone = false
+}
+
+resource "aws_api_gateway_domain_name" "this" {
+  count                    = local.enabled ? 1 : 0
+  domain_name              = local.domain_name
+  regional_certificate_arn = data.aws_acm_certificate.issued[0].arn
+  security_policy          = "TLS_1_2"
+
+  endpoint_configuration {
+    types = ["REGIONAL"]
+  }
+
+  tags = module.this.tags
+}
+
+resource "aws_api_gateway_base_path_mapping" "this" {
+  count       = local.enabled ? 1 : 0
+  api_id      = aws_api_gateway_rest_api.this[0].id
+  domain_name = aws_api_gateway_domain_name.this[0].domain_name
+  stage_name  = module.this.stage
+
+  depends_on = [
+    aws_api_gateway_domain_name.this,
+    aws_api_gateway_stage.this
+  ]
+
+}
+
+resource "aws_route53_record" "this" {
+  count   = local.enabled ? 1 : 0
+  name    = aws_api_gateway_domain_name.this[0].domain_name
+  type    = "A"
+  zone_id = data.aws_route53_zone.this[0].id
+
+  alias {
+    evaluate_target_health = true
+    name                   = aws_api_gateway_domain_name.this[0].regional_domain_name
+    zone_id                = aws_api_gateway_domain_name.this[0].regional_zone_id
+  }
+}
+
+
+module "nlb" {
+  source = "git::https://github.com/cloudposse/terraform-aws-nlb.git?ref=cb05a6107d3f1a376b1c24785b06386c78b9d973"
+  count  = var.enable_private_link_nlb ? 1 : 0
+
+  enabled = local.enabled
+
+  vpc_id                                  = module.vpc.outputs.vpc.id
+  subnet_ids                              = module.vpc.outputs.private_subnet_ids
+  internal                                = true
+  tcp_enabled                             = true
+  cross_zone_load_balancing_enabled       = true
+  ip_address_type                         = "ipv4"
+  deletion_protection_enabled             = var.enable_private_link_nlb_deletion_protection
+  tcp_port                                = 443
+  target_group_port                       = 443
+  target_group_target_type                = "alb"
+  health_check_protocol                   = "HTTPS"
+  nlb_access_logs_s3_bucket_force_destroy = true
+  deregistration_delay                    = var.deregistration_delay
+
+  context = module.this.context
+}
+
+## You can use a target attachment like below to point the nlb at an ecs alb.
+#resource "aws_lb_target_group_attachment" "alb" {
+#  target_group_arn = one(module.nlb[*].default_target_group_arn)
+#  target_id        = module.ecs.outputs.alb_arn
+#  port             = 443
+#}
+
+
+output "id" {
+  description = "The ID of the REST API"
+  value       = module.this.enabled ? one(aws_api_gateway_rest_api.this[*].id) : null
+}
+
+output "root_resource_id" {
+  description = "The resource ID of the REST API's root"
+  value       = module.this.enabled ? one(aws_api_gateway_rest_api.this[*].root_resource_id) : null
+}
+
+output "created_date" {
+  description = "The date the REST API was created"
+  value       = module.this.enabled ? one(aws_api_gateway_rest_api.this[*].created_date) : null
+}
+
+output "execution_arn" {
+  description = <<EOF
+    The execution ARN part to be used in lambda_permission's source_arn when allowing API Gateway to invoke a Lambda
+    function, e.g., arn:aws:execute-api:eu-west-2:123456789012:z4675bid1j, which can be concatenated with allowed stage,
+    method and resource path.The ARN of the Lambda function that will be executed.
+    EOF
+  value       = module.this.enabled ? one(aws_api_gateway_rest_api.this[*].execution_arn) : null
+}
+
+output "arn" {
+  description = "The ARN of the REST API"
+  value       = module.this.enabled ? one(aws_api_gateway_rest_api.this[*].arn) : null
+}
+
+output "invoke_url" {
+  description = "The URL to invoke the REST API"
+  value       = module.this.enabled ? one(aws_api_gateway_stage.this[*].invoke_url) : null
+}
+
+
+provider "aws" {
+  region = var.region
+
+  # Profile is deprecated in favor of terraform_role_arn. When profiles are not in use, terraform_profile_name is null.
+  profile = module.iam_roles.terraform_profile_name
+
+  dynamic "assume_role" {
+    # module.iam_roles.terraform_role_arn may be null, in which case do not assume a role.
+    for_each = compact([module.iam_roles.terraform_role_arn])
+    content {
+      role_arn = assume_role.value
+    }
+  }
+}
+
+module "iam_roles" {
+  source  = "../account-map/modules/iam-roles"
+  context = module.this.context
+}
+
+
+module "dns_delegated" {
+  source = "git::https://github.com/cloudposse/terraform-yaml-stack-config.git//modules/remote-state?ref=7c5c5e1a9f3b2d4e6a8c0b1d3f5e7a9c2b4d6e8f"
+
+  component   = "dns-delegated"
+  environment = module.iam_roles.global_environment_name
+
+  context = module.this.context
+}
+
+module "acm" {
+  source = "git::https://github.com/cloudposse/terraform-yaml-stack-config.git//modules/remote-state?ref=7c5c5e1a9f3b2d4e6a8c0b1d3f5e7a9c2b4d6e8f"
+
+  component     = "acm"
+  ignore_errors = true
+
+  defaults = {
+    domain_name = ""
+  }
+
+  context = module.this.context
+}
+
+module "vpc" {
+  source = "git::https://github.com/cloudposse/terraform-yaml-stack-config.git//modules/remote-state?ref=7c5c5e1a9f3b2d4e6a8c0b1d3f5e7a9c2b4d6e8f"
+
+  component = "vpc"
+
+  context = module.this.context
+}
+
+
+variable "region" {
+  type        = string
+  description = "AWS Region"
+}
+
+# See https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-swagger-extensions.html for additional
+# configuration information.
+variable "openapi_config" {
+  description = "The OpenAPI specification for the API"
+  type        = any
+  default     = {}
+}
+
+variable "endpoint_type" {
+  type        = string
+  description = "The type of the endpoint. One of - PUBLIC, PRIVATE, REGIONAL"
+  default     = "REGIONAL"
+
+  validation {
+    condition     = contains(["EDGE", "REGIONAL", "PRIVATE"], var.endpoint_type)
+    error_message = "Valid values for var: endpoint_type are (EDGE, REGIONAL, PRIVATE)."
+  }
+}
+
+variable "logging_level" {

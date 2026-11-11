@@ -1,0 +1,316 @@
+resource "aws_iam_group" "inline_group" {
+  name = "sadcloudInlineGroup"
+
+  count = var.inline_group_policy ? 1 : 0
+}
+
+resource "aws_iam_group_policy" "inline_group_policy" {
+    group = aws_iam_group.inline_group[0].id
+
+    count = var.inline_group_policy ? 1 : 0
+
+    policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "NotAction": [
+        "ec2:*"
+      ],
+      "Effect": "Allow",
+      "Resource": "*"
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_user" "inline_user" {
+  name = "sadcloudInlineUser"
+
+  count = var.inline_user_policy ? 1 : 0
+}
+
+resource "aws_iam_user_policy" "inline_user_policy" {
+  user = aws_iam_user.inline_user[0].name
+
+  count = var.inline_user_policy ? 1 : 0
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "NotAction": "s3:DeleteBucket",
+      "Effect": "Allow",
+      "Resource": "*"
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_role" "inline_role" {
+
+  count = var.inline_role_policy ? 1 : 0
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "ec2.amazonaws.com"
+      },
+      "Effect": "Allow",
+      "Sid": ""
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy" "inline_role_policy" {
+  name = "inline-role-policy"
+  role = aws_iam_role.inline_role[0].id
+
+  count = var.inline_role_policy ? 1 : 0
+
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "NotAction": [
+        "ec2:Describe*"
+      ],
+      "Effect": "Allow",
+      "Resource": "*"
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_role" "allow_all" {
+
+  count = (var.assume_role_policy_allows_all && !var.assume_role_no_mfa) ? 1 : 0
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "AWS": "*"
+      },
+      "Effect": "Allow",
+      "Sid": "",
+      "Condition": {
+        "BoolIfExists": {
+          "aws:MultiFactorAuthPresent": "true"
+        }
+      }
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_role" "allow_all_and_no_mfa" {
+
+  count = (var.assume_role_policy_allows_all && var.assume_role_no_mfa) ? 1 : 0
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "AWS": "*"
+      },
+      "Effect": "Allow",
+      "Sid": "",
+      "Condition": {
+        "BoolIfExists": {
+          "aws:MultiFactorAuthPresent": "false"
+        }
+      }
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_account_password_policy" "main" {
+  count = (var.password_policy_minimum_length || var.password_policy_no_lowercase_required || var.password_policy_no_numbers_required || var.password_policy_no_uppercase_required || var.password_policy_no_symbol_required || var.password_policy_reuse_enabled || var.password_policy_expiration_threshold) ? 1 : 0
+
+  minimum_password_length        = !var.password_policy_minimum_length ? 8 : 6
+  require_lowercase_characters   = true
+  require_numbers                = true
+  require_uppercase_characters   = true
+  require_symbols                = true
+  password_reuse_prevention      = !var.password_policy_reuse_enabled ? 5 : 0
+  max_password_age = var.password_policy_expiration_threshold ? 0 : 60
+}
+
+resource "aws_iam_policy" "policy" {
+  count = var.admin_iam_policy ? 1 : 0
+
+  name_prefix = "wildcard_IAM_policy"
+  path        = "/"
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "s3:*",
+      "Effect": "Allow",
+      "Resource": "*"
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_group" "admin_not_indicated" {
+  count = var.admin_not_indicated_policy ? 1 : 0
+
+  name = "sadcloud_superuser"
+  path = "/"
+}
+
+
+
+resource "aws_iam_policy" "admin_not_indicated_policy" {
+  count = var.admin_not_indicated_policy ? 1 : 0
+
+
+  name  = "sadcloud_superuser_policy"
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "s3:*",
+      "Effect": "Allow",
+      "Resource": "*"
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_group_policy_attachment" "admin_not_indicated_policy-attach" {
+  group = aws_iam_group.admin_not_indicated[0].id
+  policy_arn = aws_iam_policy.admin_not_indicated_policy[0].arn
+  count = var.admin_not_indicated_policy ? 1 : 0
+}
+
+
+
+
+variable "name" {
+  description = "iam name"
+  type        = string
+  default     = "sadcloud"
+}
+
+############## Findings ##############
+
+variable "password_policy_minimum_length" {
+  description = "insufficient minumum length"
+  type        = bool
+  default     = false
+}
+
+variable "password_policy_no_lowercase_required" {
+  description = "no lowercase char requirement"
+  type        = bool
+  default     = false
+}
+
+variable "password_policy_no_numbers_required" {
+  description = "no number requirement"
+  type        = bool
+  default     = false
+}
+
+
+variable "password_policy_no_uppercase_required" {
+  description = "no uppercase char requirement"
+  type        = bool
+  default     = false
+}
+
+variable "password_policy_no_symbol_required" {
+  description = "no symbol char requirement"
+  type        = bool
+  default     = false
+}
+
+variable "password_policy_reuse_enabled" {
+  description = "no password reuse prevention"
+  type        = bool
+  default     = false
+}
+
+variable "password_policy_expiration_threshold" {
+  description = "too long password expiration threshold"
+  type        = bool
+  default     = false
+}
+
+variable "managed_allows_passrole" {
+  description = "Managed policy allows iam:PassRole *"
+  type        = bool
+  default     = false
+}
+
+variable "inline_role_policy" {
+  description = "all 3 inline role policy findings"
+  type        = bool
+  default     = false
+}
+
+variable "inline_group_policy" {
+  description = "all 3 inline group policy findings"
+  type        = bool
+  default     = false
+}
+
+variable "inline_user_policy" {
+  description = "all 3 inline user policy findings"
+  type        = bool
+  default     = false
+}
+
+variable "assume_role_policy_allows_all" {
+  description = "AssumeRole policy allows all principals"
+  type        = bool
+  default     = false
+}
+
+variable "assume_role_no_mfa" {
+  description = "Cross-account AssumeRole policy lacks external ID and MFA"
+  type        = bool
+  default     = false
+}
+
+variable "admin_iam_policy" {
+  description = "IAM policy allows full (*:*) administrative privileges"
+  type        = bool
+  default     = false
+}
+
+variable "admin_not_indicated_policy" {
+  description = "IAM policy allows full (*:*) administrative privileges, no admin in name"
+  type        = bool
+  default     = false
+}
