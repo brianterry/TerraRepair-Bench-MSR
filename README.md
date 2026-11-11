@@ -48,60 +48,69 @@ The harness code is MIT-licensed (see `LICENSE`). The scores, findings, and mani
 
 ## Primary Metrics
 
-1. **Repair success rate** — Fraction of target findings resolved (same rule_id + resource_name no longer flagged).
-2. **Regression rate** — Fraction of target findings for which new findings were introduced.
-3. **Net delta** — resolved_count − introduced_count (positive = improvement).
+For a repair, let B be the pre-repair findings and A the post-repair findings, each identified by (rule_id, resource_name).
 
-Matching is deterministic on (rule_id, resource_name) pairs. No LLM judge.
+1. **Repair success rate (RSR):** resolved over target, |B \ A| / |B|.
+2. **Regression rate (RR):** introduced over target, |A \ B| / |B|. It can exceed 1 when a repair introduces more findings than it targeted.
+3. **Net delta:** resolved minus introduced.
+
+Matching is deterministic. No language model is in the scoring loop. A repair that is not valid HCL is scored as no change (A = B).
 
 ## Models
 
-| Model | Type |
-|-------|------|
-| Claude 3.5 Sonnet | Non-reasoning |
-| Nova Pro | Non-reasoning |
-| Nova Lite | Non-reasoning |
-| Llama 3.3 70B | Non-reasoning |
-| DeepSeek-R1 | Reasoning |
-| Qwen3-32B | Reasoning |
+The released slice covers ten models, all invoked through Amazon Bedrock with one draw each.
 
-All models via AWS Bedrock. Temperature 0.0 for deterministic repair.
+| Model | Reasoning |
+|---|---|
+| Claude Sonnet 4.5 | No |
+| Claude Sonnet 5 | Yes |
+| DeepSeek-R1 | Yes |
+| DeepSeek V3.2 | Yes |
+| Grok 4.6 | Yes |
+| Kimi K2.5 | Yes |
+| Llama 3.3 70B | No |
+| Nova Lite | No |
+| Nova Pro | No |
+| Qwen3 32B | Yes |
+
+Temperature is 0 for every model that accepts it. Claude Sonnet 5 and Grok 4.6 do not, so their outputs are not deterministic. Exact Bedrock model IDs are in `experiments/configs/release_slice_2026-10.yaml` and in each run's `run_manifest.json`.
 
 ## Quick Start
 
-```bash
-# Create and activate a virtual environment
-python3 -m venv .venv
-source .venv/bin/activate   # On Windows: .venv\Scripts\activate
+Using the released data needs no AWS account and no model calls.
 
-# Install dependencies
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
 
-# Install external tools
-brew install trivy
-pip install checkov
+# Reproduce the paper's comparisons from the released games
+python3 scripts/bootstrap_ci.py
 
-# Download TerraDS (SQLite + archive)
-# Place TerraDS.sqlite in a known path
-
-# Sample 200 modules
-python scripts/sample_terrads.py --sqlite /path/to/TerraDS.sqlite --output data/terrads_sample
-
-# Run experiment (6 models × 200 modules)
-python scripts/run_experiment.py --config experiments/configs/full_experiment.yaml
-
-# Analyze results
-python scripts/analyze.py --results experiments/results/full_180_game/
+# Rescan the released artifacts with the pinned scanners (Trivy 0.74.0, Checkov 3.3.20)
+docker build -t terrarepair-bench:latest .
+python3 scripts/rescan_release.py --results experiments/results/release_slice_2026-10
 ```
+
+Running new repairs needs AWS credentials with Amazon Bedrock access. Run the smoke configuration first, then the full one:
+
+```bash
+python3 scripts/run_experiment.py --config experiments/configs/release_slice_2026-10_smoke.yaml
+python3 scripts/run_experiment.py --config experiments/configs/release_slice_2026-10.yaml --max-tokens 40000
+```
+
+`CONTAINER.md` describes running the same image on AWS Fargate. The deploy files use `<ACCOUNT_ID>` as a placeholder for your AWS account.
+
+The corpus in `data/terrads_sample/` was drawn from TerraDS v1 with `scripts/sample_terrads.py`. Re-sampling needs `TerraDS.sqlite` from [Zenodo record 14217386](https://zenodo.org/records/14217386). Use the released corpus to reproduce the paper.
 
 ## Environment
 
 Copy `.env.example` to `.env` and set:
 
-- `AWS_REGION`, `AWS_PROFILE` (or credentials)
-- `TERRADS_SQLITE_PATH`
-- `CORPUS_DIR`
+- `AWS_REGION`, `AWS_PROFILE` (or credentials), needed only for new model runs
+- `TERRADS_SQLITE_PATH`, needed only for re-sampling
+- `CORPUS_DIR`, defaults to `data/terrads_sample`
 
-## Target Venue
+## Citation
 
-[RAID 2026](https://raid2026.org/) — International Symposium on Research in Attacks, Intrusions and Defenses (April 16, 2026 deadline).
+Cite the archived release, DOI [10.5281/zenodo.24115285](https://doi.org/10.5281/zenodo.24115285). `CITATION.cff` has the full entry.
